@@ -217,7 +217,11 @@ export default function AwsInfrastructure() {
             </h3>
             <p className="text-gray-400">
               Fork our repository and have your own production environment
-              running on AWS within the hour
+              running on AWS within the hour. Add custom data sources in the{' '}
+              <code className="rounded bg-zinc-700 px-1.5 py-0.5 text-cyan-300">
+                custom_*
+              </code>{' '}
+              namespace and pull upstream updates without merge conflicts.
             </p>
           </div>
 
