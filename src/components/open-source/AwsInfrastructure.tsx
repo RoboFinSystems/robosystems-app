@@ -63,7 +63,7 @@ export default function AwsInfrastructure() {
                 <ul className="space-y-2 text-gray-400">
                   <li className="flex items-start">
                     <span className="mr-2 text-purple-400">✓</span>
-                    ECS Fargate Celery worker clusters and API with ALB
+                    ECS Fargate API with ALB
                   </li>
                   <li className="flex items-start">
                     <span className="mr-2 text-purple-400">✓</span>
@@ -71,11 +71,15 @@ export default function AwsInfrastructure() {
                   </li>
                   <li className="flex items-start">
                     <span className="mr-2 text-purple-400">✓</span>
+                    EC2 auto-scaling group for Dagster run workers
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2 text-purple-400">✓</span>
                     RDS (Aurora) PostgreSQL with multi-AZ deployment
                   </li>
                   <li className="flex items-start">
                     <span className="mr-2 text-purple-400">✓</span>
-                    ElastiCache Valkey for caching and message brokering
+                    ElastiCache Valkey for caching
                   </li>
                   <li className="flex items-start">
                     <span className="mr-2 text-purple-400">✓</span>
@@ -213,7 +217,11 @@ export default function AwsInfrastructure() {
             </h3>
             <p className="text-gray-400">
               Fork our repository and have your own production environment
-              running on AWS within the hour
+              running on AWS within the hour. Add custom data sources in the{' '}
+              <code className="rounded bg-zinc-700 px-1.5 py-0.5 text-cyan-300">
+                custom_*
+              </code>{' '}
+              namespace and pull upstream updates without merge conflicts.
             </p>
           </div>
 
