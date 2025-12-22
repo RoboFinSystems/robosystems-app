@@ -39,7 +39,7 @@
   "dependencies": {
     "@aws-sdk/client-sns": "^3.859.0",
     "@monaco-editor/react": "^4.7.0",
-    "@robosystems/client": "0.2.23",
+    "@robosystems/client": "0.2.24",
     "date-fns": "^4.1.0",
     "flowbite": "^3.1",
     "flowbite-react": "^0.12.5",
