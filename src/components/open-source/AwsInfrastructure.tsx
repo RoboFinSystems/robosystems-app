@@ -182,7 +182,7 @@ export default function AwsInfrastructure() {
                   </li>
                   <li className="flex items-start">
                     <span className="mr-2 text-cyan-400">✓</span>
-                    Self-hosted runner available
+                    GitHub-hosted runners (free for public repos)
                   </li>
                   <li className="flex items-start">
                     <span className="mr-2 text-cyan-400">✓</span>
