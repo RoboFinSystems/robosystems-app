@@ -203,7 +203,7 @@ export function BrowseRepositoriesContent() {
                 <div className="flex items-start gap-2">
                   <div className="mt-1 h-2 w-2 rounded-full bg-blue-500"></div>
                   <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                    Use credits to execute queries and retrieve data
+                    Credits are used for AI agent calls - queries are unlimited
                   </span>
                 </div>
                 <div className="flex items-start gap-2">

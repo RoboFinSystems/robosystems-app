@@ -48,9 +48,7 @@ export default function PricingContent() {
                       Standard
                     </h3>
                     <div className="mb-4">
-                      <span className="text-4xl font-bold text-white">
-                        $49.99
-                      </span>
+                      <span className="text-4xl font-bold text-white">$50</span>
                       <span className="text-gray-400">/month</span>
                     </div>
                     <p className="text-gray-400">
@@ -72,7 +70,7 @@ export default function PricingContent() {
                           d="M5 13l4 4L19 7"
                         />
                       </svg>
-                      2,500 AI credits/month
+                      8,000 AI credits/month
                     </li>
                     <li className="flex items-start text-gray-300">
                       <svg
@@ -120,7 +118,7 @@ export default function PricingContent() {
                           d="M5 13l4 4L19 7"
                         />
                       </svg>
-                      30-day backup retention
+                      7-day backup retention
                     </li>
                     <li className="flex items-start text-gray-300">
                       <svg
@@ -136,7 +134,7 @@ export default function PricingContent() {
                           d="M5 13l4 4L19 7"
                         />
                       </svg>
-                      Community support
+                      30-day money-back guarantee
                     </li>
                   </ul>
                 </div>
@@ -164,7 +162,7 @@ export default function PricingContent() {
                     </h3>
                     <div className="mb-4">
                       <span className="text-4xl font-bold text-white">
-                        $199.99
+                        $300
                       </span>
                       <span className="text-gray-400">/month</span>
                     </div>
@@ -187,7 +185,7 @@ export default function PricingContent() {
                           d="M5 13l4 4L19 7"
                         />
                       </svg>
-                      15,000 AI credits/month
+                      32,000 AI credits/month
                     </li>
                     <li className="flex items-start text-gray-300">
                       <svg
@@ -219,7 +217,117 @@ export default function PricingContent() {
                           d="M5 13l4 4L19 7"
                         />
                       </svg>
-                      Dedicated instance with unlimited subgraphs
+                      Dedicated instance with up to 10 subgraphs
+                    </li>
+                    <li className="flex items-start text-gray-300">
+                      <svg
+                        className="mr-3 h-5 w-5 shrink-0 text-green-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      30-day backup retention
+                    </li>
+                    <li className="flex items-start text-gray-300">
+                      <svg
+                        className="mr-3 h-5 w-5 shrink-0 text-green-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      30-day money-back guarantee
+                    </li>
+                  </ul>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowContact(true)
+                  }}
+                  className="block w-full rounded-lg bg-orange-600 py-3 text-center font-medium text-white transition-all duration-300 hover:bg-orange-700"
+                >
+                  Contact Sales
+                </button>
+              </div>
+
+              {/* Premium */}
+              <div className="relative flex flex-col overflow-hidden rounded-2xl border border-purple-500/50 bg-linear-to-br from-purple-900/20 to-zinc-800 p-4 hover:bg-purple-900/20 sm:p-6 md:p-8">
+                <div className="flex-1">
+                  <div className="mb-8">
+                    <h3 className="font-heading mb-2 text-2xl font-bold text-white">
+                      Premium
+                    </h3>
+                    <div className="mb-4">
+                      <span className="text-4xl font-bold text-white">
+                        $700
+                      </span>
+                      <span className="text-gray-400">/month</span>
+                    </div>
+                    <p className="text-gray-400">
+                      For larger companies with data-intensive operations
+                    </p>
+                  </div>
+                  <ul className="mb-8 space-y-4">
+                    <li className="flex items-start text-gray-300">
+                      <svg
+                        className="mr-3 h-5 w-5 shrink-0 text-green-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      100,000 AI credits/month
+                    </li>
+                    <li className="flex items-start text-gray-300">
+                      <svg
+                        className="mr-3 h-5 w-5 shrink-0 text-green-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      100GB storage allocation
+                    </li>
+                    <li className="flex items-start text-gray-300">
+                      <svg
+                        className="mr-3 h-5 w-5 shrink-0 text-green-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      Premium dedicated instance with up to 25 subgraphs
                     </li>
                     <li className="flex items-start text-gray-300">
                       <svg
@@ -251,117 +359,7 @@ export default function PricingContent() {
                           d="M5 13l4 4L19 7"
                         />
                       </svg>
-                      Priority support
-                    </li>
-                  </ul>
-                </div>
-                <button
-                  onClick={() => {
-                    setShowContact(true)
-                  }}
-                  className="block w-full rounded-lg bg-orange-600 py-3 text-center font-medium text-white transition-all duration-300 hover:bg-orange-700"
-                >
-                  Contact Sales
-                </button>
-              </div>
-
-              {/* Premium */}
-              <div className="relative flex flex-col overflow-hidden rounded-2xl border border-purple-500/50 bg-linear-to-br from-purple-900/20 to-zinc-800 p-4 hover:bg-purple-900/20 sm:p-6 md:p-8">
-                <div className="flex-1">
-                  <div className="mb-8">
-                    <h3 className="font-heading mb-2 text-2xl font-bold text-white">
-                      Premium
-                    </h3>
-                    <div className="mb-4">
-                      <span className="text-4xl font-bold text-white">
-                        $499.99
-                      </span>
-                      <span className="text-gray-400">/month</span>
-                    </div>
-                    <p className="text-gray-400">
-                      For larger companies with data-intensive operations
-                    </p>
-                  </div>
-                  <ul className="mb-8 space-y-4">
-                    <li className="flex items-start text-gray-300">
-                      <svg
-                        className="mr-3 h-5 w-5 shrink-0 text-green-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      50,000 AI credits/month
-                    </li>
-                    <li className="flex items-start text-gray-300">
-                      <svg
-                        className="mr-3 h-5 w-5 shrink-0 text-green-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      200GB storage allocation
-                    </li>
-                    <li className="flex items-start text-gray-300">
-                      <svg
-                        className="mr-3 h-5 w-5 shrink-0 text-green-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      Premium dedicated instance with unlimited subgraphs
-                    </li>
-                    <li className="flex items-start text-gray-300">
-                      <svg
-                        className="mr-3 h-5 w-5 shrink-0 text-green-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      365-day backup retention
-                    </li>
-                    <li className="flex items-start text-gray-300">
-                      <svg
-                        className="mr-3 h-5 w-5 shrink-0 text-green-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      Priority support
+                      30-day money-back guarantee
                     </li>
                   </ul>
                 </div>
@@ -398,7 +396,7 @@ export default function PricingContent() {
                     language.
                   </p>
                   <div className="mb-6 text-3xl font-bold text-white">
-                    From $29.99
+                    From $29
                     <span className="text-base font-normal text-gray-400">
                       /month
                     </span>
@@ -475,13 +473,15 @@ export default function PricingContent() {
               <div className="mx-auto max-w-3xl space-y-6">
                 <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6">
                   <h4 className="mb-2 font-semibold text-white">
-                    What are AI credits?
+                    What are credits used for?
                   </h4>
                   <p className="text-gray-400">
-                    AI credits are used when you interact with AI agents for
-                    analysis, natural language queries, or automated reporting.
-                    Basic database operations, imports, exports, and manual
-                    queries don't consume credits.
+                    Credits are used for AI agent interactions and storage
+                    overage. AI calls are billed based on token usage, with a
+                    typical agent call consuming about 38 credits. Storage
+                    beyond your included allocation costs 1 credit per GB per
+                    day. Database operations, imports, exports, queries, and MCP
+                    tool access are all unlimited and don't consume credits.
                   </p>
                 </div>
                 <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6">
