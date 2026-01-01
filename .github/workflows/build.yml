@@ -60,10 +60,6 @@ on:
       DOCKERHUB_TOKEN:
         required: false
 
-concurrency:
-  group: robosystems-app-build
-  cancel-in-progress: false
-
 jobs:
   action:
     runs-on: ubuntu-latest
