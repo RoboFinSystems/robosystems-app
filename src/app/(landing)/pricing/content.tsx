@@ -481,7 +481,8 @@ export default function PricingContent() {
                     typical agent call consuming about 38 credits. Storage
                     beyond your included allocation costs 1 credit per GB per
                     day. Database operations, imports, exports, queries, and MCP
-                    tool access are all unlimited and don't consume credits.
+                    tool access don't consume credits (subject to rate limits by
+                    tier).
                   </p>
                 </div>
                 <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6">
