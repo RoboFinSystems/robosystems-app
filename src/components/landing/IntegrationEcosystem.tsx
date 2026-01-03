@@ -42,7 +42,7 @@ export default function IntegrationEcosystem() {
                     </p>
                   </div>
                   <span className="rounded-full bg-green-500/20 px-3 py-1 text-xs font-medium text-green-400">
-                    Q4 2025
+                    Q1 2026
                   </span>
                 </div>
 
@@ -58,7 +58,7 @@ export default function IntegrationEcosystem() {
                     </p>
                   </div>
                   <span className="rounded-full bg-green-500/20 px-3 py-1 text-xs font-medium text-green-400">
-                    Q4 2025
+                    Q1 2026
                   </span>
                 </div>
               </div>
