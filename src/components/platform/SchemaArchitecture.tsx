@@ -1,3 +1,4 @@
+import { AnimatedLogo } from '@/lib/core/ui-components/Logo'
 import Image from 'next/image'
 import FloatingElementsVariant from '../landing/FloatingElementsVariant'
 
@@ -46,8 +47,7 @@ export default function SchemaArchitecture() {
       name: 'Base Schema',
       description: 'Foundation for all data',
       components: ['Entity', 'Taxonomy', 'Element', 'Period', 'Unit'],
-      icon: '/images/logos/robosystems.png',
-      useImage: true,
+      app: 'robosystems' as const,
     },
     {
       name: 'RoboLedger',
@@ -61,15 +61,13 @@ export default function SchemaArchitecture() {
         'Transaction',
         'Line Item',
       ],
-      icon: '/images/logos/roboledger.png',
-      useImage: true,
+      app: 'roboledger' as const,
     },
     {
       name: 'RoboInvestor',
       description: 'Investment management',
       components: ['Portfolio', 'Security', 'Position', 'Market Data'],
-      icon: '/images/logos/roboinvestor.png',
-      useImage: true,
+      app: 'roboinvestor' as const,
     },
   ]
 
@@ -77,20 +75,17 @@ export default function SchemaArchitecture() {
     {
       name: 'RoboLedger App',
       description: 'Accounting and financial reporting',
-      icon: '/images/logos/roboledger.png',
-      useImage: true,
+      app: 'roboledger' as const,
     },
     {
       name: 'RoboInvestor App',
       description: 'Portfolio management and security analysis',
-      icon: '/images/logos/roboinvestor.png',
-      useImage: true,
+      app: 'roboinvestor' as const,
     },
     {
       name: 'AI Agents',
       description: 'Claude AI with MCP-powered analysis',
       icon: '/images/claude.svg',
-      useImage: true,
     },
   ]
 
@@ -177,17 +172,11 @@ export default function SchemaArchitecture() {
                       >
                         <div className="group relative h-full w-full">
                           <div className="flex h-full w-full items-center justify-center rounded-full border border-gray-700 bg-black p-2 transition-all hover:scale-110">
-                            {schema.useImage ? (
-                              <Image
-                                src={schema.icon}
-                                alt={`${schema.name} logo`}
-                                width={36}
-                                height={36}
-                                className="rounded-lg"
-                              />
-                            ) : (
-                              <span className="text-2xl">{schema.icon}</span>
-                            )}
+                            <AnimatedLogo
+                              animate="loop"
+                              app={schema.app}
+                              className="h-9 w-9 text-white"
+                            />
                           </div>
                           <div className="pointer-events-none absolute top-full left-1/2 mt-2 -translate-x-1/2 opacity-0 transition-opacity group-hover:opacity-100">
                             <div className="rounded bg-gray-800 px-2 py-1 text-xs whitespace-nowrap text-white">
@@ -230,19 +219,11 @@ export default function SchemaArchitecture() {
                       className="rounded-lg border border-gray-800 bg-zinc-900/50 p-3"
                     >
                       <div className="mb-1 flex items-center gap-2">
-                        {schema.useImage ? (
-                          <div className="flex h-6 w-6 items-center justify-center">
-                            <Image
-                              src={schema.icon}
-                              alt={`${schema.name} logo`}
-                              width={24}
-                              height={24}
-                              className="rounded-lg"
-                            />
-                          </div>
-                        ) : (
-                          <span>{schema.icon}</span>
-                        )}
+                        <AnimatedLogo
+                          animate="loop"
+                          app={schema.app}
+                          className="h-6 w-6 shrink-0 text-white"
+                        />
                         <span className="font-semibold text-white">
                           {schema.name}
                         </span>
@@ -399,7 +380,7 @@ function DataSourceCard({ name, type, icon, useImage, features, color }: any) {
   )
 }
 
-function ApplicationCard({ name, description, icon, useImage, index }: any) {
+function ApplicationCard({ name, description, icon, app, index }: any) {
   // Different background gradients and hover colors for each app
   const bgGradients = [
     'from-zinc-900 to-cyan-950/20',
@@ -418,8 +399,14 @@ function ApplicationCard({ name, description, icon, useImage, index }: any) {
       className={`group rounded-lg border border-gray-800 bg-gradient-to-br ${bgGradients[index]} p-4 transition-all ${borderColors[index]}`}
     >
       <div className="mb-2 flex items-center gap-2">
-        {useImage ? (
-          <div className="flex h-8 w-8 items-center justify-center">
+        <div className="flex h-8 w-8 items-center justify-center">
+          {app ? (
+            <AnimatedLogo
+              animate="loop"
+              app={app}
+              className="h-8 w-8 text-white"
+            />
+          ) : (
             <Image
               src={icon}
               alt={`${name} logo`}
@@ -427,10 +414,8 @@ function ApplicationCard({ name, description, icon, useImage, index }: any) {
               height={32}
               className="rounded-lg"
             />
-          </div>
-        ) : (
-          <span className="text-2xl">{icon}</span>
-        )}
+          )}
+        </div>
         <div>
           <div className="font-semibold text-white">{name}</div>
           <div className="text-xs text-gray-400">{description}</div>
