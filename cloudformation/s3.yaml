@@ -1,0 +1,72 @@
+Description: RoboSystems App S3 Buckets - Static Assets
+
+Parameters:
+  Environment:
+    Type: String
+    Default: prod
+    AllowedValues:
+      - prod
+      - staging
+      - dev
+    Description: Environment name (prod, staging, or dev)
+    ConstraintDescription: Environment must be prod, staging, or dev
+
+  Namespace:
+    Type: String
+    Default: ''
+    Description: |
+      S3 bucket namespace (typically AWS account ID) for globally unique bucket names.
+      When provided, creates buckets like: robosystems-app-{namespace}-{env}-static-assets
+      When empty (default), uses: robosystems-app-{env}-static-assets (backwards compatible)
+
+  ServiceTag:
+    Type: String
+    Default: RoboSystems
+    Description: Tag value for Service identification
+
+  ComponentTag:
+    Type: String
+    Default: App
+    Description: Tag value for Component identification
+
+Conditions:
+  HasNamespace: !Not [!Equals [!Ref Namespace, '']]
+
+Resources:
+  # S3 Bucket for Static Assets
+  StaticAssetsBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !If
+        - HasNamespace
+        - !Sub robosystems-app-${Namespace}-${Environment}-static-assets
+        - !Sub robosystems-app-${Environment}-static-assets
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Service
+          Value: !Ref ServiceTag
+        - Key: Component
+          Value: !Ref ComponentTag
+        - Key: CreatedBy
+          Value: CloudFormation
+
+Outputs:
+  StaticAssetsBucketName:
+    Description: S3 Bucket for static assets
+    Value: !Ref StaticAssetsBucket
+
+  StaticAssetsBucketArn:
+    Description: S3 Bucket ARN for static assets
+    Value: !GetAtt StaticAssetsBucket.Arn
+
+  StaticAssetsBucketDomainName:
+    Description: S3 Bucket Regional Domain Name for static assets
+    Value: !GetAtt StaticAssetsBucket.RegionalDomainName

@@ -1,0 +1,506 @@
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      runner_config:
+        required: false
+        type: string
+        description: 'Runner configuration JSON (from runner availability check)'
+        default: '["ubuntu-latest"]'
+      environment:
+        required: true
+        type: string
+      region:
+        required: true
+        type: string
+        default: 'us-east-1'
+      robosystems_api_url:
+        required: true
+        type: string
+      roboledger_app_url:
+        required: true
+        type: string
+      roboinvestor_app_url:
+        required: true
+        type: string
+      robosystems_app_url:
+        required: true
+        type: string
+      maintenance_mode:
+        required: false
+        type: string
+        default: 'false'
+      turnstile_site_key:
+        required: false
+        type: string
+        default: ''
+      static_assets_bucket_name:
+        required: false
+        type: string
+        description: 'S3 bucket name for static assets (from deploy-s3 outputs). If not provided, uses legacy naming pattern.'
+        default: ''
+      publish_to_dockerhub:
+        required: false
+        type: boolean
+        default: false
+        description: 'Whether to publish images to Docker Hub'
+    outputs:
+      image:
+        description: 'Full image reference with tag'
+        value: ${{ jobs.ecr-build.outputs.image }}
+      image_tag:
+        description: 'Image tag (git-sha based, use this for deployments)'
+        value: ${{ jobs.ecr-build.outputs.image_tag }}
+      version_tag:
+        description: 'Version tag (v1.2.3) if release, empty otherwise (metadata only)'
+        value: ${{ jobs.ecr-build.outputs.version_tag }}
+      ecr_repository_url:
+        description: 'ECR repository URL'
+        value: ${{ jobs.ecr-build.outputs.ecr_repository_url }}
+      is_release:
+        description: 'Whether this is a release build'
+        value: ${{ jobs.ecr-build.outputs.is_release }}
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: false
+      DOCKERHUB_TOKEN:
+        required: false
+
+jobs:
+  # ===========================================================================
+  # ECR Build - Production/Staging deployments with baked-in environment values
+  # ===========================================================================
+  ecr-build:
+    runs-on: ${{ fromJSON(inputs.runner_config) }}
+    timeout-minutes: 20
+    permissions:
+      id-token: write
+      contents: read
+    outputs:
+      image: ${{ steps.resolve.outputs.image }}
+      image_tag: ${{ steps.resolve.outputs.image_tag }}
+      version_tag: ${{ steps.resolve.outputs.version_tag }}
+      ecr_repository_url: ${{ steps.resolve.outputs.ecr_repository_url }}
+      is_release: ${{ steps.resolve.outputs.is_release }}
+    steps:
+      - name: Free disk space
+        run: |
+          echo "Disk space before cleanup:"
+          df -h /
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          echo "Disk space after cleanup:"
+          df -h /
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.ref }}
+          token: ${{ github.token }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            image=moby/buildkit:master
+            network=host
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ inputs.region }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          mask-password: 'true'
+
+      - name: Resolve image tag and check existence
+        id: resolve
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          ENVIRONMENT: ${{ inputs.environment }}
+        run: |
+          # Git SHA + environment is the source of truth for image identity
+          # (environment included because ECR builds bake in env-specific URLs)
+          GIT_SHA="${GITHUB_SHA:0:12}"
+          IMAGE_TAG="git-${GIT_SHA}-${ENVIRONMENT}"
+
+          # Determine version tag for releases (metadata for ECR, pinned for Docker Hub)
+          VERSION_TAG=""
+          IS_RELEASE="false"
+
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            VERSION_TAG="${GITHUB_REF#refs/tags/}"
+            IS_RELEASE="true"
+            echo "📦 Release detected: $VERSION_TAG"
+          elif [[ "$GITHUB_REF" == refs/heads/release/* ]]; then
+            BRANCH_VERSION="${GITHUB_REF#refs/heads/release/}"
+            VERSION_TAG="v${BRANCH_VERSION}-hotfix.${GIT_SHA}"
+            IS_RELEASE="true"
+            echo "🔥 Hotfix detected: $VERSION_TAG"
+          else
+            echo "🔧 Development build: $IMAGE_TAG"
+          fi
+
+          # Check if image already exists in ECR
+          ECR_URL="${ECR_REGISTRY}/${ECR_REPOSITORY}"
+          if aws ecr describe-images --repository-name "$ECR_REPOSITORY" --image-ids imageTag="$IMAGE_TAG" &>/dev/null; then
+            echo "✅ Image exists: ${IMAGE_TAG} - will skip build"
+            echo "needs_build=false" >> $GITHUB_OUTPUT
+          else
+            echo "🔨 Image not found: ${IMAGE_TAG} - will build"
+            echo "needs_build=true" >> $GITHUB_OUTPUT
+          fi
+
+          # Set outputs
+          echo "image=${ECR_URL}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
+          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+          echo "version_tag=${VERSION_TAG}" >> $GITHUB_OUTPUT
+          echo "ecr_repository_url=${ECR_URL}" >> $GITHUB_OUTPUT
+          echo "is_release=${IS_RELEASE}" >> $GITHUB_OUTPUT
+
+      - name: Setup Node.js
+        if: steps.resolve.outputs.needs_build == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies and build Next.js
+        if: steps.resolve.outputs.needs_build == 'true'
+        env:
+          NEXT_PUBLIC_APP_NAME: robosystems
+          NEXT_PUBLIC_ROBOSYSTEMS_API_URL: ${{ inputs.robosystems_api_url }}
+          NEXT_PUBLIC_ROBOLEDGER_APP_URL: ${{ inputs.roboledger_app_url }}
+          NEXT_PUBLIC_ROBOINVESTOR_APP_URL: ${{ inputs.roboinvestor_app_url }}
+          NEXT_PUBLIC_ROBOSYSTEMS_APP_URL: ${{ inputs.robosystems_app_url }}
+          NEXT_PUBLIC_MAINTENANCE_MODE: ${{ inputs.maintenance_mode }}
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ inputs.turnstile_site_key }}
+        run: |
+          npm ci
+          npm run build
+
+          # Create a tarball of the build output for Docker to use
+          tar -czf next-build.tar.gz .next
+
+      - name: Sync static assets to S3
+        if: steps.resolve.outputs.needs_build == 'true'
+        env:
+          # Use bucket name from deploy-s3 outputs if provided, otherwise use legacy naming
+          S3_BUCKET: ${{ inputs.static_assets_bucket_name || format('robosystems-app-{0}-static-assets', inputs.environment) }}
+        run: |
+          # Check if S3 bucket exists
+          if aws s3api head-bucket --bucket "$S3_BUCKET" 2>/dev/null; then
+            echo "S3 bucket exists, syncing static assets..."
+
+            # Sync public folder (images, etc)
+            echo "Syncing public folder..."
+            aws s3 sync ./public s3://$S3_BUCKET/ \
+              --cache-control "public, max-age=31536000, immutable" \
+              --exclude ".git/*" \
+              --exclude "node_modules/*"
+
+            # Sync Next.js static build output
+            echo "Syncing Next.js static files..."
+            aws s3 sync ./.next/static s3://$S3_BUCKET/_next/static/ \
+              --cache-control "public, max-age=31536000, immutable"
+
+            # Get stack name based on environment
+            if [ "${{ inputs.environment }}" == "prod" ]; then
+              STACK_NAME="RoboSystemsAppProd"
+            else
+              STACK_NAME="RoboSystemsAppStaging"
+            fi
+
+            # Check if the main application stack exists
+            if aws cloudformation describe-stacks --stack-name $STACK_NAME >/dev/null 2>&1; then
+              echo "Stack $STACK_NAME exists, looking up CloudFront distribution ID..."
+
+              # Try to get CloudFront distribution ID from CloudFormation stack outputs
+              CLOUDFRONT_DISTRIBUTION_ID=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query "Stacks[0].Outputs[?OutputKey=='CloudFrontDistributionId'].OutputValue" --output text 2>/dev/null)
+
+              # Invalidate CloudFront cache if we found the distribution ID
+              if [ -n "$CLOUDFRONT_DISTRIBUTION_ID" ] && [ "$CLOUDFRONT_DISTRIBUTION_ID" != "None" ]; then
+                echo "Found CloudFront distribution ID: $CLOUDFRONT_DISTRIBUTION_ID"
+                echo "Invalidating CloudFront cache..."
+                aws cloudfront create-invalidation \
+                  --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
+                  --paths "/*"
+              else
+                echo "CloudFront distribution ID not found in stack outputs."
+                echo "Continuing without cache invalidation."
+              fi
+            else
+              echo "Stack $STACK_NAME does not exist yet."
+              echo "This is expected for first-time deployments."
+              echo "CloudFront cache invalidation will be skipped."
+            fi
+          else
+            echo "S3 bucket doesn't exist yet. Skipping static asset sync."
+            echo "Please deploy the CloudFormation stack first to create the bucket."
+          fi
+
+      - name: Build and push Docker image to ECR
+        if: steps.resolve.outputs.needs_build == 'true'
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ steps.resolve.outputs.image_tag }}
+          VERSION_TAG: ${{ steps.resolve.outputs.version_tag }}
+          IS_RELEASE: ${{ steps.resolve.outputs.is_release }}
+        run: |
+          export DOCKER_BUILDKIT=1
+          export COMPOSE_DOCKER_CLI_BUILD=1
+
+          ECR_URL="${ECR_REGISTRY}/${ECR_REPOSITORY}"
+
+          # Build tags - git-sha-env is always the primary tag
+          TAGS="-t ${ECR_URL}:${IMAGE_TAG}"
+
+          # Add version tag as metadata for ECR
+          if [[ -n "$VERSION_TAG" ]]; then
+            TAGS="$TAGS -t ${ECR_URL}:${VERSION_TAG}"
+          fi
+
+          # Add latest tag for prod environment releases
+          if [[ "${{ inputs.environment }}" == "prod" ]] && [[ "$IS_RELEASE" == "true" ]]; then
+            TAGS="$TAGS -t ${ECR_URL}:latest"
+          fi
+
+          echo "🏗️ Building with tags:"
+          echo "$TAGS" | tr ' ' '\n' | grep -E '^-t' | sed 's/-t /  /'
+
+          # Build and push to ECR (amd64 only for ECS/Fargate)
+          docker buildx build \
+            --platform linux/amd64 \
+            --push \
+            --cache-from type=registry,ref=${ECR_URL}:buildcache \
+            --cache-to type=registry,ref=${ECR_URL}:buildcache,mode=max \
+            $TAGS \
+            -f Dockerfile .
+
+      - name: Add version tags to existing image
+        if: steps.resolve.outputs.needs_build == 'false' && steps.resolve.outputs.version_tag != ''
+        env:
+          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ steps.resolve.outputs.image_tag }}
+          VERSION_TAG: ${{ steps.resolve.outputs.version_tag }}
+        run: |
+          echo "🏷️ Adding version tag ${VERSION_TAG} to existing image ${IMAGE_TAG}"
+
+          # Get the manifest of the existing image
+          MANIFEST=$(aws ecr batch-get-image \
+            --repository-name "$ECR_REPOSITORY" \
+            --image-ids imageTag="$IMAGE_TAG" \
+            --query 'images[0].imageManifest' \
+            --output text)
+
+          # Add version tag
+          if ! OUTPUT=$(aws ecr put-image \
+            --repository-name "$ECR_REPOSITORY" \
+            --image-tag "$VERSION_TAG" \
+            --image-manifest "$MANIFEST" 2>&1); then
+            if echo "$OUTPUT" | grep -q "ImageAlreadyExistsException"; then
+              echo "Tag ${VERSION_TAG} already exists, skipping"
+            else
+              echo "::error::Failed to add tag ${VERSION_TAG}: $OUTPUT"
+              exit 1
+            fi
+          fi
+
+          # Add latest tag for prod
+          if [[ "${{ inputs.environment }}" == "prod" ]]; then
+            if ! OUTPUT=$(aws ecr put-image \
+              --repository-name "$ECR_REPOSITORY" \
+              --image-tag "latest" \
+              --image-manifest "$MANIFEST" 2>&1); then
+              if echo "$OUTPUT" | grep -q "ImageAlreadyExistsException"; then
+                echo "Tag latest already exists, skipping"
+              else
+                echo "::error::Failed to add tag latest: $OUTPUT"
+                exit 1
+              fi
+            fi
+          fi
+
+      - name: Verify image exists
+        env:
+          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ steps.resolve.outputs.image_tag }}
+        run: |
+          aws ecr describe-images --repository-name "$ECR_REPOSITORY" --image-ids imageTag="$IMAGE_TAG" || exit 1
+          echo "✅ Image verified: ${IMAGE_TAG}"
+
+  # ===========================================================================
+  # Scan Docker image for vulnerabilities (runs after ECR build)
+  # ===========================================================================
+  scan:
+    needs: ecr-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      id-token: write
+      contents: read
+      security-events: write # Required for SARIF upload
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ inputs.region }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          mask-password: 'true'
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ needs.ecr-build.outputs.image }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: 'container-scan'
+
+  # ===========================================================================
+  # Docker Hub Build - Configurable image with runtime environment injection
+  # ===========================================================================
+  # This job builds a separate image with placeholder values that get replaced
+  # at container startup via entrypoint.sh. This allows users to configure
+  # the image for any environment (local dev, self-hosted, etc.)
+  # ===========================================================================
+  dockerhub-build:
+    if: ${{ inputs.publish_to_dockerhub == true }}
+    runs-on: ${{ fromJSON(inputs.runner_config) }}
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Free disk space
+        run: |
+          echo "Disk space before cleanup:"
+          df -h /
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          echo "Disk space after cleanup:"
+          df -h /
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.ref }}
+          token: ${{ github.token }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            image=moby/buildkit:master
+            network=host
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies and build Next.js with placeholders
+        env:
+          # Use placeholder values that will be replaced at runtime by entrypoint.sh
+          NEXT_PUBLIC_ROBOSYSTEMS_API_URL: '__PLACEHOLDER_ROBOSYSTEMS_API_URL__'
+          NEXT_PUBLIC_ROBOLEDGER_APP_URL: '__PLACEHOLDER_ROBOLEDGER_APP_URL__'
+          NEXT_PUBLIC_ROBOINVESTOR_APP_URL: '__PLACEHOLDER_ROBOINVESTOR_APP_URL__'
+          NEXT_PUBLIC_ROBOSYSTEMS_APP_URL: '__PLACEHOLDER_ROBOSYSTEMS_APP_URL__'
+          NEXT_PUBLIC_MAINTENANCE_MODE: '__PLACEHOLDER_MAINTENANCE_MODE__'
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: '__PLACEHOLDER_TURNSTILE_SITE_KEY__'
+          NEXT_PUBLIC_S3_ENDPOINT_URL: '__PLACEHOLDER_S3_ENDPOINT_URL__'
+        run: |
+          npm ci
+          npm run build
+
+          # Create a tarball of the build output for Docker to use
+          tar -czf next-build.tar.gz .next
+
+      - name: Determine version tag
+        id: version
+        run: |
+          VERSION_TAG=""
+          IS_RELEASE="false"
+
+          # Check if this is a version tag (v*.*.*)
+          if [[ "$GITHUB_REF" == refs/tags/v*.*.* ]]; then
+            VERSION_TAG=${GITHUB_REF#refs/tags/}
+            IS_RELEASE="true"
+            echo "📦 Release version: $VERSION_TAG"
+          # Check if this is a release branch (release/*)
+          elif [[ "$GITHUB_REF" == refs/heads/release/* ]]; then
+            BRANCH_VERSION=${GITHUB_REF#refs/heads/release/}
+            VERSION_TAG="v${BRANCH_VERSION}-hotfix.${GITHUB_SHA:0:8}"
+            IS_RELEASE="true"
+            echo "🔥 Hotfix version: $VERSION_TAG"
+          else
+            VERSION_TAG="git-${GITHUB_SHA:0:8}"
+            echo "🔧 Development version: $VERSION_TAG"
+          fi
+
+          echo "version_tag=$VERSION_TAG" >> $GITHUB_OUTPUT
+          echo "is_release=$IS_RELEASE" >> $GITHUB_OUTPUT
+
+      - name: Build and push to Docker Hub
+        if: steps.version.outputs.is_release == 'true'
+        run: |
+          export DOCKER_BUILDKIT=1
+          export COMPOSE_DOCKER_CLI_BUILD=1
+
+          VERSION_TAG="${{ steps.version.outputs.version_tag }}"
+
+          # Prepare Docker Hub tags
+          TAGS="-t robofinsystems/robosystems-app:latest"
+          TAGS="$TAGS -t robofinsystems/robosystems-app:$VERSION_TAG"
+
+          echo "🚀 Publishing configurable image to Docker Hub"
+
+          # Build for both amd64 and arm64 (for Mac M1/M2 users)
+          # SBOM and provenance attestations improve Docker Hub security score
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --push \
+            --sbom=true \
+            --provenance=mode=max \
+            $TAGS \
+            -f Dockerfile .
+
+          echo "📋 Docker Hub image tags created:"
+          echo "$TAGS" | tr ' ' '\n' | grep -E '^-t' | sed 's/-t /  - /'
+
+      - name: Skip non-release build
+        if: steps.version.outputs.is_release != 'true'
+        run: |
+          echo "⏭️ Skipping Docker Hub publication (non-release build)"
+          echo "Docker Hub images are only published for version tags (v*.*.*) and release branches"
