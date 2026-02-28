@@ -43,11 +43,14 @@ export default function GraphLimitModal({
         <div className="p-8">
           <div className="mb-6">
             <h3 className="mb-2 text-2xl font-bold text-white">
-              Request Higher Graph Limit
+              {currentLimit === 0
+                ? 'Request Graph Access'
+                : 'Request Higher Graph Limit'}
             </h3>
             <p className="text-gray-300">
-              You've reached your current limit of {currentLimit} graphs. Tell
-              us about your needs and we'll increase your limit.
+              {currentLimit === 0
+                ? "Graph creation requires approval. Tell us about your needs and we'll get you set up."
+                : `You've reached your current limit of ${currentLimit} graphs. Tell us about your needs and we'll increase your limit.`}
             </p>
           </div>
           <GraphLimitForm onClose={onClose} userEmail={userEmail} />

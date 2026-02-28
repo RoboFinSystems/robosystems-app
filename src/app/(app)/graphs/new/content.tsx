@@ -75,17 +75,22 @@ export function NewGraphContent() {
         <div className="flex min-h-screen items-center justify-center">
           <div className="text-center">
             <h2 className="font-heading mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-              Graph Creation Limit Reached
+              {(limits?.max_graphs || 0) === 0
+                ? 'Graph Access Required'
+                : 'Graph Creation Limit Reached'}
             </h2>
             <p className="mb-6 text-gray-600 dark:text-gray-400">
-              You have reached your maximum number of graphs (
-              {limits?.max_graphs || 0} graphs allowed).
+              {(limits?.max_graphs || 0) === 0
+                ? 'Graph creation requires approval. Request access to get started.'
+                : `You have reached your maximum number of graphs (${limits?.max_graphs || 0} graphs allowed).`}
             </p>
             <button
               onClick={() => setShowContactModal(true)}
               className="text-blue-600 underline hover:text-blue-700"
             >
-              Request a higher limit
+              {(limits?.max_graphs || 0) === 0
+                ? 'Request access'
+                : 'Request a higher limit'}
             </button>
           </div>
         </div>
