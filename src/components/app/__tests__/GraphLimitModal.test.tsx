@@ -22,36 +22,30 @@ describe('GraphLimitModal', () => {
     vi.clearAllMocks()
   })
 
-  it('renders when isOpen is true', () => {
+  it('renders "Request Graph Access" when currentLimit is 0', () => {
     render(<GraphLimitModal isOpen={true} onClose={mockOnClose} />)
 
-    expect(screen.getByText(/request higher graph limit/i)).toBeInTheDocument()
-  })
-
-  it('does not render when isOpen is false', () => {
-    render(<GraphLimitModal isOpen={false} onClose={mockOnClose} />)
-
+    expect(screen.getByText(/request graph access/i)).toBeInTheDocument()
     expect(
-      screen.queryByText(/request higher graph limit/i)
-    ).not.toBeInTheDocument()
+      screen.getByText(/graph creation requires approval/i)
+    ).toBeInTheDocument()
   })
 
-  it('displays the current limit when provided', () => {
+  it('renders "Request Higher Graph Limit" when currentLimit > 0', () => {
     render(
       <GraphLimitModal isOpen={true} onClose={mockOnClose} currentLimit={5} />
     )
 
+    expect(screen.getByText(/request higher graph limit/i)).toBeInTheDocument()
     expect(
       screen.getByText(/you've reached your current limit of 5 graphs/i)
     ).toBeInTheDocument()
   })
 
-  it('displays default limit of 0 when not provided', () => {
-    render(<GraphLimitModal isOpen={true} onClose={mockOnClose} />)
+  it('does not render when isOpen is false', () => {
+    render(<GraphLimitModal isOpen={false} onClose={mockOnClose} />)
 
-    expect(
-      screen.getByText(/you've reached your current limit of 0 graphs/i)
-    ).toBeInTheDocument()
+    expect(screen.queryByText(/request graph access/i)).not.toBeInTheDocument()
   })
 
   it('passes userEmail to GraphLimitForm', () => {
@@ -67,16 +61,9 @@ describe('GraphLimitModal', () => {
     expect(screen.getByText(`User Email: ${testEmail}`)).toBeInTheDocument()
   })
 
-  it('calls onClose when X button is clicked', () => {
-    // We'll test that the modal's close button functionality works
-    // Since the actual close button is part of the Modal component implementation,
-    // we'll test the onClose prop is passed correctly
+  it('calls onClose when form close button is clicked', () => {
     render(<GraphLimitModal isOpen={true} onClose={mockOnClose} />)
 
-    // The modal should be visible
-    expect(screen.getByText(/request higher graph limit/i)).toBeInTheDocument()
-
-    // Test that the GraphLimitForm's onClose prop works
     const formCloseButton = screen.getByText('Close Form')
     fireEvent.click(formCloseButton)
 
@@ -90,17 +77,5 @@ describe('GraphLimitModal', () => {
     fireEvent.click(formCloseButton)
 
     expect(mockOnClose).toHaveBeenCalledTimes(1)
-  })
-
-  it('renders with correct styling classes', () => {
-    render(<GraphLimitModal isOpen={true} onClose={mockOnClose} />)
-
-    // The modal should render the heading with appropriate parent styling
-    const heading = screen.getByText(/request higher graph limit/i)
-    expect(heading).toBeInTheDocument()
-
-    // Check that the modal structure is rendered correctly
-    const limitText = screen.getByText(/you've reached your current limit/i)
-    expect(limitText).toBeInTheDocument()
   })
 })
