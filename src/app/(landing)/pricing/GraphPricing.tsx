@@ -53,14 +53,14 @@ export default function GraphPricing({ onContactSales }: GraphPricingProps) {
     <div className="mt-20">
       <div className="mb-10 text-center">
         <div className="mb-4 inline-block rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 text-sm font-medium text-cyan-400">
-          Coming Soon
+          Dedicated Graphs
         </div>
         <h2 className="mb-3 text-3xl font-bold text-white">
           Dedicated Graph Infrastructure
         </h2>
         <p className="mx-auto max-w-2xl text-gray-400">
           Deploy your own dedicated knowledge graph with AI-powered analysis.
-          Pricing details will be announced soon.
+          Contact us to discuss your requirements.
         </p>
       </div>
       <div className="mx-auto grid max-w-5xl gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -76,8 +76,8 @@ export default function GraphPricing({ onContactSales }: GraphPricingProps) {
                   {tier.name}
                 </h3>
                 <div className="mb-4">
-                  <span className="text-2xl font-bold text-gray-400">
-                    Pricing TBD
+                  <span className="text-sm font-medium text-cyan-400/70">
+                    Contact us for pricing
                   </span>
                 </div>
                 <p className="text-gray-500">{tier.description}</p>

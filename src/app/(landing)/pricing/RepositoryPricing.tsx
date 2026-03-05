@@ -31,7 +31,7 @@ export default function RepositoryPricing({
         SEC Shared Repository
       </h2>
       <p className="mx-auto mb-10 max-w-2xl text-center text-gray-400">
-        Access 100,000+ SEC filings from 4,000+ public companies through an
+        Access 115,000+ SEC filings from 10,000+ public companies through an
         intelligent AI agent that understands financial relationships and can
         answer complex queries in natural language.
       </p>

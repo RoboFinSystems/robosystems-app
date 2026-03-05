@@ -270,7 +270,7 @@ export default function BootstrapGuide() {
             production with custom domains.
           </p>
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-lg border border-gray-700 bg-zinc-800/50 p-4">
               <div className="mb-2 flex items-center gap-2">
                 <span className="rounded bg-zinc-700 px-2 py-0.5 text-xs font-medium text-gray-300">
@@ -278,33 +278,16 @@ export default function BootstrapGuide() {
                 </span>
                 <span className="text-xs text-gray-500">Default</span>
               </div>
-              <h4 className="mb-1 font-semibold text-white">
-                Development Mode
-              </h4>
+              <h4 className="mb-1 font-semibold text-white">Private VPC</h4>
               <p className="mb-3 text-sm text-gray-400">
-                Internal ALB with bastion tunnel
+                Zero public attack surface. Everything behind the VPC with
+                access through SSM bastion tunnels only.
               </p>
               <ul className="space-y-1 text-xs text-gray-500">
+                <li>+ No public attack surface</li>
                 <li>+ No domain required</li>
-                <li>+ Secure private access</li>
-                <li>+ SSM port forwarding</li>
-              </ul>
-            </div>
-
-            <div className="rounded-lg border border-gray-700 bg-zinc-800/50 p-4">
-              <div className="mb-2 flex items-center gap-2">
-                <span className="rounded bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-400">
-                  public-http
-                </span>
-              </div>
-              <h4 className="mb-1 font-semibold text-white">Quick Public</h4>
-              <p className="mb-3 text-sm text-gray-400">
-                Internet-facing ALB without TLS
-              </p>
-              <ul className="space-y-1 text-xs text-gray-500">
-                <li>+ No domain required</li>
-                <li>+ Fast testing access</li>
-                <li>- No HTTPS encryption</li>
+                <li>+ SSM port forwarding via bastion</li>
+                <li>+ Ideal for private or staging deployments</li>
               </ul>
             </div>
 
@@ -313,15 +296,17 @@ export default function BootstrapGuide() {
                 <span className="rounded bg-emerald-500/20 px-2 py-0.5 text-xs font-medium text-emerald-400">
                   public
                 </span>
-                <span className="text-xs text-emerald-500">Recommended</span>
+                <span className="text-xs text-emerald-500">Production</span>
               </div>
-              <h4 className="mb-1 font-semibold text-white">Production</h4>
+              <h4 className="mb-1 font-semibold text-white">Public HTTPS</h4>
               <p className="mb-3 text-sm text-gray-400">
-                Full HTTPS with custom domain
+                Internet-facing ALB with custom domain, TLS, and WAF protection.
+                Ready for production traffic.
               </p>
               <ul className="space-y-1 text-xs text-gray-500">
                 <li>+ ACM certificates auto-generated</li>
                 <li>+ Route 53 DNS auto-configured</li>
+                <li>+ WAF protection enabled</li>
                 <li>+ OAuth integrations work</li>
               </ul>
             </div>
