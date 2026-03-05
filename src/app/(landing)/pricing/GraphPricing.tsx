@@ -69,7 +69,7 @@ export default function GraphPricing({ onContactSales }: GraphPricingProps) {
             key={tier.name}
             className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-700 bg-linear-to-br from-gray-800/50 to-gray-900/50 p-4 opacity-75 transition-all duration-300 hover:border-gray-600 hover:opacity-90 sm:p-6 md:p-8"
           >
-            <div className="absolute inset-0 bg-linear-to-br from-gray-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-gray-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             <div className="relative flex-1">
               <div className="mb-8">
                 <h3 className="font-heading mb-2 text-2xl font-bold text-white">
