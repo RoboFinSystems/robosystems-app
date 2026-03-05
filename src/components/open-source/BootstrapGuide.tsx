@@ -291,23 +291,6 @@ export default function BootstrapGuide() {
               </ul>
             </div>
 
-            <div className="rounded-lg border border-gray-700 bg-zinc-800/50 p-4">
-              <div className="mb-2 flex items-center gap-2">
-                <span className="rounded bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-400">
-                  public-http
-                </span>
-              </div>
-              <h4 className="mb-1 font-semibold text-white">Quick Public</h4>
-              <p className="mb-3 text-sm text-gray-400">
-                Internet-facing ALB without TLS
-              </p>
-              <ul className="space-y-1 text-xs text-gray-500">
-                <li>+ No domain required</li>
-                <li>+ Fast testing access</li>
-                <li>- No HTTPS encryption</li>
-              </ul>
-            </div>
-
             <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4">
               <div className="mb-2 flex items-center gap-2">
                 <span className="rounded bg-emerald-500/20 px-2 py-0.5 text-xs font-medium text-emerald-400">

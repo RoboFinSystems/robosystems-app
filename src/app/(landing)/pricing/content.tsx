@@ -32,8 +32,8 @@ export default function PricingContent() {
                 Transparent Pricing
               </h1>
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
-                All queries, MCP tool access, and API calls are included. Only
-                pay for AI agent calls based on token usage.
+                All queries, MCP tool access, and API calls are included in your
+                plan. Credits are only used for AI agent calls.
               </p>
             </div>
           </div>
@@ -61,12 +61,31 @@ export default function PricingContent() {
                     What are credits used for?
                   </h4>
                   <p className="text-gray-400">
-                    Credits are used exclusively for AI agent calls, which are
-                    billed based on token usage with a typical call consuming
-                    about 38 credits. All other operations — database queries,
-                    imports, exports, storage, and MCP tool access — are
-                    included in your plan at no additional credit cost (subject
-                    to rate limits by tier).
+                    Credits power AI agent calls — powered by Claude (Anthropic)
+                    via AWS Bedrock — on your graph data. Today, the primary AI
+                    feature is{' '}
+                    <span className="text-gray-300">Text-to-Cypher</span> — ask
+                    questions in plain English and our AI converts them into
+                    optimized Cypher queries, executes them against your graph,
+                    and returns formatted results. A typical query uses just 1–2
+                    credits. All other operations — MCP tool access, database
+                    queries, file uploads, graph materialization, backups, and
+                    downloads — are included in your plan at no additional
+                    credit cost (subject to rate limits by tier).
+                  </p>
+                </div>
+                <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700">
+                  <h4 className="mb-2 font-semibold text-white">
+                    What AI capabilities are coming next?
+                  </h4>
+                  <p className="text-gray-400">
+                    Text-to-Cypher is the foundation of our AI agent system.
+                    We&apos;re actively building additional agents for deeper
+                    entity analysis, RAG-powered search, and automated insight
+                    generation across your financial data. As new capabilities
+                    launch, they&apos;ll use the same credit system — more
+                    complex agents may consume more credits per call, but
+                    you&apos;ll always have clear visibility into usage.
                   </p>
                 </div>
                 <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700">

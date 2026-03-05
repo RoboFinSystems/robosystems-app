@@ -7,7 +7,7 @@ export default function FinancialServices() {
       icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
       gradient: 'from-purple-500 to-pink-500',
       description:
-        'Query 100,000+ SEC XBRL filings across 4,000+ public companies for securities research and competitive analysis.',
+        'Query 115,000+ SEC XBRL filings across 10,000+ public companies for securities research and competitive analysis.',
       currentFeatures: [
         '10-K and 10-Q financial statements',
         'Company fundamentals and ratios',
