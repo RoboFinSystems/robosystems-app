@@ -1,5 +1,6 @@
 'use client'
 
+import SupportModal from '@/components/app/SupportModal'
 import { ErrorBoundary } from '@/components/error/ErrorBoundary'
 import { GraphSelector } from '@/components/graphs/GraphSelector'
 import {
@@ -7,8 +8,11 @@ import {
   CoreNavbar,
   CoreSidebar,
   useGraphContext,
+  useOrg,
   useToast,
 } from '@/lib/core'
+import { useState } from 'react'
+import { HiExclamationCircle, HiMail } from 'react-icons/hi'
 import { LayoutContent } from './layout-content'
 import { getNavigationItems } from './sidebar-config'
 
@@ -19,6 +23,8 @@ interface LayoutWrapperProps {
 export function LayoutWrapper({ children }: LayoutWrapperProps) {
   const { ToastContainer } = useToast()
   const { state } = useGraphContext()
+  const { currentOrg } = useOrg()
+  const [isSupportOpen, setIsSupportOpen] = useState(false)
 
   // Get current graph
   const currentGraph =
@@ -43,13 +49,42 @@ export function LayoutWrapper({ children }: LayoutWrapperProps) {
             aiChat: false,
             companyDropdown: false,
           }}
-          bottomMenuActions={[]}
+          bottomMenuActions={[
+            {
+              label: 'Support',
+              icon: HiMail,
+              onClick: () => setIsSupportOpen(true),
+              tooltip: 'Contact Support',
+            },
+            {
+              label: 'Issues',
+              icon: HiExclamationCircle,
+              onClick: () =>
+                window.open(
+                  'https://github.com/RoboFinSystems/robosystems/issues',
+                  '_blank'
+                ),
+              tooltip: 'Report an Issue',
+            },
+          ]}
           borderColorClass="dark:border-gray-800"
         />
         <LayoutContent>
           <ErrorBoundary>{children}</ErrorBoundary>
         </LayoutContent>
       </div>
+      <SupportModal
+        isOpen={isSupportOpen}
+        onClose={() => setIsSupportOpen(false)}
+        metadata={{
+          graphId: currentGraph?.graphId,
+          graphName: currentGraph?.graphName,
+          orgId: currentOrg?.id,
+          orgName: currentOrg?.name,
+          orgType: currentOrg?.org_type,
+          userRole: currentGraph?.role,
+        }}
+      />
     </>
   )
 }

@@ -348,9 +348,15 @@ export default function BackupManagementContent() {
       } else {
         throw new Error('Failed to get download URL')
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Download error:', err)
-      showError('Failed to download backup', 5000)
+      if (err.status === 429) {
+        const detail =
+          err.body?.detail || err.message || 'Download limit exceeded'
+        showError(detail, 8000)
+      } else {
+        showError('Failed to download backup', 5000)
+      }
     }
   }
 
