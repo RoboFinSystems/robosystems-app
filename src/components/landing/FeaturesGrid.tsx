@@ -25,17 +25,46 @@ export default function FeaturesGrid() {
             <div className="relative">
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/20 sm:mb-6 sm:h-14 sm:w-14">
                 <svg
-                  className="h-7 w-7 text-orange-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                  className="h-7 w-7"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 200 200"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
+                  <ellipse cx="100" cy="110" rx="60" ry="70" fill="#E74C3C" />
+                  <circle cx="100" cy="50" r="25" fill="#2C3E50" />
+                  <line
+                    x1="100"
+                    y1="50"
+                    x2="100"
+                    y2="180"
+                    stroke="#2C3E50"
+                    strokeWidth="3"
                   />
+                  <circle cx="70" cy="80" r="10" fill="#2C3E50" />
+                  <circle cx="65" cy="110" r="12" fill="#2C3E50" />
+                  <circle cx="70" cy="145" r="10" fill="#2C3E50" />
+                  <circle cx="130" cy="80" r="10" fill="#2C3E50" />
+                  <circle cx="135" cy="110" r="12" fill="#2C3E50" />
+                  <circle cx="130" cy="145" r="10" fill="#2C3E50" />
+                  <line
+                    x1="90"
+                    y1="35"
+                    x2="80"
+                    y2="20"
+                    stroke="#2C3E50"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <line
+                    x1="110"
+                    y1="35"
+                    x2="120"
+                    y2="20"
+                    stroke="#2C3E50"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <circle cx="80" cy="20" r="3" fill="#2C3E50" />
+                  <circle cx="120" cy="20" r="3" fill="#2C3E50" />
                 </svg>
               </div>
               <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
