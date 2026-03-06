@@ -280,11 +280,11 @@ export default function BootstrapGuide() {
               </div>
               <h4 className="mb-1 font-semibold text-white">Private VPC</h4>
               <p className="mb-3 text-sm text-gray-400">
-                Zero public attack surface. Everything behind the VPC with
-                access through SSM bastion tunnels only.
+                Fully private deployment. Everything behind the VPC with access
+                through SSM tunnels only.
               </p>
               <ul className="space-y-1 text-xs text-gray-500">
-                <li>+ No public attack surface</li>
+                <li>+ No public exposure</li>
                 <li>+ No domain required</li>
                 <li>+ SSM port forwarding via bastion</li>
                 <li>+ Ideal for private or staging deployments</li>

@@ -1,7 +1,15 @@
 'use client'
 
 import { useUser } from '@/lib/core'
-import { Button, Label, Modal, Textarea, TextInput } from 'flowbite-react'
+import {
+  Button,
+  Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Textarea,
+  TextInput,
+} from 'flowbite-react'
 import { useState } from 'react'
 
 export interface SupportMetadata {
@@ -72,8 +80,8 @@ export default function SupportModal({
 
   return (
     <Modal show={isOpen} onClose={handleClose} size="lg">
-      <Modal.Header>Contact Support</Modal.Header>
-      <Modal.Body>
+      <ModalHeader>Contact Support</ModalHeader>
+      <ModalBody>
         {submitStatus === 'success' ? (
           <div className="py-8 text-center">
             <svg
@@ -147,7 +155,7 @@ export default function SupportModal({
             </div>
           </form>
         )}
-      </Modal.Body>
+      </ModalBody>
     </Modal>
   )
 }
