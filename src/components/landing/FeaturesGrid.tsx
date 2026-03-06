@@ -31,15 +31,38 @@ export default function FeaturesGrid() {
                 >
                   <ellipse cx="100" cy="110" rx="60" ry="70" fill="#E74C3C" />
                   <circle cx="100" cy="50" r="25" fill="#2C3E50" />
-                  <line x1="100" y1="50" x2="100" y2="180" stroke="#2C3E50" strokeWidth="3" />
+                  <line
+                    x1="100"
+                    y1="50"
+                    x2="100"
+                    y2="180"
+                    stroke="#2C3E50"
+                    strokeWidth="3"
+                  />
                   <circle cx="70" cy="80" r="10" fill="#2C3E50" />
                   <circle cx="65" cy="110" r="12" fill="#2C3E50" />
                   <circle cx="70" cy="145" r="10" fill="#2C3E50" />
                   <circle cx="130" cy="80" r="10" fill="#2C3E50" />
                   <circle cx="135" cy="110" r="12" fill="#2C3E50" />
                   <circle cx="130" cy="145" r="10" fill="#2C3E50" />
-                  <line x1="90" y1="35" x2="80" y2="20" stroke="#2C3E50" strokeWidth="2" strokeLinecap="round" />
-                  <line x1="110" y1="35" x2="120" y2="20" stroke="#2C3E50" strokeWidth="2" strokeLinecap="round" />
+                  <line
+                    x1="90"
+                    y1="35"
+                    x2="80"
+                    y2="20"
+                    stroke="#2C3E50"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <line
+                    x1="110"
+                    y1="35"
+                    x2="120"
+                    y2="20"
+                    stroke="#2C3E50"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
                   <circle cx="80" cy="20" r="3" fill="#2C3E50" />
                   <circle cx="120" cy="20" r="3" fill="#2C3E50" />
                 </svg>
