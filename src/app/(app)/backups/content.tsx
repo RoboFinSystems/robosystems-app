@@ -46,8 +46,10 @@ import {
 } from 'react-icons/hi'
 
 interface DownloadQuota {
-  limit_per_day: number
-  used_today: number
+  limit_per_day?: number
+  limit_per_month?: number
+  used_today?: number
+  used_this_month?: number
   remaining: number
   resets_at: string
 }
@@ -488,7 +490,7 @@ export default function BackupManagementContent() {
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white">
-                  Daily Download Quota
+                  Monthly Download Quota
                 </h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   Resets at {new Date(downloadQuota.resets_at).toLocaleString()}
@@ -497,7 +499,10 @@ export default function BackupManagementContent() {
             </div>
             <div className="text-right">
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                {downloadQuota.remaining} / {downloadQuota.limit_per_day}
+                {downloadQuota.remaining} /{' '}
+                {downloadQuota.limit_per_month ??
+                  downloadQuota.limit_per_day ??
+                  '?'}
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400">
                 downloads remaining
@@ -509,7 +514,7 @@ export default function BackupManagementContent() {
               <div className="flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-300">
                 <HiExclamation className="h-4 w-4" />
                 <span>
-                  Daily download limit reached. Limit resets at{' '}
+                  Monthly download limit reached. Limit resets at{' '}
                   {new Date(downloadQuota.resets_at).toLocaleTimeString()}.
                 </span>
               </div>
@@ -653,7 +658,7 @@ export default function BackupManagementContent() {
                         <Tooltip
                           content={
                             isRepository && downloadQuota?.remaining === 0
-                              ? 'Daily download limit reached'
+                              ? 'Monthly download limit reached'
                               : 'Download backup'
                           }
                         >
