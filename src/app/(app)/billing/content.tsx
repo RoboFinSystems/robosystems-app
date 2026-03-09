@@ -268,7 +268,12 @@ function OverviewTab({
   // Count subscriptions by type
   const graphSubs = subscriptions.filter((s) => s.resource_type === 'graph')
   const repoSubs = subscriptions.filter(
-    (s) => s.resource_type === 'repository' && s.status === 'active'
+    (s) =>
+      s.resource_type === 'repository' &&
+      (s.status === 'active' ||
+        (s.status === 'canceled' &&
+          s.ends_at &&
+          new Date(s.ends_at) > new Date()))
   )
 
   return (
