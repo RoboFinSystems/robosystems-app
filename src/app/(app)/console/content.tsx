@@ -9,23 +9,24 @@ import {
 const ROBOSYSTEMS_CONSOLE_CONFIG: ConsoleConfig = {
   header: {
     title: 'Console',
-    subtitle: 'Execute Cypher queries and analyze data',
+    subtitle: 'Text-to-Cypher for SEC financial filings',
     gradientFrom: 'from-blue-500',
     gradientTo: 'to-purple-600',
   },
   welcome: {
     consoleName: 'RoboSystems Console',
-    description: 'Claude powered interactive graph database console',
+    description:
+      'Ask questions in plain English and get Cypher queries generated automatically. The SEC graph contains filings from over 10,000 public companies.',
     contextLabel: 'Graph',
     naturalLanguageExamples: [
-      'What entity is in the graph?',
-      'How many facts are in the latest report?',
-      'What are the latest transactions for this company?',
+      'Compare NVIDIA and AMD revenue over the last 3 years',
+      'Which semiconductor companies had the highest net income in 2024?',
+      'Show me Apple total assets vs total liabilities by quarter',
     ],
     directQueryExamples: [
-      'MATCH (n) RETURN count(n) as node_count',
-      'MATCH (e:Entity) RETURN e.name, e.identifier LIMIT 10',
-      'MATCH (r:Report) RETURN r.form, r.filing_date LIMIT 10',
+      "MATCH (f:Fact {has_dimensions: false})-[:FACT_HAS_ELEMENT]->(el:Element {qname: 'us-gaap:Revenues'}), (f)-[:FACT_HAS_ENTITY]->(e:Entity), (f)-[:FACT_HAS_PERIOD]->(p:Period) WHERE e.ticker = 'NVDA' AND p.duration_type = 'annual' RETURN DISTINCT f.numeric_value, p.end_date ORDER BY p.end_date DESC LIMIT 5",
+      "MATCH (e:Entity) WHERE e.industry CONTAINS 'Semiconductor' RETURN e.ticker, e.name, e.industry LIMIT 20",
+      "MATCH (f:Fact {has_dimensions: false})-[:FACT_HAS_ELEMENT]->(el:Element {qname: 'us-gaap:NetIncomeLoss'}), (f)-[:FACT_HAS_ENTITY]->(e:Entity), (f)-[:FACT_HAS_PERIOD]->(p:Period) WHERE p.duration_type = 'annual' RETURN DISTINCT e.ticker, e.name, f.numeric_value, p.end_date ORDER BY f.numeric_value DESC LIMIT 10",
     ],
     closingMessage: 'How can I help you today?',
   },
@@ -33,48 +34,62 @@ const ROBOSYSTEMS_CONSOLE_CONFIG: ConsoleConfig = {
     serverName: 'robosystems',
     packageName: '@robosystems/mcp',
     exampleQuestions: [
-      'Query my graph for all nodes',
-      'Get the schema of my graph',
-      'Find relationships between entities',
+      'Compare Tesla and Ford revenue trends',
+      'Which companies in the graph have the most cash on hand?',
+      'Show me Microsoft earnings per share over time',
     ],
     contextIdFallback: 'your_graph_id',
   },
   sampleQueries: [
     {
-      name: 'What entity is in the graph?',
-      query: 'MATCH (e:Entity) RETURN e.name, e.identifier LIMIT 10',
+      name: 'NVIDIA annual revenue',
+      query: `MATCH (f:Fact {has_dimensions: false})-[:FACT_HAS_ELEMENT]->(el:Element {qname: 'us-gaap:Revenues'}),
+      (f)-[:FACT_HAS_ENTITY]->(e:Entity),
+      (f)-[:FACT_HAS_PERIOD]->(p:Period)
+WHERE e.ticker = 'NVDA' AND p.duration_type = 'annual'
+RETURN DISTINCT e.ticker, f.numeric_value, p.end_date
+ORDER BY p.end_date DESC`,
     },
     {
-      name: 'How many reports are in the graph?',
-      query: 'MATCH (r:Report) RETURN count(r) as report_count',
+      name: 'Compare net income across tech companies',
+      query: `MATCH (f:Fact {has_dimensions: false})-[:FACT_HAS_ELEMENT]->(el:Element {qname: 'us-gaap:NetIncomeLoss'}),
+      (f)-[:FACT_HAS_ENTITY]->(e:Entity),
+      (f)-[:FACT_HAS_PERIOD]->(p:Period)
+WHERE e.ticker IN ['AAPL', 'MSFT', 'GOOGL', 'NVDA', 'META'] AND p.duration_type = 'annual'
+RETURN DISTINCT e.ticker, f.numeric_value, p.end_date
+ORDER BY p.end_date DESC, f.numeric_value DESC
+LIMIT 20`,
     },
     {
-      name: 'What are the latest facts for this company?',
-      query: `MATCH (f:Fact)--(e:Element)
-OPTIONAL MATCH (f)-[:FACT_HAS_PERIOD]->(p:Period)
-RETURN e.name, f.value, p.start_date, p.end_date
+      name: 'Apple balance sheet by quarter',
+      query: `MATCH (f:Fact {has_dimensions: false})-[:FACT_HAS_ELEMENT]->(el:Element),
+      (f)-[:FACT_HAS_ENTITY]->(e:Entity),
+      (f)-[:FACT_HAS_PERIOD]->(p:Period)
+WHERE e.ticker = 'AAPL'
+  AND el.qname IN ['us-gaap:Assets', 'us-gaap:Liabilities', 'us-gaap:StockholdersEquity']
+  AND p.period_type = 'instant'
+RETURN DISTINCT el.name, f.numeric_value, p.end_date
+ORDER BY p.end_date DESC, el.name
+LIMIT 15`,
+    },
+    {
+      name: 'Companies by industry',
+      query: `MATCH (e:Entity)
+WHERE e.industry IS NOT NULL
+RETURN e.industry, count(e) AS company_count
+ORDER BY company_count DESC
+LIMIT 15`,
+    },
+    {
+      name: 'Revenue by segment (dimensional)',
+      query: `MATCH (f:Fact {has_dimensions: true})-[:FACT_HAS_ELEMENT]->(el:Element {qname: 'us-gaap:Revenues'}),
+      (f)-[:FACT_HAS_ENTITY]->(e:Entity),
+      (f)-[:FACT_HAS_DIMENSION]->(d:Dimension),
+      (f)-[:FACT_HAS_PERIOD]->(p:Period)
+WHERE e.ticker = 'NVDA' AND p.duration_type = 'annual'
+RETURN DISTINCT d.member_uri, f.numeric_value, p.end_date
 ORDER BY p.end_date DESC
-LIMIT 10`,
-    },
-    {
-      name: 'Count all nodes',
-      query: 'MATCH (n) RETURN count(n) as node_count',
-    },
-    {
-      name: 'Find top 10 connected nodes',
-      query: `MATCH (n)
-WITH n, size((n)--()) as degree
-ORDER BY degree DESC
-LIMIT 10
-RETURN n.name as name, degree`,
-    },
-    {
-      name: 'Show all tables',
-      query: 'CALL show_tables() RETURN *',
-    },
-    {
-      name: 'Sample nodes',
-      query: 'MATCH (n) RETURN n LIMIT 10',
+LIMIT 20`,
     },
   ],
   examplesLabel: 'Example Cypher Queries:',

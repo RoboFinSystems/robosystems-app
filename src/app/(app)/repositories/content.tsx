@@ -14,6 +14,7 @@ export function SharedRepositoriesContent() {
         onGettingStarted={(repoId) =>
           router.push(`/repositories/${repoId}/getting-started`)
         }
+        onBackups={() => router.push('/backups')}
         onBilling={() => router.push('/billing')}
         onBrowse={() => router.push('/repositories/browse')}
         emptyState={<BrowseRepositoriesContent />}
