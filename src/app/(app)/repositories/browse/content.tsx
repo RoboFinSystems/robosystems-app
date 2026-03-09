@@ -13,9 +13,6 @@ export function BrowseRepositoriesContent() {
           router.push(`/repositories/${repoType}/getting-started`)
         }
         onViewSubscriptions={() => router.push('/repositories')}
-        onUpgrade={(repoType, planName) =>
-          router.push(`/repositories/${repoType}/upgrade?tier=${planName}`)
-        }
       />
     </div>
   )
