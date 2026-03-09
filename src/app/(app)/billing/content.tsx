@@ -267,7 +267,9 @@ function OverviewTab({
 
   // Count subscriptions by type
   const graphSubs = subscriptions.filter((s) => s.resource_type === 'graph')
-  const repoSubs = subscriptions.filter((s) => s.resource_type === 'repository')
+  const repoSubs = subscriptions.filter(
+    (s) => s.resource_type === 'repository' && s.status === 'active'
+  )
 
   return (
     <div className="space-y-6">
