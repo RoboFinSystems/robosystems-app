@@ -1,135 +1,228 @@
-# RoboSystems App
+# RoboSystems Core Components
 
-RoboSystems App is the web interface for the RoboSystems financial knowledge graph platform, providing tools to create, manage, and query graph databases.
+A shared library of React components, hooks, utilities, and types used across RoboSystems ecosystem applications.
 
-- **Graph Database Management**: Create and manage multiple isolated graph databases with tiered infrastructure
-- **AI Console**: Natural language and Cypher query terminal with streaming results and MCP integration
-- **Schema Explorer**: Inspect node labels, relationships, constraints, and indexes
-- **Subgraph Workspaces**: Create isolated environments for development, testing, and collaboration
-- **Data Lake**: DuckDB staging tables for data validation and bulk ingestion
-- **Shared Repository Access**: Subscribe to and query SEC XBRL filings and public financial data
-- **Backup Management**: Create, download, and restore graph database backups
-- **Billing & Usage**: Manage subscriptions, view invoices, and track credit usage
-- **Organization Management**: Manage team members and organization settings
+## Overview
 
-## Quick Start
+This repository contains reusable components that are shared between:
 
-```bash
-npm install              # Install dependencies
-cp .env.example .env     # Configure environment (edit with your API endpoint)
-npm run dev              # Start development server
+- **robosystems-app** - Graph database management interface
+- **roboledger-app** - Accounting and bookkeeping interface
+- **roboinvestor-app** - Investment management interface
+
+## Structure
+
+```
+├── auth-components/          # Authentication UI components
+│   ├── AuthProvider.tsx      # Authentication context provider
+│   ├── SignInForm.tsx        # Login form component
+│   └── SignUpForm.tsx        # Registration form component
+├── auth-core/               # Authentication logic and types
+│   ├── client.ts            # Authentication client
+│   ├── hooks.ts             # Authentication hooks
+│   └── types.ts             # Authentication TypeScript types
+├── contexts/                # React contexts
+│   └── sidebar-context.tsx  # Sidebar state management
+├── hooks/                   # Custom React hooks
+│   └── use-media-query.ts   # Media query hook for responsive design
+├── lib/                     # Utility libraries
+│   └── sidebar-cookie.ts    # Sidebar state persistence
+├── theme/                   # UI theming
+│   └── flowbite-theme.ts    # Flowbite React custom theme
+├── types/                   # Shared TypeScript definitions
+│   └── user.d.ts           # User type definitions
+├── ui-components/          # Reusable UI components
+│   ├── api-keys/           # API key management components
+│   ├── forms/              # Form components and validation
+│   ├── layout/             # Layout and container components
+│   └── settings/           # Settings page components
+└── index.ts                # Main export file
 ```
 
-The application will be available at http://localhost:3000
+## Technology Stack
 
-## Development Commands
+- **React 18** with modern hooks and patterns
+- **TypeScript** for type safety
+- **Flowbite React** for UI components
+- **Tailwind CSS** for styling
+- **Next.js 15** App Router compatibility
+- **Auto-generated SDK** from OpenAPI specifications
 
-### Core Development
+## Usage as Git Subtree
 
-```bash
-npm run dev              # Start development server (port 3000)
-npm run build            # Production build
-```
+### Initial Setup
 
-### Testing
-
-```bash
-npm run test:all         # All tests and code quality checks
-npm run test             # Run Vitest test suite
-npm run test:coverage    # Generate coverage report
-```
-
-### Code Quality
+Add this repository as a subtree to your app:
 
 ```bash
-npm run lint             # ESLint validation
-npm run lint:fix         # Auto-fix linting issues
-npm run format           # Prettier code formatting
-npm run format:check     # Check formatting compliance
-npm run typecheck        # TypeScript type checking
+# In your app directory (roboinvestor-app, roboledger-app, etc.)
+git subtree add --prefix=src/lib/core \
+  https://github.com/yourorg/robosystems-core.git main --squash
 ```
 
-### SDLC Commands
+### Pull Updates
+
+Get the latest common components:
 
 ```bash
-npm run feature:create   # Create a feature branch
-npm run pr:create        # Create pull request
-npm run release:create   # Create GitHub release
-npm run deploy:staging   # Deploy to staging environment
-npm run deploy:prod      # Deploy to production
+git subtree pull --prefix=src/lib/core \
+  https://github.com/yourorg/robosystems-core.git main --squash
 ```
 
-### Core Subtree Management
+### Push Changes
+
+Push your improvements back to the common repository:
 
 ```bash
-npm run core:pull        # Pull latest core subtree updates
-npm run core:push        # Push core subtree changes
-npm run core:add         # Add core subtree (initial setup)
+git subtree push --prefix=src/lib/core \
+  https://github.com/yourorg/robosystems-core.git main
 ```
 
-### Prerequisites
+## Component Usage
 
-#### System Requirements
+### Import from Common
 
-- Node.js 22+ (LTS recommended)
-- npm 10+
-- 4GB RAM minimum
-- Modern browser (Chrome, Firefox, Safari, Edge)
+```typescript
+import {
+  useMediaQuery,
+  useSidebarContext,
+  SidebarProvider,
+  customTheme,
+  sidebarCookie,
+} from '@/lib/core'
 
-#### Required Services
+import type { CommonUser, SidebarCookie } from '@/lib/core'
+```
 
-- RoboSystems API endpoint (local development or production)
+### Authentication
 
-#### Deployment Requirements
+```typescript
+import { useAuth, AuthProvider } from '@/lib/core'
 
-- Fork this repo (and the [robosystems](https://github.com/RoboFinSystems/robosystems) backend)
-- AWS account with IAM Identity Center (SSO)
-- Run `npm run setup:bootstrap` to configure OIDC and GitHub variables
+function MyApp() {
+  return (
+    <AuthProvider>
+      <MyComponents />
+    </AuthProvider>
+  )
+}
 
-See the **[Bootstrap Guide](https://github.com/RoboFinSystems/robosystems/wiki/Bootstrap-Guide)** for complete instructions including access modes (internal, public-http, public).
+function MyComponent() {
+  const { user, isAuthenticated, login, logout } = useAuth()
+  // ... component logic
+}
+```
 
-## Architecture
+### Sidebar Management
 
-**Application Layer:**
+```typescript
+import { SidebarProvider, useSidebarContext } from '@/lib/core'
 
-- Next.js 16 App Router
-- TypeScript 5 for type safety
-- Flowbite React with Tailwind CSS for UI components
-- RoboSystems Client SDK for API communication
+function Layout({ children }) {
+  return (
+    <SidebarProvider initialCollapsed={false}>
+      <MySidebar />
+      <main>{children}</main>
+    </SidebarProvider>
+  )
+}
 
-**Core Library (`/src/lib/core/`):**
+function MySidebar() {
+  const { desktop, mobile } = useSidebarContext()
+  // ... sidebar logic
+}
+```
 
-Shared modules maintained as a git subtree across RoboSystems frontend apps:
+### Responsive Design
 
-- Auth components (login, register, password reset)
-- Session management and JWT handling
-- Graph creation wizard and shared components
-- Layout, forms, chat, and settings components
-- Graph, organization, and entity contexts
-- SSE-based background job progress tracking
+```typescript
+import { useMediaQuery } from '@/lib/core'
 
-**Infrastructure:**
+function ResponsiveComponent() {
+  const isMobile = useMediaQuery('(max-width: 768px)')
 
-- AWS App Runner with auto-scaling
-- S3 + CloudFront for static asset hosting
-- CloudFormation templates in `/cloudformation/`
+  return (
+    <div className={isMobile ? 'mobile-layout' : 'desktop-layout'}>
+      {/* component content */}
+    </div>
+  )
+}
+```
 
-## CI/CD
+### API Integration
 
-- **`prod.yml`**: Production deployment to robosystems.ai
-- **`staging.yml`**: Staging deployment to staging.robosystems.ai
-- **`test.yml`**: Automated testing on pull requests
-- **`build.yml`**: Docker image building for ECR
+```typescript
+import { SDK } from '@/lib/core'
+import type { UserResponse } from '@/lib/core/sdk/types.gen'
 
-## Support
+async function fetchUser() {
+  const response = await SDK.getCurrentUser()
+  const userData = response.data as UserResponse
+  return userData
+}
+```
 
-- [Issues](https://github.com/RoboFinSystems/robosystems-app/issues)
-- [Wiki](https://github.com/RoboFinSystems/robosystems/wiki)
-- [Projects](https://github.com/orgs/RoboFinSystems/projects)
-- [Discussions](https://github.com/orgs/RoboFinSystems/discussions)
+## Development Guidelines
 
-## License
+### Adding New Components
 
-Apache License 2.0 - see [LICENSE](LICENSE) for details.
+1. **Create component** in appropriate directory
+2. **Add TypeScript types** in `types/` if needed
+3. **Export from index.ts** files
+4. **Update main index.ts** to include new exports
+5. **Test in one app** before pushing to common repo
 
-Apache-2.0 © 2026 RFS LLC
+### Naming Conventions
+
+- **Components**: PascalCase (`SidebarProvider`)
+- **Hooks**: camelCase with `use` prefix (`useMediaQuery`)
+- **Types**: PascalCase (`SidebarCookie`)
+- **Utilities**: camelCase (`sidebarCookie`)
+
+### TypeScript Patterns
+
+- Use `type` for simple types, `interface` for objects
+- Prefer runtime type guards over direct assertions
+- Export types from `types/` directory
+- Use generated SDK types when available
+
+## Testing
+
+Components should be tested in the consuming applications. Common patterns:
+
+```typescript
+import { render, screen } from '@testing-library/react'
+import { SidebarProvider } from '@/lib/core'
+
+test('sidebar provider works', () => {
+  render(
+    <SidebarProvider initialCollapsed={false}>
+      <TestComponent />
+    </SidebarProvider>
+  )
+  // ... test logic
+})
+```
+
+## Versioning
+
+This repository follows semantic versioning principles:
+
+- **Major**: Breaking changes to public APIs
+- **Minor**: New features, non-breaking changes
+- **Patch**: Bug fixes, internal improvements
+
+## Contributing
+
+1. Make changes in your app's `src/lib/core` directory
+2. Test thoroughly in your app
+3. Push changes back to this repository
+4. Update other apps to pull the latest changes
+5. Ensure all apps pass their test suites
+
+## Security
+
+- Never commit secrets or API keys
+- Use environment variables for configuration
+- Follow authentication best practices
+- Validate all inputs and API responses

@@ -26,10 +26,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env
-.env.local
-.env.*.local
-.envrc
+.env*
 
 # vercel
 .vercel
@@ -38,15 +35,15 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# AI - Claude Code
-.claude/settings.local.json
+# AI
+.claude/
 CLAUDE.local.md
-
-.gemini/
-GEMINI.md
 
 # npm
 .npmrc
 
 # local dev
 local/
+
+package-lock.json
+.vscode/
