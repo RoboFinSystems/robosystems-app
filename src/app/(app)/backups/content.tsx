@@ -573,7 +573,9 @@ export default function BackupManagementContent() {
       <Card theme={customTheme.card}>
         <Table>
           <TableHead>
-            <TableHeadCell>Created</TableHeadCell>
+            <TableHeadCell>
+              {isRepository ? 'Published' : 'Created'}
+            </TableHeadCell>
             {Object.keys(graphIdToName).length > 1 && (
               <TableHeadCell>Source</TableHeadCell>
             )}
@@ -609,7 +611,11 @@ export default function BackupManagementContent() {
                   className="bg-white dark:border-gray-700 dark:bg-zinc-800"
                 >
                   <TableCell className="font-medium">
-                    {formatDate(backup.created_at)}
+                    {formatDate(
+                      isRepository
+                        ? backup.completed_at || backup.created_at
+                        : backup.created_at
+                    )}
                   </TableCell>
                   {Object.keys(graphIdToName).length > 1 && (
                     <TableCell>
@@ -923,18 +929,37 @@ export default function BackupManagementContent() {
                     {getStatusBadge(selectedBackup.status)}
                   </div>
                 </div>
-                <div>
-                  <Label>Created</Label>
-                  <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                    {formatDate(selectedBackup.created_at)}
-                  </p>
-                </div>
-                <div>
-                  <Label>Completed</Label>
-                  <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                    {formatDate(selectedBackup.completed_at)}
-                  </p>
-                </div>
+                {isRepository ? (
+                  <>
+                    <div>
+                      <Label>Published</Label>
+                      <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                        {formatDate(selectedBackup.completed_at)}
+                      </p>
+                    </div>
+                    <div>
+                      <Label>Originally Created</Label>
+                      <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                        {formatDate(selectedBackup.created_at)}
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <Label>Created</Label>
+                      <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                        {formatDate(selectedBackup.created_at)}
+                      </p>
+                    </div>
+                    <div>
+                      <Label>Completed</Label>
+                      <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                        {formatDate(selectedBackup.completed_at)}
+                      </p>
+                    </div>
+                  </>
+                )}
                 <div>
                   <Label>Original Size</Label>
                   <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
