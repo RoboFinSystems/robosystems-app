@@ -74,8 +74,8 @@ export default function AiIntegrationMcp() {
       "command": "npx",
       "args": ["-y", "@robosystems/mcp"],
       "env": {
-        "ROBOSYSTEMS_API_URL": "http://localhost:8000",
-        "ROBOSYSTEMS_API_KEY": "rfs_your_api_key_here",
+        "ROBOSYSTEMS_API_URL": "https://robosystems.ai",
+        "ROBOSYSTEMS_API_KEY": "rfs*",
         "ROBOSYSTEMS_GRAPH_ID": "sec"
       }
     }

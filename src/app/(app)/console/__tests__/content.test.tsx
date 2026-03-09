@@ -83,7 +83,7 @@ describe('QueryInterfaceContent', () => {
     const consoleContent = screen.getByTestId('console-content')
     const config = JSON.parse(consoleContent.getAttribute('data-config')!)
 
-    expect(config.sampleQueries.length).toBe(5)
-    expect(config.sampleQueries[0].name).toBe('NVIDIA annual revenue')
+    expect(config.sampleQueries.length).toBe(7)
+    expect(config.sampleQueries[0].name).toBe('Graph overview')
   })
 })
