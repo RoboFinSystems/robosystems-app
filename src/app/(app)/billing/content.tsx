@@ -42,6 +42,7 @@ import {
   HiDownload,
   HiExclamationCircle,
   HiInformationCircle,
+  HiSwitchHorizontal,
   HiTerminal,
   HiXCircle,
 } from 'react-icons/hi'
@@ -674,18 +675,29 @@ function SubscriptionsTab({
                         Getting Started
                       </Button>
                     </div>
-                    <Button
-                      size="sm"
-                      color="gray"
-                      onClick={() => handleCancelClick(sub)}
-                      className="w-full"
-                      disabled={sub.status === 'canceled'}
-                    >
-                      <HiXCircle className="mr-2 h-4 w-4" />
-                      {sub.status === 'canceled'
-                        ? 'Cancellation Scheduled'
-                        : 'Cancel Subscription'}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        color="gray"
+                        onClick={() => router.push('/repositories/browse')}
+                        className="flex-1"
+                      >
+                        <HiSwitchHorizontal className="mr-2 h-4 w-4" />
+                        Change Plan
+                      </Button>
+                      <Button
+                        size="sm"
+                        color="gray"
+                        onClick={() => handleCancelClick(sub)}
+                        className="flex-1"
+                        disabled={sub.status === 'canceled'}
+                      >
+                        <HiXCircle className="mr-2 h-4 w-4" />
+                        {sub.status === 'canceled'
+                          ? 'Cancellation Scheduled'
+                          : 'Cancel Subscription'}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </Card>
