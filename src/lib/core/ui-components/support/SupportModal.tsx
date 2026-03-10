@@ -1,11 +1,5 @@
 'use client'
 
-import { isTurnstileEnabled, isTurnstileValid } from '@/lib/config/turnstile'
-import { useUser } from '@/lib/core'
-import {
-  TurnstileWidget,
-  type TurnstileWidgetRef,
-} from '@/lib/core/auth-components/TurnstileWidget'
 import {
   Button,
   Label,
@@ -16,6 +10,15 @@ import {
   TextInput,
 } from 'flowbite-react'
 import { useRef, useState } from 'react'
+import {
+  TurnstileWidget,
+  type TurnstileWidgetRef,
+} from '../../auth-components/TurnstileWidget'
+import { useUser } from '../../hooks'
+import {
+  isTurnstileEnabled,
+  isTurnstileValid,
+} from '../../utils/turnstile-config'
 
 export interface SupportMetadata {
   graphId?: string | null

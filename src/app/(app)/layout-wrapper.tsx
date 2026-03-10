@@ -1,12 +1,12 @@
 'use client'
 
-import SupportModal from '@/components/app/SupportModal'
 import { ErrorBoundary } from '@/components/error/ErrorBoundary'
 import { GraphSelector } from '@/components/graphs/GraphSelector'
 import {
   CURRENT_APP,
   CoreNavbar,
   CoreSidebar,
+  SupportModal,
   useGraphContext,
   useOrg,
   useToast,
