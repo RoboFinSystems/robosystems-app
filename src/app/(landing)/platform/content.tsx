@@ -46,7 +46,7 @@ export default function PlatformContent() {
               </h2>
               <p className="mx-auto max-w-3xl text-gray-400">
                 Connect your financial data sources, maintain semantic
-                relationships, and power AI-native applications. Built on
+                relationships, and power AI-native applications. Built on{' '}
                 <a
                   href="https://ladybugdb.com/"
                   target="_blank"

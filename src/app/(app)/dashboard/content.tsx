@@ -4,14 +4,11 @@ import { customTheme, useGraphContext, useIsRepository } from '@/lib/core'
 import type { GraphInfo, GraphMetricsResponse } from '@robosystems/client'
 import { getGraphMetrics, getGraphs } from '@robosystems/client'
 import { Alert, Badge, Card, Spinner } from 'flowbite-react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
   HiChartBar,
-  HiDatabase,
   HiExclamationCircle,
-  HiServer,
   HiTerminal,
   HiViewGrid,
 } from 'react-icons/hi'
@@ -163,90 +160,6 @@ export function GraphDashboardContent() {
         )}
       </div>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Link href="/console">
-          <Card
-            theme={customTheme.card}
-            className="cursor-pointer transition-shadow hover:shadow-lg"
-          >
-            <div className="flex flex-col items-center p-4 text-center">
-              <div className="mb-3 rounded-lg bg-blue-100 p-3 dark:bg-blue-900">
-                <HiTerminal className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-              </div>
-              <h3 className="font-heading font-semibold text-gray-900 dark:text-white">
-                Console
-              </h3>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Execute queries
-              </p>
-            </div>
-          </Card>
-        </Link>
-
-        <Link href="/usage">
-          <Card
-            theme={customTheme.card}
-            className="cursor-pointer transition-shadow hover:shadow-lg"
-          >
-            <div className="flex flex-col items-center p-4 text-center">
-              <div className="mb-3 rounded-lg bg-purple-100 p-3 dark:bg-purple-900">
-                <HiChartBar className="h-8 w-8 text-purple-600 dark:text-purple-400" />
-              </div>
-              <h3 className="font-heading font-semibold text-gray-900 dark:text-white">
-                Usage
-              </h3>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                View insights
-              </p>
-            </div>
-          </Card>
-        </Link>
-
-        {/* Only show these for user graphs, not repositories */}
-        {!isRepository && (
-          <>
-            <Link href="/schema">
-              <Card
-                theme={customTheme.card}
-                className="cursor-pointer transition-shadow hover:shadow-lg"
-              >
-                <div className="flex flex-col items-center p-4 text-center">
-                  <div className="mb-3 rounded-lg bg-green-100 p-3 dark:bg-green-900">
-                    <HiDatabase className="h-8 w-8 text-green-600 dark:text-green-400" />
-                  </div>
-                  <h3 className="font-heading font-semibold text-gray-900 dark:text-white">
-                    Schema
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Manage schema
-                  </p>
-                </div>
-              </Card>
-            </Link>
-
-            <Link href="/backups">
-              <Card
-                theme={customTheme.card}
-                className="cursor-pointer transition-shadow hover:shadow-lg"
-              >
-                <div className="flex flex-col items-center p-4 text-center">
-                  <div className="mb-3 rounded-lg bg-yellow-100 p-3 dark:bg-yellow-900">
-                    <HiServer className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
-                  </div>
-                  <h3 className="font-heading font-semibold text-gray-900 dark:text-white">
-                    Backups
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Manage backups
-                  </p>
-                </div>
-              </Card>
-            </Link>
-          </>
-        )}
-      </div>
-
       {/* Metrics Overview - Only show if we have metrics */}
       {data.metrics && (
         <>
@@ -360,11 +273,11 @@ export function GraphDashboardContent() {
           </div>
           {data.graphInfo.schemaExtensions &&
             data.graphInfo.schemaExtensions.length > 0 && (
-              <div className="flex flex-col gap-2 border-b border-gray-200 pb-3 dark:border-gray-700">
+              <div className="flex flex-col gap-2 border-b border-gray-200 pb-3 sm:flex-row sm:justify-between dark:border-gray-700">
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   Schema Extensions
                 </span>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 sm:justify-end">
                   {data.graphInfo.schemaExtensions.map((ext) => (
                     <Badge key={ext} color="purple">
                       {ext}
@@ -385,11 +298,11 @@ export function GraphDashboardContent() {
               })}
             </span>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
             <span className="text-sm text-gray-500 dark:text-gray-400">
               Graph ID
             </span>
-            <span className="font-mono text-sm break-all text-gray-900 dark:text-white">
+            <span className="font-mono text-sm break-all text-gray-900 sm:text-right dark:text-white">
               {data.graphInfo.graphId}
             </span>
           </div>
