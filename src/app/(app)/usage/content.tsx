@@ -20,7 +20,6 @@ import {
   HiExclamationCircle,
   HiRefresh,
   HiServer,
-  HiTerminal,
   HiTrendingUp,
 } from 'react-icons/hi'
 
@@ -659,51 +658,6 @@ export function UsageContent() {
           </div>
         </Card>
       )}
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Card
-          theme={customTheme.card}
-          className="cursor-pointer transition-shadow hover:shadow-lg"
-          onClick={() => router.push('/console')}
-        >
-          <div className="flex items-center gap-4 p-2">
-            <div className="rounded-lg bg-blue-100 p-3 dark:bg-blue-900">
-              <HiTerminal className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 dark:text-white">
-                Query Console
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Execute queries and explore data
-              </p>
-            </div>
-          </div>
-        </Card>
-
-        {!isRepository && (
-          <Card
-            theme={customTheme.card}
-            className="cursor-pointer transition-shadow hover:shadow-lg"
-            onClick={() => router.push('/billing')}
-          >
-            <div className="flex items-center gap-4 p-2">
-              <div className="rounded-lg bg-green-100 p-3 dark:bg-green-900">
-                <HiCurrencyDollar className="h-6 w-6 text-green-600 dark:text-green-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 dark:text-white">
-                  Billing & Credits
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Manage your credit balance
-                </p>
-              </div>
-            </div>
-          </Card>
-        )}
-      </div>
     </div>
   )
 }

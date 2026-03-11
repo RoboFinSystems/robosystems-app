@@ -570,42 +570,37 @@ export default function BackupManagementContent() {
       )}
 
       {/* Backups Table */}
-      <Card theme={customTheme.card}>
-        <Table>
-          <TableHead>
-            <TableHeadCell>
-              {isRepository ? 'Published' : 'Created'}
-            </TableHeadCell>
-            {Object.keys(graphIdToName).length > 1 && (
-              <TableHeadCell>Source</TableHeadCell>
-            )}
-            <TableHeadCell>Status</TableHeadCell>
-            <TableHeadCell>Size</TableHeadCell>
-            <TableHeadCell>Encrypted</TableHeadCell>
-            <TableHeadCell>Actions</TableHeadCell>
-          </TableHead>
-          <TableBody className="divide-y">
-            {backups.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={Object.keys(graphIdToName).length > 1 ? 6 : 5}
-                  className="py-12 text-center"
-                >
-                  <div className="text-gray-500 dark:text-gray-300">
-                    <HiDatabase className="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-500" />
-                    <p className="font-medium text-gray-700 dark:text-gray-200">
-                      No backups found
-                    </p>
-                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                      {isRepository
-                        ? 'No backups available yet. System backups are generated periodically.'
-                        : 'Create your first backup to get started'}
-                    </p>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ) : (
-              backups.map((backup) => (
+      {backups.length === 0 ? (
+        <Card theme={customTheme.card}>
+          <div className="py-12 text-center">
+            <HiDatabase className="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-500" />
+            <p className="font-medium text-gray-700 dark:text-gray-200">
+              No backups found
+            </p>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              {isRepository
+                ? 'No backups available yet. System backups are generated periodically.'
+                : 'Create your first backup to get started.'}
+            </p>
+          </div>
+        </Card>
+      ) : (
+        <Card theme={customTheme.card}>
+          <Table>
+            <TableHead>
+              <TableHeadCell>
+                {isRepository ? 'Published' : 'Created'}
+              </TableHeadCell>
+              {Object.keys(graphIdToName).length > 1 && (
+                <TableHeadCell>Source</TableHeadCell>
+              )}
+              <TableHeadCell>Status</TableHeadCell>
+              <TableHeadCell>Size</TableHeadCell>
+              <TableHeadCell>Encrypted</TableHeadCell>
+              <TableHeadCell>Actions</TableHeadCell>
+            </TableHead>
+            <TableBody className="divide-y">
+              {backups.map((backup) => (
                 <TableRow
                   key={backup.backup_id}
                   className="bg-white dark:border-gray-700 dark:bg-zinc-800"
@@ -697,11 +692,11 @@ export default function BackupManagementContent() {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </Card>
+              ))}
+            </TableBody>
+          </Table>
+        </Card>
+      )}
 
       {/* Create Backup Modal */}
       <Modal show={showCreateModal} onClose={handleCloseCreateModal} size="md">
