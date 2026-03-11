@@ -16,7 +16,7 @@ const ROBOSYSTEMS_CONSOLE_CONFIG: ConsoleConfig = {
   welcome: {
     consoleName: 'RoboSystems Console',
     description:
-      'Ask questions in plain English and get Cypher queries generated automatically. The SEC graph contains filings from over 10,000 public companies.',
+      'Ask questions in plain English and get Cypher queries generated automatically. The SEC graph contains filings from thousands of public companies.',
     contextLabel: 'Graph',
     naturalLanguageExamples: [
       'How many nodes are in the graph?',

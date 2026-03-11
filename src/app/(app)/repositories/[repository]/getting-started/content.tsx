@@ -84,12 +84,20 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
   const repoOffering = offerings?.repositoryPlans?.[repository]
 
   const handleOpenConsole = async () => {
-    await setCurrentGraph(repository)
+    try {
+      await setCurrentGraph(repository)
+    } catch (error) {
+      console.warn('Failed to set graph, navigating anyway:', error)
+    }
     router.push('/console')
   }
 
   const handleOpenUsage = async () => {
-    await setCurrentGraph(repository)
+    try {
+      await setCurrentGraph(repository)
+    } catch (error) {
+      console.warn('Failed to set graph, navigating anyway:', error)
+    }
     router.push('/usage')
   }
 
@@ -225,61 +233,53 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
             Choose how you want to access and explore the data
           </p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Button
-              color="purple"
+            <button
               onClick={handleOpenConsole}
-              className="h-auto flex-col items-start gap-2 py-4"
+              className="flex flex-col items-start gap-2 rounded-lg border border-purple-500/30 bg-purple-600 p-4 text-left text-white transition-all hover:scale-[1.02] hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/20"
             >
               <HiTerminal className="h-6 w-6" />
-              <div className="text-left">
+              <div>
                 <div className="font-semibold">Console</div>
-                <div className="text-xs font-normal opacity-90">
+                <div className="text-xs opacity-80">
                   Interactive query interface
                 </div>
               </div>
-            </Button>
-            <Button
-              color="gray"
+            </button>
+            <button
               onClick={handleOpenUsage}
-              className="h-auto flex-col items-start gap-2 py-4"
+              className="flex flex-col items-start gap-2 rounded-lg border border-zinc-600 bg-zinc-700 p-4 text-left text-white transition-all hover:scale-[1.02] hover:border-zinc-500 hover:bg-zinc-600 hover:shadow-lg"
             >
               <HiLightningBolt className="h-6 w-6" />
-              <div className="text-left">
+              <div>
                 <div className="font-semibold">Credits & Usage</div>
-                <div className="text-xs font-normal opacity-90">
+                <div className="text-xs opacity-80">
                   Monitor your consumption
                 </div>
               </div>
-            </Button>
-            <Button
-              color="gray"
+            </button>
+            <button
               onClick={() => router.push('/billing')}
-              className="h-auto flex-col items-start gap-2 py-4"
+              className="flex flex-col items-start gap-2 rounded-lg border border-zinc-600 bg-zinc-700 p-4 text-left text-white transition-all hover:scale-[1.02] hover:border-zinc-500 hover:bg-zinc-600 hover:shadow-lg"
             >
               <HiCreditCard className="h-6 w-6" />
-              <div className="text-left">
+              <div>
                 <div className="font-semibold">Billing</div>
-                <div className="text-xs font-normal opacity-90">
-                  Manage subscription
-                </div>
+                <div className="text-xs opacity-80">Manage subscription</div>
               </div>
-            </Button>
-            <Button
-              color="gray"
+            </button>
+            <button
               onClick={() => {
                 const element = document.getElementById('api-access')
                 element?.scrollIntoView({ behavior: 'smooth' })
               }}
-              className="h-auto flex-col items-start gap-2 py-4"
+              className="flex flex-col items-start gap-2 rounded-lg border border-zinc-600 bg-zinc-700 p-4 text-left text-white transition-all hover:scale-[1.02] hover:border-zinc-500 hover:bg-zinc-600 hover:shadow-lg"
             >
               <HiKey className="h-6 w-6" />
-              <div className="text-left">
+              <div>
                 <div className="font-semibold">API Access</div>
-                <div className="text-xs font-normal opacity-90">
-                  Generate API keys
-                </div>
+                <div className="text-xs opacity-80">Generate API keys</div>
               </div>
-            </Button>
+            </button>
           </div>
         </div>
       </Card>

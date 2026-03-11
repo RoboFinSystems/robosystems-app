@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
   HiChartBar,
+  HiCloudDownload,
+  HiCog,
   HiExclamationCircle,
   HiTerminal,
   HiViewGrid,
@@ -218,14 +220,12 @@ export function GraphDashboardContent() {
         </>
       )}
 
-      {/* Info message if metrics not available */}
-      {!data.metrics && data.metricsError && (
+      {/* Info message if metrics not available - only for user graphs */}
+      {!data.metrics && data.metricsError && !isRepository && (
         <Alert color="info">
           <span className="font-medium">Limited data available</span>
           <p className="mt-1 text-sm">
-            {isRepository
-              ? 'Detailed metrics are not available for shared repositories. You can still query the repository data using the Console.'
-              : 'Detailed metrics are not currently available for this graph.'}
+            Detailed metrics are not currently available for this graph.
           </p>
         </Alert>
       )}
@@ -236,6 +236,14 @@ export function GraphDashboardContent() {
           {isRepository ? 'Repository' : 'Graph'} Information
         </h3>
         <div className="space-y-3">
+          <div className="flex flex-col gap-2 border-b border-gray-200 pb-3 sm:flex-row sm:justify-between dark:border-gray-700">
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              Graph ID
+            </span>
+            <span className="font-mono text-sm break-all text-gray-900 sm:text-right dark:text-white">
+              {data.graphInfo.graphId}
+            </span>
+          </div>
           <div className="flex flex-col gap-2 border-b border-gray-200 pb-3 sm:flex-row sm:justify-between dark:border-gray-700">
             <span className="text-sm text-gray-500 dark:text-gray-400">
               Name
@@ -286,64 +294,93 @@ export function GraphDashboardContent() {
                 </div>
               </div>
             )}
-          <div className="flex flex-col gap-2 border-b border-gray-200 pb-3 sm:flex-row sm:justify-between dark:border-gray-700">
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Created
-            </span>
-            <span className="text-sm font-medium text-gray-900 sm:text-right dark:text-white">
-              {new Date(data.graphInfo.createdAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </span>
-          </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Graph ID
-            </span>
-            <span className="font-mono text-sm break-all text-gray-900 sm:text-right dark:text-white">
-              {data.graphInfo.graphId}
-            </span>
-          </div>
+          {!isRepository && (
+            <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Created
+              </span>
+              <span className="text-sm font-medium text-gray-900 sm:text-right dark:text-white">
+                {new Date(data.graphInfo.createdAt).toLocaleDateString(
+                  'en-US',
+                  {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  }
+                )}
+              </span>
+            </div>
+          )}
         </div>
       </Card>
 
-      {/* Getting Started - For repositories */}
-      {isRepository && (
-        <Card theme={customTheme.card}>
-          <h3 className="font-heading mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-            Working with Shared Repositories
-          </h3>
-          <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
-            <p>
-              Shared repositories provide read-only access to curated datasets.
-              You can query the data but cannot modify the schema or create
-              backups.
-            </p>
-            <div className="mt-4 space-y-2">
-              <div className="flex items-start gap-2">
-                <HiTerminal className="mt-0.5 h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400" />
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    Query Data
-                  </p>
-                  <p>Use the Console to execute queries and explore the data</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-2">
-                <HiChartBar className="mt-0.5 h-5 w-5 shrink-0 text-purple-600 dark:text-purple-400" />
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    Monitor Usage
-                  </p>
-                  <p>Track your credit consumption in the Usage section</p>
-                </div>
-              </div>
-            </div>
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <button
+          onClick={() => router.push('/console')}
+          className="flex items-center gap-4 rounded-lg border border-zinc-200 bg-white/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-zinc-300 hover:shadow-xl dark:border-zinc-700 dark:bg-zinc-950 dark:hover:border-zinc-500"
+        >
+          <div className="rounded-lg bg-blue-100 p-3 dark:bg-blue-900">
+            <HiTerminal className="h-6 w-6 text-blue-600 dark:text-blue-400" />
           </div>
-        </Card>
-      )}
+          <div>
+            <h3 className="font-semibold text-gray-900 dark:text-white">
+              Console
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Query and explore
+            </p>
+          </div>
+        </button>
+        <button
+          onClick={() => router.push('/backups')}
+          className="flex items-center gap-4 rounded-lg border border-zinc-200 bg-white/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-zinc-300 hover:shadow-xl dark:border-zinc-700 dark:bg-zinc-950 dark:hover:border-zinc-500"
+        >
+          <div className="rounded-lg bg-amber-100 p-3 dark:bg-amber-900">
+            <HiCloudDownload className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-gray-900 dark:text-white">
+              Backups
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              {isRepository ? 'Download snapshots' : 'Manage backups'}
+            </p>
+          </div>
+        </button>
+        <button
+          onClick={() => router.push('/usage')}
+          className="flex items-center gap-4 rounded-lg border border-zinc-200 bg-white/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-zinc-300 hover:shadow-xl dark:border-zinc-700 dark:bg-zinc-950 dark:hover:border-zinc-500"
+        >
+          <div className="rounded-lg bg-purple-100 p-3 dark:bg-purple-900">
+            <HiChartBar className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-gray-900 dark:text-white">
+              Usage
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Monitor consumption
+            </p>
+          </div>
+        </button>
+        <button
+          onClick={() => router.push('/settings')}
+          className="flex items-center gap-4 rounded-lg border border-zinc-200 bg-white/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-zinc-300 hover:shadow-xl dark:border-zinc-700 dark:bg-zinc-950 dark:hover:border-zinc-500"
+        >
+          <div className="rounded-lg bg-green-100 p-3 dark:bg-green-900">
+            <HiCog className="h-6 w-6 text-green-600 dark:text-green-400" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-gray-900 dark:text-white">
+              Settings
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              API keys & config
+            </p>
+          </div>
+        </button>
+      </div>
     </div>
   )
 }

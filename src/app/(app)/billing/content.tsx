@@ -32,7 +32,6 @@ import {
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
-  HiBookOpen,
   HiCheckCircle,
   HiClock,
   HiCreditCard,
@@ -43,13 +42,12 @@ import {
   HiExclamationCircle,
   HiInformationCircle,
   HiSwitchHorizontal,
-  HiTerminal,
   HiXCircle,
 } from 'react-icons/hi'
 
 export function BillingContent() {
   const { currentOrg } = useOrg()
-  const { state: graphState, setCurrentGraph } = useGraphContext()
+  const { state: graphState } = useGraphContext()
   const { offerings, isLoading: offeringsLoading } = useServiceOfferings()
   const { handleApiError } = useApiError()
   const { showError, showSuccess } = useToast()
@@ -196,7 +194,6 @@ export function BillingContent() {
             offerings={offerings}
             router={router}
             onRefresh={loadBillingData}
-            setCurrentGraph={setCurrentGraph}
           />
         </Tabs.Item>
 
@@ -435,14 +432,12 @@ function SubscriptionsTab({
   offerings,
   router,
   onRefresh,
-  setCurrentGraph,
 }: {
   subscriptions: SDK.GraphSubscriptionResponse[]
   graphs: SDK.GraphInfo[]
   offerings: any
   router: any
   onRefresh: () => void
-  setCurrentGraph: (graph: string | any) => Promise<void>
 }) {
   const { currentOrg } = useOrg()
   const { showSuccess, showError } = useToast()
@@ -469,11 +464,6 @@ function SubscriptionsTab({
   const repositorySubscriptions = activeSubscriptions.filter(
     (s) => s.resource_type === 'repository'
   )
-
-  const handleOpenConsole = async (repositoryId: string) => {
-    await setCurrentGraph(repositoryId)
-    router.push('/console')
-  }
 
   const handleCancelClick = (subscription: SDK.GraphSubscriptionResponse) => {
     setSubscriptionToCancel(subscription)
@@ -579,31 +569,18 @@ function SubscriptionsTab({
                           : 'N/A'}
                       </span>
                     </div>
-                    <div className="space-y-2">
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          color="gray"
-                          onClick={() => router.push(`/dashboard`)}
-                          className="flex-1"
-                        >
-                          <HiDatabase className="mr-2 h-4 w-4" />
-                          Dashboard
-                        </Button>
-                      </div>
-                      <Button
-                        size="sm"
-                        color="gray"
-                        onClick={() => handleCancelClick(sub)}
-                        className="w-full"
-                        disabled={sub.status === 'canceled'}
-                      >
-                        <HiXCircle className="mr-2 h-4 w-4" />
-                        {sub.status === 'canceled'
-                          ? 'Cancellation Scheduled'
-                          : 'Cancel Subscription'}
-                      </Button>
-                    </div>
+                    <Button
+                      size="sm"
+                      color="gray"
+                      onClick={() => handleCancelClick(sub)}
+                      className="w-full"
+                      disabled={sub.status === 'canceled'}
+                    >
+                      <HiXCircle className="mr-2 h-4 w-4" />
+                      {sub.status === 'canceled'
+                        ? 'Cancellation Scheduled'
+                        : 'Cancel Subscription'}
+                    </Button>
                   </div>
                 </Card>
               )
@@ -662,49 +639,25 @@ function SubscriptionsTab({
                       <Button
                         size="sm"
                         color="gray"
-                        onClick={() => handleOpenConsole(sub.resource_id)}
-                        className="flex-1"
-                      >
-                        <HiTerminal className="mr-2 h-4 w-4" />
-                        Console
-                      </Button>
-                      <Button
-                        size="sm"
-                        color="gray"
-                        onClick={() =>
-                          router.push(
-                            `/repositories/${sub.resource_id}/getting-started`
-                          )
-                        }
-                        className="flex-1"
-                      >
-                        <HiBookOpen className="mr-2 h-4 w-4" />
-                        Getting Started
-                      </Button>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        color="gray"
                         onClick={() => router.push('/repositories/browse')}
                         className="flex-1"
                       >
                         <HiSwitchHorizontal className="mr-2 h-4 w-4" />
                         Change Plan
                       </Button>
-                      <Button
-                        size="sm"
-                        color="gray"
-                        onClick={() => handleCancelClick(sub)}
-                        className="flex-1"
-                        disabled={sub.status === 'canceled'}
-                      >
-                        <HiXCircle className="mr-2 h-4 w-4" />
-                        {sub.status === 'canceled'
-                          ? 'Cancellation Scheduled'
-                          : 'Cancel Subscription'}
-                      </Button>
                     </div>
+                    <Button
+                      size="sm"
+                      color="gray"
+                      onClick={() => handleCancelClick(sub)}
+                      className="w-full"
+                      disabled={sub.status === 'canceled'}
+                    >
+                      <HiXCircle className="mr-2 h-4 w-4" />
+                      {sub.status === 'canceled'
+                        ? 'Cancellation Scheduled'
+                        : 'Cancel Subscription'}
+                    </Button>
                   </div>
                 </div>
               </Card>
