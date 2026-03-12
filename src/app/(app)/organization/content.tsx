@@ -14,7 +14,6 @@ import {
   Badge,
   Button,
   Card,
-  Label,
   Modal,
   ModalBody,
   ModalFooter,
@@ -27,11 +26,9 @@ import {
 } from 'flowbite-react'
 import { useCallback, useEffect, useState } from 'react'
 import {
-  HiChartBar,
   HiCheck,
   HiDatabase,
   HiExclamationCircle,
-  HiMail,
   HiOfficeBuilding,
   HiPencil,
   HiTrash,
@@ -45,7 +42,7 @@ type OrgLimits = SDK.OrgLimitsResponse
 type OrgUsage = SDK.OrgUsageResponse
 
 export function OrganizationContent() {
-  const { currentOrg, refreshOrgs } = useOrg()
+  const { currentOrg, refreshOrgs, loading: orgLoading } = useOrg()
   const { handleApiError } = useApiError()
   const { showSuccess, showError, ToastContainer } = useToast()
 
@@ -55,15 +52,11 @@ export function OrganizationContent() {
   const [usage, setUsage] = useState<OrgUsage | null>(null)
   const [loading, setLoading] = useState(true)
   const [showInviteModal, setShowInviteModal] = useState(false)
-  const [inviteEmail, setInviteEmail] = useState('')
-  const [inviteRole, setInviteRole] = useState<SDK.OrgRole>('member')
-  const [inviting, setInviting] = useState(false)
   const [isEditingName, setIsEditingName] = useState(false)
   const [editedName, setEditedName] = useState('')
   const [updatingName, setUpdatingName] = useState(false)
 
   // Permission checks
-  const canInvite = ['owner', 'admin'].includes(currentOrg?.role || '')
   const canChangeRole = ['owner', 'admin'].includes(currentOrg?.role || '')
   const canRemove = ['owner', 'admin'].includes(currentOrg?.role || '')
   const canEditOrg = ['owner', 'admin'].includes(currentOrg?.role || '')
@@ -116,36 +109,6 @@ export function OrganizationContent() {
   useEffect(() => {
     loadOrgData()
   }, [loadOrgData])
-
-  const handleInviteMember = async () => {
-    if (!currentOrg?.id) return
-
-    try {
-      setInviting(true)
-
-      const response = await SDK.inviteOrgMember({
-        path: { org_id: currentOrg.id },
-        body: {
-          email: inviteEmail,
-          role: inviteRole,
-        },
-      })
-
-      if (response.error) {
-        throw new Error('Failed to invite member')
-      }
-
-      showSuccess('Invitation sent successfully')
-      setShowInviteModal(false)
-      setInviteEmail('')
-      setInviteRole('member')
-      await loadOrgData()
-    } catch (error) {
-      handleApiError(error, 'Failed to send invitation')
-    } finally {
-      setInviting(false)
-    }
-  }
 
   const handleUpdateRole = async (
     userId: string,
@@ -266,22 +229,22 @@ export function OrganizationContent() {
     }
   }
 
+  if (orgLoading || loading) {
+    return (
+      <PageLayout>
+        <div className="flex items-center justify-center py-12">
+          <Spinner size="xl" />
+        </div>
+      </PageLayout>
+    )
+  }
+
   if (!currentOrg) {
     return (
       <PageLayout>
         <Alert color="failure" icon={HiExclamationCircle}>
           No organization found
         </Alert>
-      </PageLayout>
-    )
-  }
-
-  if (loading) {
-    return (
-      <PageLayout>
-        <div className="flex items-center justify-center py-12">
-          <Spinner size="xl" />
-        </div>
       </PageLayout>
     )
   }
@@ -377,151 +340,77 @@ export function OrganizationContent() {
       {/* Tabs */}
       <Tabs
         aria-label="Organization tabs"
+        theme={customTheme.tabs}
         variant="underline"
         onActiveTabChange={(tab) => setActiveTab(tab)}
       >
-        {/* Members Tab */}
-        <Tabs.Item active title="Members" icon={HiUsers}>
-          <Card theme={customTheme.card}>
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Team Members
-              </h2>
-              {canInvite && (
-                <Button
-                  color="blue"
-                  size="sm"
-                  onClick={() => setShowInviteModal(true)}
-                >
-                  <HiUserAdd className="mr-2 h-4 w-4" />
-                  Invite Member
-                </Button>
-              )}
-            </div>
-
-            {members.length === 0 ? (
-              <div className="py-12 text-center">
-                <HiUsers className="mx-auto mb-4 h-12 w-12 text-gray-400" />
-                <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
-                  No Members
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Invite team members to collaborate
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {members.map((member) => (
-                  <Card key={member.user_id} theme={customTheme.card}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1 space-y-1">
-                        <div className="flex items-center gap-3">
-                          <h3 className="font-semibold text-gray-900 dark:text-white">
-                            {member.name}
-                          </h3>
-                          {member.is_active ? (
-                            <Badge color="success" icon={HiCheck} size="sm">
-                              Active
-                            </Badge>
-                          ) : (
-                            <Badge color="warning" size="sm">
-                              Pending
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          {member.email}
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-500">
-                          Joined{' '}
-                          {format(new Date(member.joined_at), 'MMM d, yyyy')}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        {/* Owner role is never editable */}
-                        {member.role === 'owner' ? (
-                          <Badge color="success" size="sm">
-                            Owner
-                          </Badge>
-                        ) : canChangeRole ? (
-                          <Select
-                            sizing="sm"
-                            value={member.role}
-                            onChange={(e) =>
-                              handleUpdateRole(
-                                member.user_id,
-                                e.target.value as SDK.OrgRole,
-                                member.name,
-                                member.role
-                              )
-                            }
-                            className="w-32"
-                          >
-                            <option value="member">Member</option>
-                            <option value="admin">Admin</option>
-                          </Select>
-                        ) : (
-                          <Badge
-                            color={getRoleBadgeColor(member.role)}
-                            size="sm"
-                          >
-                            {member.role.charAt(0).toUpperCase() +
-                              member.role.slice(1)}
-                          </Badge>
-                        )}
-                        {canRemove && member.role !== 'owner' && (
-                          <Button
-                            size="xs"
-                            color="failure"
-                            onClick={() =>
-                              handleRemoveMember(member.user_id, member.name)
-                            }
-                          >
-                            <HiTrash className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </Card>
-        </Tabs.Item>
-
         {/* Graphs Tab - Admin Only */}
         {canViewGraphs && (
-          <Tabs.Item title="Graphs" icon={HiDatabase}>
-            <div className="space-y-4">
-              {/* Organization Limits */}
+          <Tabs.Item active title="Graphs" icon={HiDatabase}>
+            <div className="space-y-6">
+              {/* Usage Stats as individual cards in grid */}
+              {usage && (
+                <>
+                  <h2 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
+                    Usage Overview
+                    <span className="ml-2 text-sm font-normal text-gray-500 dark:text-gray-400">
+                      Last {usage.period_days} days
+                    </span>
+                  </h2>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <Card theme={customTheme.card}>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                        Total Graphs
+                      </div>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                        {usage.graph_details.length}
+                      </p>
+                    </Card>
+                    <Card theme={customTheme.card}>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                        Credits Available
+                      </div>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                        {usage.graph_details
+                          .reduce(
+                            (sum: number, g: any) =>
+                              sum + (g.credits_available || 0),
+                            0
+                          )
+                          .toLocaleString(undefined, {
+                            maximumFractionDigits: 0,
+                          })}
+                      </p>
+                    </Card>
+                  </div>
+                </>
+              )}
+
+              {/* Graph Limits & Quotas */}
               {limits && (
                 <Card theme={customTheme.card}>
-                  <div className="mb-4 flex items-center gap-3">
-                    <div className="rounded-lg bg-purple-100 p-2 dark:bg-purple-900/30">
-                      <HiChartBar className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                    </div>
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                      Graph Limits
-                    </h2>
-                  </div>
+                  <h2 className="font-heading text-xl font-semibold text-gray-900 dark:text-white">
+                    Graph Limits & Quotas
+                  </h2>
 
-                  <div className="space-y-4">
-                    {/* Graphs Limit */}
-                    <div>
+                  <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                    <div className="py-3">
                       <div className="mb-2 flex items-center justify-between">
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
                           Total Graphs
                         </span>
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                        <span className="text-sm font-medium text-gray-900 dark:text-white">
                           {(limits.current_usage.graphs as any).current} /{' '}
                           {limits.max_graphs}
                         </span>
                       </div>
                       <Progress
                         progress={
-                          ((limits.current_usage.graphs as any).current /
-                            limits.max_graphs) *
-                          100
+                          limits.max_graphs > 0
+                            ? ((limits.current_usage.graphs as any).current /
+                                limits.max_graphs) *
+                              100
+                            : 0
                         }
                         size="sm"
                         color={
@@ -535,21 +424,8 @@ export function OrganizationContent() {
                         }
                       />
                     </div>
-
-                    {/* Warnings */}
-                    {limits.warnings.length > 0 && (
-                      <Alert color="warning" icon={HiExclamationCircle}>
-                        <div className="space-y-1">
-                          {limits.warnings.map((warning, idx) => (
-                            <p key={idx}>{warning}</p>
-                          ))}
-                        </div>
-                      </Alert>
-                    )}
-
-                    {/* Can Create Graph Status */}
-                    <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3 dark:bg-gray-800">
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <div className="flex items-center justify-between py-3">
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
                         Can create new graphs
                       </span>
                       <Badge
@@ -559,75 +435,24 @@ export function OrganizationContent() {
                       </Badge>
                     </div>
                   </div>
+
+                  {limits.warnings.length > 0 && (
+                    <Alert color="warning" icon={HiExclamationCircle}>
+                      <div className="space-y-1">
+                        {limits.warnings.map((warning, idx) => (
+                          <p key={idx}>{warning}</p>
+                        ))}
+                      </div>
+                    </Alert>
+                  )}
                 </Card>
               )}
 
-              {/* Simplified Usage Stats */}
-              {usage && (
-                <Card theme={customTheme.card}>
-                  <div className="mb-4 flex items-center gap-3">
-                    <div className="rounded-lg bg-green-100 p-2 dark:bg-green-900/30">
-                      <HiChartBar className="h-5 w-5 text-green-600 dark:text-green-400" />
-                    </div>
-                    <div className="flex-1">
-                      <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                        Usage Overview
-                      </h2>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Last {usage.period_days} days
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                    {/* Total Graphs */}
-                    <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
-                      <div className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                        Total Graphs
-                      </div>
-                      <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">
-                        {usage.graph_details.length}
-                      </p>
-                    </div>
-
-                    {/* Total Storage */}
-                    <div className="rounded-lg bg-purple-50 p-4 dark:bg-purple-900/20">
-                      <div className="text-sm font-medium text-purple-600 dark:text-purple-400">
-                        Total Storage
-                      </div>
-                      <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">
-                        {usage.summary.total_storage_gb.toFixed(1)} GB
-                      </p>
-                    </div>
-
-                    {/* Credits Used */}
-                    <div className="rounded-lg bg-green-50 p-4 dark:bg-green-900/20">
-                      <div className="text-sm font-medium text-green-600 dark:text-green-400">
-                        Credits Used
-                      </div>
-                      <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">
-                        {usage.summary.total_credits_used.toLocaleString(
-                          undefined,
-                          {
-                            maximumFractionDigits: 0,
-                          }
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                </Card>
-              )}
-
-              {/* Graph Directory */}
+              {/* Organization Graphs */}
               <Card theme={customTheme.card}>
-                <div className="mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                    Organization Graphs
-                  </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    All graphs across your organization
-                  </p>
-                </div>
+                <h2 className="font-heading text-xl font-semibold text-gray-900 dark:text-white">
+                  Organization Graphs
+                </h2>
 
                 {!usage || usage.graph_details.length === 0 ? (
                   <div className="py-12 text-center">
@@ -640,53 +465,31 @@ export function OrganizationContent() {
                     </p>
                   </div>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="divide-y divide-gray-200 dark:divide-gray-700">
                     {usage.graph_details.map((graph: any) => (
-                      <Card key={graph.graph_id} theme={customTheme.card}>
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-gray-900 dark:text-white">
-                              {graph.graph_name}
-                            </h3>
-                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                              {graph.graph_id}
-                            </p>
+                      <div
+                        key={graph.graph_id}
+                        className="flex items-center justify-between py-3"
+                      >
+                        <div>
+                          <span className="font-medium text-gray-900 dark:text-white">
+                            {graph.graph_name}
+                          </span>
+                          <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+                            {graph.graph_id}
+                          </p>
+                        </div>
+                        <div className="text-right text-sm">
+                          <div className="text-gray-500 dark:text-gray-400">
+                            Credits Available
                           </div>
-                          <div className="flex items-center gap-6 text-sm">
-                            <div className="text-right">
-                              <div className="text-gray-500 dark:text-gray-400">
-                                Storage
-                              </div>
-                              <div className="font-semibold text-gray-900 dark:text-white">
-                                {graph.storage_gb.toFixed(2)} GB
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <div className="text-gray-500 dark:text-gray-400">
-                                Credits
-                              </div>
-                              <div className="font-semibold text-gray-900 dark:text-white">
-                                {graph.credits_used.toLocaleString(undefined, {
-                                  maximumFractionDigits: 0,
-                                })}
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <div className="text-gray-500 dark:text-gray-400">
-                                Available
-                              </div>
-                              <div className="font-semibold text-gray-900 dark:text-white">
-                                {graph.credits_available.toLocaleString(
-                                  undefined,
-                                  {
-                                    maximumFractionDigits: 0,
-                                  }
-                                )}
-                              </div>
-                            </div>
+                          <div className="font-medium text-gray-900 dark:text-white">
+                            {graph.credits_available.toLocaleString(undefined, {
+                              maximumFractionDigits: 0,
+                            })}
                           </div>
                         </div>
-                      </Card>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -694,53 +497,132 @@ export function OrganizationContent() {
             </div>
           </Tabs.Item>
         )}
-      </Tabs>
 
+        {/* Members Tab */}
+        <Tabs.Item title="Members" icon={HiUsers}>
+          <Card theme={customTheme.card}>
+            <div className="flex items-center justify-between">
+              <h2 className="font-heading text-xl font-semibold text-gray-900 dark:text-white">
+                Team Members
+              </h2>
+              <Button
+                color="blue"
+                size="sm"
+                onClick={() => setShowInviteModal(true)}
+              >
+                <HiUserAdd className="mr-2 h-4 w-4" />
+                Invite Member
+              </Button>
+            </div>
+
+            {members.length === 0 ? (
+              <div className="py-12 text-center">
+                <HiUsers className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+                <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+                  No Members
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Invite team members to collaborate
+                </p>
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                {members.map((member) => (
+                  <div
+                    key={member.user_id}
+                    className="flex items-center justify-between py-3"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-gray-900 dark:text-white">
+                          {member.name}
+                        </span>
+                        {member.is_active ? (
+                          <Badge color="success" size="sm">
+                            Active
+                          </Badge>
+                        ) : (
+                          <Badge color="warning" size="sm">
+                            Pending
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+                        {member.email}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {format(new Date(member.joined_at), 'MMM d, yyyy')}
+                      </span>
+                      {member.role === 'owner' ? (
+                        <Badge color="success" size="sm">
+                          Owner
+                        </Badge>
+                      ) : canChangeRole ? (
+                        <Select
+                          sizing="sm"
+                          value={member.role}
+                          onChange={(e) =>
+                            handleUpdateRole(
+                              member.user_id,
+                              e.target.value as SDK.OrgRole,
+                              member.name,
+                              member.role
+                            )
+                          }
+                          className="w-28"
+                        >
+                          <option value="member">Member</option>
+                          <option value="admin">Admin</option>
+                        </Select>
+                      ) : (
+                        <Badge color={getRoleBadgeColor(member.role)} size="sm">
+                          {member.role.charAt(0).toUpperCase() +
+                            member.role.slice(1)}
+                        </Badge>
+                      )}
+                      {canRemove && member.role !== 'owner' && (
+                        <Button
+                          size="xs"
+                          color="failure"
+                          onClick={() =>
+                            handleRemoveMember(member.user_id, member.name)
+                          }
+                        >
+                          <HiTrash className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+        </Tabs.Item>
+      </Tabs>
       {/* Invite Member Modal */}
-      <Modal show={showInviteModal} onClose={() => setShowInviteModal(false)}>
+      <Modal
+        show={showInviteModal}
+        onClose={() => setShowInviteModal(false)}
+        size="md"
+      >
         <ModalHeader>Invite Team Member</ModalHeader>
         <ModalBody>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="email">Email Address</Label>
-              <TextInput
-                id="email"
-                type="email"
-                icon={HiMail}
-                placeholder="colleague@example.com"
-                value={inviteEmail}
-                onChange={(e) => setInviteEmail(e.target.value)}
-                disabled={inviting}
-              />
-            </div>
-            <div>
-              <Label htmlFor="role">Role</Label>
-              <Select
-                id="role"
-                value={inviteRole}
-                onChange={(e) => setInviteRole(e.target.value as SDK.OrgRole)}
-                disabled={inviting}
-              >
-                <option value="member">Member</option>
-                <option value="admin">Admin</option>
-                {currentOrg.role === 'owner' && (
-                  <option value="owner">Owner</option>
-                )}
-              </Select>
-            </div>
+          <div className="py-4 text-center">
+            <HiUserAdd className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+            <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+              Coming Soon
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Team member invitations are currently in development. You&apos;ll
+              be able to invite members by email and assign roles soon.
+            </p>
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button
-            color="blue"
-            onClick={handleInviteMember}
-            disabled={!inviteEmail || inviting}
-          >
-            {inviting ? <Spinner size="sm" className="mr-2" /> : null}
-            Send Invitation
-          </Button>
           <Button color="gray" onClick={() => setShowInviteModal(false)}>
-            Cancel
+            Close
           </Button>
         </ModalFooter>
       </Modal>
