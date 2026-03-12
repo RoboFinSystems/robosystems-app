@@ -9,6 +9,7 @@ import {
   PasswordInformationCard,
 } from '@/lib/core'
 import { useAuth } from '@/lib/core/auth-components'
+import { useToast } from '@/lib/core/hooks/use-toast'
 import { Button } from 'flowbite-react'
 import type { FC } from 'react'
 import { useState } from 'react'
@@ -21,6 +22,7 @@ export interface UserProps {
 
 const UserSettingsPageContent: FC<UserProps> = function ({ user, onRefresh }) {
   const { resendVerificationEmail } = useAuth()
+  const { showSuccess, showError, ToastContainer } = useToast()
   const [resendLoading, setResendLoading] = useState(false)
   const [resendSuccess, setResendSuccess] = useState(false)
   const [resendError, setResendError] = useState(false)
@@ -48,6 +50,7 @@ const UserSettingsPageContent: FC<UserProps> = function ({ user, onRefresh }) {
 
   return (
     <PageLayout>
+      <ToastContainer />
       {/* Header */}
       <div className="flex items-center gap-4">
         <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
@@ -108,8 +111,14 @@ const UserSettingsPageContent: FC<UserProps> = function ({ user, onRefresh }) {
           }}
           theme={customTheme}
           onRefresh={onRefresh}
+          onSuccess={showSuccess}
+          onError={showError}
         />
-        <PasswordInformationCard theme={customTheme} />
+        <PasswordInformationCard
+          theme={customTheme}
+          onSuccess={showSuccess}
+          onError={showError}
+        />
         <ApiKeysCard theme={customTheme} />
       </div>
     </PageLayout>

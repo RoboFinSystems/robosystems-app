@@ -14,12 +14,20 @@ import type { PasswordUpdateData } from '../types'
 export interface PasswordInformationCardProps {
   theme?: any
   onUpdate?: (data: PasswordUpdateData) => Promise<void>
+  onSuccess?: (message: string) => void
+  onError?: (message: string) => void
   className?: string
 }
 
 export const PasswordInformationCard: React.FC<
   PasswordInformationCardProps
-> = ({ theme, onUpdate = undefined, className = '' }) => {
+> = ({
+  theme,
+  onUpdate = undefined,
+  onSuccess = undefined,
+  onError = undefined,
+  className = '',
+}) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -38,34 +46,61 @@ export const PasswordInformationCard: React.FC<
 
     // Client-side validation
     if (updateData.newPassword !== updateData.confirmPassword) {
-      setError('New password and confirmation do not match')
+      const msg = 'New password and confirmation do not match'
+      if (onError) {
+        onError(msg)
+      } else {
+        setError(msg)
+      }
       return
     }
 
     setIsLoading(true)
+    const form = event.currentTarget
 
     try {
       if (onUpdate) {
         await onUpdate(updateData)
       } else {
-        await SDK.updateUserPassword({
+        const response = await SDK.updateUserPassword({
           body: {
             current_password: updateData.currentPassword,
             new_password: updateData.newPassword,
             confirm_password: updateData.confirmPassword,
           },
         })
+        if (response.error) {
+          const detail =
+            (response.error as any)?.detail?.detail ||
+            (response.error as any)?.detail ||
+            'Failed to update password.'
+          throw new Error(
+            typeof detail === 'string' ? detail : 'Failed to update password.'
+          )
+        }
       }
 
-      setSuccess(true)
+      if (onSuccess) {
+        onSuccess('Password updated successfully.')
+      } else {
+        setSuccess(true)
+      }
       // Clear form fields
-      event.currentTarget.reset()
+      form.reset()
       setTimeout(() => {
         setIsLoading(false)
         setSuccess(false)
       }, 2000)
     } catch (err) {
-      setError('Failed to update password. Please try again.')
+      const msg =
+        err instanceof Error && err.message
+          ? err.message
+          : 'Failed to update password. Please try again.'
+      if (onError) {
+        onError(msg)
+      } else {
+        setError(msg)
+      }
       setIsLoading(false)
     }
   }

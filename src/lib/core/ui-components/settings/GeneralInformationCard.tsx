@@ -15,6 +15,8 @@ export interface GeneralInformationCardProps {
   theme?: any
   onUpdate?: (data: UserUpdateData) => Promise<void>
   onRefresh?: () => Promise<void>
+  onSuccess?: (message: string) => void
+  onError?: (message: string) => void
   className?: string
 }
 
@@ -23,6 +25,8 @@ export const GeneralInformationCard: React.FC<GeneralInformationCardProps> = ({
   theme,
   onUpdate = undefined,
   onRefresh = undefined,
+  onSuccess = undefined,
+  onError = undefined,
   className = '',
 }) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -44,19 +48,30 @@ export const GeneralInformationCard: React.FC<GeneralInformationCardProps> = ({
 
     try {
       if (onUpdate) {
-        // Use custom handler if provided
         await onUpdate(updateData)
       } else {
-        // Use SDK as primary method
-        await SDK.updateUser({
+        const response = await SDK.updateUser({
           body: {
             name: updateData.username,
             email: updateData.email,
           },
         })
+        if (response.error) {
+          const detail =
+            (response.error as any)?.detail?.detail ||
+            (response.error as any)?.detail ||
+            'Failed to update profile.'
+          throw new Error(
+            typeof detail === 'string' ? detail : 'Failed to update profile.'
+          )
+        }
       }
 
-      setSuccess(true)
+      if (onSuccess) {
+        onSuccess('Profile updated successfully.')
+      } else {
+        setSuccess(true)
+      }
       if (onRefresh) {
         await onRefresh()
       }
@@ -65,7 +80,15 @@ export const GeneralInformationCard: React.FC<GeneralInformationCardProps> = ({
         setSuccess(false)
       }, 2000)
     } catch (err) {
-      setError('Failed to update profile. Please try again.')
+      const msg =
+        err instanceof Error && err.message
+          ? err.message
+          : 'Failed to update profile. Please try again.'
+      if (onError) {
+        onError(msg)
+      } else {
+        setError(msg)
+      }
       setIsLoading(false)
     }
   }
