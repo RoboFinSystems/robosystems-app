@@ -66,15 +66,15 @@ const UserSettingsPageContent: FC<UserProps> = function ({ user, onRefresh }) {
       {/* Settings Sections */}
       <div className="space-y-6">
         {user.emailVerified === false && (
-          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950">
+          <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <HiMail className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
+                <HiMail className="h-5 w-5 shrink-0 text-zinc-400 dark:text-zinc-500" />
                 <div>
-                  <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+                  <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     Email not verified
                   </p>
-                  <p className="text-xs text-amber-600 dark:text-amber-400">
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
                     {resendSuccess
                       ? 'Verification email sent! Check your inbox.'
                       : resendError
@@ -85,7 +85,7 @@ const UserSettingsPageContent: FC<UserProps> = function ({ user, onRefresh }) {
               </div>
               <Button
                 size="xs"
-                color="warning"
+                color="light"
                 onClick={handleResendVerification}
                 disabled={resendLoading || resendSuccess}
               >
