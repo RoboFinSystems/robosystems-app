@@ -23,14 +23,24 @@ const UserSettingsPageContent: FC<UserProps> = function ({ user, onRefresh }) {
   const { resendVerificationEmail } = useAuth()
   const [resendLoading, setResendLoading] = useState(false)
   const [resendSuccess, setResendSuccess] = useState(false)
+  const [resendError, setResendError] = useState(false)
 
   const handleResendVerification = async () => {
     setResendLoading(true)
     setResendSuccess(false)
+    setResendError(false)
     try {
-      await resendVerificationEmail(user.email)
-      setResendSuccess(true)
-      setTimeout(() => setResendSuccess(false), 5000)
+      const result = await resendVerificationEmail(user.email)
+      if (result.success) {
+        setResendSuccess(true)
+        setTimeout(() => setResendSuccess(false), 5000)
+      } else {
+        setResendError(true)
+        setTimeout(() => setResendError(false), 5000)
+      }
+    } catch {
+      setResendError(true)
+      setTimeout(() => setResendError(false), 5000)
     } finally {
       setResendLoading(false)
     }
@@ -67,7 +77,9 @@ const UserSettingsPageContent: FC<UserProps> = function ({ user, onRefresh }) {
                   <p className="text-xs text-amber-600 dark:text-amber-400">
                     {resendSuccess
                       ? 'Verification email sent! Check your inbox.'
-                      : 'Please verify your email address to secure your account.'}
+                      : resendError
+                        ? 'Failed to send verification email. Please try again.'
+                        : 'Please verify your email address to secure your account.'}
                   </p>
                 </div>
               </div>
