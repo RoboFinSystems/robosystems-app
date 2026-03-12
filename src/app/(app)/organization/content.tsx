@@ -14,6 +14,10 @@ import {
   Badge,
   Button,
   Card,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Progress,
   Select,
   Spinner,
@@ -28,6 +32,7 @@ import {
   HiOfficeBuilding,
   HiPencil,
   HiTrash,
+  HiUserAdd,
   HiUsers,
   HiX,
 } from 'react-icons/hi'
@@ -37,7 +42,7 @@ type OrgLimits = SDK.OrgLimitsResponse
 type OrgUsage = SDK.OrgUsageResponse
 
 export function OrganizationContent() {
-  const { currentOrg, refreshOrgs } = useOrg()
+  const { currentOrg, refreshOrgs, loading: orgLoading } = useOrg()
   const { handleApiError } = useApiError()
   const { showSuccess, showError, ToastContainer } = useToast()
 
@@ -46,6 +51,7 @@ export function OrganizationContent() {
   const [limits, setLimits] = useState<OrgLimits | null>(null)
   const [usage, setUsage] = useState<OrgUsage | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showInviteModal, setShowInviteModal] = useState(false)
   const [isEditingName, setIsEditingName] = useState(false)
   const [editedName, setEditedName] = useState('')
   const [updatingName, setUpdatingName] = useState(false)
@@ -223,22 +229,22 @@ export function OrganizationContent() {
     }
   }
 
+  if (orgLoading || loading) {
+    return (
+      <PageLayout>
+        <div className="flex items-center justify-center py-12">
+          <Spinner size="xl" />
+        </div>
+      </PageLayout>
+    )
+  }
+
   if (!currentOrg) {
     return (
       <PageLayout>
         <Alert color="failure" icon={HiExclamationCircle}>
           No organization found
         </Alert>
-      </PageLayout>
-    )
-  }
-
-  if (loading) {
-    return (
-      <PageLayout>
-        <div className="flex items-center justify-center py-12">
-          <Spinner size="xl" />
-        </div>
       </PageLayout>
     )
   }
@@ -351,7 +357,7 @@ export function OrganizationContent() {
                       Last {usage.period_days} days
                     </span>
                   </h2>
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <Card theme={customTheme.card}>
                       <div className="text-sm text-gray-500 dark:text-gray-400">
                         Total Graphs
@@ -362,23 +368,18 @@ export function OrganizationContent() {
                     </Card>
                     <Card theme={customTheme.card}>
                       <div className="text-sm text-gray-500 dark:text-gray-400">
-                        Total Storage
+                        Credits Available
                       </div>
                       <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {usage.summary.total_storage_gb.toFixed(1)} GB
-                      </p>
-                    </Card>
-                    <Card theme={customTheme.card}>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        Credits Used
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {usage.summary.total_credits_used.toLocaleString(
-                          undefined,
-                          {
+                        {usage.graph_details
+                          .reduce(
+                            (sum: number, g: any) =>
+                              sum + (g.credits_available || 0),
+                            0
+                          )
+                          .toLocaleString(undefined, {
                             maximumFractionDigits: 0,
-                          }
-                        )}
+                          })}
                       </p>
                     </Card>
                   </div>
@@ -478,37 +479,14 @@ export function OrganizationContent() {
                             {graph.graph_id}
                           </p>
                         </div>
-                        <div className="flex items-center gap-6 text-sm">
-                          <div className="text-right">
-                            <div className="text-gray-500 dark:text-gray-400">
-                              Storage
-                            </div>
-                            <div className="font-medium text-gray-900 dark:text-white">
-                              {graph.storage_gb.toFixed(2)} GB
-                            </div>
+                        <div className="text-right text-sm">
+                          <div className="text-gray-500 dark:text-gray-400">
+                            Credits Available
                           </div>
-                          <div className="text-right">
-                            <div className="text-gray-500 dark:text-gray-400">
-                              Credits
-                            </div>
-                            <div className="font-medium text-gray-900 dark:text-white">
-                              {graph.credits_used.toLocaleString(undefined, {
-                                maximumFractionDigits: 0,
-                              })}
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-gray-500 dark:text-gray-400">
-                              Available
-                            </div>
-                            <div className="font-medium text-gray-900 dark:text-white">
-                              {graph.credits_available.toLocaleString(
-                                undefined,
-                                {
-                                  maximumFractionDigits: 0,
-                                }
-                              )}
-                            </div>
+                          <div className="font-medium text-gray-900 dark:text-white">
+                            {graph.credits_available.toLocaleString(undefined, {
+                              maximumFractionDigits: 0,
+                            })}
                           </div>
                         </div>
                       </div>
@@ -523,9 +501,19 @@ export function OrganizationContent() {
         {/* Members Tab */}
         <Tabs.Item title="Members" icon={HiUsers}>
           <Card theme={customTheme.card}>
-            <h2 className="font-heading text-xl font-semibold text-gray-900 dark:text-white">
-              Team Members
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="font-heading text-xl font-semibold text-gray-900 dark:text-white">
+                Team Members
+              </h2>
+              <Button
+                color="blue"
+                size="sm"
+                onClick={() => setShowInviteModal(true)}
+              >
+                <HiUserAdd className="mr-2 h-4 w-4" />
+                Invite Member
+              </Button>
+            </div>
 
             {members.length === 0 ? (
               <div className="py-12 text-center">
@@ -613,6 +601,31 @@ export function OrganizationContent() {
           </Card>
         </Tabs.Item>
       </Tabs>
+      {/* Invite Member Modal */}
+      <Modal
+        show={showInviteModal}
+        onClose={() => setShowInviteModal(false)}
+        size="md"
+      >
+        <ModalHeader>Invite Team Member</ModalHeader>
+        <ModalBody>
+          <div className="py-4 text-center">
+            <HiUserAdd className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+            <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+              Coming Soon
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Team member invitations are currently in development. You&apos;ll
+              be able to invite members by email and assign roles soon.
+            </p>
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="gray" onClick={() => setShowInviteModal(false)}>
+            Close
+          </Button>
+        </ModalFooter>
+      </Modal>
     </PageLayout>
   )
 }

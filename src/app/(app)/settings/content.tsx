@@ -8,14 +8,34 @@ import {
   PageLayout,
   PasswordInformationCard,
 } from '@/lib/core'
+import { useAuth } from '@/lib/core/auth-components'
+import { Button } from 'flowbite-react'
 import type { FC } from 'react'
-import { HiCog } from 'react-icons/hi'
+import { useState } from 'react'
+import { HiCog, HiMail } from 'react-icons/hi'
 
 export interface UserProps {
   user: User
+  onRefresh?: () => Promise<void>
 }
 
-const UserSettingsPageContent: FC<UserProps> = function ({ user }) {
+const UserSettingsPageContent: FC<UserProps> = function ({ user, onRefresh }) {
+  const { resendVerificationEmail } = useAuth()
+  const [resendLoading, setResendLoading] = useState(false)
+  const [resendSuccess, setResendSuccess] = useState(false)
+
+  const handleResendVerification = async () => {
+    setResendLoading(true)
+    setResendSuccess(false)
+    try {
+      await resendVerificationEmail(user.email)
+      setResendSuccess(true)
+      setTimeout(() => setResendSuccess(false), 5000)
+    } finally {
+      setResendLoading(false)
+    }
+  }
+
   return (
     <PageLayout>
       {/* Header */}
@@ -35,6 +55,38 @@ const UserSettingsPageContent: FC<UserProps> = function ({ user }) {
 
       {/* Settings Sections */}
       <div className="space-y-6">
+        {user.emailVerified === false && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <HiMail className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
+                <div>
+                  <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+                    Email not verified
+                  </p>
+                  <p className="text-xs text-amber-600 dark:text-amber-400">
+                    {resendSuccess
+                      ? 'Verification email sent! Check your inbox.'
+                      : 'Please verify your email address to secure your account.'}
+                  </p>
+                </div>
+              </div>
+              <Button
+                size="xs"
+                color="warning"
+                onClick={handleResendVerification}
+                disabled={resendLoading || resendSuccess}
+              >
+                {resendLoading
+                  ? 'Sending...'
+                  : resendSuccess
+                    ? 'Sent'
+                    : 'Resend Verification'}
+              </Button>
+            </div>
+          </div>
+        )}
+
         <GeneralInformationCard
           user={{
             ...user,
@@ -43,6 +95,7 @@ const UserSettingsPageContent: FC<UserProps> = function ({ user }) {
             updatedAt: new Date().toISOString(),
           }}
           theme={customTheme}
+          onRefresh={onRefresh}
         />
         <PasswordInformationCard theme={customTheme} />
         <ApiKeysCard theme={customTheme} />
