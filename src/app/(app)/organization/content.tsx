@@ -1,5 +1,6 @@
 'use client'
 
+import GraphLimitModal from '@/components/app/GraphLimitModal'
 import {
   customTheme,
   PageLayout,
@@ -29,6 +30,7 @@ import {
   HiCheck,
   HiDatabase,
   HiExclamationCircle,
+  HiMail,
   HiOfficeBuilding,
   HiPencil,
   HiTrash,
@@ -52,6 +54,7 @@ export function OrganizationContent() {
   const [usage, setUsage] = useState<OrgUsage | null>(null)
   const [loading, setLoading] = useState(true)
   const [showInviteModal, setShowInviteModal] = useState(false)
+  const [showGraphLimitModal, setShowGraphLimitModal] = useState(false)
   const [isEditingName, setIsEditingName] = useState(false)
   const [editedName, setEditedName] = useState('')
   const [updatingName, setUpdatingName] = useState(false)
@@ -436,7 +439,63 @@ export function OrganizationContent() {
                     </div>
                   </div>
 
-                  {limits.warnings.length > 0 && (
+                  {limits.max_graphs === 0 ? (
+                    <Alert
+                      color="failure"
+                      icon={HiExclamationCircle}
+                      theme={{ wrapper: 'flex items-center [&>div]:flex-1' }}
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <div>
+                          <span className="font-medium">
+                            Graph creation requires approval
+                          </span>
+                          <p className="mt-1 text-sm">
+                            Your current plan does not include graph creation.
+                            Contact us to request access and get set up.
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          color="light"
+                          className="shrink-0"
+                          onClick={() => setShowGraphLimitModal(true)}
+                        >
+                          <HiMail className="mr-2 h-4 w-4" />
+                          Contact Us
+                        </Button>
+                      </div>
+                    </Alert>
+                  ) : !limits.can_create_graph ? (
+                    <Alert
+                      color="failure"
+                      icon={HiExclamationCircle}
+                      theme={{ wrapper: 'flex items-center [&>div]:flex-1' }}
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <div>
+                          <span className="font-medium">
+                            Graph limit reached (
+                            {(limits.current_usage.graphs as any).current}/
+                            {limits.max_graphs})
+                          </span>
+                          <p className="mt-1 text-sm">
+                            You&apos;ve reached your maximum number of graphs.
+                            Contact us to request a higher limit.
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          color="light"
+                          className="shrink-0"
+                          onClick={() => setShowGraphLimitModal(true)}
+                        >
+                          <HiMail className="mr-2 h-4 w-4" />
+                          Contact Us
+                        </Button>
+                      </div>
+                    </Alert>
+                  ) : limits.warnings.length > 0 ? (
                     <Alert color="warning" icon={HiExclamationCircle}>
                       <div className="space-y-1">
                         {limits.warnings.map((warning, idx) => (
@@ -444,7 +503,7 @@ export function OrganizationContent() {
                         ))}
                       </div>
                     </Alert>
-                  )}
+                  ) : null}
                 </Card>
               )}
 
@@ -601,6 +660,13 @@ export function OrganizationContent() {
           </Card>
         </Tabs.Item>
       </Tabs>
+      {/* Graph Limit Modal */}
+      <GraphLimitModal
+        isOpen={showGraphLimitModal}
+        onClose={() => setShowGraphLimitModal(false)}
+        currentLimit={limits?.max_graphs ?? 0}
+      />
+
       {/* Invite Member Modal */}
       <Modal
         show={showInviteModal}
