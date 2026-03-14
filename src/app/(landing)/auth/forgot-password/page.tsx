@@ -1,17 +1,14 @@
 'use client'
 
 import { useAuth } from '@/lib/core/auth-components/AuthProvider'
-import { Alert, Button, TextInput } from 'flowbite-react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { AnimatedLogo, Spinner } from '@/lib/core/ui-components'
 import { useState } from 'react'
-import { HiArrowLeft, HiMail } from 'react-icons/hi'
+import { HiCheckCircle } from 'react-icons/hi'
 
 export default function ForgotPasswordPage() {
-  const router = useRouter()
   const { forgotPassword } = useAuth()
   const [email, setEmail] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
 
@@ -24,7 +21,7 @@ export default function ForgotPasswordPage() {
       return
     }
 
-    setIsLoading(true)
+    setLoading(true)
     setStatus('idle')
 
     try {
@@ -35,107 +32,96 @@ export default function ForgotPasswordPage() {
         setMessage(
           'If an account exists with this email, you will receive a password reset link shortly.'
         )
-        // Clear the form
         setEmail('')
       } else {
         setStatus('error')
         setMessage(result.message || 'Failed to send reset email')
       }
-    } catch (error) {
+    } catch {
       setStatus('error')
       setMessage('An unexpected error occurred. Please try again.')
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 dark:bg-gray-900">
-      <div className="w-full max-w-md">
-        <div className="rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
-          <div className="mb-6">
-            <Link
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-black via-gray-900 to-zinc-800 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="w-full max-w-lg space-y-8">
+        <div className="text-center">
+          <AnimatedLogo
+            animate="once"
+            className="mx-auto h-14 w-14 text-white"
+          />
+          <h2 className="mt-6 text-center text-xl font-semibold tracking-tight text-gray-300">
+            Reset your password
+          </h2>
+          <p className="mt-2 text-sm text-gray-400">
+            Enter your email address and we&apos;ll send you a link to reset
+            your password.
+          </p>
+        </div>
+
+        {status === 'success' ? (
+          <div className="space-y-6 text-center">
+            <HiCheckCircle className="mx-auto h-16 w-16 text-green-500" />
+            <p className="text-sm text-gray-300">{message}</p>
+            <a
               href="/login"
-              className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+              className="text-sm font-medium text-gray-300 hover:text-white"
             >
-              <HiArrowLeft className="mr-2 h-4 w-4" />
-              Back to Login
-            </Link>
+              Back to sign in
+            </a>
           </div>
+        ) : (
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+            {status === 'error' && (
+              <div className="rounded-md border border-red-800 bg-red-900/50 p-4">
+                <div className="text-sm text-red-300">{message}</div>
+              </div>
+            )}
 
-          <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Forgot Password?
-            </h2>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">
-              Enter your email address and we'll send you a link to reset your
-              password.
-            </p>
-          </div>
-
-          {status === 'success' && (
-            <Alert color="success" className="mb-6">
-              <span className="font-medium">Success!</span> {message}
-            </Alert>
-          )}
-
-          {status === 'error' && (
-            <Alert color="failure" className="mb-6">
-              <span className="font-medium">Error!</span> {message}
-            </Alert>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="email"
-                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Email Address
-              </label>
-              <TextInput
-                id="email"
-                type="email"
-                icon={HiMail}
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="email" className="sr-only">
+                  Email address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="relative block w-full rounded-md border-0 bg-gray-800 px-5 py-4 text-base leading-7 text-white ring-1 ring-gray-600 ring-inset placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-white focus:ring-inset"
+                  placeholder="Email address"
+                  disabled={loading}
+                />
+              </div>
             </div>
 
-            <Button
-              type="submit"
-              color="blue"
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <div className="mr-3">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  </div>
-                  Sending...
-                </>
-              ) : (
-                'Send Reset Link'
-              )}
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Remember your password?{' '}
-              <Link
-                href="/login"
-                className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="group relative flex w-full justify-center rounded-md bg-white px-4 py-3 text-sm font-semibold text-black hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white focus-visible:outline-solid disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Sign in
-              </Link>
-            </p>
-          </div>
-        </div>
+                {loading && <Spinner size="sm" className="mr-2 border-black" />}
+                {loading ? 'Sending...' : 'Send reset link'}
+              </button>
+            </div>
+
+            <div className="text-center">
+              <a
+                href="/login"
+                className="text-sm font-medium text-gray-300 hover:text-white"
+              >
+                Back to sign in
+              </a>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   )
