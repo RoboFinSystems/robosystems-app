@@ -38,18 +38,18 @@ export default function HeroSection() {
           {/* Badge */}
           <h1 className="font-heading mb-6 text-4xl leading-tight font-extrabold sm:text-5xl md:mb-8 md:text-7xl lg:text-8xl">
             <span className="animate-pulsate-gradient-subtle text-transparent">
-              Your Company's
+              Financial Data,
             </span>
             <span className="mt-2 block bg-linear-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text pb-2 text-transparent">
-              Knowledge Graph
+              Finally Connected
             </span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-3xl text-base leading-relaxed text-gray-300 sm:text-lg md:mt-8 md:text-2xl">
-            A knowledge graph platform purpose-built for financial and
-            operational intelligence. Transform disconnected data sources into a
-            unified semantic layer that AI agents can understand, query, and
-            reason over using{' '}
+            Every number, every document, one platform your AI can reason over.
+            Structured data in a knowledge graph, full-text search across
+            filings and documents, and semantic memory that persists across
+            sessions&mdash;powered by{' '}
             <strong className="text-cyan-400">
               Model Context Protocol (MCP)
             </strong>{' '}
@@ -58,7 +58,7 @@ export default function HeroSection() {
 
           {/* Key Value Props */}
           <div className="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-4 sm:gap-6 md:mt-16 md:grid-cols-3">
-            <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800 p-4 transition-all duration-300 hover:border-cyan-500/50 sm:p-6">
+            <div className="group relative overflow-hidden rounded-2xl border border-cyan-500/20 bg-cyan-950/20 p-4 backdrop-blur-sm transition-all duration-300 hover:border-cyan-500/50 hover:bg-cyan-950/30 sm:p-6">
               <div className="absolute inset-0 bg-linear-to-br from-cyan-500/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
               <div className="relative">
                 <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-500/20">
@@ -82,16 +82,17 @@ export default function HeroSection() {
                   </svg>
                 </div>
                 <h3 className="mb-2 text-center text-lg font-semibold text-white">
-                  Context Graph
+                  Structured Financial Data
                 </h3>
                 <p className="text-center text-sm text-gray-400">
-                  Embeddings, semantic enrichment, and confidence scoring that
-                  transform knowledge graphs into AI-ready context
+                  Every transaction, fact, and relationship in a queryable
+                  semantic layer. Not spreadsheets&mdash;structured data that AI
+                  understands.
                 </p>
               </div>
             </div>
 
-            <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800 p-4 transition-all duration-300 hover:border-blue-500/50 sm:p-6">
+            <div className="group relative overflow-hidden rounded-2xl border border-blue-500/20 bg-blue-950/20 p-4 backdrop-blur-sm transition-all duration-300 hover:border-blue-500/50 hover:bg-blue-950/30 sm:p-6">
               <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
               <div className="relative">
                 <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500/20">
@@ -110,16 +111,16 @@ export default function HeroSection() {
                   </svg>
                 </div>
                 <h3 className="mb-2 text-center text-lg font-semibold text-white">
-                  MCP-Powered AI Agents
+                  AI That Knows Your Financials
                 </h3>
                 <p className="text-center text-sm text-gray-400">
-                  AI agents that query, analyze, and build persistent memory
-                  across sessions in your knowledge graph
+                  Ask questions in plain English. AI searches your documents,
+                  queries your data, and builds reports&mdash;with full context.
                 </p>
               </div>
             </div>
 
-            <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800 p-4 transition-all duration-300 hover:border-green-500/50 sm:p-6">
+            <div className="group relative overflow-hidden rounded-2xl border border-green-500/20 bg-green-950/20 p-4 backdrop-blur-sm transition-all duration-300 hover:border-green-500/50 hover:bg-green-950/30 sm:p-6">
               <div className="absolute inset-0 bg-linear-to-br from-green-500/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
               <div className="relative">
                 <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-green-500/20">
@@ -138,11 +139,11 @@ export default function HeroSection() {
                   </svg>
                 </div>
                 <h3 className="mb-2 text-center text-lg font-semibold text-white">
-                  Data Integrations
+                  Connect Everything
                 </h3>
                 <p className="text-center text-sm text-gray-400">
-                  Connect QuickBooks, SEC filings, banking data, and custom
-                  sources with extensible pipelines
+                  SEC filings, QuickBooks, Google Drive, banking data, and
+                  custom sources. One platform, one query, one answer.
                 </p>
               </div>
             </div>

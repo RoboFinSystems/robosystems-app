@@ -14,8 +14,8 @@ export default function IntegrationsSection() {
             Connect & Extend
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            Official integrations to get started fast. Fork and extend with your
-            own custom data sources.
+            Connect structured data sources, sync documents, and extend with
+            your own custom integrations.
           </p>
         </div>
 
@@ -24,9 +24,12 @@ export default function IntegrationsSection() {
           <h3 className="mb-8 text-center text-lg font-semibold text-gray-300">
             Official Integrations
           </h3>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2">
             {/* QuickBooks */}
-            <div className="rounded-xl border border-gray-800 bg-zinc-900/50 p-6 opacity-75 transition-all duration-300 hover:border-green-500/50">
+            <div className="relative rounded-xl border border-gray-800 bg-zinc-900/50 p-6 opacity-75 transition-all duration-300 hover:border-green-500/50">
+              <span className="absolute top-4 right-4 rounded-full bg-cyan-500/20 px-2 py-1 text-xs font-medium text-cyan-400">
+                In Development
+              </span>
               <div className="mb-4 flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-600">
                   <span className="text-lg font-bold text-white">QB</span>
@@ -35,9 +38,6 @@ export default function IntegrationsSection() {
                   <h4 className="font-semibold text-white">QuickBooks</h4>
                   <p className="text-sm text-gray-400">Accounting</p>
                 </div>
-                <span className="rounded-full bg-yellow-500/20 px-2 py-1 text-xs font-medium text-yellow-400">
-                  In Development
-                </span>
               </div>
               <p className="text-sm text-gray-400">
                 Sync your chart of accounts, transactions, and trial balance.
@@ -68,8 +68,43 @@ export default function IntegrationsSection() {
               </Link>
             </div>
 
+            {/* Google Drive */}
+            <div className="relative rounded-xl border border-gray-800 bg-zinc-900/50 p-6 opacity-75 transition-all duration-300 hover:border-yellow-500/50">
+              <span className="absolute top-4 right-4 rounded-full bg-yellow-500/20 px-2 py-1 text-xs font-medium text-yellow-400">
+                Coming Soon
+              </span>
+              <div className="mb-4 flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-yellow-600">
+                  <svg
+                    className="h-7 w-7 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-white">Google Drive</h4>
+                  <p className="text-sm text-gray-400">Documents</p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-400">
+                Sync documents from Google Drive into your searchable index.
+                Full-text search across all your connected content.
+              </p>
+            </div>
+
             {/* Plaid */}
-            <div className="rounded-xl border border-gray-800 bg-zinc-900/50 p-6 opacity-75 transition-all duration-300 hover:border-blue-500/50">
+            <div className="relative rounded-xl border border-gray-800 bg-zinc-900/50 p-6 opacity-75 transition-all duration-300 hover:border-blue-500/50">
+              <span className="absolute top-4 right-4 rounded-full bg-yellow-500/20 px-2 py-1 text-xs font-medium text-yellow-400">
+                Coming Soon
+              </span>
               <div className="mb-4 flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-600">
                   <svg
@@ -90,9 +125,6 @@ export default function IntegrationsSection() {
                   <h4 className="font-semibold text-white">Plaid</h4>
                   <p className="text-sm text-gray-400">Banking</p>
                 </div>
-                <span className="rounded-full bg-yellow-500/20 px-2 py-1 text-xs font-medium text-yellow-400">
-                  Coming Soon
-                </span>
               </div>
               <p className="text-sm text-gray-400">
                 Connect bank accounts directly. Transaction feeds flow into your
