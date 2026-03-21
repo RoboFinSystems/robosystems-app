@@ -1,6 +1,6 @@
 'use client'
 
-import Image from 'next/image'
+import { AnimatedLogo } from '@/lib/core/ui-components/Logo'
 import Link from 'next/link'
 import { useState } from 'react'
 import ContactModal from './ContactModal'
@@ -21,9 +21,9 @@ export default function ApplicationsSection() {
             Applications Powered by RoboSystems
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            Purpose-built applications that leverage the RoboSystems Knowledge
-            Graph to deliver intelligent financial and investment management
-            capabilities.
+            Purpose-built applications that leverage the RoboSystems platform to
+            deliver intelligent financial reporting, document search, and
+            investment research capabilities.
           </p>
         </div>
 
@@ -85,13 +85,11 @@ export default function ApplicationsSection() {
                 rel="noopener noreferrer"
                 className="mb-6 flex items-center gap-4 transition-opacity hover:opacity-80"
               >
-                <div className="flex h-16 w-16 items-center justify-center">
-                  <Image
-                    src="/images/logos/roboledger.png"
-                    alt="RoboLedger Logo"
-                    width={64}
-                    height={64}
-                    className="rounded-xl"
+                <div className="flex h-16 w-16 items-center justify-center text-cyan-400">
+                  <AnimatedLogo
+                    app="roboledger"
+                    animate="loop"
+                    className="h-14 w-14"
                   />
                 </div>
                 <div>
@@ -171,13 +169,11 @@ export default function ApplicationsSection() {
                 rel="noopener noreferrer"
                 className="mb-6 flex items-center gap-4 transition-opacity hover:opacity-80"
               >
-                <div className="flex h-16 w-16 items-center justify-center">
-                  <Image
-                    src="/images/logos/roboinvestor.png"
-                    alt="RoboInvestor Logo"
-                    width={64}
-                    height={64}
-                    className="rounded-xl"
+                <div className="flex h-16 w-16 items-center justify-center text-green-400">
+                  <AnimatedLogo
+                    app="roboinvestor"
+                    animate="loop"
+                    className="h-14 w-14"
                   />
                 </div>
                 <div>
@@ -369,8 +365,9 @@ export default function ApplicationsSection() {
           <div className="mx-auto max-w-3xl space-y-4 text-gray-300">
             <p className="text-center">
               RoboLedger and RoboInvestor demonstrate the power of building
-              specialized applications on top of the RoboSystems Knowledge
-              Graph.
+              specialized applications on the RoboSystems
+              platform&mdash;combining knowledge graph, document search, and AI
+              in one stack.
             </p>
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               <div className="rounded-lg p-3 text-center sm:p-4">

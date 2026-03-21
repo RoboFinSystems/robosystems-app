@@ -1,8 +1,9 @@
 # RoboSystems App
 
-RoboSystems App is the web interface for the RoboSystems financial knowledge graph platform, providing tools to create, manage, and query graph databases.
+RoboSystems App is the web interface for the RoboSystems financial intelligence platform — unifying structured data, document search, and AI-powered insights in one application.
 
-- **Graph Database Management**: Create and manage multiple isolated graph databases with tiered infrastructure
+- **Knowledge Graph Management**: Create and manage multiple isolated graph databases with tiered infrastructure
+- **Document Search**: Full-text search across SEC filings, uploaded documents, and connected sources
 - **AI Console**: Natural language and Cypher query terminal with streaming results and MCP integration
 - **Schema Explorer**: Inspect node labels, relationships, constraints, and indexes
 - **Subgraph Workspaces**: Create isolated environments for development, testing, and collaboration

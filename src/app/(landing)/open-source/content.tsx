@@ -26,9 +26,9 @@ export default function OpenSourceContent() {
                 Open Source RoboSystems
               </h1>
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
-                Build powerful financial analysis tools with SEC filings, graph
-                databases, and AI integration. Deploy locally or to AWS with
-                complete infrastructure automation.
+                Build powerful financial intelligence tools with SEC filings,
+                graph databases, document search, and AI integration. Deploy
+                locally or to AWS with complete infrastructure automation.
               </p>
             </div>
           </div>

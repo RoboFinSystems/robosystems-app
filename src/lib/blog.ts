@@ -3,6 +3,7 @@ import matter from 'gray-matter'
 import path from 'path'
 import readingTime from 'reading-time'
 import { remark } from 'remark'
+import remarkGfm from 'remark-gfm'
 import html from 'remark-html'
 
 const postsDirectory = path.join(process.cwd(), 'content/blog')
@@ -19,6 +20,8 @@ export interface BlogPost {
   featured?: boolean
   coverImage?: string
   coverVideo?: string
+  canonicalUrl?: string
+  metaDescription?: string
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
@@ -30,7 +33,10 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
     const { data, content } = matter(fileContents)
 
     // Process markdown to HTML
-    const processedContent = await remark().use(html).process(content)
+    const processedContent = await remark()
+      .use(remarkGfm)
+      .use(html)
+      .process(content)
     const contentHtml = processedContent.toString()
 
     // Calculate reading time
@@ -48,6 +54,8 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
       featured: data.featured || false,
       coverImage: data.coverImage || null,
       coverVideo: data.coverVideo || null,
+      canonicalUrl: data.canonicalUrl || null,
+      metaDescription: data.metaDescription || null,
     }
   } catch (error) {
     console.error(`Error reading post ${slug}:`, error)

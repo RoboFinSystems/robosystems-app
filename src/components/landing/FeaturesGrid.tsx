@@ -13,8 +13,9 @@ export default function FeaturesGrid() {
             How We Deliver It
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            A modern stack purpose-built for financial knowledge graphs and
-            AI-native applications.
+            A modern stack purpose-built for financial
+            intelligence&mdash;knowledge graph, document search, and AI memory
+            in one platform.
           </p>
         </div>
 
@@ -88,11 +89,11 @@ export default function FeaturesGrid() {
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-orange-400">•</span>
-                  HNSW vector indexes for semantic search
+                  DuckDB staging for data validation
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-orange-400">•</span>
-                  DuckDB staging for data validation
+                  LanceDB vector indexes for semantic search
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-orange-400">•</span>

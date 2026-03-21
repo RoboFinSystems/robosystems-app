@@ -13,101 +13,30 @@ export default function ProductOverview() {
             How It Works
           </p>
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-            The Financial Knowledge Graph
+            Three Layers of Financial Intelligence
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            Your financial data isn't just numbers—it's decisions,
-            relationships, and institutional knowledge. RoboSystems transforms
-            scattered data into a knowledge graph: a semantic layer where AI
-            doesn't just retrieve information—it understands meaning,
-            relationships, and context.
+            Your financial data isn&apos;t just numbers&mdash;it&apos;s
+            decisions, relationships, documents, and institutional knowledge.
+            RoboSystems unifies structured facts, searchable documents, and
+            semantic memory into one platform where AI doesn&apos;t just
+            retrieve information&mdash;it understands meaning and context.
           </p>
         </div>
 
-        {/* Transformation Visual */}
+        {/* Three Layers Visual */}
         <div className="mb-16">
           <div className="mx-auto max-w-5xl">
             <div className="grid gap-4 md:grid-cols-3">
-              {/* Stage 1: Scattered Data */}
-              <div className="relative rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800 p-6">
-                <div className="absolute -top-3 left-6">
-                  <span className="rounded-full bg-gray-700 px-3 py-1 text-xs font-medium text-gray-300">
-                    Before
-                  </span>
-                </div>
-                <div className="mb-4 flex h-16 items-center justify-center">
-                  <div className="flex gap-2">
-                    <div className="h-8 w-8 rounded bg-red-500/20 p-1.5">
-                      <div className="h-full w-full rounded-sm bg-red-500/40"></div>
-                    </div>
-                    <div className="h-8 w-8 rounded bg-blue-500/20 p-1.5">
-                      <div className="h-full w-full rounded-sm bg-blue-500/40"></div>
-                    </div>
-                    <div className="h-8 w-8 rounded bg-green-500/20 p-1.5">
-                      <div className="h-full w-full rounded-sm bg-green-500/40"></div>
-                    </div>
-                    <div className="h-8 w-8 rounded bg-yellow-500/20 p-1.5">
-                      <div className="h-full w-full rounded-sm bg-yellow-500/40"></div>
-                    </div>
-                  </div>
-                </div>
-                <h3 className="mb-2 text-center font-semibold text-white">
-                  Scattered Data
-                </h3>
-                <p className="text-center text-sm text-gray-400">
-                  Spreadsheets, databases, APIs, filings—disconnected silos that
-                  lose meaning in isolation
-                </p>
-              </div>
-
-              {/* Arrow */}
-              <div className="hidden items-center justify-center md:flex">
-                <div className="flex flex-col items-center">
-                  <svg
-                    className="h-8 w-8 text-cyan-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    />
-                  </svg>
-                  <span className="mt-2 text-xs text-gray-500">Transform</span>
-                </div>
-              </div>
-
-              {/* Mobile Arrow */}
-              <div className="flex items-center justify-center md:hidden">
-                <svg
-                  className="h-8 w-8 rotate-90 text-cyan-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                  />
-                </svg>
-              </div>
-
-              {/* Stage 2: Context Graph */}
+              {/* Layer 1: Knowledge Graph */}
               <div className="relative rounded-2xl border border-cyan-500/50 bg-linear-to-br from-cyan-950/40 to-zinc-900 p-6">
                 <div className="absolute -top-3 left-6">
                   <span className="rounded-full bg-cyan-600 px-3 py-1 text-xs font-medium text-white">
-                    After
+                    Structured
                   </span>
                 </div>
                 <div className="mb-4 flex h-16 items-center justify-center">
-                  {/* Simple graph visualization */}
                   <svg className="h-16 w-24" viewBox="0 0 96 64" fill="none">
-                    {/* Edges */}
                     <line
                       x1="24"
                       y1="20"
@@ -153,7 +82,6 @@ export default function ProductOverview() {
                       strokeWidth="2"
                       strokeOpacity="0.5"
                     />
-                    {/* Nodes */}
                     <circle cx="24" cy="20" r="6" fill="#06b6d4" />
                     <circle cx="72" cy="20" r="6" fill="#06b6d4" />
                     <circle cx="48" cy="32" r="8" fill="#0891b2" />
@@ -166,8 +94,70 @@ export default function ProductOverview() {
                   Knowledge Graph
                 </h3>
                 <p className="text-center text-sm text-gray-400">
-                  Entities, relationships, and meaning—structured for AI to
-                  reason through, not just search
+                  XBRL facts, transactions, and relationships in a queryable
+                  graph database powered by LadybugDB
+                </p>
+              </div>
+
+              {/* Layer 2: Document Search */}
+              <div className="relative rounded-2xl border border-blue-500/50 bg-linear-to-br from-blue-950/40 to-zinc-900 p-6">
+                <div className="absolute -top-3 left-6">
+                  <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-medium text-white">
+                    Documents
+                  </span>
+                </div>
+                <div className="mb-4 flex h-16 items-center justify-center">
+                  <svg
+                    className="h-10 w-10 text-blue-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="mb-2 text-center font-semibold text-white">
+                  Document Search
+                </h3>
+                <p className="text-center text-sm text-gray-400">
+                  Full-text search across SEC filings, uploaded documents, and
+                  connected sources via OpenSearch
+                </p>
+              </div>
+
+              {/* Layer 3: AI Memory */}
+              <div className="relative rounded-2xl border border-purple-500/50 bg-linear-to-br from-purple-950/40 to-zinc-900 p-6">
+                <div className="absolute -top-3 left-6">
+                  <span className="rounded-full bg-purple-600 px-3 py-1 text-xs font-medium text-white">
+                    Memory
+                  </span>
+                </div>
+                <div className="mb-4 flex h-16 items-center justify-center">
+                  <svg
+                    className="h-10 w-10 text-purple-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="mb-2 text-center font-semibold text-white">
+                  Semantic Memory
+                </h3>
+                <p className="text-center text-sm text-gray-400">
+                  Vector embeddings and AI memory that persists across
+                  sessions&mdash;context that compounds over time
                 </p>
               </div>
             </div>
@@ -177,7 +167,7 @@ export default function ProductOverview() {
         {/* What Context Enables */}
         <div className="mx-auto max-w-5xl">
           <h3 className="mb-8 text-center text-lg font-semibold text-gray-300">
-            What Context Enables
+            What This Enables
           </h3>
           <div className="grid gap-6 md:grid-cols-3">
             {/* Multi-hop Reasoning */}
@@ -201,13 +191,13 @@ export default function ProductOverview() {
                 Multi-Hop Reasoning
               </h4>
               <p className="mb-4 text-sm text-gray-400">
-                AI traverses relationships to answer complex questions that span
-                multiple data sources and concepts.
+                AI traverses relationships across structured data and documents
+                to answer complex questions spanning multiple sources.
               </p>
               <div className="rounded-lg bg-black/30 p-3">
                 <p className="text-xs text-gray-500 italic">
-                  "What drove the change in gross margin compared to industry
-                  peers last quarter?"
+                  &ldquo;What drove the change in gross margin compared to
+                  industry peers last quarter?&rdquo;
                 </p>
               </div>
             </div>
@@ -225,23 +215,22 @@ export default function ProductOverview() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                   />
                 </svg>
               </div>
               <h4 className="mb-2 font-semibold text-white">
-                Vector Semantic Search
+                Numbers + Narratives
               </h4>
               <p className="mb-4 text-sm text-gray-400">
-                Every element is enriched with embeddings and mapped to a
-                canonical taxonomy. AI agents resolve concepts like
-                &ldquo;revenue&rdquo; to exact XBRL elements via vector
-                similarity&mdash;no keyword matching required.
+                AI doesn&apos;t just know the numbers&mdash;it reads the
+                context. Search risk factors by keyword, find the XBRL tags in
+                those disclosures, then query actual figures across periods.
               </p>
               <div className="rounded-lg bg-black/30 p-3">
                 <p className="text-xs text-gray-500 italic">
-                  &ldquo;resolve-element: revenue for NVDA&rdquo; &rarr;
-                  us-gaap:RevenueFromContract... (0.97 confidence)
+                  &ldquo;Why did goodwill drop?&rdquo; &rarr; searches
+                  disclosure, finds impairment, queries the fact
                 </p>
               </div>
             </div>

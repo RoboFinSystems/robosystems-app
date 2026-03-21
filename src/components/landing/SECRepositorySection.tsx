@@ -145,12 +145,13 @@ export default function SECRepositorySection() {
             SEC XBRL Repository
           </p>
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-            Every Public Company. One Knowledge Graph.
+            Every Public Company. Numbers and Narratives.
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            A pre-built knowledge graph of every public company&apos;s SEC
-            filings. Subscribe once and your AI agents gain instant access to
-            market intelligence&mdash;no data pipeline setup required.
+            Structured XBRL facts in a knowledge graph, plus full-text search
+            across MD&amp;A, risk factors, and disclosure notes. Subscribe once
+            and your AI agents gain instant access to market
+            intelligence&mdash;no data pipeline setup required.
           </p>
         </div>
 

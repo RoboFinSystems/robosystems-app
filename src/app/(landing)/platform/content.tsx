@@ -28,9 +28,9 @@ export default function PlatformContent() {
                 RoboSystems Platform
               </h1>
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
-                A knowledge graph platform that transforms your financial and
-                operational data into a semantic layer where AI doesn't just
-                retrieve information—it understands meaning.
+                A financial intelligence platform that unifies structured data,
+                searchable documents, and AI memory&mdash;where AI doesn&apos;t
+                just retrieve information, it understands meaning and context.
               </p>
             </div>
           </div>

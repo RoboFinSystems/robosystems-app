@@ -17,8 +17,6 @@ keywords:
     'operational metrics',
     'unit economics',
   ]
-featured: true
-coverVideo: '/videos/ai-powered-financial-insights.mp4'
 canonicalUrl: 'https://robosystems.ai/blog/financial-knowledge-graph-manifesto'
 ---
 
