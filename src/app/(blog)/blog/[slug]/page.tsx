@@ -28,10 +28,13 @@ export async function generateMetadata({
 
   return {
     title: `${post.title} | RoboSystems Blog`,
-    description: post.excerpt,
+    description: post.metaDescription || post.excerpt,
+    ...(post.canonicalUrl && {
+      alternates: { canonical: post.canonicalUrl },
+    }),
     openGraph: {
       title: post.title,
-      description: post.excerpt,
+      description: post.metaDescription || post.excerpt,
       type: 'article',
       publishedTime: post.date,
       authors: [post.author],
@@ -40,7 +43,7 @@ export async function generateMetadata({
     twitter: {
       card: 'summary_large_image',
       title: post.title,
-      description: post.excerpt,
+      description: post.metaDescription || post.excerpt,
       images: post.coverImage ? [post.coverImage] : [],
     },
   }

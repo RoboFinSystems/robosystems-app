@@ -20,6 +20,8 @@ export interface BlogPost {
   featured?: boolean
   coverImage?: string
   coverVideo?: string
+  canonicalUrl?: string
+  metaDescription?: string
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
@@ -52,6 +54,8 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
       featured: data.featured || false,
       coverImage: data.coverImage || null,
       coverVideo: data.coverVideo || null,
+      canonicalUrl: data.canonicalUrl || null,
+      metaDescription: data.metaDescription || null,
     }
   } catch (error) {
     console.error(`Error reading post ${slug}:`, error)

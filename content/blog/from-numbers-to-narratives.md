@@ -1,6 +1,6 @@
 ---
 title: 'From Numbers to Narratives: Bridging Structured Data and Document Search'
-date: '2026-3-20'
+date: '2026-03-20'
 author: 'Joey French'
 excerpt: 'Financial analysis needs both the numbers and the story behind them. We built a platform that bridges structured XBRL facts in a knowledge graph with full-text search across SEC filing narratives—and lets AI chain both together.'
 metaDescription: 'How RoboSystems bridges structured financial data in a knowledge graph with full-text document search across SEC filings, enabling AI to reason over both numbers and narratives.'
@@ -30,13 +30,13 @@ We were wrong about the why.
 
 This week, with NVIDIA's FY2026 10-K now in the knowledge graph, we pulled the full annual picture. The trend is unmistakable:
 
-| Geography | FY2022 | FY2023 | FY2024 | FY2025 | FY2026 |
-|---|---|---|---|---|---|
-| **United States** | $4.3B | $8.3B | $27.0B | $61.3B | **$149.6B** |
-| **Taiwan** | $8.5B | $7.0B | $13.4B | $20.6B | **$42.3B** |
-| **China (incl. HK)** | $7.1B | $5.8B | $10.3B | $17.1B | **$19.7B** |
-| **Singapore** | — | $2.3B | $6.8B | **$23.7B** | — |
-| **Other** | $6.9B | $3.6B | $2.1B | $4.4B | **$4.3B** |
+| Geography            | FY2022 | FY2023 | FY2024 | FY2025     | FY2026      |
+| -------------------- | ------ | ------ | ------ | ---------- | ----------- |
+| **United States**    | $4.3B  | $8.3B  | $27.0B | $61.3B     | **$149.6B** |
+| **Taiwan**           | $8.5B  | $7.0B  | $13.4B | $20.6B     | **$42.3B**  |
+| **China (incl. HK)** | $7.1B  | $5.8B  | $10.3B | $17.1B     | **$19.7B**  |
+| **Singapore**        | —      | $2.3B  | $6.8B  | **$23.7B** | —           |
+| **Other**            | $6.9B  | $3.6B  | $2.1B  | $4.4B      | **$4.3B**   |
 
 Singapore appears as a standalone geography in FY2023, rockets to $23.7 billion by FY2025, then vanishes entirely in FY2026. Meanwhile, US revenue explodes from 16% to 69% of total revenue over the same period.
 
@@ -67,10 +67,10 @@ Starting with v1.4.44, RoboSystems indexes all of it.
 
 The platform now has two complementary data layers, unified by `graph_id`:
 
-| Layer | Engine | Stores | Query Method |
-|---|---|---|---|
-| **Knowledge Graph** | LadybugDB | Structured XBRL facts (Revenue = $130B, Element: `us-gaap:Revenues`) | Cypher queries |
-| **Document Index** | OpenSearch | Filing narratives ("Revenue grew 23% YoY driven by data center demand for AI...") | BM25 keyword search |
+| Layer               | Engine     | Stores                                                                            | Query Method        |
+| ------------------- | ---------- | --------------------------------------------------------------------------------- | ------------------- |
+| **Knowledge Graph** | LadybugDB  | Structured XBRL facts (Revenue = $130B, Element: `us-gaap:Revenues`)              | Cypher queries      |
+| **Document Index**  | OpenSearch | Filing narratives ("Revenue grew 23% YoY driven by data center demand for AI...") | BM25 keyword search |
 
 **The bridge**: iXBRL element metadata. Every indexed document section carries the XBRL element qnames it contains (e.g., `[us-gaap:Revenues]`), enabling bidirectional navigation — from a number to the narrative that explains it, or from a disclosure to the structured facts it discusses.
 
