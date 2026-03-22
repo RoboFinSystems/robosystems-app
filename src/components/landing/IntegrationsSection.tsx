@@ -228,7 +228,7 @@ export default function IntegrationsSection() {
                 </li>
               </ul>
             </div>
-            <div className="rounded-xl bg-black/50 p-4">
+            <div className="hidden rounded-xl bg-black/50 p-4 lg:block">
               <div className="mb-2 flex items-center gap-2 text-xs text-gray-500">
                 <span className="h-3 w-3 rounded-full bg-red-500"></span>
                 <span className="h-3 w-3 rounded-full bg-yellow-500"></span>
