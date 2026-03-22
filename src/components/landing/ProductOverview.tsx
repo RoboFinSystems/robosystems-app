@@ -125,8 +125,8 @@ export default function ProductOverview() {
                   Document Search
                 </h3>
                 <p className="text-center text-sm text-gray-400">
-                  Full-text search across SEC filings, uploaded documents, and
-                  connected sources via OpenSearch
+                  Full-text and semantic search across SEC filings, uploaded
+                  documents, and connected sources via OpenSearch
                 </p>
               </div>
 

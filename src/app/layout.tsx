@@ -13,17 +13,20 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://robosystems.ai'),
-  title: 'RoboSystems | Financial Knowledge Graphs for AI-Powered Intelligence',
+  title: 'RoboSystems | Financial Intelligence Platform',
   description:
-    'Transform your financial data into a powerful knowledge graph. Connect QuickBooks, analyze with AI agents, and unlock insights hidden in relationships between revenue, costs, and operations.',
+    'Unify structured data, document search, and AI memory in one platform. Query knowledge graphs, search SEC filings with hybrid full-text and semantic search, and analyze with AI agents via MCP.',
   keywords: [
+    'financial intelligence platform',
     'financial knowledge graph',
+    'document search',
+    'semantic search',
     'graph database for finance',
     'AI financial analysis',
     'MCP tools',
     'GraphRAG finance',
-    'QuickBooks integration',
-    'financial intelligence platform',
+    'SEC filings search',
+    'OpenSearch',
     'open source financial software',
   ],
   authors: [{ name: 'Joey French' }],
@@ -34,24 +37,23 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://robosystems.ai',
     siteName: 'RoboSystems',
-    title:
-      'RoboSystems | Financial Knowledge Graphs for AI-Powered Intelligence',
+    title: 'RoboSystems | Financial Intelligence Platform',
     description:
-      'Transform your financial data into a powerful knowledge graph. Connect QuickBooks, analyze with AI agents, and unlock insights hidden in relationships.',
+      'Unify structured data, document search, and AI memory in one platform. Query knowledge graphs, search SEC filings with hybrid full-text and semantic search, and analyze with AI agents via MCP.',
     images: [
       {
         url: '/images/logo_black.png',
         width: 512,
         height: 512,
-        alt: 'RoboSystems - Financial Knowledge Graphs',
+        alt: 'RoboSystems - Financial Intelligence Platform',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'RoboSystems | Financial Knowledge Graphs',
+    title: 'RoboSystems | Financial Intelligence Platform',
     description:
-      'Transform financial data into powerful knowledge graphs. AI-powered analysis of relationships between revenue, costs, and operations.',
+      'Unify structured data, document search, and AI memory in one platform. Hybrid full-text and semantic search across SEC filings, with AI-powered analysis via MCP.',
     images: ['/images/logo_black.png'],
     creator: '@robosystems',
   },

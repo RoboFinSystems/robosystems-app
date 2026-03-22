@@ -47,8 +47,8 @@ export default function HeroSection() {
 
           <p className="mx-auto mt-6 max-w-3xl text-base leading-relaxed text-gray-300 sm:text-lg md:mt-8 md:text-2xl">
             Every number, every document, one platform your AI can reason over.
-            Structured data in a knowledge graph, full-text search across
-            filings and documents, and semantic memory that persists across
+            Structured data in a knowledge graph, full-text and semantic search
+            across filings and documents, and AI memory that persists across
             sessions&mdash;powered by{' '}
             <strong className="text-cyan-400">
               Model Context Protocol (MCP)

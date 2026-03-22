@@ -103,7 +103,54 @@ export default function FeaturesGrid() {
             </div>
           </div>
 
-          {/* Dagster Orchestration */}
+          {/* Document Search */}
+          <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-emerald-950/20 p-5 transition-all duration-300 hover:border-emerald-500/50 sm:p-6 md:p-8">
+            <div className="absolute inset-0 bg-linear-to-br from-emerald-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="relative">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/20 sm:mb-6 sm:h-14 sm:w-14">
+                <svg
+                  className="h-7 w-7 text-emerald-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+              <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
+                Document Search
+              </h3>
+              <p className="mb-4 text-sm text-gray-300 sm:text-base">
+                Hybrid search across filings, documents, and disclosures powered
+                by OpenSearch.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li className="flex items-start">
+                  <span className="mr-2 text-emerald-400">•</span>
+                  BM25 full-text keyword matching
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-emerald-400">•</span>
+                  KNN vector similarity with 384-dim embeddings
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-emerald-400">•</span>
+                  Hybrid scoring across structured and unstructured data
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-emerald-400">•</span>
+                  Search MD&A, risk factors, and iXBRL disclosures
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Orchestration */}
           <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-green-950/20 p-5 transition-all duration-300 hover:border-green-500/50 sm:p-6 md:p-8">
             <div className="absolute inset-0 bg-linear-to-br from-green-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             <div className="relative">
@@ -123,11 +170,11 @@ export default function FeaturesGrid() {
                 </svg>
               </div>
               <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
-                Dagster Orchestration
+                Orchestration
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Production-grade data pipelines with scheduling, monitoring, and
-                event-driven triggers.
+                Production-grade data pipelines powered by Dagster with
+                scheduling, monitoring, and event-driven triggers.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
@@ -244,50 +291,7 @@ export default function FeaturesGrid() {
             </div>
           </div>
 
-          {/* Isolated & Scalable */}
-          <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-cyan-950/20 p-5 transition-all duration-300 hover:border-cyan-500/50 sm:p-6 md:p-8">
-            <div className="absolute inset-0 bg-linear-to-br from-cyan-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-            <div className="relative">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-500/20 sm:mb-6 sm:h-14 sm:w-14">
-                <svg
-                  className="h-7 w-7 text-cyan-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                  />
-                </svg>
-              </div>
-              <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
-                Isolated & Organized
-              </h3>
-              <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Your data lives in its own graph. Keep teams, projects, and AI
-                workspaces cleanly separated.
-              </p>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li className="flex items-start">
-                  <span className="mr-2 text-cyan-400">•</span>
-                  Dedicated graph per organization
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2 text-cyan-400">•</span>
-                  AI memory workspaces and subgraphs
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2 text-cyan-400">•</span>
-                  One-click backup and restore
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Enterprise Security */}
+          {/* Security & Isolation */}
           <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-red-950/20 p-5 transition-all duration-300 hover:border-red-500/50 sm:p-6 md:p-8">
             <div className="absolute inset-0 bg-linear-to-br from-red-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             <div className="relative">
@@ -307,20 +311,20 @@ export default function FeaturesGrid() {
                 </svg>
               </div>
               <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
-                Enterprise Security
+                Security & Isolation
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Built with security in mind for your most sensitive financial
-                data.
+                Dedicated graphs per organization with enterprise-grade security
+                for your most sensitive financial data.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="mr-2 text-red-400">•</span>
-                  Encryption at rest and in transit
+                  Dedicated graph and workspace isolation
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-red-400">•</span>
-                  VPC network isolation
+                  Encryption at rest and in transit
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-red-400">•</span>

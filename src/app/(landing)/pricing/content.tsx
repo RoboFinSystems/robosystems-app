@@ -79,13 +79,14 @@ export default function PricingContent() {
                     What AI capabilities are coming next?
                   </h4>
                   <p className="text-gray-400">
-                    Text-to-Cypher is the foundation of our AI agent system.
-                    We&apos;re actively building additional agents for deeper
-                    entity analysis, RAG-powered search, and automated insight
-                    generation across your financial data. As new capabilities
-                    launch, they&apos;ll use the same credit system — more
-                    complex agents may consume more credits per call, but
-                    you&apos;ll always have clear visibility into usage.
+                    Text-to-Cypher and hybrid document search are the foundation
+                    of our AI agent system. We&apos;re actively building
+                    additional agents for deeper entity analysis and automated
+                    insight generation across your financial data. As new
+                    capabilities launch, they&apos;ll use the same credit
+                    system — more complex agents may consume more credits per
+                    call, but you&apos;ll always have clear visibility into
+                    usage.
                   </p>
                 </div>
                 <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700">
