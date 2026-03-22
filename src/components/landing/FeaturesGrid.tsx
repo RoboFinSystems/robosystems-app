@@ -97,7 +97,7 @@ export default function FeaturesGrid() {
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-orange-400">•</span>
-                  Up to 30GB RAM for premium tiers
+                  Subgraph workspaces for AI memory and isolation
                 </li>
               </ul>
             </div>
@@ -132,15 +132,11 @@ export default function FeaturesGrid() {
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="mr-2 text-emerald-400">•</span>
-                  BM25 full-text keyword matching
+                  Full-text and semantic search with hybrid scoring
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-emerald-400">•</span>
-                  KNN vector similarity with 384-dim embeddings
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2 text-emerald-400">•</span>
-                  Hybrid scoring across structured and unstructured data
+                  Search across structured and unstructured data
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-emerald-400">•</span>
