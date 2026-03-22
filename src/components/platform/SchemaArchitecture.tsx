@@ -96,12 +96,12 @@ export default function SchemaArchitecture() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <h2 className="font-heading mb-4 text-3xl font-bold text-white sm:text-4xl">
-            Intelligent Graph Schema Architecture
+            Data Architecture & Search
           </h2>
           <p className="mx-auto max-w-3xl text-gray-400">
             Unify disparate financial data sources into a cohesive, queryable
-            knowledge graph that powers advanced analytics and AI-native
-            applications
+            knowledge graph with hybrid document search that powers advanced
+            analytics and AI-native applications
           </p>
         </div>
 
@@ -323,16 +323,16 @@ export default function SchemaArchitecture() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
             </div>
             <h3 className="mb-2 text-lg font-semibold text-white">
-              Cypher Query Language
+              Document Search
             </h3>
             <p className="text-sm text-gray-400">
-              Traverse relationships with expressive graph queries—or let Claude
-              generate them from natural language via MCP
+              Search across filings, disclosures, and financial documents with
+              hybrid full-text and semantic matching powered by OpenSearch
             </p>
           </div>
         </div>

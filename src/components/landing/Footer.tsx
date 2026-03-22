@@ -91,7 +91,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#applications"
+                  href="/#applications"
                   className="text-gray-400 transition-colors hover:text-white"
                 >
                   Applications
@@ -107,18 +107,10 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/login"
+                  href="/pricing"
                   className="text-gray-400 transition-colors hover:text-white"
                 >
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/register"
-                  className="text-gray-400 transition-colors hover:text-white"
-                >
-                  Register
+                  Pricing
                 </Link>
               </li>
             </ul>

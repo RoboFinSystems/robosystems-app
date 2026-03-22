@@ -121,7 +121,7 @@ export default function GraphDashboard() {
         {/* Platform Interface */}
         <div className="flex h-[550px]">
           {/* Sidebar */}
-          <div className="w-48 border-r border-gray-800 bg-zinc-950 p-4 lg:w-64">
+          <div className="hidden border-r border-gray-800 bg-zinc-950 p-4 md:block md:w-48 lg:w-64">
             <div className="mb-4 rounded-lg bg-zinc-900 px-3 py-2">
               <div className="flex items-center gap-2 text-sm text-gray-400">
                 <HiDatabase className="h-4 w-4" />
