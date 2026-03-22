@@ -96,7 +96,7 @@ export default function IntegrationsSection() {
               </div>
               <p className="text-sm text-gray-400">
                 Sync documents from Google Drive into your searchable index.
-                Full-text search across all your connected content.
+                Full-text and semantic search across all your connected content.
               </p>
             </div>
 
