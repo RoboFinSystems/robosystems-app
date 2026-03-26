@@ -10,6 +10,7 @@ import {
   HiDatabase,
   HiGlobeAlt,
   HiHome,
+  HiSearch,
   HiTable,
   HiTerminal,
   HiViewGrid,
@@ -55,6 +56,11 @@ export const getNavigationItems = (
           icon: HiTerminal,
           label: 'Console',
           href: '/console',
+        },
+        {
+          icon: HiSearch,
+          label: 'Search',
+          href: '/search',
         },
         // Hide these items for repositories (except Backups for downloads)
         ...(!isRepository
