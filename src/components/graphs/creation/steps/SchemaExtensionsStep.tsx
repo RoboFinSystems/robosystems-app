@@ -1,9 +1,9 @@
+import { customTheme } from '@/lib/core'
 import type { AvailableExtension } from '@robosystems/client'
 import { getAvailableExtensions } from '@robosystems/client'
 import { Alert, Badge, Card, Checkbox, Spinner } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import { HiCheckCircle, HiExclamationCircle } from 'react-icons/hi'
-import { customTheme } from '../../../theme'
 
 interface SchemaExtensionsStepProps {
   selectedExtensions: string[]

@@ -1,5 +1,5 @@
+import { customTheme } from '@/lib/core'
 import { Label, Radio, Textarea, TextInput } from 'flowbite-react'
-import { customTheme } from '../../../theme'
 
 interface GenericGraphStepProps {
   graphName: string

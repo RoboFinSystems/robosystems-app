@@ -20,7 +20,7 @@ vi.mock('../GraphCreationWizard', () => ({
 }))
 
 // Mock the theme
-vi.mock('../../../theme', () => ({
+vi.mock('@/lib/core', () => ({
   customTheme: {
     button: {},
     modal: {},
@@ -100,7 +100,6 @@ describe('GraphCreationModal', () => {
     const button = screen.getByRole('button', {
       name: /create knowledge graph/i,
     })
-    // The button should have the red color applied through the theme
     expect(button).toBeInTheDocument()
   })
 
@@ -226,8 +225,6 @@ describe('GraphCreationModal', () => {
     })
     fireEvent.click(button)
 
-    // The wizard should receive the props (we can't easily test this directly
-    // but we can verify the modal opens and contains the wizard)
     expect(screen.getByTestId('graph-creation-wizard')).toBeInTheDocument()
   })
 

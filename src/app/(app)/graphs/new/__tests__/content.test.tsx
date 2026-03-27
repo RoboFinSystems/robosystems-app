@@ -26,7 +26,7 @@ const mockGraphCreationPage = vi.hoisted(() =>
   )
 )
 
-vi.mock('@/lib/core/components/graph-creation', () => ({
+vi.mock('@/components/graphs/creation', () => ({
   GraphCreationPage: mockGraphCreationPage,
 }))
 

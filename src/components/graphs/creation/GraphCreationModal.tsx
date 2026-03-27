@@ -1,9 +1,9 @@
 'use client'
 
+import { customTheme } from '@/lib/core'
 import { Button, Modal } from 'flowbite-react'
 import { useState } from 'react'
 import { HiPlus } from 'react-icons/hi'
-import { customTheme } from '../../theme'
 import { GraphCreationWizard } from './GraphCreationWizard'
 import type { GraphCreationConfig } from './types'
 

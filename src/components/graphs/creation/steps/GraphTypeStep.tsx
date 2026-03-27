@@ -1,6 +1,6 @@
+import { customTheme } from '@/lib/core'
 import { Card } from 'flowbite-react'
 import { HiDatabase, HiOfficeBuilding } from 'react-icons/hi'
-import { customTheme } from '../../../theme'
 
 interface GraphTypeStepProps {
   selectedType: 'entity' | 'generic'

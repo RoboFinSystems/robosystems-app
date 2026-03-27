@@ -1,6 +1,4 @@
-import { Alert, Badge, Card, Spinner } from 'flowbite-react'
-import { useEffect, useState } from 'react'
-import { HiCheckCircle, HiInformationCircle } from 'react-icons/hi'
+import { customTheme } from '@/lib/core'
 import {
   fetchGraphCapacity,
   fetchGraphTiers,
@@ -9,8 +7,10 @@ import {
   getTierColor,
   type GraphTier,
   type TierCapacity,
-} from '../../../lib/graph-tiers'
-import { customTheme } from '../../../theme'
+} from '@/lib/core/lib/graph-tiers'
+import { Alert, Badge, Card, Spinner } from 'flowbite-react'
+import { useEffect, useState } from 'react'
+import { HiCheckCircle, HiInformationCircle } from 'react-icons/hi'
 import type { GraphFormData } from '../types'
 
 interface TierSelectionStepProps {

@@ -1,9 +1,9 @@
 'use client'
 
+import { customTheme } from '@/lib/core'
 import { Button } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { HiArrowLeft } from 'react-icons/hi'
-import { customTheme } from '../../theme'
 import { GraphCreationWizard } from './GraphCreationWizard'
 import type { GraphCreationConfig } from './types'
 

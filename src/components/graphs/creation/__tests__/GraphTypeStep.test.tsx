@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { GraphTypeStep } from '../steps/GraphTypeStep'
 
 // Mock the theme
-vi.mock('../../../theme', () => ({
+vi.mock('@/lib/core', () => ({
   customTheme: {
     card: {},
   },
@@ -94,7 +94,6 @@ describe('GraphTypeStep', () => {
       .getByText('Generic Graph')
       .closest('.cursor-pointer')
 
-    // Should have hover effect classes
     expect(genericCard).toHaveClass('hover:shadow-lg')
     expect(genericCard?.className).toContain('dark:hover:shadow-zinc-700/50')
   })
@@ -104,8 +103,6 @@ describe('GraphTypeStep', () => {
       <GraphTypeStep selectedType="entity" onTypeChange={mockOnTypeChange} />
     )
 
-    // Check that the icons are rendered (we can't easily test the specific icon classes)
-    // but we can check the structure
     const entityIcon = screen
       .getByText('Entity Graph')
       .parentElement?.querySelector('svg')
@@ -156,7 +153,6 @@ describe('GraphTypeStep', () => {
       <GraphTypeStep selectedType="entity" onTypeChange={mockOnTypeChange} />
     )
 
-    // Check that all important text is present and accessible
     expect(screen.getByText('Entity Graph')).toBeInTheDocument()
     expect(screen.getByText('Generic Graph')).toBeInTheDocument()
     expect(

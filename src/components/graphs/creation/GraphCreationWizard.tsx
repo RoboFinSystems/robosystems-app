@@ -1,11 +1,9 @@
 'use client'
 
+import { customTheme, useGraphCreation, useOrg } from '@/lib/core'
 import { Alert, Button, Card, Progress, Spinner } from 'flowbite-react'
 import { useState } from 'react'
 import { HiArrowLeft, HiArrowRight, HiCheck } from 'react-icons/hi'
-import { useOrg } from '../../contexts/org-context'
-import { useGraphCreation } from '../../task-monitoring/operationHooks'
-import { customTheme } from '../../theme'
 import { EntityInfoStep } from './steps/EntityInfoStep'
 import { GenericGraphStep } from './steps/GenericGraphStep'
 import { GraphTypeStep } from './steps/GraphTypeStep'
@@ -227,7 +225,9 @@ export function GraphCreationWizard({
             graphName={formData.graphName}
             entityDescription={formData.entityDescription}
             entityTags={formData.entityTags}
-            requireInitialEntity={requireInitialEntity}
+            requireInitialEntity={
+              requireInitialEntity || formData.graphType === 'entity'
+            }
             onUpdate={(updates) => setFormData({ ...formData, ...updates })}
             validationError={
               validateEntity && formData.entityName && formData.createEntity

@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { EntityInfoStep } from '../steps/EntityInfoStep'
 
 // Mock the theme
-vi.mock('../../../theme', () => ({
+vi.mock('@/lib/core', () => ({
   customTheme: {
     textInput: {},
     textarea: {},
@@ -315,10 +315,7 @@ describe('EntityInfoStep', () => {
       )
 
       const input = screen.getByPlaceholderText('e.g., Acme Corporation')
-      // The input should have error styling applied
       expect(input).toBeInTheDocument()
-      // We can't easily test the exact color attribute since Flowbite uses CSS classes
-      // but we can verify the component renders without crashing
     })
   })
 
@@ -418,7 +415,6 @@ describe('EntityInfoStep', () => {
         />
       )
 
-      // Should not crash and should render normally
       expect(
         screen.getByPlaceholderText('e.g., Acme Corporation')
       ).toBeInTheDocument()
