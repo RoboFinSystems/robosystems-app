@@ -42,7 +42,9 @@ export function TablesContent() {
   const [tables, setTables] = useState<TableInfo[]>([])
   const [selectedTable, setSelectedTable] = useState<TableInfo | null>(null)
   const [tableFiles, setTableFiles] = useState<FileInfo[]>([])
-  const [sqlQuery, setSqlQuery] = useState('')
+  const [sqlQuery, setSqlQuery] = useState(
+    isEntityGraph ? 'SELECT * FROM Entity LIMIT 10' : ''
+  )
   const [queryResult, setQueryResult] = useState<QueryResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -361,27 +363,37 @@ export function TablesContent() {
   }
 
   // Sample queries
-  const sampleQueries = [
-    { label: 'List all tables', sql: 'SHOW TABLES' },
-    {
-      label: 'Table info',
-      sql: selectedTable
-        ? `DESCRIBE ${selectedTable.tableName}`
-        : 'SHOW TABLES',
-    },
-    {
-      label: 'Preview data',
-      sql: selectedTable
-        ? `SELECT * FROM ${selectedTable.tableName} LIMIT 10`
-        : 'SHOW TABLES',
-    },
-    {
-      label: 'Row count',
-      sql: selectedTable
-        ? `SELECT COUNT(*) as total FROM ${selectedTable.tableName}`
-        : 'SHOW TABLES',
-    },
-  ]
+  const sampleQueries = isEntityGraph
+    ? [
+        { label: 'List all tables', sql: 'SHOW TABLES' },
+        { label: 'Preview entity', sql: 'SELECT * FROM Entity LIMIT 10' },
+        { label: 'Preview accounts', sql: 'SELECT * FROM Element LIMIT 10' },
+        {
+          label: 'Preview transactions',
+          sql: 'SELECT * FROM Transaction LIMIT 10',
+        },
+      ]
+    : [
+        { label: 'List all tables', sql: 'SHOW TABLES' },
+        {
+          label: 'Table info',
+          sql: selectedTable
+            ? `DESCRIBE ${selectedTable.tableName}`
+            : 'SHOW TABLES',
+        },
+        {
+          label: 'Preview data',
+          sql: selectedTable
+            ? `SELECT * FROM ${selectedTable.tableName} LIMIT 10`
+            : 'SHOW TABLES',
+        },
+        {
+          label: 'Row count',
+          sql: selectedTable
+            ? `SELECT COUNT(*) as total FROM ${selectedTable.tableName}`
+            : 'SHOW TABLES',
+        },
+      ]
 
   if (!graphId) {
     return (
@@ -389,6 +401,224 @@ export function TablesContent() {
         <Alert color="warning" icon={HiInformationCircle}>
           Please select a graph to manage tables
         </Alert>
+      </div>
+    )
+  }
+
+  // Simplified view for entity graphs — just query editor + sync button
+  if (isEntityGraph) {
+    return (
+      <div className="mx-auto max-w-7xl space-y-6 p-6">
+        {/* Header */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
+              <HiTable className="h-8 w-8 text-white" />
+            </div>
+            <div>
+              <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
+                Data Lake
+              </h1>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Query staging tables and sync extensions data
+              </p>
+            </div>
+          </div>
+
+          <Button color="green" onClick={() => setShowIngestModal(true)}>
+            <HiChip className="mr-2 h-4 w-4" />
+            Sync to Graph
+          </Button>
+        </div>
+
+        {error && (
+          <Alert color="failure" icon={HiInformationCircle}>
+            {error}
+          </Alert>
+        )}
+
+        {/* Sample Queries */}
+        <div className="flex flex-wrap gap-2">
+          {sampleQueries.map((sample) => (
+            <Button
+              key={sample.label}
+              size="xs"
+              color="light"
+              onClick={() => setSqlQuery(sample.sql)}
+            >
+              {sample.label}
+            </Button>
+          ))}
+        </div>
+
+        {/* SQL Editor */}
+        <Card theme={customTheme.card}>
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+              SQL Query (DuckDB)
+            </h3>
+            <Button
+              size="sm"
+              onClick={executeQuery}
+              disabled={loading || !sqlQuery.trim()}
+            >
+              <HiPlay className="mr-2 h-4 w-4" />
+              Execute
+            </Button>
+          </div>
+          <Editor
+            height="200px"
+            defaultLanguage="sql"
+            value={sqlQuery}
+            onChange={(value) => setSqlQuery(value || '')}
+            theme="robosystems"
+            beforeMount={async (monaco) => {
+              const { robosystemsTheme } = await import('@/lib/monaco-theme')
+              monaco.editor.defineTheme('robosystems', robosystemsTheme)
+              monaco.editor.setTheme('robosystems')
+            }}
+            options={{
+              minimap: { enabled: false },
+              fontSize: 14,
+              lineNumbers: 'on',
+              scrollBeyondLastLine: false,
+              wordWrap: 'on',
+              automaticLayout: true,
+              padding: { top: 12, bottom: 12 },
+              scrollbar: {
+                verticalScrollbarSize: 10,
+                horizontalScrollbarSize: 10,
+              },
+              renderLineHighlight: 'all',
+              cursorBlinking: 'smooth',
+              cursorSmoothCaretAnimation: 'on',
+              smoothScrolling: true,
+              fontLigatures: true,
+            }}
+          />
+        </Card>
+
+        {/* Query Results */}
+        {loading && (
+          <Card theme={customTheme.card}>
+            <div className="flex items-center justify-center py-8">
+              <Spinner />
+              <span className="ml-2 text-gray-900 dark:text-white">
+                Executing query...
+              </span>
+            </div>
+          </Card>
+        )}
+
+        {queryResult && (
+          <Card theme={customTheme.card}>
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                Results ({queryResult.rowCount} rows in{' '}
+                {queryResult.executionTime}ms)
+              </h3>
+            </div>
+            <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+              <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-800 dark:text-gray-400">
+                  <tr>
+                    {queryResult.columns.map((col) => (
+                      <th key={col} className="px-4 py-3 font-medium">
+                        <div className="whitespace-nowrap">{col}</div>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {queryResult.rows.map((row, i) => (
+                    <tr key={i} className="border-b dark:border-gray-700">
+                      {row.map((cell, j) => (
+                        <td key={j} className="px-4 py-3">
+                          <div
+                            className="max-w-[300px] min-w-[120px] truncate text-xs"
+                            title={String(cell)}
+                          >
+                            {cell === null ? (
+                              <span className="text-gray-400">NULL</span>
+                            ) : typeof cell === 'object' ? (
+                              JSON.stringify(cell)
+                            ) : (
+                              String(cell)
+                            )}
+                          </div>
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        )}
+
+        {/* Ingest Modal */}
+        <Modal
+          show={showIngestModal}
+          onClose={() => setShowIngestModal(false)}
+          size="xl"
+        >
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              handleIngest()
+            }}
+          >
+            <ModalHeader>Sync Extensions to Graph</ModalHeader>
+            <ModalBody>
+              <div className="space-y-4">
+                <Alert color="info" icon={HiInformationCircle}>
+                  This will sync data from the extensions database into the
+                  graph. The operation runs in the background.
+                </Alert>
+
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="rebuild-entity"
+                      checked={ingestOptions.rebuild}
+                      onChange={(e) =>
+                        setIngestOptions((prev) => ({
+                          ...prev,
+                          rebuild: e.target.checked,
+                        }))
+                      }
+                      disabled={ingesting}
+                    />
+                    <Label htmlFor="rebuild-entity">Rebuild entire graph</Label>
+                  </div>
+                  <p className="ml-6 text-xs text-gray-500 dark:text-gray-400">
+                    Clear all existing data before syncing (use with caution)
+                  </p>
+                </div>
+
+                <div className="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                  <p className="text-xs text-blue-800 dark:text-blue-200">
+                    <strong>Note:</strong> Sync may take several minutes
+                    depending on data volume. You'll be notified when the
+                    operation completes.
+                  </p>
+                </div>
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button type="submit" color="green" disabled={ingesting}>
+                {ingesting ? 'Starting...' : 'Start Sync'}
+              </Button>
+              <Button
+                color="gray"
+                onClick={() => setShowIngestModal(false)}
+                disabled={ingesting}
+              >
+                Cancel
+              </Button>
+            </ModalFooter>
+          </form>
+        </Modal>
       </div>
     )
   }
