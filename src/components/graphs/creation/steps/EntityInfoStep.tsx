@@ -1,6 +1,6 @@
+import { customTheme } from '@/lib/core'
 import { Alert, Label, Textarea, TextInput, ToggleSwitch } from 'flowbite-react'
 import { HiInformationCircle } from 'react-icons/hi'
-import { customTheme } from '../../../theme'
 import type { EntityCreate } from '../types'
 
 interface EntityInfoStepProps {

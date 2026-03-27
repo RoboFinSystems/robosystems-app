@@ -35,6 +35,8 @@ import type { FileInfo, QueryResult, TableInfo } from './types'
 export function TablesContent() {
   const { state: graphState } = useGraphContext()
   const graphId = graphState.currentGraphId
+  const currentGraph = graphState.graphs.find((g) => g.graphId === graphId)
+  const isEntityGraph = currentGraph?.graphType === 'entity'
 
   // State
   const [tables, setTables] = useState<TableInfo[]>([])
@@ -277,6 +279,7 @@ export function TablesContent() {
         body: {
           rebuild: ingestOptions.rebuild,
           ignore_errors: ingestOptions.ignoreErrors,
+          ...(isEntityGraph && { source: 'extensions' }),
         },
       })
 
@@ -403,19 +406,21 @@ export function TablesContent() {
               Data Lake
             </h1>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Manage staging tables and files
+              {isEntityGraph
+                ? 'View staging tables and sync extensions data'
+                : 'Manage staging tables and files'}
             </p>
           </div>
         </div>
 
-        {/* Ingest Button */}
+        {/* Materialize Button */}
         <Button
           color="green"
           onClick={() => setShowIngestModal(true)}
           disabled={tables.length === 0}
         >
           <HiChip className="mr-2 h-4 w-4" />
-          Ingest to Graph
+          {isEntityGraph ? 'Sync to Graph' : 'Ingest to Graph'}
         </Button>
       </div>
 
@@ -546,7 +551,9 @@ export function TablesContent() {
                   </div>
                 ) : tables.length === 0 ? (
                   <div className="text-center text-gray-500 dark:text-gray-400">
-                    No tables found. Upload a file to get started.
+                    {isEntityGraph
+                      ? 'No tables found. Sync extensions data to populate staging tables.'
+                      : 'No tables found. Upload a file to get started.'}
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -765,116 +772,122 @@ export function TablesContent() {
                     </Card>
                   )}
 
-                  {/* Files */}
-                  <Card theme={customTheme.card}>
-                    <div className="mb-3 flex items-center justify-between">
-                      <h4 className="font-medium text-gray-900 dark:text-white">
-                        Files ({tableFiles.length})
-                      </h4>
-                      <Button
-                        size="sm"
-                        color="blue"
-                        onClick={() => {
-                          setUseExistingTable(true)
-                          setSelectedExistingTable(selectedTable.tableName)
-                          setShowUploadModal(true)
-                        }}
-                      >
-                        <HiCloudUpload className="mr-2 h-4 w-4" />
-                        Upload File
-                      </Button>
-                    </div>
-                    {tableFiles.length === 0 ? (
-                      <div className="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                        No files in this table
+                  {/* Files — hidden for entity graphs (data comes from extensions DB) */}
+                  {!isEntityGraph && (
+                    <Card theme={customTheme.card}>
+                      <div className="mb-3 flex items-center justify-between">
+                        <h4 className="font-medium text-gray-900 dark:text-white">
+                          Files ({tableFiles.length})
+                        </h4>
+                        <Button
+                          size="sm"
+                          color="blue"
+                          onClick={() => {
+                            setUseExistingTable(true)
+                            setSelectedExistingTable(selectedTable.tableName)
+                            setShowUploadModal(true)
+                          }}
+                        >
+                          <HiCloudUpload className="mr-2 h-4 w-4" />
+                          Upload File
+                        </Button>
                       </div>
-                    ) : (
-                      <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
-                        <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                          <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-800 dark:text-gray-400">
-                            <tr>
-                              <th className="px-4 py-3 font-medium">
-                                <div className="whitespace-nowrap">
-                                  File Name
-                                </div>
-                              </th>
-                              <th className="hidden px-4 py-3 font-medium sm:table-cell">
-                                <div className="whitespace-nowrap">Rows</div>
-                              </th>
-                              <th className="hidden px-4 py-3 font-medium sm:table-cell">
-                                <div className="whitespace-nowrap">Size</div>
-                              </th>
-                              <th className="hidden px-4 py-3 font-medium md:table-cell">
-                                <div className="whitespace-nowrap">Status</div>
-                              </th>
-                              <th className="hidden px-4 py-3 font-medium md:table-cell">
-                                <div className="whitespace-nowrap">
-                                  Uploaded
-                                </div>
-                              </th>
-                              <th className="px-4 py-3 font-medium">
-                                <div className="whitespace-nowrap">Actions</div>
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {tableFiles.map((file) => (
-                              <tr
-                                key={file.file_id}
-                                className="border-b dark:border-gray-700"
-                              >
-                                <td className="px-4 py-3">
-                                  <div
-                                    className="max-w-[200px] truncate"
-                                    title={file.file_name}
-                                  >
-                                    {file.file_name}
+                      {tableFiles.length === 0 ? (
+                        <div className="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                          No files in this table
+                        </div>
+                      ) : (
+                        <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                          <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                            <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-800 dark:text-gray-400">
+                              <tr>
+                                <th className="px-4 py-3 font-medium">
+                                  <div className="whitespace-nowrap">
+                                    File Name
                                   </div>
-                                </td>
-                                <td className="hidden px-4 py-3 sm:table-cell">
-                                  {file.row_count?.toLocaleString() || 'N/A'}
-                                </td>
-                                <td className="hidden px-4 py-3 sm:table-cell">
-                                  {formatBytes(file.size_bytes || 0)}
-                                </td>
-                                <td className="hidden px-4 py-3 md:table-cell">
-                                  <Badge
-                                    color={
-                                      file.upload_status === 'uploaded'
-                                        ? 'success'
-                                        : file.upload_status === 'failed'
-                                          ? 'failure'
-                                          : 'warning'
-                                    }
-                                  >
-                                    {file.upload_status}
-                                  </Badge>
-                                </td>
-                                <td className="hidden px-4 py-3 md:table-cell">
-                                  {new Date(
-                                    file.created_at
-                                  ).toLocaleDateString()}
-                                </td>
-                                <td className="px-4 py-3">
-                                  <Button
-                                    size="xs"
-                                    color="failure"
-                                    onClick={() => {
-                                      setFileToDelete(file)
-                                      setShowDeleteModal(true)
-                                    }}
-                                    title="Delete file"
-                                  >
-                                    <HiTrash className="h-4 w-4" />
-                                  </Button>
-                                </td>
+                                </th>
+                                <th className="hidden px-4 py-3 font-medium sm:table-cell">
+                                  <div className="whitespace-nowrap">Rows</div>
+                                </th>
+                                <th className="hidden px-4 py-3 font-medium sm:table-cell">
+                                  <div className="whitespace-nowrap">Size</div>
+                                </th>
+                                <th className="hidden px-4 py-3 font-medium md:table-cell">
+                                  <div className="whitespace-nowrap">
+                                    Status
+                                  </div>
+                                </th>
+                                <th className="hidden px-4 py-3 font-medium md:table-cell">
+                                  <div className="whitespace-nowrap">
+                                    Uploaded
+                                  </div>
+                                </th>
+                                <th className="px-4 py-3 font-medium">
+                                  <div className="whitespace-nowrap">
+                                    Actions
+                                  </div>
+                                </th>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                  </Card>
+                            </thead>
+                            <tbody>
+                              {tableFiles.map((file) => (
+                                <tr
+                                  key={file.file_id}
+                                  className="border-b dark:border-gray-700"
+                                >
+                                  <td className="px-4 py-3">
+                                    <div
+                                      className="max-w-[200px] truncate"
+                                      title={file.file_name}
+                                    >
+                                      {file.file_name}
+                                    </div>
+                                  </td>
+                                  <td className="hidden px-4 py-3 sm:table-cell">
+                                    {file.row_count?.toLocaleString() || 'N/A'}
+                                  </td>
+                                  <td className="hidden px-4 py-3 sm:table-cell">
+                                    {formatBytes(file.size_bytes || 0)}
+                                  </td>
+                                  <td className="hidden px-4 py-3 md:table-cell">
+                                    <Badge
+                                      color={
+                                        file.upload_status === 'uploaded'
+                                          ? 'success'
+                                          : file.upload_status === 'failed'
+                                            ? 'failure'
+                                            : 'warning'
+                                      }
+                                    >
+                                      {file.upload_status}
+                                    </Badge>
+                                  </td>
+                                  <td className="hidden px-4 py-3 md:table-cell">
+                                    {new Date(
+                                      file.created_at
+                                    ).toLocaleDateString()}
+                                  </td>
+                                  <td className="px-4 py-3">
+                                    <Button
+                                      size="xs"
+                                      color="failure"
+                                      onClick={() => {
+                                        setFileToDelete(file)
+                                        setShowDeleteModal(true)
+                                      }}
+                                      title="Delete file"
+                                    >
+                                      <HiTrash className="h-4 w-4" />
+                                    </Button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </Card>
+                  )}
                 </div>
               ) : (
                 <Card theme={customTheme.card}>
@@ -1154,12 +1167,17 @@ export function TablesContent() {
             handleIngest()
           }}
         >
-          <ModalHeader>Ingest Tables to Graph</ModalHeader>
+          <ModalHeader>
+            {isEntityGraph
+              ? 'Sync Extensions to Graph'
+              : 'Ingest Tables to Graph'}
+          </ModalHeader>
           <ModalBody>
             <div className="space-y-4">
               <Alert color="info" icon={HiInformationCircle}>
-                This will load all staging tables into the graph database. The
-                operation runs in the background.
+                {isEntityGraph
+                  ? 'This will sync data from the extensions database into the graph. The operation runs in the background.'
+                  : 'This will load all staging tables into the graph database. The operation runs in the background.'}
               </Alert>
 
               <div className="space-y-2">
@@ -1206,16 +1224,20 @@ export function TablesContent() {
 
               <div className="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
                 <p className="text-xs text-blue-800 dark:text-blue-200">
-                  <strong>Note:</strong> Ingestion may take several minutes
-                  depending on data volume. You'll be notified when the
-                  operation completes.
+                  <strong>Note:</strong> {isEntityGraph ? 'Sync' : 'Ingestion'}{' '}
+                  may take several minutes depending on data volume. You'll be
+                  notified when the operation completes.
                 </p>
               </div>
             </div>
           </ModalBody>
           <ModalFooter>
             <Button type="submit" color="green" disabled={ingesting}>
-              {ingesting ? 'Starting...' : 'Start Ingestion'}
+              {ingesting
+                ? 'Starting...'
+                : isEntityGraph
+                  ? 'Start Sync'
+                  : 'Start Ingestion'}
             </Button>
             <Button
               color="gray"

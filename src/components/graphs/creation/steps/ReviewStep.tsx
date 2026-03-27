@@ -1,8 +1,8 @@
+import { customTheme } from '@/lib/core'
+import { fetchGraphTiers, type GraphTier } from '@/lib/core/lib/graph-tiers'
 import { Alert, Badge, Card } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import { HiCheckCircle, HiExclamationCircle } from 'react-icons/hi'
-import { fetchGraphTiers, type GraphTier } from '../../../lib/graph-tiers'
-import { customTheme } from '../../../theme'
 import type { GraphFormData } from '../types'
 
 interface ReviewStepProps {
