@@ -287,9 +287,7 @@ export function TablesContent() {
 
       if (response.data) {
         const data = response.data as any
-        console.log('Ingest started:', data.operation_id)
         setShowIngestModal(false)
-        // TODO: Monitor operation progress
       } else if (response.error) {
         setError('Ingest failed: ' + JSON.stringify(response.error))
       }
