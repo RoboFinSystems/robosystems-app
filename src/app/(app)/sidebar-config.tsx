@@ -8,6 +8,7 @@ import {
   HiCode,
   HiCreditCard,
   HiDatabase,
+  HiDocumentText,
   HiGlobeAlt,
   HiHome,
   HiSearch,
@@ -61,6 +62,11 @@ export const getNavigationItems = (
           icon: HiSearch,
           label: 'Search',
           href: '/search',
+        },
+        {
+          icon: HiDocumentText,
+          label: 'Knowledge Base',
+          href: '/documents',
         },
         // Hide these items for repositories (except Backups for downloads)
         ...(!isRepository
