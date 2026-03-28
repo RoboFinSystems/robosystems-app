@@ -5,8 +5,8 @@ import { useMemo } from 'react'
 
 const REPO_CONFIG: SearchConfig = {
   title: 'Document Search',
-  description: 'Search SEC filings and financial documents',
-  placeholder: 'Search filings, disclosures, financial statements...',
+  description: 'Search indexed documents and knowledge base content',
+  placeholder: 'Search documents, filings, disclosures...',
   filters: {
     sourceType: true,
     entity: true,
