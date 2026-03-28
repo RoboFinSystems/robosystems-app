@@ -525,10 +525,7 @@ export function SubgraphsContent() {
               </>
             )}
           </Button>
-          <Button
-            color="gray"
-            onClick={() => setDeleteModalOpen(false)}
-          >
+          <Button color="gray" onClick={() => setDeleteModalOpen(false)}>
             Cancel
           </Button>
         </ModalFooter>

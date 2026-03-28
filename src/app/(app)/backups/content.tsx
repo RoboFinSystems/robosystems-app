@@ -699,7 +699,12 @@ export default function BackupManagementContent() {
       )}
 
       {/* Create Backup Modal */}
-      <Modal show={showCreateModal} onClose={handleCloseCreateModal} size="md" theme={customTheme.modal}>
+      <Modal
+        show={showCreateModal}
+        onClose={handleCloseCreateModal}
+        size="md"
+        theme={customTheme.modal}
+      >
         <ModalHeader>Create Backup</ModalHeader>
         <ModalBody>
           <div className="space-y-4">
