@@ -63,14 +63,14 @@ export const getNavigationItems = (
           label: 'Search',
           href: '/search',
         },
-        {
-          icon: HiDocumentText,
-          label: 'Knowledge Base',
-          href: '/documents',
-        },
         // Hide these items for repositories (except Backups for downloads)
         ...(!isRepository
           ? [
+              {
+                icon: HiDocumentText,
+                label: 'Knowledge Base',
+                href: '/documents',
+              },
               {
                 icon: HiTable,
                 label: 'Data Lake',
