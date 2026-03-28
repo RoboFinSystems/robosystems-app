@@ -672,6 +672,7 @@ export function OrganizationContent() {
         show={showInviteModal}
         onClose={() => setShowInviteModal(false)}
         size="md"
+        theme={customTheme.modal}
       >
         <ModalHeader>Invite Team Member</ModalHeader>
         <ModalBody>

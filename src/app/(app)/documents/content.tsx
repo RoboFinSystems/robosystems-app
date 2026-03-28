@@ -1,8 +1,8 @@
 'use client'
 
 import { customTheme, useGraphContext, useIsRepository } from '@/lib/core'
-import { Spinner as AppSpinner } from '@/lib/core/ui-components'
 import { useToast } from '@/lib/core/hooks/use-toast'
+import { Spinner as AppSpinner } from '@/lib/core/ui-components'
 import type { DocumentListItem, DocumentSection } from '@robosystems/client'
 import {
   deleteDocument,
@@ -35,8 +35,8 @@ import { useCallback, useEffect, useState } from 'react'
 import {
   HiDocumentAdd,
   HiDocumentText,
-  HiEye,
   HiExclamation,
+  HiEye,
   HiPencil,
   HiPlus,
   HiRefresh,
@@ -94,7 +94,12 @@ function TagInput({ tags, onChange }: TagInputProps) {
           }}
           className="flex-1"
         />
-        <Button size="sm" color="gray" onClick={addTag} disabled={!input.trim()}>
+        <Button
+          size="sm"
+          color="gray"
+          onClick={addTag}
+          disabled={!input.trim()}
+        >
           Add
         </Button>
       </div>
@@ -133,7 +138,9 @@ export function DocumentsPageContent() {
 
   // Delete confirm state
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [deleteTarget, setDeleteTarget] = useState<DocumentListItem | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<DocumentListItem | null>(
+    null
+  )
   const [deleting, setDeleting] = useState(false)
 
   // --- Data Fetching ---
@@ -160,7 +167,8 @@ export function DocumentsPageContent() {
         setDocuments(response.data.documents || [])
         setTotalDocuments(response.data.total || 0)
       } catch (err) {
-        const msg = err instanceof Error ? err.message : 'Failed to load documents'
+        const msg =
+          err instanceof Error ? err.message : 'Failed to load documents'
         setError(msg)
         showError(msg, 8000)
       } finally {
@@ -271,7 +279,10 @@ export function DocumentsPageContent() {
 
       setUploadContent(fullContent)
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to load document for editing'
+      const msg =
+        err instanceof Error
+          ? err.message
+          : 'Failed to load document for editing'
       showError(msg, 5000)
       setShowUploadModal(false)
       setIsEditing(false)
@@ -335,7 +346,8 @@ export function DocumentsPageContent() {
       setDeleting(true)
 
       // Use the document_id (base prefix) from the list response
-      const docId = (deleteTarget as any).document_id || deleteTarget.document_title
+      const docId =
+        (deleteTarget as any).document_id || deleteTarget.document_title
 
       const response = await deleteDocument({
         path: {
@@ -345,7 +357,10 @@ export function DocumentsPageContent() {
       })
 
       // 204 = deleted, 404 = not found (already deleted)
-      if (response.response.status === 204 || response.response.status === 404) {
+      if (
+        response.response.status === 204 ||
+        response.response.status === 404
+      ) {
         showSuccess(`Deleted "${deleteTarget.document_title}"`, 5000)
         setShowDeleteModal(false)
         setDeleteTarget(null)
@@ -428,7 +443,9 @@ export function DocumentsPageContent() {
             <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
               Error loading documents
             </h3>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{error}</p>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              {error}
+            </p>
             <Button onClick={() => fetchDocuments(true)} className="mt-4">
               <HiRefresh className="mr-2 h-4 w-4" />
               Retry
@@ -478,7 +495,9 @@ export function DocumentsPageContent() {
         <Card theme={customTheme.card}>
           <div className="py-12 text-center">
             <HiDocumentAdd className="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-500" />
-            <p className="font-medium text-gray-700 dark:text-gray-200">Knowledge base is empty</p>
+            <p className="font-medium text-gray-700 dark:text-gray-200">
+              Knowledge base is empty
+            </p>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
               {isRepository
                 ? 'No documents have been indexed yet.'
@@ -538,13 +557,21 @@ export function DocumentsPageContent() {
                   <TableCell>
                     <div className="flex gap-2">
                       <Tooltip content="Preview">
-                        <Button size="sm" color="gray" onClick={() => handlePreview(doc)}>
+                        <Button
+                          size="sm"
+                          color="gray"
+                          onClick={() => handlePreview(doc)}
+                        >
                           <HiEye className="h-4 w-4" />
                         </Button>
                       </Tooltip>
                       {!isRepository && doc.source_type === 'uploaded_doc' && (
                         <Tooltip content="Edit">
-                          <Button size="sm" color="gray" onClick={() => handleEdit(doc)}>
+                          <Button
+                            size="sm"
+                            color="gray"
+                            onClick={() => handleEdit(doc)}
+                          >
                             <HiPencil className="h-4 w-4" />
                           </Button>
                         </Tooltip>
@@ -584,7 +611,9 @@ export function DocumentsPageContent() {
         }}
         size="xl"
       >
-        <ModalHeader>{isEditing ? 'Edit Document' : 'Upload Document'}</ModalHeader>
+        <ModalHeader>
+          {isEditing ? 'Edit Document' : 'Upload Document'}
+        </ModalHeader>
         <ModalBody>
           {editLoading ? (
             <div className="flex h-48 items-center justify-center">
@@ -637,9 +666,12 @@ export function DocumentsPageContent() {
                   className="font-mono text-sm"
                 />
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Use markdown headings (#, ##, ###) to create searchable sections.
+                  Use markdown headings (#, ##, ###) to create searchable
+                  sections.
                   {uploadContent.length > 0 && (
-                    <span className="ml-2">{uploadContent.length.toLocaleString()} characters</span>
+                    <span className="ml-2">
+                      {uploadContent.length.toLocaleString()} characters
+                    </span>
                   )}
                 </p>
               </div>
@@ -651,7 +683,9 @@ export function DocumentsPageContent() {
             <>
               <Button
                 onClick={handleUpload}
-                disabled={uploading || !uploadTitle.trim() || !uploadContent.trim()}
+                disabled={
+                  uploading || !uploadTitle.trim() || !uploadContent.trim()
+                }
               >
                 {uploading ? (
                   <>
@@ -681,7 +715,12 @@ export function DocumentsPageContent() {
       </Modal>
 
       {/* Preview Modal */}
-      <Modal theme={customTheme.modal} show={showPreviewModal} onClose={() => setShowPreviewModal(false)} size="xl">
+      <Modal
+        theme={customTheme.modal}
+        show={showPreviewModal}
+        onClose={() => setShowPreviewModal(false)}
+        size="xl"
+      >
         <ModalHeader>Document Preview</ModalHeader>
         <ModalBody>
           {previewLoading ? (
@@ -704,7 +743,7 @@ export function DocumentsPageContent() {
                 )}
               </div>
               <div className="max-h-96 overflow-y-auto rounded-lg bg-gray-50 p-4 dark:bg-zinc-900">
-                <pre className="whitespace-pre-wrap text-sm text-gray-800 dark:text-gray-200">
+                <pre className="text-sm whitespace-pre-wrap text-gray-800 dark:text-gray-200">
                   {previewDoc.content}
                 </pre>
               </div>
@@ -721,7 +760,12 @@ export function DocumentsPageContent() {
       </Modal>
 
       {/* Delete Confirmation Modal */}
-      <Modal theme={customTheme.modal} show={showDeleteModal} onClose={() => !deleting && setShowDeleteModal(false)} size="md">
+      <Modal
+        theme={customTheme.modal}
+        show={showDeleteModal}
+        onClose={() => !deleting && setShowDeleteModal(false)}
+        size="md"
+      >
         <ModalHeader>Delete Document</ModalHeader>
         <ModalBody>
           <div className="space-y-4">
@@ -733,7 +777,8 @@ export function DocumentsPageContent() {
                     This action cannot be undone
                   </h4>
                   <p className="mt-1 text-sm text-red-700 dark:text-red-400">
-                    All sections of this document will be permanently removed from the search index.
+                    All sections of this document will be permanently removed
+                    from the search index.
                   </p>
                 </div>
               </div>
@@ -745,15 +790,20 @@ export function DocumentsPageContent() {
                   {deleteTarget.document_title}
                 </p>
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  {deleteTarget.section_count} section{deleteTarget.section_count !== 1 ? 's' : ''}{' '}
-                  will be deleted
+                  {deleteTarget.section_count} section
+                  {deleteTarget.section_count !== 1 ? 's' : ''} will be deleted
                 </p>
               </div>
             )}
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button theme={customTheme.button} color="failure" onClick={handleDelete} disabled={deleting}>
+          <Button
+            theme={customTheme.button}
+            color="failure"
+            onClick={handleDelete}
+            disabled={deleting}
+          >
             {deleting ? (
               <>
                 <Spinner size="sm" className="mr-2" />
@@ -766,7 +816,11 @@ export function DocumentsPageContent() {
               </>
             )}
           </Button>
-          <Button color="gray" onClick={() => setShowDeleteModal(false)} disabled={deleting}>
+          <Button
+            color="gray"
+            onClick={() => setShowDeleteModal(false)}
+            disabled={deleting}
+          >
             Cancel
           </Button>
         </ModalFooter>

@@ -671,6 +671,7 @@ function SubscriptionsTab({
         show={showCancelModal}
         onClose={() => !cancelling && setShowCancelModal(false)}
         size="md"
+        theme={customTheme.modal}
       >
         <ModalHeader>Cancel Subscription</ModalHeader>
         <ModalBody>
