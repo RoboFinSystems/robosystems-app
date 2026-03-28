@@ -559,6 +559,7 @@ export function TablesContent() {
           show={showIngestModal}
           onClose={() => setShowIngestModal(false)}
           size="xl"
+          theme={customTheme.modal}
         >
           <form
             onSubmit={(e) => {
@@ -1259,6 +1260,7 @@ export function TablesContent() {
         show={showUploadModal}
         onClose={() => setShowUploadModal(false)}
         size="xl"
+        theme={customTheme.modal}
       >
         <form
           onSubmit={(e) => {
@@ -1388,6 +1390,7 @@ export function TablesContent() {
         show={showIngestModal}
         onClose={() => setShowIngestModal(false)}
         size="xl"
+        theme={customTheme.modal}
       >
         <form
           onSubmit={(e) => {
@@ -1486,6 +1489,7 @@ export function TablesContent() {
           setFileToDelete(null)
         }}
         size="md"
+        theme={customTheme.modal}
       >
         <ModalHeader>Delete File</ModalHeader>
         <ModalBody>
@@ -1540,26 +1544,23 @@ export function TablesContent() {
           </div>
         </ModalBody>
         <ModalFooter>
-          <div className="flex w-full gap-3">
-            <Button
-              color="gray"
-              onClick={() => {
-                setShowDeleteModal(false)
-                setFileToDelete(null)
-              }}
-              disabled={deleting}
-              className="flex-1"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleDeleteFile}
-              disabled={deleting}
-              className="flex-1 bg-red-600 text-white hover:bg-red-700 focus:ring-4 focus:ring-red-300 disabled:bg-red-400 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-            >
-              {deleting ? 'Deleting...' : 'Delete File'}
-            </Button>
-          </div>
+          <Button
+            color="failure"
+            onClick={handleDeleteFile}
+            disabled={deleting}
+          >
+            {deleting ? 'Deleting...' : 'Delete File'}
+          </Button>
+          <Button
+            color="gray"
+            onClick={() => {
+              setShowDeleteModal(false)
+              setFileToDelete(null)
+            }}
+            disabled={deleting}
+          >
+            Cancel
+          </Button>
         </ModalFooter>
       </Modal>
     </div>

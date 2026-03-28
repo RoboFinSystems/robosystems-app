@@ -699,7 +699,12 @@ export default function BackupManagementContent() {
       )}
 
       {/* Create Backup Modal */}
-      <Modal show={showCreateModal} onClose={handleCloseCreateModal} size="md">
+      <Modal
+        show={showCreateModal}
+        onClose={handleCloseCreateModal}
+        size="md"
+        theme={customTheme.modal}
+      >
         <ModalHeader>Create Backup</ModalHeader>
         <ModalBody>
           <div className="space-y-4">
@@ -794,6 +799,7 @@ export default function BackupManagementContent() {
         show={showRestoreModal}
         onClose={() => setShowRestoreModal(false)}
         size="md"
+        theme={customTheme.modal}
       >
         <ModalHeader>Restore Backup</ModalHeader>
         <ModalBody>
@@ -869,7 +875,6 @@ export default function BackupManagementContent() {
               restoreOperationMonitor.isMonitoring &&
               restoreOperationMonitor.progress !== 100
             }
-            color="gray"
           >
             {restoreOperationMonitor.isMonitoring &&
             restoreOperationMonitor.progress !== 100 ? (
@@ -906,6 +911,7 @@ export default function BackupManagementContent() {
         show={showDetailsModal}
         onClose={() => setShowDetailsModal(false)}
         size="lg"
+        theme={customTheme.modal}
       >
         <ModalHeader>Backup Details</ModalHeader>
         <ModalBody>

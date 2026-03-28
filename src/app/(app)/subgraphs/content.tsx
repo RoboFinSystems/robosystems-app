@@ -507,33 +507,27 @@ export function SubgraphsContent() {
             </p>
           </div>
         </ModalBody>
-        <ModalFooter className="border-t border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
-          <div className="flex w-full justify-end gap-3">
-            <Button
-              color="gray"
-              onClick={() => setDeleteModalOpen(false)}
-              className="bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleDeleteConfirm}
-              disabled={isDeleting}
-              className="bg-red-600 text-white hover:bg-red-700 focus:ring-4 focus:ring-red-300 disabled:opacity-50 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-            >
-              {isDeleting ? (
-                <>
-                  <Spinner size="sm" className="mr-2" />
-                  Deleting...
-                </>
-              ) : (
-                <>
-                  <HiTrash className="mr-2 h-5 w-5" />
-                  Delete Subgraph
-                </>
-              )}
-            </Button>
-          </div>
+        <ModalFooter>
+          <Button
+            color="failure"
+            onClick={handleDeleteConfirm}
+            disabled={isDeleting}
+          >
+            {isDeleting ? (
+              <>
+                <Spinner size="sm" className="mr-2" />
+                Deleting...
+              </>
+            ) : (
+              <>
+                <HiTrash className="mr-2 h-5 w-5" />
+                Delete Subgraph
+              </>
+            )}
+          </Button>
+          <Button color="gray" onClick={() => setDeleteModalOpen(false)}>
+            Cancel
+          </Button>
         </ModalFooter>
       </Modal>
     </div>
