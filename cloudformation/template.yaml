@@ -1,4 +1,4 @@
-Description: RoboSystems App Service - AWS App Runner
+Description: RoboSystems App Service - Amazon ECS Express Mode
 
 Parameters:
   # Environment & AWS Configuration
@@ -78,27 +78,27 @@ Parameters:
     MaxValue: 65535
     Description: Port the container listens on
 
-  # App Runner Compute Configuration
+  # ECS Express Compute Configuration
   Cpu:
     Type: String
-    Default: '0.25 vCPU'
-    Description: CPU for App Runner instance
+    Default: '256'
+    Description: CPU units for ECS task (256 = 0.25 vCPU, 512 = 0.5 vCPU, 1024 = 1 vCPU, 2048 = 2 vCPU)
     AllowedValues:
-      - '0.25 vCPU'
-      - '0.5 vCPU'
-      - '1 vCPU'
-      - '2 vCPU'
+      - '256'
+      - '512'
+      - '1024'
+      - '2048'
 
   Memory:
     Type: String
-    Default: '0.5 GB'
-    Description: Memory for App Runner instance
+    Default: '512'
+    Description: Memory in MiB for ECS task
     AllowedValues:
-      - '0.5 GB'
-      - '1 GB'
-      - '2 GB'
-      - '3 GB'
-      - '4 GB'
+      - '512'
+      - '1024'
+      - '2048'
+      - '3072'
+      - '4096'
 
   # Auto-scaling Configuration
   CapacityMin:
@@ -106,21 +106,14 @@ Parameters:
     Default: 1
     MinValue: 1
     MaxValue: 25
-    Description: Minimum number of instances for auto scaling
+    Description: Minimum number of tasks for auto scaling
 
   CapacityMax:
     Type: Number
     Default: 10
     MinValue: 1
     MaxValue: 25
-    Description: Maximum number of instances for auto scaling
-
-  MaxConcurrency:
-    Type: Number
-    Default: 100
-    MinValue: 1
-    MaxValue: 200
-    Description: Maximum concurrent requests per instance before scaling
+    Description: Maximum number of tasks for auto scaling
 
   # Tagging Configuration
   ServiceTag:
@@ -232,60 +225,23 @@ Resources:
       TopicArn: !Ref WaitlistTopic
       Endpoint: !Ref NotificationEmail
 
-  # IAM Role for App Runner to access ECR
-  AppRunnerAccessRole:
+  # IAM Role for ECS Task Execution (pulls images from ECR, writes logs, reads secrets)
+  ECSTaskExecutionRole:
     Type: AWS::IAM::Role
     DeletionPolicy: Delete
     UpdateReplacePolicy: Retain
     Properties:
-      RoleName: !Sub robosystems-app-${Environment}-apprunner-access
+      RoleName: !Sub robosystems-app-${Environment}-ecs-task-execution
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
-              Service: build.apprunner.amazonaws.com
+              Service: ecs-tasks.amazonaws.com
             Action: sts:AssumeRole
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess
-      Tags:
-        - Key: Environment
-          Value: !Ref Environment
-        - Key: Service
-          Value: !Ref ServiceTag
-        - Key: Component
-          Value: !Ref ComponentTag
-        - Key: CreatedBy
-          Value: CloudFormation
-
-  # IAM Role for App Runner instance (for SNS access)
-  AppRunnerInstanceRole:
-    Type: AWS::IAM::Role
-    DeletionPolicy: Delete
-    UpdateReplacePolicy: Retain
-    Properties:
-      RoleName: !Sub robosystems-app-${Environment}-apprunner-instance
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: tasks.apprunner.amazonaws.com
-            Action: sts:AssumeRole
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
       Policies:
-        - !If
-          - CreateSNSTopic
-          - PolicyName: SNSPublishPolicy
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - sns:Publish
-                  Resource:
-                    - !Ref ContactFormTopic
-                    - !Ref WaitlistTopic
-          - !Ref AWS::NoValue
         - PolicyName: SecretsManagerAccess
           PolicyDocument:
             Version: '2012-10-17'
@@ -305,14 +261,23 @@ Resources:
         - Key: CreatedBy
           Value: CloudFormation
 
-  # Auto Scaling Configuration
-  AppRunnerAutoScaling:
-    Type: AWS::AppRunner::AutoScalingConfiguration
+  # IAM Role for ECS Express Infrastructure (manages ALB, security groups, auto-scaling)
+  ECSInfrastructureRole:
+    Type: AWS::IAM::Role
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Retain
     Properties:
-      AutoScalingConfigurationName: !Sub robosystems-${Environment}-autoscaling
-      MaxConcurrency: !Ref MaxConcurrency
-      MaxSize: !Ref CapacityMax
-      MinSize: !Ref CapacityMin
+      RoleName: !Sub robosystems-app-${Environment}-ecs-infrastructure
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowAccessInfrastructureForECSExpressServices
+            Effect: Allow
+            Principal:
+              Service: ecs.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSInfrastructureRoleforExpressGatewayServices
       Tags:
         - Key: Environment
           Value: !Ref Environment
@@ -323,53 +288,77 @@ Resources:
         - Key: CreatedBy
           Value: CloudFormation
 
-  # App Runner Service
-  AppRunnerService:
-    Type: AWS::AppRunner::Service
+  # IAM Role for ECS Task (application-level AWS access: SNS publishing)
+  ECSTaskRole:
+    Type: AWS::IAM::Role
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Retain
+    Properties:
+      RoleName: !Sub robosystems-app-${Environment}-ecs-task
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - !If
+          - CreateSNSTopic
+          - PolicyName: SNSPublishPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - sns:Publish
+                  Resource:
+                    - !Ref ContactFormTopic
+                    - !Ref WaitlistTopic
+          - !Ref AWS::NoValue
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Service
+          Value: !Ref ServiceTag
+        - Key: Component
+          Value: !Ref ComponentTag
+        - Key: CreatedBy
+          Value: CloudFormation
+
+  # ECS Express Mode Service
+  ECSExpressService:
+    Type: AWS::ECS::ExpressGatewayService
     DeletionPolicy: Delete
     UpdateReplacePolicy: Retain
     Properties:
       ServiceName: !Sub robosystems-app-${Environment}
-      SourceConfiguration:
-        AuthenticationConfiguration:
-          AccessRoleArn: !GetAtt AppRunnerAccessRole.Arn
-        AutoDeploymentsEnabled: false
-        ImageRepository:
-          ImageIdentifier: !Sub ${AWSAccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepository}:${ECRImageTag}
-          ImageRepositoryType: ECR
-          ImageConfiguration:
-            Port: !Ref ContainerPort
-            RuntimeEnvironmentVariables:
-              - Name: NODE_ENV
-                Value: production
-              - Name: SNS_CONTACT_TOPIC_ARN
-                Value: !If [CreateSNSTopic, !Ref ContactFormTopic, '']
-              - Name: SNS_WAITLIST_TOPIC_ARN
-                Value: !If [CreateSNSTopic, !Ref WaitlistTopic, '']
-              - Name: REQUIRE_CAPTCHA
-                Value: 'true'
-            RuntimeEnvironmentSecrets:
-              - Name: TURNSTILE_SECRET_KEY
-                Value: !Sub '${RoboSystemsSecretsArn}:TURNSTILE_SECRET_KEY::'
-              - Name: TURNSTILE_SITE_KEY
-                Value: !Sub '${RoboSystemsSecretsArn}:TURNSTILE_SITE_KEY::'
-      InstanceConfiguration:
-        Cpu: !Ref Cpu
-        Memory: !Ref Memory
-        InstanceRoleArn: !GetAtt AppRunnerInstanceRole.Arn
-      HealthCheckConfiguration:
-        Protocol: HTTP
-        Path: /api/utilities/health
-        Interval: 10
-        Timeout: 5
-        HealthyThreshold: 1
-        UnhealthyThreshold: 5
-      AutoScalingConfigurationArn: !GetAtt AppRunnerAutoScaling.AutoScalingConfigurationArn
-      NetworkConfiguration:
-        EgressConfiguration:
-          EgressType: DEFAULT
-      ObservabilityConfiguration:
-        ObservabilityEnabled: false
+      ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
+      InfrastructureRoleArn: !GetAtt ECSInfrastructureRole.Arn
+      TaskRoleArn: !GetAtt ECSTaskRole.Arn
+      Cpu: !Ref Cpu
+      Memory: !Ref Memory
+      HealthCheckPath: /api/utilities/health
+      PrimaryContainer:
+        Image: !Sub ${AWSAccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepository}:${ECRImageTag}
+        ContainerPort: !Ref ContainerPort
+        Environment:
+          - Name: NODE_ENV
+            Value: production
+          - Name: SNS_CONTACT_TOPIC_ARN
+            Value: !If [CreateSNSTopic, !Ref ContactFormTopic, '']
+          - Name: SNS_WAITLIST_TOPIC_ARN
+            Value: !If [CreateSNSTopic, !Ref WaitlistTopic, '']
+          - Name: REQUIRE_CAPTCHA
+            Value: 'true'
+        Secrets:
+          - Name: TURNSTILE_SECRET_KEY
+            ValueFrom: !Sub '${RoboSystemsSecretsArn}:TURNSTILE_SECRET_KEY::'
+          - Name: TURNSTILE_SITE_KEY
+            ValueFrom: !Sub '${RoboSystemsSecretsArn}:TURNSTILE_SITE_KEY::'
+      ScalingTarget:
+        MinTaskCount: !Ref CapacityMin
+        MaxTaskCount: !Ref CapacityMax
       Tags:
         - Key: Environment
           Value: !Ref Environment
@@ -433,15 +422,15 @@ Resources:
             S3OriginConfig:
               OriginAccessIdentity: ''
             OriginAccessControlId: !Ref CloudFrontOAC
-          - Id: AppRunner-Dynamic-Content
-            DomainName: !GetAtt AppRunnerService.ServiceUrl
+          - Id: ECS-Dynamic-Content
+            DomainName: !GetAtt ECSExpressService.Endpoint
             CustomOriginConfig:
               HTTPSPort: 443
               OriginProtocolPolicy: https-only
               OriginSSLProtocols:
                 - TLSv1.2
         DefaultCacheBehavior:
-          TargetOriginId: AppRunner-Dynamic-Content
+          TargetOriginId: ECS-Dynamic-Content
           ViewerProtocolPolicy: redirect-to-https
           AllowedMethods:
             - DELETE
@@ -558,7 +547,7 @@ Resources:
           MinimumProtocolVersion: TLSv1.2_2021
         Origins:
           - Id: Dummy-Origin
-            DomainName: !GetAtt AppRunnerService.ServiceUrl
+            DomainName: !GetAtt ECSExpressService.Endpoint
             CustomOriginConfig:
               HTTPSPort: 443
               OriginProtocolPolicy: https-only
@@ -630,17 +619,13 @@ Outputs:
       - !Sub https://${DomainName}
       - !Sub https://${CloudFrontDistribution.DomainName}
 
-  AppRunnerServiceUrl:
-    Description: App Runner service URL (direct access)
-    Value: !GetAtt AppRunnerService.ServiceUrl
+  ECSServiceEndpoint:
+    Description: ECS Express Mode service endpoint (direct access)
+    Value: !GetAtt ECSExpressService.Endpoint
 
-  AppRunnerServiceArn:
-    Description: App Runner service ARN
-    Value: !GetAtt AppRunnerService.ServiceArn
-
-  AppRunnerServiceId:
-    Description: App Runner service ID
-    Value: !GetAtt AppRunnerService.ServiceId
+  ECSServiceArn:
+    Description: ECS Express Mode service ARN
+    Value: !GetAtt ECSExpressService.ServiceArn
 
   CertificateArn:
     Condition: IsPublicMode
@@ -692,7 +677,7 @@ Outputs:
       URL: https://${DomainName}
 
       CloudFront Distribution: ${CloudFrontDistribution.DomainName}
-      App Runner Service: ${AppRunnerService.ServiceUrl}
+      ECS Service: ${ECSExpressService.Endpoint}
 
   PublicHttpAccessInstructions:
     Condition: IsPublicHttpMode
@@ -702,4 +687,4 @@ Outputs:
 
       URL: https://${CloudFrontDistribution.DomainName}
 
-      App Runner Service: ${AppRunnerService.ServiceUrl}
+      ECS Service: ${ECSExpressService.Endpoint}
