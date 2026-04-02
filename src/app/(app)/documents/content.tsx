@@ -820,7 +820,7 @@ export function DocumentsPageContent() {
                   </span>
                   {!isRepository && doc.source_type === 'uploaded_doc' && (
                     <div
-                      role="group"
+                      role="toolbar"
                       className="flex gap-1"
                       onClick={(e) => e.stopPropagation()}
                       onKeyDown={(e) => e.stopPropagation()}
