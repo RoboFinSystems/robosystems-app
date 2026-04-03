@@ -3,6 +3,7 @@
 import { customTheme, useGraphContext, useIsRepository } from '@/lib/core'
 import { useToast } from '@/lib/core/hooks/use-toast'
 import { Spinner as AppSpinner } from '@/lib/core/ui-components'
+import type { Monaco } from '@monaco-editor/react'
 import type {
   DocumentDetailResponse,
   DocumentListItem,
@@ -98,7 +99,7 @@ const EDITOR_OPTIONS = {
   smoothScrolling: true,
 }
 
-async function setupMonacoTheme(monaco: any) {
+async function setupMonacoTheme(monaco: Monaco) {
   const { robosystemsTheme } = await import('@/lib/monaco-theme')
   monaco.editor.defineTheme('robosystems', robosystemsTheme)
   monaco.editor.setTheme('robosystems')
@@ -129,6 +130,7 @@ export function DocumentsPageContent() {
   const [editTitle, setEditTitle] = useState('')
   const [editTags, setEditTags] = useState<string[]>([])
   const [editFolder, setEditFolder] = useState('')
+  const [tagInput, setTagInput] = useState('')
   const [saving, setSaving] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
 
@@ -197,8 +199,10 @@ export function DocumentsPageContent() {
     setHasChanges(false)
   }
 
-  const handleSelectDocument = async (doc: DocumentListItem) => {
-    if (!selectedGraphId) return
+  const handleSelectDocument = async (
+    doc: DocumentListItem
+  ): Promise<boolean> => {
+    if (!selectedGraphId) return false
 
     setDetailLoading(true)
     setIsEditMode(false)
@@ -219,9 +223,11 @@ export function DocumentsPageContent() {
       setEditTitle(response.data.title)
       setEditTags(response.data.tags || [])
       setEditFolder(response.data.folder || '')
+      return true
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Failed to load document'
       showError(msg, 5000)
+      return false
     } finally {
       setDetailLoading(false)
     }
@@ -235,6 +241,7 @@ export function DocumentsPageContent() {
     setEditContent('')
     setEditTags([])
     setEditFolder('')
+    setTagInput('')
     setHasChanges(false)
   }
 
@@ -246,6 +253,7 @@ export function DocumentsPageContent() {
     setEditTitle(selectedDoc.title)
     setEditTags(selectedDoc.tags || [])
     setEditFolder(selectedDoc.folder || '')
+    setTagInput('')
     setHasChanges(false)
     setIsEditMode(true)
   }
@@ -255,7 +263,6 @@ export function DocumentsPageContent() {
       if (!confirm('You have unsaved changes. Discard them?')) return
     }
     if (isNewDocument) {
-      // Going back to list from a new doc that was never saved
       setIsNewDocument(false)
       setIsEditMode(false)
       setSelectedDoc(null)
@@ -274,7 +281,6 @@ export function DocumentsPageContent() {
       setSaving(true)
 
       if (isNewDocument) {
-        // Create new document
         const response = await uploadDocument({
           path: { graph_id: selectedGraphId },
           body: {
@@ -291,7 +297,6 @@ export function DocumentsPageContent() {
             5000
           )
 
-          // Load the created document into detail view
           const created = await getDocument({
             path: { graph_id: selectedGraphId, document_id: response.data.id },
           })
@@ -309,7 +314,6 @@ export function DocumentsPageContent() {
           )
         }
       } else if (selectedDoc) {
-        // Update existing document
         const response = await updateDocument({
           path: {
             graph_id: selectedGraphId,
@@ -391,6 +395,17 @@ export function DocumentsPageContent() {
     } finally {
       setDeleting(false)
     }
+  }
+
+  // --- Tag Input Handler ---
+
+  const handleAddTag = () => {
+    const val = tagInput.trim().toLowerCase()
+    if (val && !editTags.includes(val)) {
+      setEditTags([...editTags, val])
+      setHasChanges(true)
+    }
+    setTagInput('')
   }
 
   // --- Loading State ---
@@ -608,20 +623,15 @@ export function DocumentsPageContent() {
                 <TextInput
                   sizing="sm"
                   placeholder="add..."
-                  className="w-24 flex-shrink-0"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault()
-                      const val = (e.target as HTMLInputElement).value
-                        .trim()
-                        .toLowerCase()
-                      if (val && !editTags.includes(val)) {
-                        setEditTags([...editTags, val])
-                        setHasChanges(true)
-                      }
-                      ;(e.target as HTMLInputElement).value = ''
+                      handleAddTag()
                     }
                   }}
+                  className="w-24 flex-shrink-0"
                 />
               </>
             ) : selectedDoc?.tags && selectedDoc.tags.length > 0 ? (
@@ -667,68 +677,6 @@ export function DocumentsPageContent() {
             </div>
           ) : null}
         </Card>
-
-        {/* Delete Modal */}
-        <Modal
-          theme={customTheme.modal}
-          show={showDeleteModal}
-          onClose={() => !deleting && setShowDeleteModal(false)}
-          size="md"
-        >
-          <ModalHeader>Delete Document</ModalHeader>
-          <ModalBody>
-            <div className="space-y-4">
-              <div className="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
-                <div className="flex gap-2">
-                  <HiExclamation className="h-5 w-5 text-red-600" />
-                  <div>
-                    <h4 className="font-medium text-red-800 dark:text-red-300">
-                      This action cannot be undone
-                    </h4>
-                    <p className="mt-1 text-sm text-red-700 dark:text-red-400">
-                      This document will be permanently removed.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              {deleteTarget && (
-                <div>
-                  <Label>Document</Label>
-                  <p className="mt-1 text-sm font-medium text-gray-900 dark:text-white">
-                    {deleteTarget.document_title}
-                  </p>
-                </div>
-              )}
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              theme={customTheme.button}
-              color="failure"
-              onClick={handleDelete}
-              disabled={deleting}
-            >
-              {deleting ? (
-                <>
-                  <Spinner size="sm" className="mr-2" />
-                  Deleting...
-                </>
-              ) : (
-                <>
-                  <HiTrash className="mr-2 h-4 w-4" />
-                  Delete
-                </>
-              )}
-            </Button>
-            <Button
-              color="gray"
-              onClick={() => setShowDeleteModal(false)}
-              disabled={deleting}
-            >
-              Cancel
-            </Button>
-          </ModalFooter>
-        </Modal>
 
         <ToastContainer />
       </div>
@@ -821,17 +769,22 @@ export function DocumentsPageContent() {
                   {!isRepository && doc.source_type === 'uploaded_doc' && (
                     <div
                       role="toolbar"
+                      aria-label="Document actions"
                       className="flex gap-1"
                       onClick={(e) => e.stopPropagation()}
-                      onKeyDown={(e) => e.stopPropagation()}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.stopPropagation()
+                        }
+                      }}
                     >
                       <Tooltip content="Edit">
                         <Button
                           size="xs"
                           color="gray"
                           onClick={async () => {
-                            await handleSelectDocument(doc)
-                            setIsEditMode(true)
+                            const success = await handleSelectDocument(doc)
+                            if (success) setIsEditMode(true)
                           }}
                         >
                           <HiPencil className="h-3.5 w-3.5" />
@@ -858,7 +811,7 @@ export function DocumentsPageContent() {
         </div>
       )}
 
-      {/* Delete Confirmation Modal (from list view) */}
+      {/* Delete Confirmation Modal */}
       <Modal
         theme={customTheme.modal}
         show={showDeleteModal}
