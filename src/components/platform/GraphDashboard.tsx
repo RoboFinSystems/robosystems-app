@@ -1,10 +1,21 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import {
+  HiChartBar,
   HiChevronDown,
+  HiChip,
+  HiCode,
   HiDatabase,
+  HiDocumentText,
+  HiGlobeAlt,
+  HiHome,
   HiMenu,
   HiMoon,
+  HiPlay,
+  HiPlus,
+  HiSearch,
+  HiTable,
+  HiTerminal,
   HiUser,
   HiViewGrid,
 } from 'react-icons/hi'
@@ -28,6 +39,19 @@ export default function GraphDashboard() {
       id: 'sec',
       isRepository: true,
     },
+  ]
+
+  const sidebarItems = [
+    { icon: HiHome, label: 'Home', active: true },
+    { icon: HiViewGrid, label: 'Dashboard' },
+    { icon: HiTerminal, label: 'Console' },
+    { icon: HiSearch, label: 'Search' },
+    { icon: HiDocumentText, label: 'Knowledge Base' },
+    { icon: HiTable, label: 'Data Lake' },
+    { icon: HiCode, label: 'Schema' },
+    { icon: HiChip, label: 'Subgraphs' },
+    { icon: HiDatabase, label: 'Backups' },
+    { icon: HiChartBar, label: 'Usage' },
   ]
 
   return (
@@ -77,9 +101,7 @@ export default function GraphDashboard() {
                     >
                       <div
                         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-                          graph.isRepository
-                            ? 'bg-purple-600/20'
-                            : 'bg-blue-600/20'
+                          graph.isRepository ? 'bg-purple-900' : 'bg-blue-900'
                         }`}
                       >
                         <HiDatabase
@@ -95,7 +117,7 @@ export default function GraphDashboard() {
                           {graph.name}
                         </div>
                         <div className="truncate text-xs text-gray-400">
-                          {graph.id.slice(0, 10)}
+                          {graph.id}
                         </div>
                       </div>
                       {selectedGraph.id === graph.id && (
@@ -119,9 +141,9 @@ export default function GraphDashboard() {
         </div>
 
         {/* Platform Interface */}
-        <div className="flex h-[550px]">
+        <div className="flex h-[480px]">
           {/* Sidebar */}
-          <div className="hidden border-r border-gray-800 bg-zinc-950 p-4 md:block md:w-48 lg:w-64">
+          <div className="hidden border-r border-gray-800 bg-zinc-950 p-4 lg:block lg:w-52">
             <div className="mb-4 rounded-lg bg-zinc-900 px-3 py-2">
               <div className="flex items-center gap-2 text-sm text-gray-400">
                 <HiDatabase className="h-4 w-4" />
@@ -131,97 +153,52 @@ export default function GraphDashboard() {
 
             {/* Navigation Items */}
             <nav className="space-y-1">
-              {[
-                {
-                  icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
-                  label: 'Home',
-                  active: true,
-                },
-                {
-                  icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z',
-                  label: 'Dashboard',
-                },
-                {
-                  icon: 'M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
-                  label: 'Console',
-                },
-                {
-                  icon: 'M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z',
-                  label: 'Data Lake',
-                },
-                {
-                  icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
-                  label: 'Schema',
-                },
-                {
-                  icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
-                  label: 'Subgraphs',
-                },
-                {
-                  icon: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4',
-                  label: 'Backups',
-                },
-                {
-                  icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
-                  label: 'Usage',
-                },
-                {
-                  icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9',
-                  label: 'Repositories',
-                },
-                {
-                  icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
-                  label: 'Billing',
-                },
-              ].map((item, idx) => (
-                <div
-                  key={idx}
-                  className={`px-3 py-2 text-sm ${
-                    item.active
-                      ? 'rounded-lg bg-zinc-800 text-white'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <svg
-                      className="h-4 w-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d={item.icon}
-                      />
-                    </svg>
-                    {item.label}
+              {sidebarItems.map((item, idx) => {
+                const Icon = item.icon
+                return (
+                  <div
+                    key={idx}
+                    className={`px-3 py-2 text-sm ${
+                      item.active
+                        ? 'rounded-lg bg-zinc-800 text-white'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </nav>
           </div>
 
           {/* Main Content */}
           <div className="flex-1 bg-black p-6">
             {/* Header */}
-            <div className="mb-6 flex items-center justify-between">
-              <div>
-                <h2 className="font-heading text-2xl font-bold text-white">
-                  Graphs & Repositories
-                </h2>
-                <p className="mt-1 text-xs text-gray-400">
-                  Manage your graphs and access shared repositories
-                </p>
+            <div className="mb-6 flex items-start justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
+                  <HiHome className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <h2 className="font-heading text-2xl font-bold text-white">
+                    Graphs & Repositories
+                  </h2>
+                  <p className="mt-1 text-xs text-gray-400">
+                    Manage your graphs and access repositories
+                  </p>
+                </div>
               </div>
               <div className="hidden gap-2 md:flex">
-                <button className="rounded-lg bg-purple-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-purple-700">
-                  <span className="mr-1.5">🌐</span>
+                <button className="flex items-center gap-2 rounded-lg bg-purple-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-purple-700">
+                  <HiGlobeAlt className="h-4 w-4" />
                   Browse Repositories
                 </button>
-                <button className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700">
-                  + Create Graph
+                <button className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700">
+                  <HiPlus className="h-4 w-4" />
+                  Create Graph
                 </button>
               </div>
             </div>
@@ -240,222 +217,177 @@ function GraphTable() {
     {
       name: 'RFS LLC',
       id: 'kg9c3d6',
-      status: 'Active',
-      date: '8/19/2025',
+      graphType: 'entity',
+      schemaExtensions: ['roboledger'],
+      createdAt: '9/9/2025',
       isRepository: false,
+      isActive: true,
+    },
+    {
+      name: 'Harbinger FinLab',
+      id: 'kg7f2a1',
+      graphType: 'entity',
+      schemaExtensions: ['roboledger', 'roboinvestor'],
+      createdAt: '3/6/2026',
+      isRepository: false,
+      isActive: false,
     },
     {
       name: 'SEC EDGAR Filings',
       id: 'sec',
-      status: 'Inactive',
-      date: '1/15/2025',
+      graphType: 'repository',
+      schemaExtensions: ['roboinvestor'],
+      createdAt: '2/14/2026',
       isRepository: true,
+      isActive: false,
     },
   ]
 
   return (
-    <div className="rounded-xl border border-gray-800 bg-zinc-900/50 p-4 md:p-6">
-      {/* Desktop headers */}
-      <div className="mb-4 hidden gap-4 text-xs font-medium tracking-wider text-gray-500 uppercase lg:grid lg:grid-cols-2 xl:grid-cols-3">
-        <div>Graph / Repository</div>
-        <div className="hidden xl:block">Status</div>
-        <div className="text-right">Actions</div>
+    <div className="rounded-xl border border-gray-800 bg-zinc-900/50">
+      {/* Table Header */}
+      <div className="hidden border-b border-gray-800 px-6 py-3 md:grid md:grid-cols-4">
+        <div className="text-xs font-medium tracking-wider text-gray-500 uppercase">
+          Graph / Repository
+        </div>
+        <div className="text-xs font-medium tracking-wider text-gray-500 uppercase">
+          Type & Extensions
+        </div>
+        <div className="text-xs font-medium tracking-wider text-gray-500 uppercase">
+          Created
+        </div>
+        <div className="text-right text-xs font-medium tracking-wider text-gray-500 uppercase">
+          Actions
+        </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="divide-y divide-gray-800">
         {items.map((item, idx) => (
-          <div key={idx} className="rounded-lg bg-zinc-800/50 p-3 md:p-4">
+          <div
+            key={idx}
+            className={`px-6 py-4 ${
+              item.isActive
+                ? 'bg-blue-900/20 ring-2 ring-blue-400 ring-inset'
+                : ''
+            }`}
+          >
             {/* Desktop layout */}
-            <div className="hidden items-center gap-4 lg:grid lg:grid-cols-2 xl:grid-cols-3">
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
-                      item.isRepository ? 'bg-purple-600/20' : 'bg-blue-600/20'
-                    }`}
-                  >
-                    <svg
-                      className={`h-5 w-5 ${
-                        item.isRepository ? 'text-purple-400' : 'text-blue-400'
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
-                      />
-                    </svg>
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-sm font-medium text-white">
-                      {item.name}
-                    </div>
-                    <div className="truncate text-xs text-gray-400">
-                      {item.id.slice(0, 10)}
-                    </div>
-                  </div>
-                </div>
-                <div className="xl:hidden">
-                  <span
-                    className={`inline-flex rounded-md px-2.5 py-1 text-xs font-medium ${
-                      item.status === 'Active'
-                        ? 'bg-green-500/20 text-green-400'
-                        : 'bg-gray-500/20 text-gray-400'
-                    }`}
-                  >
-                    {item.status}
-                  </span>
-                </div>
-              </div>
-
-              <div className="hidden xl:block">
-                <span
-                  className={`inline-flex rounded-md px-2.5 py-1 text-xs font-medium ${
-                    item.status === 'Active'
-                      ? 'bg-green-500/20 text-green-400'
-                      : 'bg-gray-500/20 text-gray-400'
+            <div className="hidden items-center md:grid md:grid-cols-4">
+              {/* Graph / Repository */}
+              <div className="flex items-center gap-3">
+                <div
+                  className={`shrink-0 rounded-lg p-2 ${
+                    item.isRepository ? 'bg-purple-900' : 'bg-blue-900'
                   }`}
                 >
-                  {item.status}
-                </span>
+                  <HiDatabase
+                    className={`h-4 w-4 ${
+                      item.isRepository ? 'text-purple-400' : 'text-blue-400'
+                    }`}
+                  />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-white">
+                    {item.name}
+                  </div>
+                  <div className="truncate font-mono text-xs text-gray-400">
+                    {item.id}
+                  </div>
+                </div>
               </div>
 
-              <div className="flex justify-end gap-2">
+              {/* Type & Extensions */}
+              <div className="flex flex-col gap-1.5">
+                <span className="text-xs text-gray-300 capitalize">
+                  {item.graphType}
+                </span>
+                {item.schemaExtensions.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {item.schemaExtensions.map((ext) => (
+                      <span
+                        key={ext}
+                        className="rounded-md bg-purple-900/50 px-2 py-0.5 text-xs font-medium text-purple-300"
+                      >
+                        {ext}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Created */}
+              <div className="text-sm text-gray-400">{item.createdAt}</div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-end gap-1.5">
                 <button className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700">
-                  <svg
-                    className="h-3.5 w-3.5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-                  </svg>
-                  Open
+                  <HiPlay className="h-3.5 w-3.5" />
+                  <span className="hidden xl:inline">Open</span>
                 </button>
                 <button className="flex items-center gap-1.5 rounded-lg bg-zinc-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-600">
-                  <svg
-                    className="h-3.5 w-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  Console
+                  <HiTerminal className="h-3.5 w-3.5" />
+                  <span className="hidden xl:inline">Console</span>
                 </button>
                 <button className="flex items-center gap-1.5 rounded-lg bg-zinc-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-600">
-                  <svg
-                    className="h-3.5 w-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                    />
-                  </svg>
-                  Usage
+                  <HiChartBar className="h-3.5 w-3.5" />
+                  <span className="hidden xl:inline">Usage</span>
                 </button>
               </div>
             </div>
 
             {/* Mobile layout */}
-            <div className="space-y-3 lg:hidden">
+            <div className="space-y-3 md:hidden">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
-                      item.isRepository ? 'bg-purple-600/20' : 'bg-blue-600/20'
+                    className={`shrink-0 rounded-lg p-2 ${
+                      item.isRepository ? 'bg-purple-900' : 'bg-blue-900'
                     }`}
                   >
-                    <svg
+                    <HiDatabase
                       className={`h-5 w-5 ${
                         item.isRepository ? 'text-purple-400' : 'text-blue-400'
                       }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
-                      />
-                    </svg>
+                    />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-sm font-medium text-white">
+                    <div className="text-sm font-semibold text-white">
                       {item.name}
                     </div>
-                    <div className="truncate text-xs text-gray-400">
-                      {item.id.slice(0, 10)}
+                    <div className="truncate font-mono text-xs text-gray-400">
+                      {item.id}
                     </div>
                   </div>
                 </div>
-                <span
-                  className={`hidden shrink-0 rounded-md px-2.5 py-1 text-xs font-medium xs:block${
-                    item.status === 'Active'
-                      ? 'bg-green-500/20 text-green-400'
-                      : 'bg-gray-500/20 text-gray-400'
-                  }`}
-                >
-                  {item.status}
+                <span className="text-xs text-gray-300 capitalize">
+                  {item.graphType}
                 </span>
               </div>
 
+              {item.schemaExtensions.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {item.schemaExtensions.map((ext) => (
+                    <span
+                      key={ext}
+                      className="rounded-md bg-purple-900/50 px-2 py-0.5 text-xs font-medium text-purple-300"
+                    >
+                      {ext}
+                    </span>
+                  ))}
+                </div>
+              )}
+
               <div className="flex flex-wrap gap-2">
                 <button className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-medium text-white hover:bg-blue-700">
-                  <svg
-                    className="h-3.5 w-3.5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-                  </svg>
+                  <HiPlay className="h-3.5 w-3.5" />
                   Open
                 </button>
                 <button className="flex items-center gap-1.5 rounded-lg bg-zinc-700 px-3 py-2 text-xs font-medium text-white hover:bg-zinc-600">
-                  <svg
-                    className="h-3.5 w-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
+                  <HiTerminal className="h-3.5 w-3.5" />
                   Console
                 </button>
                 <button className="flex items-center gap-1.5 rounded-lg bg-zinc-700 px-3 py-2 text-xs font-medium text-white hover:bg-zinc-600">
-                  <svg
-                    className="h-3.5 w-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                    />
-                  </svg>
+                  <HiChartBar className="h-3.5 w-3.5" />
                   Usage
                 </button>
               </div>

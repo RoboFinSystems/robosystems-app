@@ -51,7 +51,7 @@ export default function SchemaArchitecture() {
     },
     {
       name: 'RoboLedger',
-      description: 'Accounting & reporting schema',
+      description: 'Accounting & reporting extension',
       components: [
         'Report',
         'Fact',
@@ -65,7 +65,7 @@ export default function SchemaArchitecture() {
     },
     {
       name: 'RoboInvestor',
-      description: 'Investment management',
+      description: 'Investment & securities extension',
       components: ['Portfolio', 'Security', 'Position', 'Market Data'],
       app: 'roboinvestor' as const,
     },
@@ -100,8 +100,9 @@ export default function SchemaArchitecture() {
           </h2>
           <p className="mx-auto max-w-3xl text-gray-400">
             Unify disparate financial data sources into a cohesive, queryable
-            knowledge graph with hybrid document search that powers advanced
-            analytics and AI-native applications
+            knowledge graph with hybrid semantic search, persistent AI memory,
+            and domain extensions that power advanced analytics and AI-native
+            applications
           </p>
         </div>
 
@@ -280,11 +281,12 @@ export default function SchemaArchitecture() {
               </svg>
             </div>
             <h3 className="mb-2 text-lg font-semibold text-white">
-              Extensible Schemas
+              Domain Extensions
             </h3>
             <p className="text-sm text-gray-400">
-              Start with Base, RoboLedger, or RoboInvestor schemas—then extend
-              with custom nodes and relationships for your domain
+              Start with the base schema, add RoboLedger or RoboInvestor
+              extensions, then extend with custom nodes and relationships for
+              your domain
             </p>
           </div>
           <div className="group rounded-xl border border-gray-800 bg-gradient-to-br from-purple-500/10 to-zinc-900 p-6 transition-all hover:border-purple-500/50">
@@ -328,11 +330,11 @@ export default function SchemaArchitecture() {
               </svg>
             </div>
             <h3 className="mb-2 text-lg font-semibold text-white">
-              Document Search
+              Semantic Hybrid Search
             </h3>
             <p className="text-sm text-gray-400">
-              Search across filings, disclosures, and financial documents with
-              hybrid full-text and semantic matching powered by OpenSearch
+              Search across filings, disclosures, and documents with hybrid BM25
+              full-text and KNN semantic vector matching powered by OpenSearch
             </p>
           </div>
         </div>

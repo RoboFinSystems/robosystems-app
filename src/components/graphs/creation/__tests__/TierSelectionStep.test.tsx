@@ -14,26 +14,26 @@ const mockTiers = [
   {
     tier: 'ladybug-standard',
     display_name: 'Standard',
-    monthly_price: 0,
-    monthly_credits: 1000,
-    max_subgraphs: 0,
-    features: ['1,000 AI credits/month', 'Community support'],
+    monthly_price: 99,
+    monthly_credits: 8000,
+    max_subgraphs: 3,
+    features: ['8,000 AI credits/month', 'Priority support'],
   },
   {
     tier: 'ladybug-large',
     display_name: 'Large',
-    monthly_price: 49,
-    monthly_credits: 10000,
-    max_subgraphs: 3,
-    features: ['10,000 AI credits/month', 'Priority support'],
+    monthly_price: 299,
+    monthly_credits: 32000,
+    max_subgraphs: 10,
+    features: ['32,000 AI credits/month', 'Priority support'],
   },
   {
     tier: 'ladybug-xlarge',
     display_name: 'XLarge',
-    monthly_price: 199,
-    monthly_credits: 50000,
-    max_subgraphs: 10,
-    features: ['50,000 AI credits/month', 'Dedicated support'],
+    monthly_price: 699,
+    monthly_credits: 100000,
+    max_subgraphs: 25,
+    features: ['100,000 AI credits/month', 'Priority support'],
   },
 ]
 
@@ -190,9 +190,9 @@ describe('TierSelectionStep', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByText('$0')).toBeInTheDocument()
-        expect(screen.getByText('$49')).toBeInTheDocument()
-        expect(screen.getByText('$199')).toBeInTheDocument()
+        expect(screen.getByText('$99')).toBeInTheDocument()
+        expect(screen.getByText('$299')).toBeInTheDocument()
+        expect(screen.getByText('$699')).toBeInTheDocument()
       })
     })
 
@@ -205,9 +205,8 @@ describe('TierSelectionStep', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByText('1,000 AI credits/month')).toBeInTheDocument()
-        expect(screen.getByText('Community support')).toBeInTheDocument()
-        expect(screen.getByText('Priority support')).toBeInTheDocument()
+        expect(screen.getByText('8,000 AI credits/month')).toBeInTheDocument()
+        expect(screen.getByText('32,000 AI credits/month')).toBeInTheDocument()
       })
     })
 

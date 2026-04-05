@@ -67,11 +67,12 @@ export default function PricingContent() {
                     <span className="text-gray-300">Text-to-Cypher</span> — ask
                     questions in plain English and our AI converts them into
                     optimized Cypher queries, executes them against your graph,
-                    and returns formatted results. A typical query uses just 1–2
-                    credits. All other operations — MCP tool access, database
-                    queries, file uploads, graph materialization, backups, and
-                    downloads — are included in your plan at no additional
-                    credit cost (subject to rate limits by tier).
+                    and returns formatted results. Credits are calculated based
+                    on actual token usage per call. All other operations — MCP
+                    tool access, database queries, file uploads, graph
+                    materialization, backups, and downloads — are included in
+                    your plan at no additional credit cost (subject to rate
+                    limits by tier).
                   </p>
                 </div>
                 <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700">

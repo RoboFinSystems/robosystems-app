@@ -19,11 +19,11 @@ export default function FinancialServices() {
       icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z',
       gradient: 'from-cyan-500 to-blue-500',
       description:
-        'Natural language queries against the SEC repository via Claude AI and the MCP protocol.',
+        'Natural language queries against the SEC repository via Claude AI and the MCP protocol with semantic memory.',
       currentFeatures: [
         'Ask questions in plain English',
         'AI-generated Cypher queries',
-        'Structured financial data responses',
+        'Semantic memory across sessions',
       ],
     },
     {
@@ -78,8 +78,9 @@ export default function FinancialServices() {
             Securities Research & Investment Analytics
           </h2>
           <p className="mx-auto max-w-3xl text-gray-400">
-            Access the SEC Shared Repository through RoboInvestor for AI-powered
-            securities research and competitive analysis
+            The RoboInvestor extension provides AI-powered securities research
+            and competitive analysis against the SEC Shared Repository with
+            semantic search across filings and disclosures
           </p>
         </div>
 
@@ -211,9 +212,9 @@ function InvestmentServiceCard({
   ]
 
   return (
-    <div className="group relative">
+    <div className="group relative h-full">
       <div
-        className={`relative overflow-hidden rounded-xl border border-gray-800 bg-gradient-to-br ${bgGradients[index]} p-6 transition-all duration-300 ${borderColors[index]}`}
+        className={`relative h-full overflow-hidden rounded-xl border border-gray-800 bg-gradient-to-br ${bgGradients[index]} p-6 transition-all duration-300 ${borderColors[index]}`}
       >
         {/* Gradient Overlay */}
         <div

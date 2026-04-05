@@ -8,7 +8,7 @@ export default function BusinessServices() {
       color: 'cyan',
       highlight: 'OAuth2 Secure Connection',
       description:
-        'Synchronize your QuickBooks accounting data into the RoboLedger schema for unified reporting and analysis.',
+        'Synchronize your QuickBooks accounting data into the RoboLedger extension for unified reporting and analysis.',
       features: [
         'Chart of accounts synchronization',
         'Journal entries and transactions',
@@ -80,9 +80,9 @@ export default function BusinessServices() {
             Accounting Data Integration & Management
           </h2>
           <p className="mx-auto max-w-3xl text-gray-400">
-            Powered by the RoboLedger schema that unifies QuickBooks
+            Powered by the RoboLedger extension that unifies QuickBooks
             transactions, SEC XBRL filings, and banking data into a single,
-            queryable knowledge graph
+            queryable knowledge graph with semantic search and AI memory
           </p>
         </div>
 
@@ -164,8 +164,8 @@ export default function BusinessServices() {
               </div>
               <h4 className="mb-2 font-semibold text-white">Sync to Graph</h4>
               <p className="text-sm text-gray-400">
-                Data flows into the RoboLedger schema within your company's
-                isolated knowledge graph
+                Data flows into the RoboLedger extension within your
+                company&apos;s isolated knowledge graph
               </p>
             </div>
             <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 to-green-950/20 p-4 text-center transition-all hover:border-green-500/30">
