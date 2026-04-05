@@ -146,7 +146,7 @@ export default function FeaturesGrid() {
             </div>
           </div>
 
-          {/* Orchestration */}
+          {/* Open Source */}
           <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-green-950/20 p-5 transition-all duration-300 hover:border-green-500/50 sm:p-6 md:p-8">
             <div className="absolute inset-0 bg-linear-to-br from-green-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             <div className="relative">
@@ -161,33 +161,33 @@ export default function FeaturesGrid() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
                   />
                 </svg>
               </div>
               <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
-                Orchestration
+                Open Source
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Production-grade data pipelines powered by Dagster with
-                scheduling, monitoring, and event-driven triggers.
+                Fork, deploy, and extend. Complete infrastructure automation
+                with Docker, CloudFormation, and GitHub Actions.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="mr-2 text-green-400">•</span>
-                  Scheduled and event-driven jobs
+                  TypeScript, Python, and MCP clients
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-green-400">•</span>
-                  Software-defined assets
+                  Docker development environment
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-green-400">•</span>
-                  Built-in observability and alerting
+                  One-command AWS deployment
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-green-400">•</span>
-                  Extensible pipeline architecture
+                  GitHub OIDC — no stored credentials
                 </li>
               </ul>
             </div>

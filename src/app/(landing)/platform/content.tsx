@@ -73,8 +73,8 @@ export default function PlatformContent() {
               </h2>
               <p className="mx-auto max-w-3xl text-gray-400">
                 Interact with your knowledge graph using natural language or
-                direct Cypher queries. AI agents understand business context and
-                automatically translate questions into optimized queries with
+                direct Cypher queries. AI agents search documents, resolve
+                semantic elements, and persist memory across sessions&mdash;with
                 real-time execution monitoring.
               </p>
             </div>
