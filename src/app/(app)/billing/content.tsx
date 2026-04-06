@@ -9,6 +9,8 @@ import {
   useServiceOfferings,
   useToast,
 } from '@/lib/core'
+import { fetchGraphTiers, type GraphTier } from '@/lib/core/lib/graph-tiers'
+import { useTaskMonitoring } from '@/lib/core/task-monitoring/hooks'
 import * as SDK from '@robosystems/client'
 import { format } from 'date-fns'
 import {
@@ -32,6 +34,7 @@ import {
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
+  HiArrowUp,
   HiCheckCircle,
   HiClock,
   HiCreditCard,
@@ -446,8 +449,18 @@ function SubscriptionsTab({
     useState<SDK.GraphSubscriptionResponse | null>(null)
   const [cancelling, setCancelling] = useState(false)
 
+  // Upgrade state
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+  const [subscriptionToUpgrade, setSubscriptionToUpgrade] =
+    useState<SDK.GraphSubscriptionResponse | null>(null)
+  const [availableTiers, setAvailableTiers] = useState<GraphTier[]>([])
+  const [selectedTier, setSelectedTier] = useState<string | null>(null)
+  const [upgrading, setUpgrading] = useState(false)
+  const [loadingTiers, setLoadingTiers] = useState(false)
+  const taskMonitoring = useTaskMonitoring()
+
   const activeSubscriptions = subscriptions.filter((s) => {
-    if (s.status === 'active') {
+    if (s.status === 'active' || s.status === 'upgrading') {
       return true
     }
     if (s.status === 'canceled' && s.current_period_end) {
@@ -475,6 +488,16 @@ function SubscriptionsTab({
   ) => {
     if (subscription.status === 'active') {
       return <Badge color="success">Active</Badge>
+    }
+    if (subscription.status === 'upgrading') {
+      return (
+        <Badge color="info">
+          <div className="flex items-center gap-1">
+            <Spinner size="xs" />
+            <span>Upgrading</span>
+          </div>
+        </Badge>
+      )
     }
     if (subscription.status === 'canceled') {
       return (
@@ -532,6 +555,89 @@ function SubscriptionsTab({
     }
   }
 
+  const handleUpgradeClick = async (sub: SDK.GraphSubscriptionResponse) => {
+    setSubscriptionToUpgrade(sub)
+    setSelectedTier(null)
+    setShowUpgradeModal(true)
+    setLoadingTiers(true)
+
+    try {
+      const tiersResponse = await fetchGraphTiers()
+      const tiers = (tiersResponse.tiers || []).filter(
+        (t: GraphTier) =>
+          t.tier !== 'ladybug-shared' && t.tier !== sub.plan_name
+      )
+      setAvailableTiers(tiers)
+    } catch (error) {
+      console.error('Failed to fetch tiers:', error)
+      showError('Failed to load available tiers.')
+      setShowUpgradeModal(false)
+    } finally {
+      setLoadingTiers(false)
+    }
+  }
+
+  const handleUpgradeConfirm = async () => {
+    if (!subscriptionToUpgrade || !selectedTier) return
+
+    try {
+      setUpgrading(true)
+      const response = await SDK.changeSubscriptionPlan({
+        path: { graph_id: subscriptionToUpgrade.resource_id },
+        body: { new_plan_name: selectedTier },
+      })
+
+      if (response.error) {
+        throw new Error(
+          typeof response.error === 'object' && 'detail' in response.error
+            ? String(response.error.detail)
+            : 'Failed to change tier'
+        )
+      }
+
+      const data = response.data
+      const operationId = data?.operation_id
+
+      if (operationId) {
+        showSuccess(
+          'Tier change initiated. Migrating your graph infrastructure...'
+        )
+        setShowUpgradeModal(false)
+
+        taskMonitoring
+          .startMonitoring(operationId, {
+            maxAttempts: 60,
+            pollInterval: 5000,
+          })
+          .then(() => {
+            showSuccess('Tier upgrade completed successfully!')
+            onRefresh()
+          })
+          .catch((err) => {
+            showError(
+              `Tier upgrade failed: ${err instanceof Error ? err.message : 'Unknown error'}`
+            )
+            onRefresh()
+          })
+      } else {
+        showSuccess('Tier changed successfully!')
+        setShowUpgradeModal(false)
+        onRefresh()
+      }
+    } catch (error) {
+      console.error('Failed to change tier:', error)
+      showError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to change tier. Please try again.'
+      )
+    } finally {
+      setUpgrading(false)
+      setSubscriptionToUpgrade(null)
+      setSelectedTier(null)
+    }
+  }
+
   return (
     <div className="space-y-8">
       {/* Graph Subscriptions */}
@@ -569,18 +675,54 @@ function SubscriptionsTab({
                           : 'N/A'}
                       </span>
                     </div>
-                    <Button
-                      size="sm"
-                      color="gray"
-                      onClick={() => handleCancelClick(sub)}
-                      className="w-full"
-                      disabled={sub.status === 'canceled'}
-                    >
-                      <HiXCircle className="mr-2 h-4 w-4" />
-                      {sub.status === 'canceled'
-                        ? 'Cancellation Scheduled'
-                        : 'Cancel Subscription'}
-                    </Button>
+                    {sub.status === 'upgrading' && taskMonitoring.isLoading && (
+                      <div className="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                        <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
+                          <Spinner size="xs" />
+                          <span>
+                            {taskMonitoring.currentStep ||
+                              'Migrating infrastructure...'}
+                          </span>
+                        </div>
+                        {taskMonitoring.progress != null && (
+                          <div className="mt-2 h-1.5 w-full rounded-full bg-blue-200 dark:bg-blue-800">
+                            <div
+                              className="h-1.5 rounded-full bg-blue-600 transition-all duration-500"
+                              style={{ width: `${taskMonitoring.progress}%` }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    <div className="space-y-2">
+                      <Button
+                        size="sm"
+                        color="gray"
+                        onClick={() => handleUpgradeClick(sub)}
+                        className="w-full"
+                        disabled={sub.status !== 'active'}
+                      >
+                        <HiArrowUp className="mr-2 h-4 w-4" />
+                        Change Tier
+                      </Button>
+                      <Button
+                        size="sm"
+                        color="gray"
+                        onClick={() => handleCancelClick(sub)}
+                        className="w-full"
+                        disabled={
+                          sub.status === 'canceled' ||
+                          sub.status === 'upgrading'
+                        }
+                      >
+                        <HiXCircle className="mr-2 h-4 w-4" />
+                        {sub.status === 'canceled'
+                          ? 'Cancellation Scheduled'
+                          : sub.status === 'upgrading'
+                            ? 'Upgrade in Progress'
+                            : 'Cancel Subscription'}
+                      </Button>
+                    </div>
                   </div>
                 </Card>
               )
@@ -665,6 +807,152 @@ function SubscriptionsTab({
           </div>
         </div>
       )}
+
+      {/* Upgrade Tier Modal */}
+      <Modal
+        show={showUpgradeModal}
+        onClose={() => !upgrading && setShowUpgradeModal(false)}
+        size="lg"
+        theme={customTheme.modal}
+      >
+        <ModalHeader>Change Graph Tier</ModalHeader>
+        <ModalBody>
+          <div className="space-y-4">
+            {subscriptionToUpgrade && (
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Current tier:{' '}
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {subscriptionToUpgrade.plan_display_name}
+                </span>{' '}
+                (${(subscriptionToUpgrade.base_price_cents / 100).toFixed(2)}/
+                {subscriptionToUpgrade.billing_interval})
+              </p>
+            )}
+
+            {loadingTiers ? (
+              <div className="flex h-32 items-center justify-center">
+                <Spinner size="lg" />
+              </div>
+            ) : (
+              <div className="grid gap-3">
+                {availableTiers.map((tier) => {
+                  const isCurrentTier =
+                    tier.tier === subscriptionToUpgrade?.plan_name
+                  const isUpgrade =
+                    (tier.monthly_price ?? 0) >
+                    (subscriptionToUpgrade?.base_price_cents ?? 0) / 100
+                  const isSelected = selectedTier === tier.tier
+
+                  return (
+                    <button
+                      key={tier.tier}
+                      onClick={() =>
+                        !isCurrentTier && setSelectedTier(tier.tier!)
+                      }
+                      disabled={isCurrentTier}
+                      className={`rounded-lg border-2 p-4 text-left transition-all ${
+                        isSelected
+                          ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
+                          : isCurrentTier
+                            ? 'cursor-not-allowed border-gray-200 opacity-50 dark:border-gray-700'
+                            : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-gray-900 dark:text-white">
+                              {tier.display_name}
+                            </span>
+                            {isCurrentTier && (
+                              <Badge color="gray" size="xs">
+                                Current
+                              </Badge>
+                            )}
+                            {!isCurrentTier && (
+                              <Badge
+                                color={isUpgrade ? 'info' : 'warning'}
+                                size="xs"
+                              >
+                                {isUpgrade ? 'Upgrade' : 'Downgrade'}
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            {tier.description}
+                          </p>
+                          {tier.features && tier.features.length > 0 && (
+                            <div className="mt-2 flex flex-wrap gap-1">
+                              {tier.features.slice(0, 3).map((f, i) => (
+                                <span
+                                  key={i}
+                                  className="text-xs text-gray-500 dark:text-gray-400"
+                                >
+                                  {f}
+                                  {i < Math.min(tier.features!.length, 3) - 1 &&
+                                    ' · '}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <span className="text-lg font-bold text-gray-900 dark:text-white">
+                            ${tier.monthly_price ?? 0}
+                          </span>
+                          <span className="text-sm text-gray-500">/mo</span>
+                        </div>
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+
+            {selectedTier && (
+              <Alert color="info" icon={HiInformationCircle}>
+                <p className="text-sm">
+                  {(availableTiers.find((t) => t.tier === selectedTier)
+                    ?.monthly_price ?? 0) >
+                  (subscriptionToUpgrade?.base_price_cents ?? 0) / 100
+                    ? 'Stripe will prorate the price difference. Your graph will be briefly read-only during migration (~2-5 minutes).'
+                    : 'You will receive a prorated credit. Your graph will be briefly read-only during migration (~2-5 minutes).'}
+                </p>
+              </Alert>
+            )}
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <div className="flex w-full gap-3">
+            <Button
+              color="gray"
+              onClick={() => setShowUpgradeModal(false)}
+              disabled={upgrading}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              color="blue"
+              onClick={handleUpgradeConfirm}
+              disabled={!selectedTier || upgrading}
+              className="flex-1"
+            >
+              {upgrading ? (
+                <div className="flex items-center gap-2">
+                  <Spinner size="sm" />
+                  <span>Processing...</span>
+                </div>
+              ) : (
+                <>
+                  <HiArrowUp className="mr-2 h-4 w-4" />
+                  Confirm Change
+                </>
+              )}
+            </Button>
+          </div>
+        </ModalFooter>
+      </Modal>
 
       {/* Cancel Confirmation Modal */}
       <Modal
