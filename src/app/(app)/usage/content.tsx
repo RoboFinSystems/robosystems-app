@@ -6,7 +6,6 @@ import {
   getCreditSummary,
   getGraphLimits,
   getGraphs,
-  getStorageUsage,
   listCreditTransactions,
 } from '@robosystems/client'
 import { Alert, Badge, Button, Card, Progress, Spinner } from 'flowbite-react'
@@ -30,12 +29,6 @@ interface CreditSummary {
   usage_percentage: number
   transaction_count: number
   graph_tier: string
-}
-
-interface StorageUsage {
-  current_usage_gb: number
-  max_storage_gb: number
-  storage_cost_per_day?: number
 }
 
 interface GraphLimits {
@@ -77,7 +70,6 @@ interface CreditTransaction {
 interface UsageData {
   graphInfo: GraphInfo
   creditSummary?: CreditSummary
-  storageUsage?: StorageUsage
   graphLimits?: GraphLimits
   recentTransactions?: CreditTransaction[]
 }
@@ -119,35 +111,17 @@ export function UsageContent() {
 
       const usageData: UsageData = { graphInfo }
 
-      // Determine if this is a repository
-      const isRepo = graphInfo.isRepository
-
-      // Fetch all usage data in parallel (skip storage for repositories)
-      const apiCalls = [
+      // Fetch all usage data in parallel
+      const [limitsRes, creditRes, transactionsRes] = await Promise.allSettled([
         getGraphLimits({ path: { graph_id: graphId } }),
         getCreditSummary({ path: { graph_id: graphId } }),
         listCreditTransactions({
           path: { graph_id: graphId },
           query: { limit: 10 },
         }),
-      ]
+      ])
 
-      // Only fetch storage for user graphs, not repositories
-      if (!isRepo) {
-        apiCalls.splice(
-          2,
-          0,
-          getStorageUsage({ path: { graph_id: graphId } }) as any
-        )
-      }
-
-      const results = await Promise.allSettled(apiCalls)
-
-      const [limitsRes, creditRes, storageRes, transactionsRes] = isRepo
-        ? [results[0], results[1], { status: 'rejected' as const }, results[2]]
-        : [results[0], results[1], results[2], results[3]]
-
-      // Process limits
+      // Process limits (includes instance storage usage)
       if (limitsRes.status === 'fulfilled' && limitsRes.value.data) {
         usageData.graphLimits = limitsRes.value.data as unknown as GraphLimits
       }
@@ -156,12 +130,6 @@ export function UsageContent() {
       if (creditRes.status === 'fulfilled' && creditRes.value.data) {
         usageData.creditSummary = creditRes.value
           .data as unknown as CreditSummary
-      }
-
-      // Process storage
-      if (storageRes.status === 'fulfilled' && storageRes.value.data) {
-        usageData.storageUsage = storageRes.value
-          .data as unknown as StorageUsage
       }
 
       // Process transactions
