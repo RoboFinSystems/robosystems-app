@@ -584,7 +584,12 @@ function SubscriptionsTab({
       setUpgrading(true)
       const response = await SDK.opChangeTier({
         path: { graph_id: subscriptionToUpgrade.resource_id },
-        body: { new_tier: selectedTier as 'ladybug-standard' | 'ladybug-large' | 'ladybug-xlarge' },
+        body: {
+          new_tier: selectedTier as
+            | 'ladybug-standard'
+            | 'ladybug-large'
+            | 'ladybug-xlarge',
+        },
       })
 
       if (response.error) {
