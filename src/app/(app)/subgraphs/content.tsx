@@ -7,9 +7,9 @@ import type {
   SubgraphSummary,
 } from '@robosystems/client'
 import {
-  createBackup,
-  deleteSubgraph,
   listSubgraphs,
+  opCreateBackup,
+  opDeleteSubgraph,
 } from '@robosystems/client'
 import {
   Alert,
@@ -57,7 +57,7 @@ export function SubgraphsContent() {
   const handleBackupClick = async (subgraph: SubgraphSummary) => {
     setBackingUpId(subgraph.graph_id)
     try {
-      const response = await createBackup({
+      const response = await opCreateBackup({
         path: { graph_id: subgraph.graph_id },
         body: {
           backup_format: 'full_dump',
@@ -67,7 +67,7 @@ export function SubgraphsContent() {
       })
 
       if (response.data) {
-        const operationId = (response.data as any).operation_id
+        const operationId = response.data.operationId
         showInfo('Backup started...', 3000)
         await backupOperationMonitor.startMonitoring(operationId)
         showSuccess(
@@ -129,12 +129,10 @@ export function SubgraphsContent() {
 
     setIsDeleting(true)
     try {
-      await deleteSubgraph({
-        path: {
-          graph_id: currentGraphId,
-          subgraph_name: subgraphToDelete.subgraph_name,
-        },
+      await opDeleteSubgraph({
+        path: { graph_id: currentGraphId },
         body: {
+          subgraph_name: subgraphToDelete.subgraph_name,
           force: true,
           backup_first: false,
         },

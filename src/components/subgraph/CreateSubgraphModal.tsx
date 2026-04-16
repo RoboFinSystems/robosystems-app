@@ -1,7 +1,7 @@
 'use client'
 
 import { customTheme, useToast } from '@/lib/core'
-import { client, createSubgraph } from '@robosystems/client'
+import { client, opCreateSubgraph } from '@robosystems/client'
 import { Button, Label, Textarea, TextInput } from 'flowbite-react'
 import { useState } from 'react'
 import { HiInformationCircle } from 'react-icons/hi'
@@ -77,7 +77,7 @@ export function CreateSubgraphModal({
       })
 
       // Create the subgraph
-      const response = await createSubgraph({
+      const response = await opCreateSubgraph({
         client,
         path: {
           graph_id: graphId,

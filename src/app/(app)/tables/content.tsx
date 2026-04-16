@@ -276,7 +276,7 @@ export function TablesContent() {
       setIngesting(true)
       setError(null)
 
-      const response = await SDK.materializeGraph({
+      const response = await SDK.opMaterialize({
         path: { graph_id: graphId },
         body: {
           rebuild: ingestOptions.rebuild,

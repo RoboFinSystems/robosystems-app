@@ -3,16 +3,16 @@ import FloatingElementsVariant from '../landing/FloatingElementsVariant'
 export default function BusinessServices() {
   const primaryServices = [
     {
-      title: 'QuickBooks Integration',
-      icon: 'M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z',
+      title: 'Data Integrations',
+      icon: 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1',
       color: 'cyan',
-      highlight: 'OAuth2 Secure Connection',
+      highlight: 'QuickBooks · Plaid · SEC EDGAR',
       description:
-        'Synchronize your QuickBooks accounting data into the RoboLedger extension for unified reporting and analysis.',
+        'Connect your accounting, banking, and regulatory data sources into the RoboLedger schema for a unified financial picture.',
       features: [
-        'Chart of accounts synchronization',
-        'Journal entries and transactions',
-        'Trial balance import',
+        'QuickBooks OAuth — chart of accounts, journal entries, and transactions',
+        'Plaid bank feeds — real-time transactions from bank accounts and credit cards',
+        'SEC EDGAR — US-GAAP XBRL taxonomy for account mapping and compliance',
       ],
     },
   ]
@@ -23,38 +23,20 @@ export default function BusinessServices() {
       icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
       gradient: 'from-indigo-600 to-blue-600',
       capabilities: [
-        'Financial report builder',
-        'Ledger and journal management',
-        'Entity data visualization',
+        'US-GAAP auto-mapping with confidence scores',
+        'Period close workflow with financial statements',
+        'Visual Report Builder — Excel & formatted export',
       ],
     },
     {
-      title: 'MCP Agent Access',
-      icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',
+      title: 'AI Console',
+      icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z',
       gradient: 'from-purple-600 to-pink-600',
       capabilities: [
-        'Natural language queries',
-        'Claude AI integration',
-        'Cypher query generation',
+        'Ask Claude AI questions about your books',
+        'Natural language to Cypher query generation',
+        'MCP integration for Claude Desktop and Cursor',
       ],
-    },
-  ]
-
-  const roadmapServices = [
-    {
-      title: 'SEC Filing Import',
-      description:
-        "Import your company's 10-K/10-Q filings by CIK for normalized financial statement analysis",
-    },
-    {
-      title: 'Plaid Banking',
-      description:
-        'Connect bank accounts for automated transaction feeds and reconciliation',
-    },
-    {
-      title: 'XBRL-Native Reports',
-      description:
-        'Generate reports as structured data—comparable, portable, and machine-readable',
     },
   ]
 
@@ -62,12 +44,12 @@ export default function BusinessServices() {
     {
       title: 'Reports as Structured Data',
       description:
-        'Unlike traditional PDF reports, RoboLedger creates XBRL-native financial reports that are inherently queryable and comparable across periods.',
+        'RoboLedger creates XBRL-native financial reports — inherently queryable, comparable across periods, and ready for SEC filing.',
     },
     {
-      title: 'AI-Native Report Builder',
+      title: 'AI-Native Close Workflow',
       description:
-        'Claude generates financial reports from natural language requests. AI handles the mechanical work at machine speed—humans apply judgment on what matters.',
+        'From GAAP auto-mapping to guided period close to visual report builder — AI handles the mechanical work at machine speed so humans can focus on judgment.',
     },
   ]
 
@@ -80,9 +62,10 @@ export default function BusinessServices() {
             Accounting Data Integration & Management
           </h2>
           <p className="mx-auto max-w-3xl text-gray-400">
-            Powered by the RoboLedger extension that unifies QuickBooks
-            transactions, SEC XBRL filings, and banking data into a single,
-            queryable knowledge graph with semantic search and AI memory
+            Powered by the RoboLedger schema extension — unifying QuickBooks,
+            Plaid, and SEC XBRL data into a queryable knowledge graph for
+            full-cycle ledger management, period close, and AI-native financial
+            reporting
           </p>
         </div>
 
@@ -120,64 +103,63 @@ export default function BusinessServices() {
           </div>
         </div>
 
-        {/* Roadmap */}
-        <div className="mx-auto mb-12 max-w-4xl">
-          <h3 className="mb-4 text-center text-sm font-semibold tracking-wider text-gray-500 uppercase">
-            Coming Soon
-          </h3>
-          <div className="grid gap-4 md:grid-cols-3">
-            {roadmapServices.map((service, idx) => (
-              <div
-                key={idx}
-                className="rounded-lg border border-dashed border-gray-700 bg-zinc-900/30 p-4 text-center"
-              >
-                <h4 className="font-medium text-gray-400">{service.title}</h4>
-                <p className="mt-1 text-sm text-gray-500">
-                  {service.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* How It Works */}
         <div className="rounded-2xl border border-gray-800 bg-zinc-900 p-8">
           <h3 className="mb-6 text-center text-xl font-bold text-white">
             How It Works
           </h3>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-5">
             <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 to-cyan-950/20 p-4 text-center transition-all hover:border-cyan-500/30">
-              <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-400">
-                <span className="text-xl font-bold">1</span>
+              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-400">
+                <span className="text-lg font-bold">1</span>
               </div>
-              <h4 className="mb-2 font-semibold text-white">
-                Connect QuickBooks
+              <h4 className="mb-2 text-sm font-semibold text-white">Connect</h4>
+              <p className="text-xs text-gray-400">
+                QuickBooks, Plaid, and SEC EDGAR via OAuth
+              </p>
+            </div>
+            <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 to-violet-950/20 p-4 text-center transition-all hover:border-violet-500/30">
+              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-violet-500/20 text-violet-400">
+                <span className="text-lg font-bold">2</span>
+              </div>
+              <h4 className="mb-2 text-sm font-semibold text-white">
+                Map to GAAP
               </h4>
-              <p className="text-sm text-gray-400">
-                Securely authenticate with QuickBooks via OAuth to grant
-                RoboLedger read access to your accounting data
+              <p className="text-xs text-gray-400">
+                AI auto-maps chart of accounts to US-GAAP taxonomy
               </p>
             </div>
             <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 to-purple-950/20 p-4 text-center transition-all hover:border-purple-500/30">
-              <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-purple-500/20 text-purple-400">
-                <span className="text-xl font-bold">2</span>
+              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/20 text-purple-400">
+                <span className="text-lg font-bold">3</span>
               </div>
-              <h4 className="mb-2 font-semibold text-white">Sync to Graph</h4>
-              <p className="text-sm text-gray-400">
-                Data flows into the RoboLedger extension within your
-                company&apos;s isolated knowledge graph
+              <h4 className="mb-2 text-sm font-semibold text-white">
+                Review Ledger
+              </h4>
+              <p className="text-xs text-gray-400">
+                Transactions, journal entries, and trial balance
+              </p>
+            </div>
+            <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 to-pink-950/20 p-4 text-center transition-all hover:border-pink-500/30">
+              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-pink-500/20 text-pink-400">
+                <span className="text-lg font-bold">4</span>
+              </div>
+              <h4 className="mb-2 text-sm font-semibold text-white">
+                Close Books
+              </h4>
+              <p className="text-xs text-gray-400">
+                Guided period close with XBRL-compliant statements
               </p>
             </div>
             <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 to-green-950/20 p-4 text-center transition-all hover:border-green-500/30">
-              <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-green-500/20 text-green-400">
-                <span className="text-xl font-bold">3</span>
+              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/20 text-green-400">
+                <span className="text-lg font-bold">5</span>
               </div>
-              <h4 className="mb-2 font-semibold text-white">
-                Analyze & Report
+              <h4 className="mb-2 text-sm font-semibold text-white">
+                Report &amp; Query
               </h4>
-              <p className="text-sm text-gray-400">
-                Use RoboLedger to build reports, or query via MCP agents for
-                AI-powered insights
+              <p className="text-xs text-gray-400">
+                Visual Report Builder and Claude AI Console
               </p>
             </div>
           </div>

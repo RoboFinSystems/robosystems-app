@@ -5,12 +5,12 @@ import { useToast } from '@/lib/core/hooks/use-toast'
 import { useOperationMonitoring } from '@/lib/core/task-monitoring/operationHooks'
 import type { BackupResponse, BackupStatsResponse } from '@robosystems/client'
 import {
-  createBackup,
   getBackupDownloadUrl,
   getBackupStats,
   listBackups,
   listSubgraphs,
-  restoreBackup,
+  opCreateBackup,
+  opRestoreBackup,
 } from '@robosystems/client'
 import {
   Badge,
@@ -264,7 +264,7 @@ export default function BackupManagementContent() {
     if (!selectedGraphId) return
 
     try {
-      const response = await createBackup({
+      const response = await opCreateBackup({
         path: { graph_id: selectedGraphId },
         body: {
           backup_format: 'full_dump',
@@ -274,7 +274,7 @@ export default function BackupManagementContent() {
       })
 
       if (response.data) {
-        const operationId = (response.data as any).operation_id
+        const operationId = response.data.operationId
         showInfo('Backup creation started...', 3000)
         await createOperationMonitor.startMonitoring(operationId)
         showSuccess('Backup operation completed successfully!')
@@ -300,18 +300,16 @@ export default function BackupManagementContent() {
     if (!selectedBackup || !selectedGraphId) return
 
     try {
-      const response = await restoreBackup({
-        path: {
-          graph_id: selectedBackup.graph_id,
-          backup_id: selectedBackup.backup_id,
-        },
+      const response = await opRestoreBackup({
+        path: { graph_id: selectedBackup.graph_id },
         body: {
+          backup_id: selectedBackup.backup_id,
           verify_after_restore: restoreFormVerify,
         },
       })
 
       if (response.data) {
-        const operationId = (response.data as any).operation_id
+        const operationId = response.data.operationId
         await restoreOperationMonitor.startMonitoring(operationId)
         // Success/failure handled by useEffect hooks monitoring restoreOperationMonitor
         // Modal will auto-close on success
