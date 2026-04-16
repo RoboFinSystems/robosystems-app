@@ -2,7 +2,7 @@
 
 import { useToast } from '@/lib/core'
 import { customTheme } from '@/lib/core/theme'
-import { client, createSubgraph } from '@robosystems/client'
+import { client, opCreateSubgraph } from '@robosystems/client'
 import { Alert, Button, Card, Progress } from 'flowbite-react'
 import { useState } from 'react'
 import {
@@ -110,7 +110,7 @@ export function SubgraphCreationWizard({
       })
 
       // Create the subgraph
-      const response = await createSubgraph({
+      const response = await opCreateSubgraph({
         client,
         path: {
           graph_id: graphId,
