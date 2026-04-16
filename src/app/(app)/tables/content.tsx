@@ -278,7 +278,7 @@ export function TablesContent() {
 
       const response = await SDK.opMaterialize({
         path: { graph_id: graphId },
-        query: {
+        body: {
           rebuild: ingestOptions.rebuild,
           ignore_errors: ingestOptions.ignoreErrors,
           ...(isEntityGraph && { source: 'extensions' }),
