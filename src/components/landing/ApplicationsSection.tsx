@@ -65,11 +65,12 @@ export default function ApplicationsSection() {
                 </div>
               </div>
               <p className="mt-6 text-center text-sm text-gray-400">
-                RoboLedger syncs QuickBooks data into the RoboLedger schema for
-                AI-powered financial reporting. RoboInvestor provides access to
-                the SEC Shared Repository for securities research. Both leverage
-                MCP and Claude AI for natural language queries against the
-                knowledge graph.
+                RoboLedger syncs QuickBooks and SEC EDGAR data into the
+                RoboLedger schema for full ledger management, period close, and
+                AI-native financial reporting. RoboInvestor manages investment
+                portfolios and provides access to the SEC Shared Repository for
+                securities research. Both leverage MCP and Claude AI for natural
+                language queries against the knowledge graph.
               </p>
             </div>
           </div>
@@ -101,8 +102,9 @@ export default function ApplicationsSection() {
               </Link>
 
               <p className="mb-6 text-gray-300">
-                Synchronize your QuickBooks accounting data into a unified
-                knowledge graph for AI-powered reporting and analysis.
+                A complete accounting close platform — connect your data
+                sources, manage your ledger, close the books, and generate
+                XBRL-compliant financial reports with Claude AI.
               </p>
 
               <div className="mb-8 space-y-4">
@@ -125,33 +127,37 @@ export default function ApplicationsSection() {
                     </li>
                     <li className="flex items-start">
                       <span className="mr-2 text-cyan-400">•</span>
-                      <span>Trial balance import for unified reporting</span>
+                      <span>Trial balance with full debit/credit detail</span>
                     </li>
                   </ul>
                 </div>
 
                 <div>
                   <h4 className="mb-3 font-semibold text-cyan-300">
-                    AI-Native Reporting
+                    Ledger, Close &amp; Reporting
                   </h4>
                   <ul className="space-y-2 text-sm text-gray-300">
                     <li className="flex items-start">
                       <span className="mr-2 text-cyan-400">•</span>
                       <span>
-                        Natural language queries via MCP and Claude AI
+                        AI auto-maps chart of accounts to US-GAAP taxonomy with
+                        confidence scores
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="mr-2 text-cyan-400">•</span>
                       <span>
-                        AI generates financial reports from plain English
-                        requests
+                        Guided period close — fiscal calendar, Balance Sheet,
+                        Income Statement, Cash Flow with XBRL compliance
+                        checking
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="mr-2 text-cyan-400">•</span>
                       <span>
-                        XBRL-native reports that are queryable and comparable
+                        AI Console — ask Claude anything about your books in
+                        natural language; visual Report Builder for structured
+                        output
                       </span>
                     </li>
                   </ul>
@@ -181,65 +187,65 @@ export default function ApplicationsSection() {
                     RoboInvestor
                   </h3>
                   <p className="text-gray-400">
-                    Securities Research & Investment Analytics
+                    Investment Portfolio & AI Research
                   </p>
                 </div>
               </Link>
 
               <p className="mb-6 text-gray-300">
-                Access the SEC Shared Repository through AI-powered natural
-                language queries for securities research and competitive
-                analysis.
+                Track investment portfolios and research public company filings
+                through AI-powered natural language queries against the SEC
+                knowledge graph.
               </p>
 
               <div className="mb-8 space-y-4">
                 <div>
                   <h4 className="mb-3 font-semibold text-green-300">
-                    SEC Shared Repository
+                    Portfolio Management
                   </h4>
                   <ul className="space-y-2 text-sm text-gray-300">
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        115,000+ SEC XBRL filings across 10,000+ public
-                        companies
+                        Track PE &amp; VC positions: SAFEs, convertible notes,
+                        LLC units, LP interests
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        10-K and 10-Q financial statements and fundamentals
+                        Portfolios with cost basis, holdings, and valuations
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
-                      <span>Peer comparison and industry analysis</span>
+                      <span>
+                        Link private holdings to public company SEC filings
+                      </span>
                     </li>
                   </ul>
                 </div>
 
                 <div>
                   <h4 className="mb-3 font-semibold text-green-300">
-                    AI-Powered Research
+                    SEC Research Console
                   </h4>
                   <ul className="space-y-2 text-sm text-gray-300">
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        Natural language queries via MCP and Claude AI
+                        115,000+ XBRL filings across 10,000+ public companies
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        AI-generated Cypher queries for complex analysis
+                        Text-to-Cypher AI for natural language financial queries
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
-                      <span>
-                        Chat-based research interface with query history
-                      </span>
+                      <span>MCP integration for Claude Desktop and Cursor</span>
                     </li>
                   </ul>
                 </div>

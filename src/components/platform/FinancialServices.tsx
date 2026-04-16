@@ -3,48 +3,48 @@ import FloatingElementsVariant from '../landing/FloatingElementsVariant'
 export default function FinancialServices() {
   const currentServices = [
     {
-      title: 'SEC Shared Repository',
-      icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
-      gradient: 'from-purple-500 to-pink-500',
+      title: 'Portfolio Management',
+      icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+      gradient: 'from-emerald-500 to-teal-500',
       description:
-        'Query 115,000+ SEC XBRL filings across 10,000+ public companies for securities research and competitive analysis.',
+        'Track investment portfolios with cost basis, holdings, and valuations for both PE/VC and public market positions.',
       currentFeatures: [
-        '10-K and 10-Q financial statements',
-        'Company fundamentals and ratios',
-        'Peer comparison across industries',
+        'PE & VC instruments: SAFEs, KISSes, convertible notes, LLC units, LP interests',
+        'Portfolios with positions, cost basis, and current valuations',
+        'Link private holdings to public company SEC filing graphs',
       ],
     },
     {
-      title: 'MCP Agent Access',
-      icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z',
+      title: 'SEC Research Console',
+      icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
       gradient: 'from-cyan-500 to-blue-500',
       description:
-        'Natural language queries against the SEC repository via Claude AI and the MCP protocol with semantic memory.',
+        'Text-to-Cypher AI translates natural language into graph queries against 115,000+ XBRL filings from 10,000+ public companies.',
       currentFeatures: [
-        'Ask questions in plain English',
-        'AI-generated Cypher queries',
-        'Semantic memory across sessions',
+        '10-K and 10-Q financial statements and fundamentals',
+        'AI-generated Cypher queries from plain English',
+        'Peer comparison and industry analysis',
       ],
     },
     {
-      title: 'RoboInvestor Application',
-      icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',
+      title: 'MCP & API Access',
+      icon: 'M13 10V3L4 14h7v7l9-11h-7z',
       gradient: 'from-indigo-500 to-purple-500',
       description:
-        'Web interface for exploring the SEC repository and conducting securities research.',
+        'Connect Claude Desktop, Cursor, and other AI tools directly to your investment graph via the MCP protocol.',
       currentFeatures: [
-        'Chat-based research interface',
-        'Entity exploration and discovery',
-        'Query history and saved searches',
+        '@robosystems/mcp for Claude Desktop and Cursor',
+        'Python and TypeScript client SDKs',
+        'Full REST API access with API key management',
       ],
     },
   ]
 
   const roadmapServices = [
     {
-      title: 'Portfolio Sync',
+      title: 'Brokerage Sync',
       description:
-        'Connect brokerage accounts (Schwab, Fidelity) to sync holdings',
+        'Connect public market accounts via Plaid to sync holdings automatically',
     },
     {
       title: 'Market Data',
@@ -60,12 +60,12 @@ export default function FinancialServices() {
     {
       title: 'The Bridge',
       description:
-        "RoboInvestor connects fund-level investments to underlying company financial and operational data. Your investment in Company X links directly to Company X's data from RoboLedger.",
+        "RoboInvestor connects fund-level investments to underlying company financial and operational data. Your investment in Company X links directly to Company X's SEC filing graph.",
     },
     {
       title: 'From Founders to PE Firms',
       description:
-        "Whether you're a founder tracking personal investments alongside your business, or a PE firm managing 20+ portfolio companies, the same graph connects it all.",
+        "Whether you're a founder tracking personal investments alongside your business, or a PE firm managing 20+ portfolio companies, the same knowledge graph connects it all.",
     },
   ]
 
@@ -75,12 +75,12 @@ export default function FinancialServices() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <h2 className="font-heading mb-4 text-3xl font-bold text-white sm:text-4xl">
-            Securities Research & Investment Analytics
+            Investment Portfolio & AI Research
           </h2>
           <p className="mx-auto max-w-3xl text-gray-400">
-            The RoboInvestor extension provides AI-powered securities research
-            and competitive analysis against the SEC Shared Repository with
-            semantic search across filings and disclosures
+            The RoboInvestor extension tracks investment portfolios and provides
+            AI-powered research against the SEC Shared Repository — connecting
+            your private holdings to public company financial data
           </p>
         </div>
 
@@ -142,16 +142,16 @@ export default function FinancialServices() {
           </h3>
 
           <div className="grid gap-6 md:grid-cols-3">
-            <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-black/50 to-purple-950/20 p-4 text-center transition-all hover:border-purple-500/30">
-              <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-purple-500/20 text-purple-400">
+            <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-black/50 to-emerald-950/20 p-4 text-center transition-all hover:border-emerald-500/30">
+              <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-400">
                 <span className="text-xl font-bold">1</span>
               </div>
               <h4 className="mb-2 font-semibold text-white">
-                Access Repository
+                Track Your Portfolio
               </h4>
               <p className="text-sm text-gray-400">
-                Connect to the SEC Shared Repository containing all public
-                company XBRL filings
+                Add portfolios and positions — PE/VC instruments today, public
+                market brokerage sync coming via Plaid
               </p>
             </div>
 
@@ -159,21 +159,23 @@ export default function FinancialServices() {
               <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-400">
                 <span className="text-xl font-bold">2</span>
               </div>
-              <h4 className="mb-2 font-semibold text-white">Ask Questions</h4>
+              <h4 className="mb-2 font-semibold text-white">Research via AI</h4>
               <p className="text-sm text-gray-400">
-                Query in natural language or Cypher—AI translates your questions
-                into optimized graph queries
+                Ask questions in plain English — AI generates Cypher queries
+                against 10,000+ public company SEC filings
               </p>
             </div>
 
-            <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-black/50 to-green-950/20 p-4 text-center transition-all hover:border-green-500/30">
-              <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-green-500/20 text-green-400">
+            <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-black/50 to-purple-950/20 p-4 text-center transition-all hover:border-purple-500/30">
+              <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-purple-500/20 text-purple-400">
                 <span className="text-xl font-bold">3</span>
               </div>
-              <h4 className="mb-2 font-semibold text-white">Get Insights</h4>
+              <h4 className="mb-2 font-semibold text-white">
+                Connect AI Tools
+              </h4>
               <p className="text-sm text-gray-400">
-                Receive structured financial data, comparisons, and analysis for
-                your research
+                Use MCP to connect Claude Desktop or Cursor directly to your
+                investment graph for deeper analysis
               </p>
             </div>
           </div>

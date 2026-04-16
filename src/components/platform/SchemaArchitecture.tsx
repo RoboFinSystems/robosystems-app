@@ -46,27 +46,28 @@ export default function SchemaArchitecture() {
     {
       name: 'Base Schema',
       description: 'Foundation for all data',
-      components: ['Entity', 'Taxonomy', 'Element', 'Period', 'Unit'],
+      components: [
+        'Entity',
+        'Taxonomy',
+        'Element',
+        'Dimension',
+        'Structure',
+        'Association',
+        'Period',
+        'Unit',
+      ],
       app: 'robosystems' as const,
     },
     {
       name: 'RoboLedger',
-      description: 'Accounting & reporting extension',
-      components: [
-        'Report',
-        'Fact',
-        'Dimension',
-        'Structure',
-        'Association',
-        'Transaction',
-        'Line Item',
-      ],
+      description: 'Ledger management, close workflow & XBRL reporting',
+      components: ['Report', 'Fact', 'Transaction', 'Entry', 'Line Item'],
       app: 'roboledger' as const,
     },
     {
       name: 'RoboInvestor',
-      description: 'Investment & securities extension',
-      components: ['Portfolio', 'Security', 'Position', 'Market Data'],
+      description: 'Investment portfolio & securities extension',
+      components: ['Portfolio', 'Security', 'Position', 'Holding'],
       app: 'roboinvestor' as const,
     },
   ]
@@ -74,7 +75,7 @@ export default function SchemaArchitecture() {
   const applications = [
     {
       name: 'RoboLedger App',
-      description: 'Accounting and financial reporting',
+      description: 'Ledger management, period close & AI-native reporting',
       app: 'roboledger' as const,
     },
     {

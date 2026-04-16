@@ -263,13 +263,13 @@ export default function FeaturesGrid() {
                 API & SDKs
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                GraphQL for reads, named CQRS operations for writes — typed
-                clients for your preferred language.
+                Platform REST API — Extensions GraphQL for reads, CQRS
+                operations for writes.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="mr-2 text-purple-400">•</span>
-                  GraphQL reads with per-graph schema introspection
+                  Extensions GraphQL with per-graph schema introspection
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-purple-400">•</span>
