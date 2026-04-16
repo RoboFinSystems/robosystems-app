@@ -582,9 +582,9 @@ function SubscriptionsTab({
 
     try {
       setUpgrading(true)
-      const response = await SDK.changeSubscriptionPlan({
+      const response = await SDK.opChangeTier({
         path: { graph_id: subscriptionToUpgrade.resource_id },
-        body: { new_plan_name: selectedTier },
+        body: { new_tier: selectedTier as 'ladybug-standard' | 'ladybug-large' | 'ladybug-xlarge' },
       })
 
       if (response.error) {
@@ -596,7 +596,7 @@ function SubscriptionsTab({
       }
 
       const data = response.data
-      const operationId = data?.operation_id
+      const operationId = data?.operationId
 
       if (operationId) {
         showSuccess(
