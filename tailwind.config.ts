@@ -185,6 +185,15 @@ const config = {
             h4: {
               color: '#F9FAFB',
             },
+            h5: {
+              color: '#F9FAFB',
+            },
+            h6: {
+              color: '#F9FAFB',
+            },
+            strong: {
+              color: '#F9FAFB',
+            },
             a: {
               color: '#6098FA',
               '&:hover': {
@@ -202,6 +211,22 @@ const config = {
             blockquote: {
               borderLeftColor: '#00D4AA',
               color: '#9CA3AF',
+            },
+            'ol > li::marker': {
+              color: '#9CA3AF',
+            },
+            'ul > li::marker': {
+              color: '#9CA3AF',
+            },
+            hr: {
+              borderColor: '#374151',
+            },
+            thead: {
+              color: '#F9FAFB',
+              borderBottomColor: '#4B5563',
+            },
+            'tbody tr': {
+              borderBottomColor: '#374151',
             },
           },
         },
