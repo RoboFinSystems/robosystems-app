@@ -445,9 +445,21 @@ function ClassificationPicker({
     { value: 'equity', label: 'Equity' },
   ]
   const flowClasses: Array<{ value: string; label: string; title?: string }> = [
-    { value: 'inflow', label: 'Inflow', title: 'Credit-flow primitive (was revenue + gain)' },
-    { value: 'outflow', label: 'Outflow', title: 'Debit-flow primitive (was expense + loss)' },
-    { value: 'cashflow', label: 'Cash Flow', title: 'Net cash movements + period-over-period movements' },
+    {
+      value: 'inflow',
+      label: 'Inflow',
+      title: 'Credit-flow primitive (was revenue + gain)',
+    },
+    {
+      value: 'outflow',
+      label: 'Outflow',
+      title: 'Debit-flow primitive (was expense + loss)',
+    },
+    {
+      value: 'cashflow',
+      label: 'Cash Flow',
+      title: 'Net cash movements + period-over-period movements',
+    },
   ]
 
   const chipClass = (value: string) =>
@@ -465,7 +477,11 @@ function ClassificationPicker({
 
   return (
     <div className="flex flex-wrap gap-1">
-      <button onClick={() => onSelect(null)} disabled={disabled} className={allClass}>
+      <button
+        onClick={() => onSelect(null)}
+        disabled={disabled}
+        className={allClass}
+      >
         All
       </button>
       {stockClasses.map((c) => (
@@ -591,8 +607,16 @@ function DerivationRolePicker({
       label: 'Aggregate',
       title: 'RollUp head (subtotals, totals, NetCashFlow rollups)',
     },
-    { value: 'ratio', label: 'Ratio', title: 'Computed metric (ROA, CurrentRatio)' },
-    { value: 'identifier', label: 'Identifier', title: 'Entity/document metadata' },
+    {
+      value: 'ratio',
+      label: 'Ratio',
+      title: 'Computed metric (ROA, CurrentRatio)',
+    },
+    {
+      value: 'identifier',
+      label: 'Identifier',
+      title: 'Entity/document metadata',
+    },
     {
       value: 'structural',
       label: 'Structural',
