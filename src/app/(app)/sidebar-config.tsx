@@ -3,6 +3,7 @@
 import type { SidebarItemData } from '@/lib/core'
 import type { GraphInfo } from '@robosystems/client'
 import {
+  HiBookOpen,
   HiChartBar,
   HiChip,
   HiCode,
@@ -108,6 +109,11 @@ export const getNavigationItems = (
       icon: HiGlobeAlt,
       label: 'Repositories',
       href: '/repositories',
+    },
+    {
+      icon: HiBookOpen,
+      label: 'Library',
+      href: '/library',
     },
     {
       icon: HiCreditCard,
