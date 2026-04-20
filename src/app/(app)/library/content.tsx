@@ -1,5 +1,6 @@
 'use client'
 
+import { customTheme } from '@/lib/core'
 import {
   getLibraryElement,
   getLibraryElementArcs,
@@ -86,19 +87,23 @@ export function LibraryContent() {
 
   return (
     <div className="mx-auto max-w-[1600px] space-y-6 p-6">
-      <header className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="flex items-center gap-2 text-3xl font-bold text-gray-900 dark:text-white">
-            <HiBookOpen className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-            Taxonomy Library
-          </h1>
-          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            Shared reference material for reporting taxonomies. Every entity
-            graph pulls a read-only copy at provision time. Library content is
-            curated; tenant CoA and mappings are authored locally.
-          </p>
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
+            <HiBookOpen className="h-8 w-8 text-white" />
+          </div>
+          <div>
+            <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
+              Taxonomy Library
+            </h1>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Shared reference material for reporting taxonomies. Every entity
+              graph pulls a read-only copy at provision time. Library content is
+              curated; tenant CoA and mappings are authored locally.
+            </p>
+          </div>
         </div>
-      </header>
+      </div>
 
       {taxonomiesState === 'loading' && (
         <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
@@ -159,8 +164,11 @@ function TaxonomySidebar({
 }) {
   return (
     <aside className="col-span-12 min-h-0 md:col-span-3">
-      <Card className="flex h-full flex-col overflow-hidden">
-        <h2 className="shrink-0 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+      <Card
+        theme={customTheme.card}
+        className="flex h-full flex-col overflow-hidden"
+      >
+        <h2 className="font-heading shrink-0 text-lg font-semibold text-gray-900 dark:text-white">
           Taxonomies
         </h2>
         <ul className="min-h-0 flex-1 space-y-1 overflow-y-auto">
@@ -296,8 +304,11 @@ function ElementBrowser({
 
   return (
     <section className="col-span-12 min-h-0 md:col-span-4">
-      <Card className="flex h-full flex-col overflow-hidden">
-        <h2 className="shrink-0 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+      <Card
+        theme={customTheme.card}
+        className="flex h-full flex-col overflow-hidden"
+      >
+        <h2 className="font-heading shrink-0 text-lg font-semibold text-gray-900 dark:text-white">
           Elements
         </h2>
 
@@ -727,7 +738,10 @@ function ElementDetail({
 
   return (
     <section className="col-span-12 min-h-0 md:col-span-5">
-      <Card className="flex h-full flex-col overflow-hidden">
+      <Card
+        theme={customTheme.card}
+        className="flex h-full flex-col overflow-hidden"
+      >
         {state === 'idle' && (
           <div className="flex h-full items-center justify-center text-sm text-gray-500 dark:text-gray-400">
             Select an element to view details
@@ -747,7 +761,7 @@ function ElementDetail({
               >
                 {element.qname}
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 {element.name}
               </p>
             </div>
@@ -781,7 +795,7 @@ function ElementDetail({
 
             {sortedLabels.length > 0 && (
               <div>
-                <h3 className="mb-1 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+                <h3 className="font-heading mb-2 text-sm font-semibold text-gray-900 dark:text-white">
                   Labels
                 </h3>
                 <ul className="space-y-1">
@@ -806,7 +820,7 @@ function ElementDetail({
 
             {element.references.length > 0 && (
               <div>
-                <h3 className="mb-1 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+                <h3 className="font-heading mb-2 text-sm font-semibold text-gray-900 dark:text-white">
                   References
                 </h3>
                 <ul className="space-y-1">
@@ -839,7 +853,7 @@ function ElementDetail({
 
             {arcs.length > 0 && (
               <div>
-                <h3 className="mb-1 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+                <h3 className="font-heading mb-1 text-sm font-semibold text-gray-900 dark:text-white">
                   Mappings ({arcs.length})
                 </h3>
                 <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
