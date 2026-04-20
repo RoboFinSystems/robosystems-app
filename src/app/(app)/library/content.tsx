@@ -19,7 +19,8 @@ export function LibraryContent() {
   const clientRef = useRef<LibraryClient | null>(null)
   if (!clientRef.current) {
     clientRef.current = new LibraryClient({
-      baseUrl: process.env.NEXT_PUBLIC_ROBOSYSTEMS_API_URL || 'http://localhost:8000',
+      baseUrl:
+        process.env.NEXT_PUBLIC_ROBOSYSTEMS_API_URL || 'http://localhost:8000',
       credentials: 'include',
       tokenProvider: () => getValidToken().catch(() => null),
     })
@@ -30,8 +31,12 @@ export function LibraryContent() {
   const [taxonomiesState, setTaxonomiesState] = useState<LoadState>('idle')
   const [taxonomiesError, setTaxonomiesError] = useState<string | null>(null)
 
-  const [selectedTaxonomyId, setSelectedTaxonomyId] = useState<string | null>(null)
-  const [selectedElementId, setSelectedElementId] = useState<string | null>(null)
+  const [selectedTaxonomyId, setSelectedTaxonomyId] = useState<string | null>(
+    null
+  )
+  const [selectedElementId, setSelectedElementId] = useState<string | null>(
+    null
+  )
 
   const reportingTaxonomies = useMemo(() => {
     const order: Record<string, number> = { sfac6: 0, fac: 1, 'rs-gaap': 2 }
@@ -53,7 +58,9 @@ export function LibraryContent() {
         setTaxonomies(rows)
         setTaxonomiesState('ready')
         if (rows.length > 0 && !selectedTaxonomyId) {
-          const reporting = rows.filter((r) => (r.taxonomyType ?? 'reporting') === 'reporting')
+          const reporting = rows.filter(
+            (r) => (r.taxonomyType ?? 'reporting') === 'reporting'
+          )
           const sfac6 = reporting.find((r) => r.standard === 'sfac6')
           const fac = reporting.find((r) => r.standard === 'fac')
           const rsGaap = reporting.find((r) => r.standard === 'rs-gaap')
@@ -81,9 +88,9 @@ export function LibraryContent() {
               Taxonomy Library
             </h1>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Shared reference material for reporting taxonomies. Every entity graph pulls a
-              read-only copy at provision time. Library content is curated; tenant CoA and mappings
-              are authored locally.
+              Shared reference material for reporting taxonomies. Every entity
+              graph pulls a read-only copy at provision time. Library content is
+              curated; tenant CoA and mappings are authored locally.
             </p>
           </div>
         </div>
