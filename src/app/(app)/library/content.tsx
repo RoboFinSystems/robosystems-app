@@ -5,7 +5,6 @@ import {
   ElementDetail,
   LIBRARY_GRAPH_ID,
   LibraryClient,
-  TaxonomySidebar,
   type LibraryTaxonomy,
 } from '@/lib/core'
 import { getValidToken } from '@/lib/core/auth-core/token-storage'
@@ -113,18 +112,15 @@ export function LibraryContent() {
           className="grid grid-cols-12 items-stretch gap-6"
           style={{ height: 'calc(100vh - 220px)', minHeight: '600px' }}
         >
-          <TaxonomySidebar
-            taxonomies={reportingTaxonomies}
-            selectedId={selectedTaxonomyId}
-            onSelect={(id) => {
-              setSelectedTaxonomyId(id)
-              setSelectedElementId(null)
-            }}
-          />
           <ElementBrowser
             client={client}
             graphId={LIBRARY_GRAPH_ID}
             taxonomyId={selectedTaxonomyId}
+            taxonomies={reportingTaxonomies}
+            onTaxonomyChange={(id) => {
+              setSelectedTaxonomyId(id)
+              setSelectedElementId(null)
+            }}
             selectedElementId={selectedElementId}
             onSelectElement={setSelectedElementId}
           />
