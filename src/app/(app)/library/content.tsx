@@ -3,11 +3,11 @@
 import {
   ElementBrowser,
   ElementDetail,
+  getValidToken,
   LIBRARY_GRAPH_ID,
   LibraryClient,
   type LibraryTaxonomy,
 } from '@/lib/core'
-import { getValidToken } from '@/lib/core/auth-core/token-storage'
 import { Alert, Spinner } from 'flowbite-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { HiBookOpen, HiInformationCircle } from 'react-icons/hi'
@@ -68,8 +68,10 @@ export function LibraryContent() {
           )
         }
       })
-      .catch((err: Error) => {
-        setTaxonomiesError(err.message)
+      .catch((err) => {
+        setTaxonomiesError(
+          err instanceof Error ? err.message : 'Failed to load taxonomies'
+        )
         setTaxonomiesState('error')
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
