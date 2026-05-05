@@ -87,7 +87,7 @@
     "eslint-plugin-prettier": "^5",
     "eslint-plugin-react": "^7",
     "eslint-plugin-react-hooks": "^5",
-    "globals": "^17.2.0",
+    "globals": "^17.6.0",
     "jsdom": "^29.0.1",
     "postcss": "^8",
     "prettier": "^3",
