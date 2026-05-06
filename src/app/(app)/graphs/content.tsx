@@ -1,8 +1,11 @@
 'use client'
 
-import { customTheme, useUserLimits } from '@/lib/core'
+import CancelSubscriptionModal, {
+  type CancelMode,
+} from '@/components/app/CancelSubscriptionModal'
+import { customTheme, useToast, useUserLimits } from '@/lib/core'
 import type { GraphInfo } from '@robosystems/client'
-import { getGraphs } from '@robosystems/client'
+import { getGraphs, opDeleteGraph } from '@robosystems/client'
 import {
   Badge,
   Button,
@@ -45,6 +48,46 @@ export function GraphsContent() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedRole, setSelectedRole] = useState<string>('all')
   const { limits, remainingGraphs, canCreateGraph } = useUserLimits()
+  const { showSuccess, showError } = useToast()
+  const [graphToDelete, setGraphToDelete] = useState<GraphDatabase | null>(null)
+  const [deleting, setDeleting] = useState(false)
+
+  const handleDeleteConfirm = async (mode: CancelMode) => {
+    if (!graphToDelete) return
+    try {
+      setDeleting(true)
+      const response = await opDeleteGraph({
+        path: { graph_id: graphToDelete.id },
+        body: {
+          confirm: graphToDelete.id,
+          at_period_end: mode === 'period_end',
+        },
+      })
+      if (response.error) {
+        const detail =
+          typeof response.error === 'object' && 'detail' in response.error
+            ? String(response.error.detail)
+            : 'Failed to delete graph'
+        throw new Error(detail)
+      }
+      showSuccess(
+        mode === 'immediate'
+          ? `Deleting ${graphToDelete.name}. Teardown completes in ~10 minutes.`
+          : `${graphToDelete.name} will be deleted at the end of your current billing period.`
+      )
+      setGraphToDelete(null)
+      await fetchGraphs()
+    } catch (error) {
+      console.error('Failed to delete graph:', error)
+      showError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to delete graph. Please try again.'
+      )
+    } finally {
+      setDeleting(false)
+    }
+  }
 
   useEffect(() => {
     fetchGraphs()
@@ -282,6 +325,7 @@ export function GraphsContent() {
                           icon={HiTrash}
                           className="text-red-600 dark:text-red-500"
                           disabled={graph.role.toLowerCase() !== 'admin'}
+                          onClick={() => setGraphToDelete(graph)}
                         >
                           Delete Graph
                         </DropdownItem>
@@ -294,6 +338,16 @@ export function GraphsContent() {
           </TableBody>
         </Table>
       </div>
+
+      <CancelSubscriptionModal
+        show={graphToDelete !== null}
+        onClose={() => setGraphToDelete(null)}
+        onConfirm={handleDeleteConfirm}
+        loading={deleting}
+        resourceType="graph"
+        resourceName={graphToDelete?.name ?? ''}
+        resourceId={graphToDelete?.id ?? ''}
+      />
     </div>
   )
 }
