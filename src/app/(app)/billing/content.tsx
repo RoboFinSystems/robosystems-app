@@ -1,5 +1,8 @@
 'use client'
 
+import CancelSubscriptionModal, {
+  type CancelMode,
+} from '@/components/app/CancelSubscriptionModal'
 import {
   customTheme,
   PageLayout,
@@ -517,29 +520,91 @@ function SubscriptionsTab({
     return <Badge color="gray">{subscription.status}</Badge>
   }
 
-  const handleCancelConfirm = async () => {
+  const handleCancelConfirm = async (mode: CancelMode) => {
     if (!subscriptionToCancel || !currentOrg?.id) return
 
     try {
       setCancelling(true)
-      const response = await SDK.cancelOrgSubscription({
-        path: {
-          org_id: currentOrg.id,
-          subscription_id: subscriptionToCancel.id,
-        },
-      })
 
-      if (response.error) {
-        throw new Error(
-          typeof response.error === 'object' && 'detail' in response.error
-            ? String(response.error.detail)
-            : 'Failed to cancel subscription'
-        )
+      // Resource-scoped cancellation: route to the right endpoint based on
+      // resource_type. The mode chosen in the modal flows through to the
+      // appropriate SDK call.
+      let errorDetail: string | null = null
+      if (subscriptionToCancel.resource_type === 'graph') {
+        const response = await SDK.opDeleteGraph({
+          path: { graph_id: subscriptionToCancel.resource_id },
+          body: {
+            confirm: subscriptionToCancel.resource_id,
+            at_period_end: mode === 'period_end',
+          },
+        })
+        if (response.error) {
+          errorDetail =
+            typeof response.error === 'object' && 'detail' in response.error
+              ? String(response.error.detail)
+              : null
+        }
+      } else if (subscriptionToCancel.resource_type === 'repository') {
+        const response = await SDK.cancelRepositorySubscription({
+          path: { graph_id: subscriptionToCancel.resource_id },
+          body: {
+            immediate: mode === 'immediate',
+            confirm:
+              mode === 'immediate'
+                ? subscriptionToCancel.resource_id
+                : undefined,
+          },
+        })
+        if (response.error) {
+          errorDetail =
+            typeof response.error === 'object' && 'detail' in response.error
+              ? String(response.error.detail)
+              : null
+        }
+      } else {
+        // Future non-resource-scoped subs (platform add-ons, etc.)
+        const response = await SDK.cancelOrgSubscription({
+          path: {
+            org_id: currentOrg.id,
+            subscription_id: subscriptionToCancel.id,
+          },
+          body: {
+            immediate: mode === 'immediate',
+            confirm:
+              mode === 'immediate'
+                ? subscriptionToCancel.resource_id
+                : undefined,
+          },
+        })
+        if (response.error) {
+          errorDetail =
+            typeof response.error === 'object' && 'detail' in response.error
+              ? String(response.error.detail)
+              : null
+        }
       }
 
-      showSuccess(
-        `Subscription cancelled. Access will remain active until ${subscriptionToCancel.current_period_end ? format(new Date(subscriptionToCancel.current_period_end), 'MMM d, yyyy') : 'the end of the billing period'}.`
-      )
+      if (errorDetail !== null) {
+        throw new Error(errorDetail || 'Failed to cancel subscription')
+      }
+
+      const isGraph = subscriptionToCancel.resource_type === 'graph'
+      const resourceLabel = isGraph
+        ? (graphs.find((g) => g.graphId === subscriptionToCancel.resource_id)
+            ?.graphName ?? subscriptionToCancel.resource_id)
+        : subscriptionToCancel.resource_id.toUpperCase()
+
+      if (mode === 'immediate') {
+        showSuccess(
+          isGraph
+            ? `Deleting ${resourceLabel}. Teardown completes in ~10 minutes.`
+            : `${resourceLabel} subscription canceled. Access has ended.`
+        )
+      } else {
+        showSuccess(
+          `${resourceLabel} subscription cancelled. Access will remain active until ${subscriptionToCancel.current_period_end ? format(new Date(subscriptionToCancel.current_period_end), 'MMM d, yyyy') : 'the end of the billing period'}.`
+        )
+      }
       setShowCancelModal(false)
       setSubscriptionToCancel(null)
       onRefresh()
@@ -959,86 +1024,32 @@ function SubscriptionsTab({
         </ModalFooter>
       </Modal>
 
-      {/* Cancel Confirmation Modal */}
-      <Modal
+      {/* Cancel Confirmation Modal — shared two-mode modal */}
+      <CancelSubscriptionModal
         show={showCancelModal}
-        onClose={() => !cancelling && setShowCancelModal(false)}
-        size="md"
-        theme={customTheme.modal}
-      >
-        <ModalHeader>Cancel Subscription</ModalHeader>
-        <ModalBody>
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <div className="rounded-full bg-red-100 p-3 dark:bg-red-900/30">
-                <HiExclamationCircle className="h-6 w-6 text-red-600 dark:text-red-400" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 dark:text-white">
-                  Are you sure you want to cancel this subscription?
-                </h3>
-                {subscriptionToCancel && (
-                  <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                    <p className="font-medium">
-                      {subscriptionToCancel.resource_type === 'graph'
-                        ? graphs.find(
-                            (g) =>
-                              g.graphId === subscriptionToCancel.resource_id
-                          )?.graphName || subscriptionToCancel.resource_id
-                        : subscriptionToCancel.resource_id.toUpperCase()}
-                    </p>
-                    <p className="mt-1">
-                      {subscriptionToCancel.plan_display_name}
-                    </p>
-                    <p className="mt-1">
-                      $
-                      {(subscriptionToCancel.base_price_cents / 100).toFixed(2)}
-                      /{subscriptionToCancel.billing_interval}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-            <Alert color="warning" icon={HiInformationCircle}>
-              <p className="text-sm">
-                Your subscription will be cancelled, but you'll continue to have
-                access until the end of your current billing period
-                {subscriptionToCancel?.current_period_end &&
-                  ` (${format(new Date(subscriptionToCancel.current_period_end), 'MMMM d, yyyy')})`}
-                .
-              </p>
-            </Alert>
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <div className="flex w-full gap-3">
-            <button
-              onClick={() => setShowCancelModal(false)}
-              disabled={cancelling}
-              className="flex flex-1 items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-            >
-              <span className="flex flex-col">
-                <span>Keep</span>
-                <span>Subscription</span>
-              </span>
-            </button>
-            <button
-              onClick={handleCancelConfirm}
-              disabled={cancelling}
-              className="flex flex-1 items-center justify-center rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-700 focus:ring-4 focus:ring-red-300 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-            >
-              {cancelling ? (
-                'Cancelling...'
-              ) : (
-                <span className="flex flex-col">
-                  <span>Yes, Cancel</span>
-                  <span>Subscription</span>
-                </span>
-              )}
-            </button>
-          </div>
-        </ModalFooter>
-      </Modal>
+        onClose={() => setShowCancelModal(false)}
+        onConfirm={handleCancelConfirm}
+        loading={cancelling}
+        resourceType={
+          subscriptionToCancel?.resource_type === 'graph'
+            ? 'graph'
+            : 'repository'
+        }
+        resourceName={
+          subscriptionToCancel
+            ? subscriptionToCancel.resource_type === 'graph'
+              ? (graphs.find(
+                  (g) => g.graphId === subscriptionToCancel.resource_id
+                )?.graphName ?? subscriptionToCancel.resource_id)
+              : subscriptionToCancel.resource_id.toUpperCase()
+            : ''
+        }
+        resourceId={subscriptionToCancel?.resource_id ?? ''}
+        planLabel={subscriptionToCancel?.plan_display_name}
+        priceCents={subscriptionToCancel?.base_price_cents}
+        billingInterval={subscriptionToCancel?.billing_interval}
+        currentPeriodEnd={subscriptionToCancel?.current_period_end ?? null}
+      />
     </div>
   )
 }

@@ -7,11 +7,23 @@ import { GraphsContent } from '../content'
 // Mock dependencies
 vi.mock('@/lib/core', () => ({
   useUserLimits: vi.fn(),
-  useToast: vi.fn(),
+  useToast: vi.fn(() => ({
+    showSuccess: vi.fn(),
+    showError: vi.fn(),
+  })),
   useApiError: vi.fn(),
   customTheme: {
     card: {},
+    modal: {},
+    button: {},
   },
+}))
+
+// Stub out the cancel-subscription modal — its internals (Flowbite Radio,
+// Alert, etc.) are tested elsewhere and not relevant to GraphsContent tests.
+vi.mock('@/components/app/CancelSubscriptionModal', () => ({
+  default: ({ show }: { show: boolean }) =>
+    show ? <div data-testid="cancel-modal" /> : null,
 }))
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
@@ -20,6 +32,7 @@ vi.mock('date-fns', () => ({
   formatDistanceToNow: (date: Date) => '5 minutes ago',
 }))
 vi.mock('@robosystems/client', () => ({
+  opDeleteGraph: vi.fn(() => Promise.resolve({ data: {}, error: null })),
   getGraphs: vi.fn(() =>
     Promise.resolve({
       data: {
