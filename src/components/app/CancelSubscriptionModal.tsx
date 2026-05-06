@@ -4,7 +4,6 @@ import { customTheme } from '@/lib/core'
 import {
   Alert,
   Button,
-  Label,
   Modal,
   ModalBody,
   ModalFooter,
@@ -141,9 +140,12 @@ export default function CancelSubscriptionModal({
               When should this happen?
             </legend>
 
-            <div
-              role="presentation"
-              onClick={() => !loading && setMode('period_end')}
+            {/* Wrap each row in a native <label htmlFor> so the entire row
+                is clickable via standard HTML semantics — no role hack
+                needed, screen readers see a real label associated with the
+                radio. */}
+            <label
+              htmlFor="cancel-mode-period-end"
               className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-3 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600"
             >
               <Radio
@@ -156,15 +158,12 @@ export default function CancelSubscriptionModal({
                 className="mt-1"
               />
               <div className="flex-1">
-                <Label
-                  htmlFor="cancel-mode-period-end"
-                  className="text-sm font-medium text-gray-900 dark:text-white"
-                >
+                <span className="text-sm font-medium text-gray-900 dark:text-white">
                   At end of billing period{' '}
                   <span className="ml-1 rounded bg-gray-100 px-2 py-0.5 text-xs font-normal text-gray-600 dark:bg-gray-700 dark:text-gray-300">
                     Recommended
                   </span>
-                </Label>
+                </span>
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                   Keep access until
                   {currentPeriodEnd
@@ -175,11 +174,10 @@ export default function CancelSubscriptionModal({
                     : 'Repository access stays active through the period.'}
                 </p>
               </div>
-            </div>
+            </label>
 
-            <div
-              role="presentation"
-              onClick={() => !loading && setMode('immediate')}
+            <label
+              htmlFor="cancel-mode-immediate"
               className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-3 hover:border-red-300 dark:border-gray-700 dark:hover:border-red-700"
             >
               <Radio
@@ -192,17 +190,14 @@ export default function CancelSubscriptionModal({
                 className="mt-1"
               />
               <div className="flex-1">
-                <Label
-                  htmlFor="cancel-mode-immediate"
-                  className="text-sm font-medium text-red-700 dark:text-red-400"
-                >
+                <span className="text-sm font-medium text-red-700 dark:text-red-400">
                   {destructiveLabel}
-                </Label>
+                </span>
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                   {destructiveExplain}
                 </p>
               </div>
-            </div>
+            </label>
           </fieldset>
 
           {isImmediate && (

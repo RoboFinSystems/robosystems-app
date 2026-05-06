@@ -1,4 +1,5 @@
 import { useUserLimits } from '@/lib/core'
+import * as RoboClient from '@robosystems/client'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { useRouter } from 'next/navigation'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
@@ -20,10 +21,37 @@ vi.mock('@/lib/core', () => ({
 }))
 
 // Stub out the cancel-subscription modal — its internals (Flowbite Radio,
-// Alert, etc.) are tested elsewhere and not relevant to GraphsContent tests.
+// Alert, etc.) are tested elsewhere. We expose two buttons so tests can
+// drive `onConfirm` with either mode and assert the SDK call.
 vi.mock('@/components/app/CancelSubscriptionModal', () => ({
-  default: ({ show }: { show: boolean }) =>
-    show ? <div data-testid="cancel-modal" /> : null,
+  default: ({
+    show,
+    onConfirm,
+    onClose,
+  }: {
+    show: boolean
+    onConfirm: (mode: 'period_end' | 'immediate') => void | Promise<void>
+    onClose: () => void
+  }) =>
+    show ? (
+      <div data-testid="cancel-modal">
+        <button
+          data-testid="confirm-immediate"
+          onClick={() => onConfirm('immediate')}
+        >
+          Confirm Immediate
+        </button>
+        <button
+          data-testid="confirm-period-end"
+          onClick={() => onConfirm('period_end')}
+        >
+          Confirm Period End
+        </button>
+        <button data-testid="modal-close" onClick={onClose}>
+          Close
+        </button>
+      </div>
+    ) : null,
 }))
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
@@ -373,6 +401,76 @@ describe('GraphsContent', () => {
       expect(screen.getByText('ID: company_123')).toBeInTheDocument()
       expect(screen.getByText('ID: company_456')).toBeInTheDocument()
       expect(screen.getByText('ID: generic_789')).toBeInTheDocument()
+    })
+  })
+
+  test('clicking Delete Graph opens the cancel-subscription modal', async () => {
+    render(<GraphsContent />)
+
+    // Wait for the admin row (Acme Corp) — only admins get the Delete option.
+    await waitFor(() => {
+      expect(screen.getByText('Acme Corp')).toBeInTheDocument()
+    })
+
+    // The dropdown is rendered inline by the test mock, so all "Delete Graph"
+    // items are present. Click the first one (admin row).
+    const deleteButtons = screen.getAllByText('Delete Graph')
+    fireEvent.click(deleteButtons[0])
+
+    await waitFor(() => {
+      expect(screen.getByTestId('cancel-modal')).toBeInTheDocument()
+    })
+  })
+
+  test('confirming immediate calls opDeleteGraph with at_period_end=false', async () => {
+    const mockOpDeleteGraph = vi.mocked(RoboClient.opDeleteGraph)
+    mockOpDeleteGraph.mockClear()
+
+    render(<GraphsContent />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Acme Corp')).toBeInTheDocument()
+    })
+
+    fireEvent.click(screen.getAllByText('Delete Graph')[0])
+    await waitFor(() => {
+      expect(screen.getByTestId('cancel-modal')).toBeInTheDocument()
+    })
+
+    fireEvent.click(screen.getByTestId('confirm-immediate'))
+
+    await waitFor(() => {
+      expect(mockOpDeleteGraph).toHaveBeenCalledTimes(1)
+    })
+    expect(mockOpDeleteGraph).toHaveBeenCalledWith({
+      path: { graph_id: 'company_123' },
+      body: { confirm: 'company_123', at_period_end: false },
+    })
+  })
+
+  test('confirming period_end calls opDeleteGraph with at_period_end=true', async () => {
+    const mockOpDeleteGraph = vi.mocked(RoboClient.opDeleteGraph)
+    mockOpDeleteGraph.mockClear()
+
+    render(<GraphsContent />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Acme Corp')).toBeInTheDocument()
+    })
+
+    fireEvent.click(screen.getAllByText('Delete Graph')[0])
+    await waitFor(() => {
+      expect(screen.getByTestId('cancel-modal')).toBeInTheDocument()
+    })
+
+    fireEvent.click(screen.getByTestId('confirm-period-end'))
+
+    await waitFor(() => {
+      expect(mockOpDeleteGraph).toHaveBeenCalledTimes(1)
+    })
+    expect(mockOpDeleteGraph).toHaveBeenCalledWith({
+      path: { graph_id: 'company_123' },
+      body: { confirm: 'company_123', at_period_end: true },
     })
   })
 })

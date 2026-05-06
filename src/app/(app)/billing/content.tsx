@@ -528,8 +528,14 @@ function SubscriptionsTab({
 
       // Resource-scoped cancellation: route to the right endpoint based on
       // resource_type. The mode chosen in the modal flows through to the
-      // appropriate SDK call.
-      let errorDetail: string | null = null
+      // appropriate SDK call. Each branch throws inline on error so an
+      // error object missing `detail` still surfaces as a failure (rather
+      // than silently flowing into the success toast).
+      const extractDetail = (error: unknown): string =>
+        typeof error === 'object' && error !== null && 'detail' in error
+          ? String((error as { detail: unknown }).detail)
+          : 'Failed to cancel subscription'
+
       if (subscriptionToCancel.resource_type === 'graph') {
         const response = await SDK.opDeleteGraph({
           path: { graph_id: subscriptionToCancel.resource_id },
@@ -539,10 +545,7 @@ function SubscriptionsTab({
           },
         })
         if (response.error) {
-          errorDetail =
-            typeof response.error === 'object' && 'detail' in response.error
-              ? String(response.error.detail)
-              : null
+          throw new Error(extractDetail(response.error))
         }
       } else if (subscriptionToCancel.resource_type === 'repository') {
         const response = await SDK.cancelRepositorySubscription({
@@ -556,10 +559,7 @@ function SubscriptionsTab({
           },
         })
         if (response.error) {
-          errorDetail =
-            typeof response.error === 'object' && 'detail' in response.error
-              ? String(response.error.detail)
-              : null
+          throw new Error(extractDetail(response.error))
         }
       } else {
         // Future non-resource-scoped subs (platform add-ons, etc.)
@@ -577,15 +577,8 @@ function SubscriptionsTab({
           },
         })
         if (response.error) {
-          errorDetail =
-            typeof response.error === 'object' && 'detail' in response.error
-              ? String(response.error.detail)
-              : null
+          throw new Error(extractDetail(response.error))
         }
-      }
-
-      if (errorDetail !== null) {
-        throw new Error(errorDetail || 'Failed to cancel subscription')
       }
 
       const isGraph = subscriptionToCancel.resource_type === 'graph'
