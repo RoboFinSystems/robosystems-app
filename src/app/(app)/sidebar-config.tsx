@@ -45,6 +45,7 @@ export const getNavigationItems = (
 
   const hasSelectedGraph = !!currentGraph
   const isRepository = currentGraph?.isRepository ?? false
+  const isGenericGraph = currentGraph?.graphType === 'generic'
 
   // Only show graph-dependent items if a graph is selected
   const graphDependentItems: SidebarItemData[] = hasSelectedGraph
@@ -110,11 +111,16 @@ export const getNavigationItems = (
       label: 'Repositories',
       href: '/repositories',
     },
-    {
-      icon: HiBookOpen,
-      label: 'Library',
-      href: '/library',
-    },
+    // Library is for reporting taxonomies — hide for generic graphs and repositories
+    ...(!isGenericGraph && !isRepository
+      ? [
+          {
+            icon: HiBookOpen,
+            label: 'Library',
+            href: '/library',
+          },
+        ]
+      : []),
     {
       icon: HiCreditCard,
       label: 'Billing',
