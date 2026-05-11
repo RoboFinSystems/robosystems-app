@@ -111,8 +111,9 @@ export const getNavigationItems = (
       label: 'Repositories',
       href: '/repositories',
     },
-    // Library is for reporting taxonomies — hide for generic graphs and repositories
-    ...(!isGenericGraph && !isRepository
+    // Library is for reporting taxonomies — hide when no graph is selected,
+    // and for generic graphs and repositories
+    ...(hasSelectedGraph && !isGenericGraph && !isRepository
       ? [
           {
             icon: HiBookOpen,
