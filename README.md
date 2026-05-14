@@ -9,6 +9,7 @@ RoboSystems App is the web interface for the RoboSystems financial intelligence 
 - **Subgraph Workspaces**: Create isolated environments for development, testing, and collaboration
 - **Data Lake**: DuckDB staging tables for data validation and bulk ingestion
 - **Shared Repository Access**: Subscribe to and query SEC XBRL filings and public financial data
+- **Library**: Browse canonical taxonomies, elements, and reference data shared across graphs
 - **Backup Management**: Create, download, and restore graph database backups
 - **Billing & Usage**: Manage subscriptions, view invoices, and track credit usage
 - **Organization Management**: Manage team members and organization settings
