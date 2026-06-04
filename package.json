@@ -67,7 +67,7 @@
     "dompurify": "^3.3.0"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "^16.2.2",
+    "@next/eslint-plugin-next": "^16.2.7",
     "@tailwindcss/postcss": "^4.1.11",
     "@tailwindcss/typography": "^0.5",
     "@testing-library/jest-dom": "^6",
