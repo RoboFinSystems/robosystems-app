@@ -6,6 +6,8 @@ import {
   getValidToken,
   LIBRARY_GRAPH_ID,
   LibraryClient,
+  LibraryHierarchy,
+  useGraphContext,
   type LibraryTaxonomy,
 } from '@/lib/core'
 import { Alert, Spinner } from 'flowbite-react'
@@ -15,6 +17,13 @@ import { HiBookOpen, HiInformationCircle } from 'react-icons/hi'
 type LoadState = 'idle' | 'loading' | 'ready' | 'error'
 
 export function LibraryContent() {
+  const { state: graphState } = useGraphContext()
+
+  // Tenant-scope to the selected graph (its schema → tenant library copy +
+  // CoA). The public canonical library is only the no-graph fallback.
+  const graphId = graphState.currentGraphId ?? LIBRARY_GRAPH_ID
+  const isTenant = graphId !== LIBRARY_GRAPH_ID
+
   const clientRef = useRef<LibraryClient | null>(null)
   if (!clientRef.current) {
     clientRef.current = new LibraryClient({
@@ -36,11 +45,21 @@ export function LibraryContent() {
   const [selectedElementId, setSelectedElementId] = useState<string | null>(
     null
   )
+  const [viewMode, setViewMode] = useState<'browse' | 'hierarchy'>('browse')
 
-  const reportingTaxonomies = useMemo(() => {
-    const order: Record<string, number> = { sfac6: 0, fac: 1, 'rs-gaap': 2 }
+  // The hierarchy view resolves the arc-owning taxonomy from the selected
+  // taxonomy's standard ({base}-calculations / -presentation / -type-subtype).
+  const baseStandard = useMemo(
+    () => taxonomies.find((t) => t.id === selectedTaxonomyId)?.standard ?? null,
+    [taxonomies, selectedTaxonomyId]
+  )
+
+  // Show reporting + CoA; exclude mapping and schedule taxonomies.
+  const sidebarTaxonomies = useMemo(() => {
+    const order: Record<string, number> = { 'rs-gaap': 0, sfac6: 1, fac: 2 }
+    const hidden = new Set(['mapping', 'schedule'])
     return taxonomies
-      .filter((t) => (t.taxonomyType ?? 'reporting') === 'reporting')
+      .filter((t) => !hidden.has(t.taxonomyType ?? 'reporting'))
       .sort((a, b) => {
         const ai = order[a.standard ?? ''] ?? 99
         const bi = order[b.standard ?? ''] ?? 99
@@ -51,21 +70,20 @@ export function LibraryContent() {
 
   useEffect(() => {
     setTaxonomiesState('loading')
+    setTaxonomies([])
+    setSelectedTaxonomyId(null)
+    setSelectedElementId(null)
     client
-      .listLibraryTaxonomies(LIBRARY_GRAPH_ID, { includeElementCount: true })
+      .listLibraryTaxonomies(graphId, { includeElementCount: true })
       .then((rows) => {
         setTaxonomies(rows)
         setTaxonomiesState('ready')
-        if (rows.length > 0 && !selectedTaxonomyId) {
-          const reporting = rows.filter(
-            (r) => (r.taxonomyType ?? 'reporting') === 'reporting'
-          )
-          const sfac6 = reporting.find((r) => r.standard === 'sfac6')
-          const fac = reporting.find((r) => r.standard === 'fac')
-          const rsGaap = reporting.find((r) => r.standard === 'rs-gaap')
-          setSelectedTaxonomyId(
-            sfac6?.id ?? fac?.id ?? rsGaap?.id ?? reporting[0]?.id ?? rows[0].id
-          )
+        if (rows.length > 0) {
+          // Default to rs-gaap — the active framework (fac has no tenant
+          // calc/presentation hierarchies); fall back to fac, then any row.
+          const rsGaap = rows.find((r) => r.standard === 'rs-gaap')
+          const fac = rows.find((r) => r.standard === 'fac')
+          setSelectedTaxonomyId(rsGaap?.id ?? fac?.id ?? rows[0].id)
         }
       })
       .catch((err) => {
@@ -74,8 +92,7 @@ export function LibraryContent() {
         )
         setTaxonomiesState('error')
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [client, graphId])
 
   return (
     <div className="mx-auto max-w-[1600px] space-y-6 p-6">
@@ -89,11 +106,41 @@ export function LibraryContent() {
               Taxonomy Library
             </h1>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Shared reference material for reporting taxonomies. Every entity
-              graph pulls a read-only copy at provision time. Library content is
-              curated; tenant CoA and mappings are authored locally.
+              {isTenant ? (
+                <>
+                  Library taxonomies + CoA for{' '}
+                  <span className="font-mono text-xs">{graphId}</span>. Library
+                  content is read-only; CoA elements and anchor mappings are
+                  tenant-managed.
+                </>
+              ) : (
+                <>
+                  Shared reference library (public schema). Select a graph to
+                  see its tenant copy with the chart of accounts mapped in.
+                </>
+              )}
             </p>
           </div>
+        </div>
+        <div
+          className="flex shrink-0 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700"
+          role="group"
+          aria-label="View mode"
+        >
+          {(['browse', 'hierarchy'] as const).map((mode) => (
+            <button
+              key={mode}
+              onClick={() => setViewMode(mode)}
+              aria-pressed={viewMode === mode}
+              className={`px-4 py-2 text-sm font-medium capitalize transition-colors ${
+                viewMode === mode
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-gray-600 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+              }`}
+            >
+              {mode}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -109,26 +156,38 @@ export function LibraryContent() {
         </Alert>
       )}
 
+      {/* Grid height = viewport minus ~220px of app header + page heading + padding above it. */}
       {taxonomiesState === 'ready' && (
         <div
           className="grid grid-cols-12 items-stretch gap-6"
           style={{ height: 'calc(100vh - 220px)', minHeight: '600px' }}
         >
-          <ElementBrowser
-            client={client}
-            graphId={LIBRARY_GRAPH_ID}
-            taxonomyId={selectedTaxonomyId}
-            taxonomies={reportingTaxonomies}
-            onTaxonomyChange={(id) => {
-              setSelectedTaxonomyId(id)
-              setSelectedElementId(null)
-            }}
-            selectedElementId={selectedElementId}
-            onSelectElement={setSelectedElementId}
-          />
+          {viewMode === 'browse' ? (
+            <ElementBrowser
+              client={client}
+              graphId={graphId}
+              taxonomyId={selectedTaxonomyId}
+              taxonomies={sidebarTaxonomies}
+              onTaxonomyChange={(id) => {
+                setSelectedTaxonomyId(id)
+                setSelectedElementId(null)
+              }}
+              selectedElementId={selectedElementId}
+              onSelectElement={setSelectedElementId}
+            />
+          ) : (
+            <LibraryHierarchy
+              client={client}
+              graphId={graphId}
+              taxonomies={taxonomies}
+              baseStandard={baseStandard}
+              selectedElementId={selectedElementId}
+              onSelectElement={setSelectedElementId}
+            />
+          )}
           <ElementDetail
             client={client}
-            graphId={LIBRARY_GRAPH_ID}
+            graphId={graphId}
             elementId={selectedElementId}
             onSelectElement={setSelectedElementId}
           />
