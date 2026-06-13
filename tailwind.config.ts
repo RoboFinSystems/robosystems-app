@@ -91,8 +91,8 @@ const config = {
           },
         },
         semantic: {
-          success: '#00D4AA', // Using secondary green
-          warning: '#FF6B35', // Using accent orange
+          success: '#00D4AA', // teal-green — app-invariant semantic, not a token
+          warning: '#FF6B35', // orange — app-invariant; matches the amber-* scale
           error: '#DC2626', // Red for errors
           info: '#3B7AF5', // Using primary blue
         },
