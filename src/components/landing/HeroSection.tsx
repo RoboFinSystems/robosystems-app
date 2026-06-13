@@ -26,7 +26,7 @@ export default function HeroSection() {
     <section className="relative min-h-screen overflow-hidden bg-black">
       {/* Animated background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-linear-to-br from-cyan-900/20 via-blue-900/20 to-purple-900/20"></div>
+        <div className="from-secondary-900/20 via-primary-900/20 to-accent-900/20 absolute inset-0 bg-linear-to-br"></div>
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20"></div>
       </div>
 
@@ -40,7 +40,7 @@ export default function HeroSection() {
             <span className="animate-pulsate-gradient-subtle text-transparent">
               Financial Data,
             </span>
-            <span className="mt-2 block bg-linear-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text pb-2 text-transparent">
+            <span className="from-secondary-400 via-primary-400 to-accent-400 mt-2 block bg-linear-to-r bg-clip-text pb-2 text-transparent">
               Finally Connected
             </span>
           </h1>
@@ -50,7 +50,7 @@ export default function HeroSection() {
             Structured data in a knowledge graph, full-text and semantic search
             across filings and documents, and AI memory that persists across
             sessions&mdash;powered by{' '}
-            <strong className="text-cyan-400">
+            <strong className="text-secondary-400">
               Model Context Protocol (MCP)
             </strong>{' '}
             tools.
@@ -58,12 +58,12 @@ export default function HeroSection() {
 
           {/* Key Value Props */}
           <div className="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-4 sm:gap-6 md:mt-16 md:grid-cols-3">
-            <div className="group relative overflow-hidden rounded-2xl border border-cyan-500/20 bg-cyan-950/20 p-4 backdrop-blur-sm transition-all duration-300 hover:border-cyan-500/50 hover:bg-cyan-950/30 sm:p-6">
-              <div className="absolute inset-0 bg-linear-to-br from-cyan-500/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="group border-secondary-500/20 bg-secondary-950/20 hover:border-secondary-500/50 hover:bg-secondary-950/30 relative overflow-hidden rounded-2xl border p-4 backdrop-blur-sm transition-all duration-300 sm:p-6">
+              <div className="from-secondary-500/10 absolute inset-0 bg-linear-to-br to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
               <div className="relative">
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-500/20">
+                <div className="bg-secondary-500/20 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
                   <svg
-                    className="h-6 w-6 text-cyan-400"
+                    className="text-secondary-400 h-6 w-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -92,12 +92,12 @@ export default function HeroSection() {
               </div>
             </div>
 
-            <div className="group relative overflow-hidden rounded-2xl border border-blue-500/20 bg-blue-950/20 p-4 backdrop-blur-sm transition-all duration-300 hover:border-blue-500/50 hover:bg-blue-950/30 sm:p-6">
-              <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="group border-primary-500/20 bg-primary-950/20 hover:border-primary-500/50 hover:bg-primary-950/30 relative overflow-hidden rounded-2xl border p-4 backdrop-blur-sm transition-all duration-300 sm:p-6">
+              <div className="from-primary-500/10 absolute inset-0 bg-linear-to-br to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
               <div className="relative">
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500/20">
+                <div className="bg-primary-500/20 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
                   <svg
-                    className="h-6 w-6 text-blue-400"
+                    className="text-primary-400 h-6 w-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -120,12 +120,12 @@ export default function HeroSection() {
               </div>
             </div>
 
-            <div className="group relative overflow-hidden rounded-2xl border border-green-500/20 bg-green-950/20 p-4 backdrop-blur-sm transition-all duration-300 hover:border-green-500/50 hover:bg-green-950/30 sm:p-6">
-              <div className="absolute inset-0 bg-linear-to-br from-green-500/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="group border-accent-500/20 bg-accent-950/20 hover:border-accent-500/50 hover:bg-accent-950/30 relative overflow-hidden rounded-2xl border p-4 backdrop-blur-sm transition-all duration-300 sm:p-6">
+              <div className="from-accent-500/10 absolute inset-0 bg-linear-to-br to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
               <div className="relative">
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-green-500/20">
+                <div className="bg-accent-500/20 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
                   <svg
-                    className="h-6 w-6 text-green-400"
+                    className="text-accent-400 h-6 w-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -153,7 +153,7 @@ export default function HeroSection() {
           <div className="mx-auto mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center md:mt-16">
             <Link
               href="/register"
-              className="group relative overflow-hidden rounded-lg bg-linear-to-r from-cyan-500 to-blue-500 px-6 py-3 text-base font-medium text-white shadow-2xl shadow-cyan-500/25 transition-all duration-300 hover:shadow-cyan-500/40 sm:px-8 sm:py-4 sm:text-lg"
+              className="group from-secondary-500 to-primary-500 shadow-secondary-500/25 hover:shadow-secondary-500/40 relative overflow-hidden rounded-lg bg-linear-to-r px-6 py-3 text-base font-medium text-white shadow-2xl transition-all duration-300 sm:px-8 sm:py-4 sm:text-lg"
             >
               <span className="relative z-10">Get Started</span>
               <div className="absolute inset-0 -translate-y-full bg-white/20 transition-transform duration-500 group-hover:translate-y-0"></div>

@@ -241,12 +241,12 @@ export default function FeaturesGrid() {
           </div>
 
           {/* API & SDKs */}
-          <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-purple-950/20 p-5 transition-all duration-300 hover:border-purple-500/50 sm:p-6 md:p-8">
-            <div className="absolute inset-0 bg-linear-to-br from-purple-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+          <div className="group to-secondary-950/20 hover:border-secondary-500/50 relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 p-5 transition-all duration-300 sm:p-6 md:p-8">
+            <div className="from-secondary-500/5 absolute inset-0 bg-linear-to-br to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             <div className="relative">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/20 sm:mb-6 sm:h-14 sm:w-14">
+              <div className="bg-secondary-500/20 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl sm:mb-6 sm:h-14 sm:w-14">
                 <svg
-                  className="h-7 w-7 text-purple-400"
+                  className="text-secondary-400 h-7 w-7"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -268,19 +268,19 @@ export default function FeaturesGrid() {
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
-                  <span className="mr-2 text-purple-400">•</span>
+                  <span className="text-secondary-400 mr-2">•</span>
                   Extensions GraphQL with per-graph schema introspection
                 </li>
                 <li className="flex items-start">
-                  <span className="mr-2 text-purple-400">•</span>
+                  <span className="text-secondary-400 mr-2">•</span>
                   Named operations with idempotency and audit trail
                 </li>
                 <li className="flex items-start">
-                  <span className="mr-2 text-purple-400">•</span>
+                  <span className="text-secondary-400 mr-2">•</span>
                   TypeScript and Python SDKs with full types
                 </li>
                 <li className="flex items-start">
-                  <span className="mr-2 text-purple-400">•</span>
+                  <span className="text-secondary-400 mr-2">•</span>
                   SSE streaming for real-time operation progress
                 </li>
               </ul>

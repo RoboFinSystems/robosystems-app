@@ -29,30 +29,48 @@ const config = {
           950: '#172E47', // Darkest blue
         },
         secondary: {
-          50: '#E6FFFA', // Lightest teal
-          100: '#B2FFF0', // Very light green
-          200: '#7FFFE6', // Light green
-          300: '#4CFFDB', // Bright light green
-          400: '#1AFFD1', // Bright green
-          500: '#00D4AA', // Brand secondary (bright green)
-          600: '#00B894', // Medium green
-          700: '#009B7D', // Deep green
-          800: '#007D65', // Darker green
-          900: '#00604D', // Very dark green
-          950: '#004438', // Darkest green
+          50: '#ECFEFF', // Lightest cyan
+          100: '#CFFAFE', // Very light cyan
+          200: '#A5F3FC', // Light cyan
+          300: '#67E8F9', // Soft cyan
+          400: '#22D3EE', // Bright cyan
+          500: '#06B6D4', // Brand secondary (cyan)
+          600: '#0891B2', // Medium cyan
+          700: '#0E7490', // Deep cyan
+          800: '#155E75', // Darker cyan
+          900: '#164E63', // Very dark cyan
+          950: '#083344', // Darkest cyan
         },
         accent: {
-          50: '#FFF5F0', // Lightest orange
-          100: '#FFE6D9', // Very light orange
-          200: '#FFD4C1', // Light orange
-          300: '#FFBFA6', // Soft orange
-          400: '#FFA589', // Medium orange
-          500: '#FF6B35', // Brand accent (warm orange)
-          600: '#F54E17', // Strong orange
-          700: '#DC4313', // Deep orange
-          800: '#B93810', // Dark orange
-          900: '#962D0D', // Very dark orange
-          950: '#731F08', // Darkest orange
+          // Indigo — a blue-leaning accent for RoboSystems. Deliberately NOT
+          // violet (#8B5CF6), which is RoboLedger's primary; indigo keeps the
+          // "bluish purple" hint while staying clearly distinct from RoboLedger.
+          50: '#EEF2FF', // Lightest indigo
+          100: '#E0E7FF', // Very light indigo
+          200: '#C7D2FE', // Light indigo
+          300: '#A5B4FC', // Soft indigo
+          400: '#818CF8', // Medium indigo
+          500: '#6366F1', // Brand accent (indigo)
+          600: '#4F46E5', // Strong indigo
+          700: '#4338CA', // Deep indigo
+          800: '#3730A3', // Dark indigo
+          900: '#312E81', // Very dark indigo
+          950: '#1E1B4B', // Darkest indigo
+        },
+        // Shared semantic amber (decoupled from brand accent so `warning`
+        // stays amber across all apps regardless of the per-app accent hue).
+        amber: {
+          50: '#FFF5F0',
+          100: '#FFE6D9',
+          200: '#FFD4C1',
+          300: '#FFBFA6',
+          400: '#FFA589',
+          500: '#FF6B35',
+          600: '#F54E17',
+          700: '#DC4313',
+          800: '#B93810',
+          900: '#962D0D',
+          950: '#731F08',
         },
         graph: {
           node: {

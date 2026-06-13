@@ -118,9 +118,9 @@ export default function FloatingElementsVariant({
     case 'hero':
       return (
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="animate-float-slow absolute top-0 right-1/4 h-[700px] w-[700px] rounded-full bg-gradient-to-br from-cyan-600/20 to-blue-600/20 blur-3xl"></div>
-          <div className="animate-float-slower absolute -bottom-40 -left-40 h-[800px] w-[800px] rounded-full bg-gradient-to-br from-purple-600/15 to-pink-600/15 blur-3xl"></div>
-          <div className="animate-float absolute top-1/3 left-1/3 h-[500px] w-[500px] rounded-full bg-gradient-to-br from-indigo-600/10 to-violet-600/10 blur-3xl"></div>
+          <div className="animate-float-slow from-secondary-600/20 to-primary-600/20 absolute top-0 right-1/4 h-[700px] w-[700px] rounded-full bg-gradient-to-br blur-3xl"></div>
+          <div className="animate-float-slower from-primary-600/15 to-accent-600/15 absolute -bottom-40 -left-40 h-[800px] w-[800px] rounded-full bg-gradient-to-br blur-3xl"></div>
+          <div className="animate-float from-accent-600/10 to-secondary-600/10 absolute top-1/3 left-1/3 h-[500px] w-[500px] rounded-full bg-gradient-to-br blur-3xl"></div>
         </div>
       )
 
@@ -144,9 +144,9 @@ export default function FloatingElementsVariant({
     case 'applications':
       return (
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="animate-float-slower absolute top-1/4 -right-32 h-[650px] w-[650px] rounded-full bg-gradient-to-br from-violet-600/12 to-purple-600/12 blur-3xl"></div>
-          <div className="animate-float absolute -bottom-32 left-1/4 h-[500px] w-[500px] rounded-full bg-gradient-to-br from-fuchsia-600/10 to-pink-600/10 blur-3xl"></div>
-          <div className="animate-float-slow absolute top-1/2 left-1/4 h-[450px] w-[450px] rounded-full bg-gradient-to-br from-indigo-600/8 to-blue-600/8 blur-3xl"></div>
+          <div className="animate-float-slower from-primary-600/12 to-accent-600/12 absolute top-1/4 -right-32 h-[650px] w-[650px] rounded-full bg-gradient-to-br blur-3xl"></div>
+          <div className="animate-float from-secondary-600/10 to-primary-600/10 absolute -bottom-32 left-1/4 h-[500px] w-[500px] rounded-full bg-gradient-to-br blur-3xl"></div>
+          <div className="animate-float-slow from-accent-600/8 to-primary-600/8 absolute top-1/2 left-1/4 h-[450px] w-[450px] rounded-full bg-gradient-to-br blur-3xl"></div>
         </div>
       )
 

@@ -22,9 +22,9 @@ export default function OpenSourceSection() {
         </div>
 
         {/* Featured GitHub Repository */}
-        <div className="mb-8 rounded-2xl border-2 border-cyan-500/50 bg-linear-to-br from-cyan-900/30 to-blue-900/30 p-4 hover:border-cyan-500/30 hover:bg-cyan-900/20 sm:mb-12 sm:p-6 md:p-8">
+        <div className="border-secondary-500/50 from-secondary-900/30 to-primary-900/30 hover:border-secondary-500/30 hover:bg-secondary-900/20 mb-8 rounded-2xl border-2 bg-linear-to-br p-4 sm:mb-12 sm:p-6 md:p-8">
           <div className="flex flex-col items-center gap-4 sm:gap-6 md:flex-row md:items-start">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-600 to-blue-600 sm:h-20 sm:w-20">
+            <div className="from-secondary-600 to-primary-600 flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br sm:h-20 sm:w-20">
               <svg
                 className="h-10 w-10 text-white sm:h-12 sm:w-12"
                 fill="currentColor"
@@ -52,7 +52,7 @@ export default function OpenSourceSection() {
               <div className="flex flex-wrap justify-center gap-4 md:justify-start">
                 <a
                   href="https://github.com/RoboFinSystems/robosystems"
-                  className="inline-flex items-center gap-2 rounded-lg bg-cyan-600 px-5 py-2.5 font-medium text-white transition-all duration-300 hover:bg-cyan-700"
+                  className="bg-secondary-600 hover:bg-secondary-700 inline-flex items-center gap-2 rounded-lg px-5 py-2.5 font-medium text-white transition-all duration-300"
                 >
                   <svg
                     className="h-5 w-5"
@@ -69,7 +69,7 @@ export default function OpenSourceSection() {
                 </a>
                 <a
                   href="https://github.com/RoboFinSystems/robosystems/fork"
-                  className="inline-flex items-center gap-2 rounded-lg border border-cyan-600 px-5 py-2.5 font-medium text-cyan-400 transition-all duration-300 hover:bg-cyan-600/10"
+                  className="border-secondary-600 text-secondary-400 hover:bg-secondary-600/10 inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 font-medium transition-all duration-300"
                 >
                   🍴 Fork & Contribute
                 </a>
@@ -82,14 +82,14 @@ export default function OpenSourceSection() {
           {/* Left Column */}
           <div className="space-y-6 sm:space-y-8">
             {/* Open Source Philosophy */}
-            <div className="group overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-cyan-950/20 p-4 transition-all hover:border-cyan-500/50 sm:p-6 md:p-8">
+            <div className="group to-secondary-950/20 hover:border-secondary-500/50 overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 p-4 transition-all sm:p-6 md:p-8">
               <h3 className="font-heading mb-4 text-xl font-semibold text-white sm:mb-6 sm:text-2xl">
                 Why Open Source?
               </h3>
               <ul className="space-y-4 text-gray-300">
                 <li className="flex items-start">
                   <svg
-                    className="mr-3 h-6 w-6 shrink-0 text-cyan-400"
+                    className="text-secondary-400 mr-3 h-6 w-6 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -111,7 +111,7 @@ export default function OpenSourceSection() {
                 </li>
                 <li className="flex items-start">
                   <svg
-                    className="mr-3 h-6 w-6 shrink-0 text-cyan-400"
+                    className="text-secondary-400 mr-3 h-6 w-6 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -133,7 +133,7 @@ export default function OpenSourceSection() {
                 </li>
                 <li className="flex items-start">
                   <svg
-                    className="mr-3 h-6 w-6 shrink-0 text-cyan-400"
+                    className="text-secondary-400 mr-3 h-6 w-6 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -157,7 +157,7 @@ export default function OpenSourceSection() {
                 </li>
                 <li className="flex items-start">
                   <svg
-                    className="mr-3 h-6 w-6 shrink-0 text-cyan-400"
+                    className="text-secondary-400 mr-3 h-6 w-6 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -183,11 +183,11 @@ export default function OpenSourceSection() {
             </div>
 
             {/* Enterprise Services */}
-            <div className="group overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-purple-950/20 p-4 transition-all hover:border-purple-500/50 sm:p-6 md:p-8">
+            <div className="group to-accent-950/20 hover:border-accent-500/50 overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 p-4 transition-all sm:p-6 md:p-8">
               <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/20">
+                <div className="bg-accent-500/20 flex h-10 w-10 items-center justify-center rounded-lg">
                   <svg
-                    className="h-5 w-5 text-purple-400"
+                    className="text-accent-400 h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -210,14 +210,14 @@ export default function OpenSourceSection() {
 
               <ul className="mb-4 space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
-                  <span className="mr-2 text-purple-400">•</span>
+                  <span className="text-accent-400 mr-2">•</span>
                   <span>
                     <strong className="text-white">Custom Integrations</strong>
                     —connect your ERP, banking, or proprietary data sources
                   </span>
                 </li>
                 <li className="flex items-start">
-                  <span className="mr-2 text-purple-400">•</span>
+                  <span className="text-accent-400 mr-2">•</span>
                   <span>
                     <strong className="text-white">
                       Implementation Support
@@ -226,7 +226,7 @@ export default function OpenSourceSection() {
                   </span>
                 </li>
                 <li className="flex items-start">
-                  <span className="mr-2 text-purple-400">•</span>
+                  <span className="text-accent-400 mr-2">•</span>
                   <span>
                     <strong className="text-white">AI Support Agents</strong>
                     —ongoing maintenance and optimization of your knowledge
@@ -237,7 +237,7 @@ export default function OpenSourceSection() {
 
               <button
                 onClick={() => setShowEnterpriseContact(true)}
-                className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700"
+                className="bg-accent-600 hover:bg-accent-700 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
               >
                 Contact Us
                 <svg
@@ -311,7 +311,7 @@ export default function OpenSourceSection() {
             </div>
 
             {/* Download */}
-            <div className="group overflow-hidden rounded-2xl border border-cyan-500/30 bg-linear-to-br from-cyan-900/30 to-blue-900/20 p-4 transition-all hover:border-cyan-500/50 sm:p-6 md:p-8">
+            <div className="group border-secondary-500/30 from-secondary-900/30 to-primary-900/20 hover:border-secondary-500/50 overflow-hidden rounded-2xl border bg-linear-to-br p-4 transition-all sm:p-6 md:p-8">
               <div className="mb-6 flex items-center justify-between">
                 <h3 className="font-heading text-xl font-semibold text-white sm:text-2xl">
                   Download RoboSystems
@@ -398,8 +398,8 @@ export default function OpenSourceSection() {
                 </div>
 
                 {/* Quick Start */}
-                <div className="mt-4 rounded-lg bg-blue-900/20 p-3 sm:p-4">
-                  <h4 className="mb-2 font-semibold text-blue-300">
+                <div className="bg-primary-900/20 mt-4 rounded-lg p-3 sm:p-4">
+                  <h4 className="text-primary-300 mb-2 font-semibold">
                     Local Development
                   </h4>
                   <pre className="overflow-x-auto rounded-sm bg-zinc-900 p-2 text-xs text-gray-300 sm:p-3">
@@ -417,7 +417,7 @@ just start
                     For production deployment, see the{' '}
                     <a
                       href="https://github.com/RoboFinSystems/robosystems/wiki/Bootstrap-Guide"
-                      className="text-blue-400 hover:text-blue-300"
+                      className="text-primary-400 hover:text-primary-300"
                     >
                       Bootstrap Guide
                     </a>
@@ -430,7 +430,7 @@ just start
         </div>
 
         {/* Community & Contribution */}
-        <div className="mt-8 rounded-2xl border border-gray-800 bg-linear-to-r from-zinc-900 to-purple-950/20 p-4 sm:mt-12 sm:p-6 md:p-8">
+        <div className="to-accent-950/20 mt-8 rounded-2xl border border-gray-800 bg-linear-to-r from-zinc-900 p-4 sm:mt-12 sm:p-6 md:p-8">
           <div className="mx-auto max-w-4xl">
             <h3 className="font-heading mb-4 text-center text-xl font-semibold text-white sm:mb-6 sm:text-2xl">
               Join the RoboSystems Community
@@ -443,7 +443,7 @@ just start
               <div className="group rounded-lg border-2 border-gray-800 bg-linear-to-br from-zinc-900 to-green-950/20 p-4 transition-all hover:border-green-500/50 sm:p-6">
                 <h4 className="mb-3 flex items-center gap-2 font-semibold text-white">
                   <svg
-                    className="h-5 w-5 text-cyan-400"
+                    className="text-secondary-400 h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -522,7 +522,7 @@ just start
                 href="https://github.com/orgs/RoboFinSystems/projects/3"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg bg-cyan-600 px-6 py-3 font-medium text-white transition-all duration-300 hover:bg-cyan-700"
+                className="bg-secondary-600 hover:bg-secondary-700 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium text-white transition-all duration-300"
               >
                 <svg
                   className="h-5 w-5"
