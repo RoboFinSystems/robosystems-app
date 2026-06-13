@@ -1,13 +1,13 @@
 'use client'
 import { useUser } from '@/lib/core'
-import { Spinner } from '@/lib/core/ui-components'
+import { BrandSpinner } from '@/lib/core/ui-components'
 import UserSettingsPageContent from './content'
 
 export default function UserSettingsPage() {
   const { user, isLoading, refreshUser } = useUser()
 
   if (isLoading || !user) {
-    return <Spinner size="xl" fullScreen />
+    return <BrandSpinner size="xl" fullScreen />
   }
 
   return (
