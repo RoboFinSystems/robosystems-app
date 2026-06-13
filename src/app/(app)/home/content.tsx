@@ -1,6 +1,11 @@
 'use client'
 
-import { customTheme, PageLayout, useGraphContext } from '@/lib/core'
+import {
+  customTheme,
+  PageHeader,
+  PageLayout,
+  useGraphContext,
+} from '@/lib/core'
 import type { GraphInfo } from '@robosystems/client'
 import { getGraphs } from '@robosystems/client'
 import {
@@ -106,36 +111,29 @@ export default function AllGraphsHomePage() {
   return (
     <PageLayout>
       {/* Header */}
-      <div className="mb-6 flex items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="from-primary-500 to-secondary-600 rounded-lg bg-gradient-to-br p-3">
-            <HiHome className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
-              Graphs & Repositories
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Manage your graphs and access repositories
-            </p>
-          </div>
-        </div>
-        {graphs.length > 0 && (
-          <div className="flex gap-2">
-            <Button
-              color="purple"
-              onClick={() => router.push('/repositories/browse')}
-            >
-              <HiGlobeAlt className="mr-2 h-4 w-4" />
-              Browse Repositories
-            </Button>
-            <Button onClick={() => router.push('/graphs/new')}>
-              <HiPlus className="mr-2 h-4 w-4" />
-              Create Graph
-            </Button>
-          </div>
-        )}
-      </div>
+      <PageHeader
+        icon={HiHome}
+        title="Graphs & Repositories"
+        subtitle="Manage your graphs and access repositories"
+        className="mb-6"
+        actions={
+          graphs.length > 0 && (
+            <>
+              <Button
+                color="purple"
+                onClick={() => router.push('/repositories/browse')}
+              >
+                <HiGlobeAlt className="mr-2 h-4 w-4" />
+                Browse Repositories
+              </Button>
+              <Button onClick={() => router.push('/graphs/new')}>
+                <HiPlus className="mr-2 h-4 w-4" />
+                Create Graph
+              </Button>
+            </>
+          )
+        }
+      />
 
       {/* Graphs List - Mobile Optimized */}
       {graphs.length > 0 ? (

@@ -5,6 +5,7 @@ import CancelSubscriptionModal, {
 } from '@/components/app/CancelSubscriptionModal'
 import {
   customTheme,
+  PageHeader,
   PageLayout,
   useApiError,
   useGraphContext,
@@ -141,21 +142,11 @@ export function BillingContent() {
 
   return (
     <PageLayout>
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="from-primary-500 to-secondary-600 rounded-lg bg-gradient-to-br p-3">
-            <HiCreditCard className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
-              Billing & Subscriptions
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Manage subscription and payments
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        icon={HiCreditCard}
+        title="Billing & Subscriptions"
+        subtitle="Manage subscription and payments"
+      />
 
       {error && (
         <Alert color="failure" icon={HiExclamationCircle}>

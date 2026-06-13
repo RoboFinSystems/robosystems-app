@@ -1,6 +1,11 @@
 'use client'
 
-import { customTheme, useGraphContext, useIsRepository } from '@/lib/core'
+import {
+  customTheme,
+  PageHeader,
+  useGraphContext,
+  useIsRepository,
+} from '@/lib/core'
 import { useToast } from '@/lib/core/hooks/use-toast'
 import { Spinner as AppSpinner } from '@/lib/core/ui-components'
 import type { Monaco } from '@monaco-editor/react'
@@ -688,27 +693,23 @@ export function DocumentsPageContent() {
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="from-primary-500 to-secondary-600 rounded-lg bg-gradient-to-br p-3">
-            <HiDocumentText className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
-              Knowledge Base
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {totalDocuments} document{totalDocuments !== 1 ? 's' : ''} indexed
-            </p>
-          </div>
-        </div>
-        {!isRepository && (
-          <Button onClick={handleNewDocument}>
-            <HiPlus className="mr-2 h-4 w-4" />
-            New Document
-          </Button>
-        )}
-      </div>
+      <PageHeader
+        icon={HiDocumentText}
+        title="Knowledge Base"
+        subtitle={
+          <>
+            {totalDocuments} document{totalDocuments !== 1 ? 's' : ''} indexed
+          </>
+        }
+        actions={
+          !isRepository && (
+            <Button onClick={handleNewDocument}>
+              <HiPlus className="mr-2 h-4 w-4" />
+              New Document
+            </Button>
+          )
+        }
+      />
 
       {/* Document List */}
       {documents.length === 0 ? (

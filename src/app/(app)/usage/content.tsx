@@ -1,6 +1,11 @@
 'use client'
 
-import { customTheme, useGraphContext, useIsRepository } from '@/lib/core'
+import {
+  customTheme,
+  PageHeader,
+  useGraphContext,
+  useIsRepository,
+} from '@/lib/core'
 import type { GraphInfo } from '@robosystems/client'
 import {
   getCreditSummary,
@@ -277,26 +282,18 @@ export function UsageContent() {
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="from-primary-500 to-secondary-600 rounded-lg bg-gradient-to-br p-3">
-            <HiChartBar className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
-              Usage & Credits
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Monitor credit consumption and activity
-            </p>
-          </div>
-        </div>
-        {isRepository && (
-          <div className="flex flex-wrap gap-2">
-            <Badge color="info">Shared Repository</Badge>
-          </div>
-        )}
-      </div>
+      <PageHeader
+        icon={HiChartBar}
+        title="Usage & Credits"
+        subtitle="Monitor credit consumption and activity"
+        actions={
+          isRepository && (
+            <div className="flex flex-wrap gap-2">
+              <Badge color="info">Shared Repository</Badge>
+            </div>
+          )
+        }
+      />
 
       {/* Credit Balance - For both graphs and repositories */}
       {data.creditSummary && (

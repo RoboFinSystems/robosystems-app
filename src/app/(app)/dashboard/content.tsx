@@ -1,6 +1,11 @@
 'use client'
 
-import { customTheme, useGraphContext, useIsRepository } from '@/lib/core'
+import {
+  customTheme,
+  PageHeader,
+  useGraphContext,
+  useIsRepository,
+} from '@/lib/core'
 import type { GraphInfo, GraphMetricsResponse } from '@robosystems/client'
 import { getGraphMetrics, getGraphs } from '@robosystems/client'
 import { Alert, Badge, Card, Spinner } from 'flowbite-react'
@@ -141,26 +146,18 @@ export function GraphDashboardContent() {
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="from-primary-500 to-secondary-600 rounded-lg bg-gradient-to-br p-3">
-            <HiViewGrid className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
-              {data.graphInfo.graphName}
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              View metrics and manage your graph
-            </p>
-          </div>
-        </div>
-        {isRepository && (
-          <div className="flex flex-wrap gap-2">
-            <Badge color="info">Shared Repository</Badge>
-          </div>
-        )}
-      </div>
+      <PageHeader
+        icon={HiViewGrid}
+        title={data.graphInfo.graphName}
+        subtitle="View metrics and manage your graph"
+        actions={
+          isRepository && (
+            <div className="flex flex-wrap gap-2">
+              <Badge color="info">Shared Repository</Badge>
+            </div>
+          )
+        }
+      />
 
       {/* Metrics Overview - Only show if we have metrics */}
       {data.metrics && (

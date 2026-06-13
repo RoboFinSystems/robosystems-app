@@ -3,6 +3,7 @@
 import GraphLimitModal from '@/components/app/GraphLimitModal'
 import {
   customTheme,
+  PageHeader,
   PageLayout,
   useApiError,
   useOrg,
@@ -257,21 +258,11 @@ export function OrganizationContent() {
       <ToastContainer />
 
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="from-primary-500 to-secondary-600 rounded-lg bg-gradient-to-br p-3">
-            <HiOfficeBuilding className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
-              Organization
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Manage your organization and team
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        icon={HiOfficeBuilding}
+        title="Organization"
+        subtitle="Manage your organization and team"
+      />
 
       {/* Organization Info */}
       <Card theme={customTheme.card}>
