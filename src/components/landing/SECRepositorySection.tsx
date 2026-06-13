@@ -141,7 +141,7 @@ export default function SECRepositorySection() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 text-center">
-          <p className="mb-4 text-sm font-semibold tracking-wider text-cyan-400 uppercase">
+          <p className="text-secondary-400 mb-4 text-sm font-semibold tracking-wider uppercase">
             SEC XBRL Repository
           </p>
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
@@ -167,7 +167,7 @@ export default function SECRepositorySection() {
               key={stat.label}
               className="rounded-xl border border-gray-800 bg-zinc-900/50 p-4 text-center transition-all duration-300 hover:border-gray-700 sm:p-6"
             >
-              <div className="text-2xl font-bold text-cyan-400 sm:text-3xl">
+              <div className="text-secondary-400 text-2xl font-bold sm:text-3xl">
                 {stat.value}
               </div>
               <div className="mt-1 text-xs text-gray-400 sm:text-sm">
@@ -205,7 +205,7 @@ export default function SECRepositorySection() {
                 </div>
                 <div>
                   <span className="text-xs text-gray-500">RESPONSE</span>
-                  <pre className="mt-1 overflow-x-auto font-mono text-xs whitespace-pre-wrap text-cyan-300/90 sm:text-sm">
+                  <pre className="text-secondary-300/90 mt-1 overflow-x-auto font-mono text-xs whitespace-pre-wrap sm:text-sm">
                     {QUERIES[activeQuery].response}
                   </pre>
                 </div>
@@ -219,7 +219,7 @@ export default function SECRepositorySection() {
                     onClick={() => handleQuerySelect(i)}
                     className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
                       i === activeQuery
-                        ? 'bg-cyan-500/20 text-cyan-400'
+                        ? 'bg-secondary-500/20 text-secondary-400'
                         : 'text-gray-500 hover:bg-gray-800 hover:text-gray-300'
                     }`}
                   >
@@ -235,9 +235,9 @@ export default function SECRepositorySection() {
             {/* MCP Clients */}
             <div className="flex-1 rounded-xl border border-gray-800 bg-zinc-900/50 p-5 transition-all duration-300 hover:border-gray-700">
               <div className="mb-2 flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-cyan-500/20">
+                <div className="bg-secondary-500/20 flex h-9 w-9 items-center justify-center rounded-lg">
                   <svg
-                    className="h-5 w-5 text-cyan-400"
+                    className="text-secondary-400 h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -261,9 +261,9 @@ export default function SECRepositorySection() {
             {/* MCP Protocol */}
             <div className="flex-1 rounded-xl border border-gray-800 bg-zinc-900/50 p-5 transition-all duration-300 hover:border-gray-700">
               <div className="mb-2 flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-500/20">
+                <div className="bg-accent-500/20 flex h-9 w-9 items-center justify-center rounded-lg">
                   <svg
-                    className="h-5 w-5 text-purple-400"
+                    className="text-accent-400 h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -288,9 +288,9 @@ export default function SECRepositorySection() {
             {/* API & SDKs */}
             <div className="flex-1 rounded-xl border border-gray-800 bg-zinc-900/50 p-5 transition-all duration-300 hover:border-gray-700">
               <div className="mb-2 flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/20">
+                <div className="bg-primary-500/20 flex h-9 w-9 items-center justify-center rounded-lg">
                   <svg
-                    className="h-5 w-5 text-blue-400"
+                    className="text-primary-400 h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -325,7 +325,7 @@ export default function SECRepositorySection() {
         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Link
             href="/register"
-            className="inline-flex items-center rounded-lg bg-linear-to-r from-cyan-500 to-blue-500 px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/25 transition-all hover:shadow-cyan-500/40"
+            className="from-secondary-500 to-primary-500 shadow-secondary-500/25 hover:shadow-secondary-500/40 inline-flex items-center rounded-lg bg-linear-to-r px-8 py-3 text-sm font-semibold text-white shadow-lg transition-all"
           >
             Get Started
           </Link>

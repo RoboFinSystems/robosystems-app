@@ -7,6 +7,7 @@ import {
   LIBRARY_GRAPH_ID,
   LibraryClient,
   LibraryHierarchy,
+  PageHeader,
   useGraphContext,
   type LibraryTaxonomy,
 } from '@/lib/core'
@@ -99,33 +100,25 @@ export function LibraryContent() {
 
   return (
     <div className="mx-auto max-w-[1600px] space-y-6 p-6">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
-            <HiBookOpen className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
-              Taxonomy Library
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {isTenant ? (
-                <>
-                  Library taxonomies + CoA for{' '}
-                  <span className="font-mono text-xs">{graphId}</span>. Library
-                  content is read-only; CoA elements and anchor mappings are
-                  tenant-managed.
-                </>
-              ) : (
-                <>
-                  Shared reference library (public schema). Select a graph to
-                  see its tenant copy with the chart of accounts mapped in.
-                </>
-              )}
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        icon={HiBookOpen}
+        title="Taxonomy Library"
+        subtitle={
+          isTenant ? (
+            <>
+              Library taxonomies + CoA for{' '}
+              <span className="font-mono text-xs">{graphId}</span>. Library
+              content is read-only; CoA elements and anchor mappings are
+              tenant-managed.
+            </>
+          ) : (
+            <>
+              Shared reference library (public schema). Select a graph to see
+              its tenant copy with the chart of accounts mapped in.
+            </>
+          )
+        }
+      />
 
       {taxonomiesState === 'loading' && (
         <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
@@ -175,7 +168,7 @@ export function LibraryContent() {
                   aria-pressed={viewMode === mode}
                   className={`px-4 py-2 text-sm font-medium capitalize transition-colors ${
                     viewMode === mode
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-primary-600 text-white'
                       : 'bg-white text-gray-600 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
                   }`}
                 >
@@ -205,6 +198,7 @@ export function LibraryContent() {
                 graphId={graphId}
                 taxonomies={taxonomies}
                 baseStandard={baseStandard}
+                selectedTaxonomyId={selectedTaxonomyId}
                 selectedElementId={selectedElementId}
                 onSelectElement={setSelectedElementId}
               />

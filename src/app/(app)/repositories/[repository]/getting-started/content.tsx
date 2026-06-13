@@ -2,6 +2,7 @@
 
 import {
   customTheme,
+  PageHeader,
   useGraphContext,
   useServiceOfferings,
   useToast,
@@ -145,22 +146,13 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
       <ToastContainer />
 
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-start gap-4">
-          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
-            <HiDatabase className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-              {repoOffering?.name || repository.toUpperCase()} Repository
-            </h1>
-            <p className="mt-1 text-zinc-600 dark:text-zinc-400">
-              {repoOffering?.description ||
-                'Curated graph database ready to query'}
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        icon={HiDatabase}
+        title={`${repoOffering?.name || repository.toUpperCase()} Repository`}
+        subtitle={
+          repoOffering?.description || 'Curated graph database ready to query'
+        }
+      />
 
       {/* What's Included */}
       <Card theme={customTheme.card}>
@@ -235,7 +227,7 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <button
               onClick={handleOpenConsole}
-              className="flex flex-col items-start gap-2 rounded-lg border border-purple-500/30 bg-purple-600 p-4 text-left text-white transition-all hover:scale-[1.02] hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/20"
+              className="border-secondary-500/30 bg-secondary-600 hover:bg-secondary-500 hover:shadow-secondary-500/20 flex flex-col items-start gap-2 rounded-lg border p-4 text-left text-white transition-all hover:scale-[1.02] hover:shadow-lg"
             >
               <HiTerminal className="h-6 w-6" />
               <div>
@@ -288,8 +280,8 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
       <Card theme={customTheme.card} id="console-access">
         <div className="space-y-4">
           <div className="flex items-start gap-3">
-            <div className="rounded-lg bg-purple-100 p-2 dark:bg-purple-900/30">
-              <HiTerminal className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+            <div className="bg-secondary-100 dark:bg-secondary-900/30 rounded-lg p-2">
+              <HiTerminal className="text-secondary-600 dark:text-secondary-400 h-5 w-5" />
             </div>
             <div className="flex-1">
               <h3 className="font-heading text-lg font-semibold text-zinc-900 dark:text-zinc-100">
@@ -346,8 +338,8 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
       <Card theme={customTheme.card} id="api-access" ref={codeExamplesRef}>
         <div className="space-y-4">
           <div className="flex items-start gap-3">
-            <div className="rounded-lg bg-blue-100 p-2 dark:bg-blue-900/30">
-              <HiKey className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <div className="bg-primary-100 dark:bg-primary-900/30 rounded-lg p-2">
+              <HiKey className="text-primary-600 dark:text-primary-400 h-5 w-5" />
             </div>
             <div className="flex-1">
               <h3 className="font-heading text-lg font-semibold text-zinc-900 dark:text-zinc-100">
@@ -360,7 +352,7 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
                   href={`${process.env.NEXT_PUBLIC_ROBOSYSTEMS_API_URL || 'https://api.robosystems.ai'}/docs`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                  className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                 >
                   View Full API Documentation →
                 </a>
@@ -569,7 +561,7 @@ for (const record of data.data) {
               calls consume credits.{' '}
               <button
                 onClick={handleOpenUsage}
-                className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
               >
                 View usage →
               </button>

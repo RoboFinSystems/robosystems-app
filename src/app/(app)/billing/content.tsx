@@ -5,6 +5,7 @@ import CancelSubscriptionModal, {
 } from '@/components/app/CancelSubscriptionModal'
 import {
   customTheme,
+  PageHeader,
   PageLayout,
   useApiError,
   useGraphContext,
@@ -141,21 +142,11 @@ export function BillingContent() {
 
   return (
     <PageLayout>
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
-            <HiCreditCard className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
-              Billing & Subscriptions
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Manage subscription and payments
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        icon={HiCreditCard}
+        title="Billing & Subscriptions"
+        subtitle="Manage subscription and payments"
+      />
 
       {error && (
         <Alert color="failure" icon={HiExclamationCircle}>
@@ -739,8 +730,8 @@ function SubscriptionsTab({
                       </span>
                     </div>
                     {sub.status === 'upgrading' && taskMonitoring.isLoading && (
-                      <div className="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
-                        <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
+                      <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-3">
+                        <div className="text-primary-700 dark:text-primary-300 flex items-center gap-2 text-sm">
                           <Spinner size="xs" />
                           <span>
                             {taskMonitoring.currentStep ||
@@ -748,9 +739,9 @@ function SubscriptionsTab({
                           </span>
                         </div>
                         {taskMonitoring.progress != null && (
-                          <div className="mt-2 h-1.5 w-full rounded-full bg-blue-200 dark:bg-blue-800">
+                          <div className="bg-primary-200 dark:bg-primary-800 mt-2 h-1.5 w-full rounded-full">
                             <div
-                              className="h-1.5 rounded-full bg-blue-600 transition-all duration-500"
+                              className="bg-primary-600 h-1.5 rounded-full transition-all duration-500"
                               style={{ width: `${taskMonitoring.progress}%` }}
                             />
                           </div>
@@ -915,7 +906,7 @@ function SubscriptionsTab({
                       disabled={isCurrentTier}
                       className={`rounded-lg border-2 p-4 text-left transition-all ${
                         isSelected
-                          ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
+                          ? 'border-primary-500 bg-primary-50 dark:border-primary-400 dark:bg-primary-900/20'
                           : isCurrentTier
                             ? 'cursor-not-allowed border-gray-200 opacity-50 dark:border-gray-700'
                             : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
@@ -1125,7 +1116,7 @@ function InvoicesTab({
                       href={invoice.invoice_pdf}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500"
+                      className="hover:text-primary-600 dark:hover:text-primary-500 text-gray-500 dark:text-gray-400"
                       title="Download PDF"
                     >
                       <HiDownload className="h-5 w-5" />

@@ -1,6 +1,11 @@
 'use client'
 
-import { customTheme, useGraphContext, useIsRepository } from '@/lib/core'
+import {
+  customTheme,
+  PageHeader,
+  useGraphContext,
+  useIsRepository,
+} from '@/lib/core'
 import { useToast } from '@/lib/core/hooks/use-toast'
 import { useOperationMonitoring } from '@/lib/core/task-monitoring/operationHooks'
 import type { BackupResponse, BackupStatsResponse } from '@robosystems/client'
@@ -443,48 +448,40 @@ export default function BackupManagementContent() {
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
-            <HiDatabase className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
-              Backups
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Manage database backups and restores
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <Button color="gray" onClick={fetchBackupData}>
-            <HiRefresh className="mr-2 h-4 w-4" />
-            Refresh
-          </Button>
-          {!isRepository && (
-            <Button
-              onClick={() => {
-                setCreateFormEncryption(false)
-                setCreateFormRetentionDays(90)
-                createOperationMonitor.reset()
-                setShowCreateModal(true)
-              }}
-            >
-              <HiPlus className="mr-2 h-4 w-4" />
-              Create Backup
+      <PageHeader
+        icon={HiDatabase}
+        title="Backups"
+        subtitle="Manage database backups and restores"
+        actions={
+          <>
+            <Button color="gray" onClick={fetchBackupData}>
+              <HiRefresh className="mr-2 h-4 w-4" />
+              Refresh
             </Button>
-          )}
-        </div>
-      </div>
+            {!isRepository && (
+              <Button
+                onClick={() => {
+                  setCreateFormEncryption(false)
+                  setCreateFormRetentionDays(90)
+                  createOperationMonitor.reset()
+                  setShowCreateModal(true)
+                }}
+              >
+                <HiPlus className="mr-2 h-4 w-4" />
+                Create Backup
+              </Button>
+            )}
+          </>
+        }
+      />
 
       {/* Download Quota Card for Shared Repositories */}
       {isRepository && downloadQuota && (
         <Card theme={customTheme.card}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-blue-100 p-2 dark:bg-blue-900">
-                <HiDownload className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-2">
+                <HiDownload className="text-primary-600 dark:text-primary-400 h-5 w-5" />
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white">

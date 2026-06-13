@@ -1,6 +1,6 @@
 'use client'
 
-import { AnimatedLogo } from '@/lib/core/ui-components/Logo'
+import { LogoBadge } from '@/lib/core/ui-components/Logo'
 import Link from 'next/link'
 import { useState } from 'react'
 import ContactModal from './ContactModal'
@@ -29,7 +29,7 @@ export default function ApplicationsSection() {
 
         {/* Application Architecture Diagram */}
         <div className="mx-auto mb-16 max-w-4xl">
-          <div className="rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900/50 to-zinc-800/20 p-4 hover:border-cyan-500/30 hover:bg-zinc-900/20 sm:p-6 md:p-8">
+          <div className="hover:border-secondary-500/30 rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900/50 to-zinc-800/20 p-4 hover:bg-zinc-900/20 sm:p-6 md:p-8">
             <h3 className="font-heading mb-4 text-center text-lg font-semibold text-white sm:mb-6 sm:text-xl">
               How It Works
             </h3>
@@ -38,7 +38,7 @@ export default function ApplicationsSection() {
                 <div className="flex flex-col items-center gap-4 sm:gap-6">
                   <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-4">
                     <div className="flex flex-col gap-3 sm:gap-4">
-                      <div className="rounded-lg bg-cyan-600 px-3 py-1.5 text-sm text-white sm:px-4 sm:py-2 sm:text-base">
+                      <div className="bg-secondary-600 rounded-lg px-3 py-1.5 text-sm text-white sm:px-4 sm:py-2 sm:text-base">
                         RoboLedger
                       </div>
                       <div className="rounded-lg bg-green-600 px-3 py-1.5 text-sm text-white sm:px-4 sm:py-2 sm:text-base">
@@ -49,7 +49,7 @@ export default function ApplicationsSection() {
                       <div className="text-gray-400 sm:hidden">↕</div>
                       <div className="hidden text-gray-400 sm:block">↔</div>
                     </div>
-                    <div className="rounded-lg bg-blue-600 px-4 py-4 text-sm text-white sm:px-6 sm:py-8 sm:text-base">
+                    <div className="bg-primary-600 rounded-lg px-4 py-4 text-sm text-white sm:px-6 sm:py-8 sm:text-base">
                       RoboSystems
                       <br className="sm:hidden" /> API
                     </div>
@@ -57,7 +57,7 @@ export default function ApplicationsSection() {
                       <span className="sm:hidden">↕</span>
                       <span className="hidden sm:inline">↔</span>
                     </div>
-                    <div className="rounded-lg bg-purple-600 px-4 py-4 text-sm text-white sm:px-6 sm:py-8 sm:text-base">
+                    <div className="bg-accent-600 rounded-lg px-4 py-4 text-sm text-white sm:px-6 sm:py-8 sm:text-base">
                       Knowledge
                       <br className="sm:hidden" /> Graph
                     </div>
@@ -78,7 +78,7 @@ export default function ApplicationsSection() {
 
         <div className="grid gap-8 sm:gap-12 lg:grid-cols-2">
           {/* RoboLedger */}
-          <div className="relative flex flex-col overflow-hidden rounded-2xl border border-cyan-500/30 bg-linear-to-br from-cyan-900/20 to-blue-900/20 hover:bg-cyan-900/20">
+          <div className="border-secondary-500/30 from-secondary-900/20 to-primary-900/20 hover:bg-secondary-900/20 relative flex flex-col overflow-hidden rounded-2xl border bg-linear-to-br">
             <div className="flex flex-1 flex-col p-5 sm:p-6 md:p-8">
               <Link
                 href="https://roboledger.ai"
@@ -86,13 +86,11 @@ export default function ApplicationsSection() {
                 rel="noopener noreferrer"
                 className="mb-6 flex items-center gap-4 transition-opacity hover:opacity-80"
               >
-                <div className="flex h-16 w-16 items-center justify-center text-cyan-400">
-                  <AnimatedLogo
-                    app="roboledger"
-                    animate="loop"
-                    className="h-14 w-14"
-                  />
-                </div>
+                <LogoBadge
+                  app="roboledger"
+                  animate="loop"
+                  className="h-14 w-14"
+                />
                 <div>
                   <h3 className="font-heading text-xl font-bold text-white sm:text-2xl">
                     RoboLedger
@@ -109,43 +107,43 @@ export default function ApplicationsSection() {
 
               <div className="mb-8 space-y-4">
                 <div>
-                  <h4 className="mb-3 font-semibold text-cyan-300">
+                  <h4 className="text-secondary-300 mb-3 font-semibold">
                     QuickBooks Integration
                   </h4>
                   <ul className="space-y-2 text-sm text-gray-300">
                     <li className="flex items-start">
-                      <span className="mr-2 text-cyan-400">•</span>
+                      <span className="text-secondary-400 mr-2">•</span>
                       <span>
                         OAuth2 secure connection to sync accounting data
                       </span>
                     </li>
                     <li className="flex items-start">
-                      <span className="mr-2 text-cyan-400">•</span>
+                      <span className="text-secondary-400 mr-2">•</span>
                       <span>
                         Chart of accounts, journal entries, and transactions
                       </span>
                     </li>
                     <li className="flex items-start">
-                      <span className="mr-2 text-cyan-400">•</span>
+                      <span className="text-secondary-400 mr-2">•</span>
                       <span>Trial balance with full debit/credit detail</span>
                     </li>
                   </ul>
                 </div>
 
                 <div>
-                  <h4 className="mb-3 font-semibold text-cyan-300">
+                  <h4 className="text-secondary-300 mb-3 font-semibold">
                     Ledger, Close &amp; Reporting
                   </h4>
                   <ul className="space-y-2 text-sm text-gray-300">
                     <li className="flex items-start">
-                      <span className="mr-2 text-cyan-400">•</span>
+                      <span className="text-secondary-400 mr-2">•</span>
                       <span>
                         AI auto-maps chart of accounts to US-GAAP taxonomy with
                         confidence scores
                       </span>
                     </li>
                     <li className="flex items-start">
-                      <span className="mr-2 text-cyan-400">•</span>
+                      <span className="text-secondary-400 mr-2">•</span>
                       <span>
                         Guided period close — fiscal calendar, Balance Sheet,
                         Income Statement, Cash Flow with XBRL compliance
@@ -153,7 +151,7 @@ export default function ApplicationsSection() {
                       </span>
                     </li>
                     <li className="flex items-start">
-                      <span className="mr-2 text-cyan-400">•</span>
+                      <span className="text-secondary-400 mr-2">•</span>
                       <span>
                         AI Console — ask Claude anything about your books in
                         natural language; visual Report Builder for structured
@@ -167,7 +165,7 @@ export default function ApplicationsSection() {
           </div>
 
           {/* RoboInvestor */}
-          <div className="relative flex flex-col overflow-hidden rounded-2xl border border-green-500/30 bg-linear-to-br from-green-900/20 to-blue-900/20 hover:bg-green-900/20">
+          <div className="to-primary-900/20 relative flex flex-col overflow-hidden rounded-2xl border border-green-500/30 bg-linear-to-br from-green-900/20 hover:bg-green-900/20">
             <div className="flex flex-1 flex-col p-5 sm:p-6 md:p-8">
               <Link
                 href="https://roboinvestor.ai"
@@ -175,13 +173,11 @@ export default function ApplicationsSection() {
                 rel="noopener noreferrer"
                 className="mb-6 flex items-center gap-4 transition-opacity hover:opacity-80"
               >
-                <div className="flex h-16 w-16 items-center justify-center text-green-400">
-                  <AnimatedLogo
-                    app="roboinvestor"
-                    animate="loop"
-                    className="h-14 w-14"
-                  />
-                </div>
+                <LogoBadge
+                  app="roboinvestor"
+                  animate="loop"
+                  className="h-14 w-14"
+                />
                 <div>
                   <h3 className="font-heading text-xl font-bold text-white sm:text-2xl">
                     RoboInvestor
@@ -265,7 +261,7 @@ export default function ApplicationsSection() {
               {/* MCP Client */}
               <div className="rounded-lg border border-gray-800 bg-linear-to-br from-gray-900/50 to-gray-800/20 p-4 hover:bg-gray-900/20 sm:p-6">
                 <div className="mb-4 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-600">
+                  <div className="bg-accent-600 flex h-10 w-10 items-center justify-center rounded-lg">
                     <span className="text-xl font-bold text-white">AI</span>
                   </div>
                   <h4 className="font-semibold text-white">MCP Client</h4>
@@ -281,7 +277,7 @@ export default function ApplicationsSection() {
                     href="https://www.npmjs.com/package/@robosystems/mcp"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-cyan-400 hover:text-cyan-300"
+                    className="text-secondary-400 hover:text-secondary-300 text-sm"
                   >
                     npm →
                   </Link>
@@ -289,7 +285,7 @@ export default function ApplicationsSection() {
                     href="https://github.com/RoboFinSystems/robosystems-mcp-client"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-cyan-400 hover:text-cyan-300"
+                    className="text-secondary-400 hover:text-secondary-300 text-sm"
                   >
                     GitHub →
                   </Link>
@@ -298,7 +294,7 @@ export default function ApplicationsSection() {
               {/* Typescript Client */}
               <div className="rounded-lg border border-gray-800 bg-linear-to-br from-gray-900/50 to-gray-800/20 p-4 hover:bg-gray-900/20 sm:p-6">
                 <div className="mb-4 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
+                  <div className="bg-primary-600 flex h-10 w-10 items-center justify-center rounded-lg">
                     <span className="text-xl font-bold text-white">TS</span>
                   </div>
                   <h4 className="font-semibold text-white">
@@ -317,7 +313,7 @@ export default function ApplicationsSection() {
                     href="https://www.npmjs.com/package/@robosystems/client"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-cyan-400 hover:text-cyan-300"
+                    className="text-secondary-400 hover:text-secondary-300 text-sm"
                   >
                     npm →
                   </Link>
@@ -325,7 +321,7 @@ export default function ApplicationsSection() {
                     href="https://github.com/RoboFinSystems/robosystems-typescript-client"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-cyan-400 hover:text-cyan-300"
+                    className="text-secondary-400 hover:text-secondary-300 text-sm"
                   >
                     GitHub →
                   </Link>
@@ -352,7 +348,7 @@ export default function ApplicationsSection() {
                     href="https://pypi.org/project/robosystems-client/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-cyan-400 hover:text-cyan-300"
+                    className="text-secondary-400 hover:text-secondary-300 text-sm"
                   >
                     PyPI →
                   </Link>
@@ -360,7 +356,7 @@ export default function ApplicationsSection() {
                     href="https://github.com/RoboFinSystems/robosystems-python-client"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-cyan-400 hover:text-cyan-300"
+                    className="text-secondary-400 hover:text-secondary-300 text-sm"
                   >
                     GitHub →
                   </Link>
@@ -379,7 +375,7 @@ export default function ApplicationsSection() {
               <div className="rounded-lg p-3 text-center sm:p-4">
                 <div className="mb-2 flex justify-center">
                   <svg
-                    className="h-8 w-8 text-cyan-400"
+                    className="text-secondary-400 h-8 w-8"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -403,7 +399,7 @@ export default function ApplicationsSection() {
               <div className="rounded-lg p-3 text-center sm:p-4">
                 <div className="mb-2 flex justify-center">
                   <svg
-                    className="h-8 w-8 text-blue-400"
+                    className="text-primary-400 h-8 w-8"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -426,7 +422,7 @@ export default function ApplicationsSection() {
               <div className="rounded-lg p-3 text-center sm:p-4">
                 <div className="mb-2 flex justify-center">
                   <svg
-                    className="h-8 w-8 text-purple-400"
+                    className="text-accent-400 h-8 w-8"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -451,7 +447,7 @@ export default function ApplicationsSection() {
               Want to build your own application on RoboSystems?
               <button
                 onClick={() => setShowContact(true)}
-                className="ml-1 text-cyan-400 hover:underline"
+                className="text-secondary-400 ml-1 hover:underline"
               >
                 Contact our developer team
               </button>

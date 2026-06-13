@@ -1,6 +1,6 @@
 'use client'
 
-import { customTheme, useGraphContext, useToast } from '@/lib/core'
+import { customTheme, PageHeader, useGraphContext, useToast } from '@/lib/core'
 import { useOperationMonitoring } from '@/lib/core/task-monitoring/operationHooks'
 import type {
   ListSubgraphsResponse,
@@ -195,26 +195,22 @@ export function SubgraphsContent() {
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
-            <HiChip className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
-              Subgraphs
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Manage subgraphs for{' '}
-              {listResponse?.parent_graph_name || 'selected graph'}
-            </p>
-          </div>
-        </div>
-        <Button onClick={() => router.push('/subgraphs/new')}>
-          <HiPlus className="mr-2 h-4 w-4" />
-          Create Subgraph
-        </Button>
-      </div>
+      <PageHeader
+        icon={HiChip}
+        title="Subgraphs"
+        subtitle={
+          <>
+            Manage subgraphs for{' '}
+            {listResponse?.parent_graph_name || 'selected graph'}
+          </>
+        }
+        actions={
+          <Button onClick={() => router.push('/subgraphs/new')}>
+            <HiPlus className="mr-2 h-4 w-4" />
+            Create Subgraph
+          </Button>
+        }
+      />
 
       {/* Summary Stats */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 md:gap-6">
@@ -293,8 +289,8 @@ export function SubgraphsContent() {
                     >
                       <TableCell className="font-medium text-gray-900 dark:text-white">
                         <div className="flex items-center gap-3">
-                          <div className="shrink-0 rounded-lg bg-blue-100 p-2 dark:bg-blue-900">
-                            <HiChip className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                          <div className="bg-primary-100 dark:bg-primary-900 shrink-0 rounded-lg p-2">
+                            <HiChip className="text-primary-600 dark:text-primary-400 h-4 w-4" />
                           </div>
                           <div className="min-w-0">
                             <div className="font-semibold">
@@ -376,8 +372,8 @@ export function SubgraphsContent() {
                   {/* Header with name */}
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="rounded-lg bg-blue-100 p-2 dark:bg-blue-900">
-                        <HiChip className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                      <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-2">
+                        <HiChip className="text-primary-600 dark:text-primary-400 h-5 w-5" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <h3 className="font-semibold text-gray-900 dark:text-white">

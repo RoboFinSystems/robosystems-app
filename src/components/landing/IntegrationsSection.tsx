@@ -27,7 +27,7 @@ export default function IntegrationsSection() {
           <div className="grid gap-6 md:grid-cols-2">
             {/* QuickBooks */}
             <div className="relative rounded-xl border border-gray-800 bg-zinc-900/50 p-6 opacity-75 transition-all duration-300 hover:border-green-500/50">
-              <span className="absolute top-4 right-4 rounded-full bg-cyan-500/20 px-2 py-1 text-xs font-medium text-cyan-400">
+              <span className="bg-secondary-500/20 text-secondary-400 absolute top-4 right-4 rounded-full px-2 py-1 text-xs font-medium">
                 In Development
               </span>
               <div className="mb-4 flex items-center gap-4">
@@ -46,9 +46,9 @@ export default function IntegrationsSection() {
             </div>
 
             {/* SEC XBRL */}
-            <div className="rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-purple-500/50">
+            <div className="hover:border-accent-500/50 rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300">
               <div className="mb-4 flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-600">
+                <div className="bg-accent-600 flex h-12 w-12 items-center justify-center rounded-lg">
                   <span className="text-lg font-bold text-white">SEC</span>
                 </div>
                 <div>
@@ -62,7 +62,7 @@ export default function IntegrationsSection() {
               </p>
               <Link
                 href="#sec-repository"
-                className="mt-3 inline-block text-sm text-cyan-400 hover:text-cyan-300"
+                className="text-secondary-400 hover:text-secondary-300 mt-3 inline-block text-sm"
               >
                 See the SEC Repository →
               </Link>
@@ -101,12 +101,12 @@ export default function IntegrationsSection() {
             </div>
 
             {/* Plaid */}
-            <div className="relative rounded-xl border border-gray-800 bg-zinc-900/50 p-6 opacity-75 transition-all duration-300 hover:border-blue-500/50">
+            <div className="hover:border-primary-500/50 relative rounded-xl border border-gray-800 bg-zinc-900/50 p-6 opacity-75 transition-all duration-300">
               <span className="absolute top-4 right-4 rounded-full bg-yellow-500/20 px-2 py-1 text-xs font-medium text-yellow-400">
                 Coming Soon
               </span>
               <div className="mb-4 flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-600">
+                <div className="bg-primary-600 flex h-12 w-12 items-center justify-center rounded-lg">
                   <svg
                     className="h-7 w-7 text-white"
                     fill="none"
@@ -150,7 +150,7 @@ export default function IntegrationsSection() {
               <ul className="space-y-3 text-sm text-gray-400">
                 <li className="flex items-start">
                   <svg
-                    className="mt-0.5 mr-3 h-5 w-5 shrink-0 text-cyan-400"
+                    className="text-secondary-400 mt-0.5 mr-3 h-5 w-5 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -170,7 +170,7 @@ export default function IntegrationsSection() {
                 </li>
                 <li className="flex items-start">
                   <svg
-                    className="mt-0.5 mr-3 h-5 w-5 shrink-0 text-cyan-400"
+                    className="text-secondary-400 mt-0.5 mr-3 h-5 w-5 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -189,7 +189,7 @@ export default function IntegrationsSection() {
                 </li>
                 <li className="flex items-start">
                   <svg
-                    className="mt-0.5 mr-3 h-5 w-5 shrink-0 text-cyan-400"
+                    className="text-secondary-400 mt-0.5 mr-3 h-5 w-5 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -209,7 +209,7 @@ export default function IntegrationsSection() {
                 </li>
                 <li className="flex items-start">
                   <svg
-                    className="mt-0.5 mr-3 h-5 w-5 shrink-0 text-cyan-400"
+                    className="text-secondary-400 mt-0.5 mr-3 h-5 w-5 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -259,14 +259,14 @@ export default function IntegrationsSection() {
               href="https://github.com/RoboFinSystems/robosystems"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-cyan-400 hover:text-cyan-300"
+              className="text-secondary-400 hover:text-secondary-300"
             >
               Explore the repo
             </Link>{' '}
             or{' '}
             <Link
               href="/register"
-              className="text-cyan-400 hover:text-cyan-300"
+              className="text-secondary-400 hover:text-secondary-300"
             >
               get started
             </Link>

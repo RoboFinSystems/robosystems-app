@@ -1,6 +1,11 @@
 'use client'
 
-import { customTheme, useGraphContext, useIsRepository } from '@/lib/core'
+import {
+  customTheme,
+  PageHeader,
+  useGraphContext,
+  useIsRepository,
+} from '@/lib/core'
 import type { GraphInfo } from '@robosystems/client'
 import {
   getCreditSummary,
@@ -277,26 +282,18 @@ export function UsageContent() {
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
-            <HiChartBar className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
-              Usage & Credits
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Monitor credit consumption and activity
-            </p>
-          </div>
-        </div>
-        {isRepository && (
-          <div className="flex flex-wrap gap-2">
-            <Badge color="info">Shared Repository</Badge>
-          </div>
-        )}
-      </div>
+      <PageHeader
+        icon={HiChartBar}
+        title="Usage & Credits"
+        subtitle="Monitor credit consumption and activity"
+        actions={
+          isRepository && (
+            <div className="flex flex-wrap gap-2">
+              <Badge color="info">Shared Repository</Badge>
+            </div>
+          )
+        }
+      />
 
       {/* Credit Balance - For both graphs and repositories */}
       {data.creditSummary && (
@@ -322,7 +319,7 @@ export function UsageContent() {
               {/* Current Balance */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <HiCurrencyDollar className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <HiCurrencyDollar className="text-primary-600 dark:text-primary-400 h-5 w-5" />
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Current Balance
                   </span>
@@ -467,7 +464,7 @@ export function UsageContent() {
             {/* Query Limits */}
             <div className="rounded-lg bg-gray-50 p-4 dark:bg-zinc-800">
               <div className="mb-3 flex items-center gap-2">
-                <HiServer className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                <HiServer className="text-secondary-600 dark:text-secondary-400 h-5 w-5" />
                 <h4 className="font-medium text-gray-900 dark:text-white">
                   Query Limits
                 </h4>
@@ -503,7 +500,7 @@ export function UsageContent() {
             {/* Rate Limits */}
             <div className="rounded-lg bg-gray-50 p-4 dark:bg-zinc-800">
               <div className="mb-3 flex items-center gap-2">
-                <HiClock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <HiClock className="text-primary-600 dark:text-primary-400 h-5 w-5" />
                 <h4 className="font-medium text-gray-900 dark:text-white">
                   Rate Limits
                 </h4>

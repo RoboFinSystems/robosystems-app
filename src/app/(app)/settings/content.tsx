@@ -5,6 +5,7 @@ import {
   ApiKeysCard,
   customTheme,
   GeneralInformationCard,
+  PageHeader,
   PageLayout,
   PasswordInformationCard,
 } from '@/lib/core'
@@ -52,19 +53,11 @@ const UserSettingsPageContent: FC<UserProps> = function ({ user, onRefresh }) {
     <PageLayout>
       <ToastContainer />
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
-          <HiCog className="h-8 w-8 text-white" />
-        </div>
-        <div>
-          <h1 className="font-heading text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-            User Settings
-          </h1>
-          <p className="mt-1 text-zinc-600 dark:text-zinc-400">
-            Manage your account, security, and API access
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        icon={HiCog}
+        title="User Settings"
+        subtitle="Manage your account, security, and API access"
+      />
 
       {/* Settings Sections */}
       <div className="space-y-6">

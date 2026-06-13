@@ -198,8 +198,8 @@ export function GraphsContent() {
                 {graphs.filter((g) => g.role.toLowerCase() === 'admin').length}
               </p>
             </div>
-            <div className="h-10 w-10 rounded-full bg-purple-100 p-2 dark:bg-purple-900">
-              <div className="h-6 w-6 rounded-full bg-purple-500" />
+            <div className="bg-secondary-100 dark:bg-secondary-900 h-10 w-10 rounded-full p-2">
+              <div className="bg-secondary-500 h-6 w-6 rounded-full" />
             </div>
           </div>
         </Card>

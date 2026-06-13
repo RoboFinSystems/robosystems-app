@@ -11,6 +11,26 @@
 @config '../../tailwind.config.ts';
 
 /*
+  Flowbite's plugin defines --color-primary-* (its default blue) via @theme,
+  which wins over the JS @config's `primary`. (secondary/accent aren't defined
+  by Flowbite, so those tokens apply fine.) Re-declare the brand primary here as
+  a CSS @theme override so it actually takes effect. RoboSystems = blue.
+*/
+@theme {
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93bbfd;
+  --color-primary-400: #6098fa;
+  --color-primary-500: #3b7af5;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1b3a57;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172e47;
+}
+
+/*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
   looks the same as it did with Tailwind CSS v3.
@@ -193,11 +213,11 @@
 .animate-pulsate-gradient-subtle {
   background: linear-gradient(
     90deg,
-    #fbbf24,
-    #f59e0b,
-    #fb923c,
-    #f59e0b,
-    #fbbf24
+    #22d3ee,
+    #3b7af5,
+    #6366f1,
+    #3b7af5,
+    #22d3ee
   );
   background-size: 200% 100%;
   background-clip: text;

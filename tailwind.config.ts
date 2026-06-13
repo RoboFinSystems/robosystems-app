@@ -29,30 +29,48 @@ const config = {
           950: '#172E47', // Darkest blue
         },
         secondary: {
-          50: '#E6FFFA', // Lightest teal
-          100: '#B2FFF0', // Very light green
-          200: '#7FFFE6', // Light green
-          300: '#4CFFDB', // Bright light green
-          400: '#1AFFD1', // Bright green
-          500: '#00D4AA', // Brand secondary (bright green)
-          600: '#00B894', // Medium green
-          700: '#009B7D', // Deep green
-          800: '#007D65', // Darker green
-          900: '#00604D', // Very dark green
-          950: '#004438', // Darkest green
+          50: '#ECFEFF', // Lightest cyan
+          100: '#CFFAFE', // Very light cyan
+          200: '#A5F3FC', // Light cyan
+          300: '#67E8F9', // Soft cyan
+          400: '#22D3EE', // Bright cyan
+          500: '#06B6D4', // Brand secondary (cyan)
+          600: '#0891B2', // Medium cyan
+          700: '#0E7490', // Deep cyan
+          800: '#155E75', // Darker cyan
+          900: '#164E63', // Very dark cyan
+          950: '#083344', // Darkest cyan
         },
         accent: {
-          50: '#FFF5F0', // Lightest orange
-          100: '#FFE6D9', // Very light orange
-          200: '#FFD4C1', // Light orange
-          300: '#FFBFA6', // Soft orange
-          400: '#FFA589', // Medium orange
-          500: '#FF6B35', // Brand accent (warm orange)
-          600: '#F54E17', // Strong orange
-          700: '#DC4313', // Deep orange
-          800: '#B93810', // Dark orange
-          900: '#962D0D', // Very dark orange
-          950: '#731F08', // Darkest orange
+          // Indigo — a blue-leaning accent for RoboSystems. Deliberately NOT
+          // violet (#8B5CF6), which is RoboLedger's primary; indigo keeps the
+          // "bluish purple" hint while staying clearly distinct from RoboLedger.
+          50: '#EEF2FF', // Lightest indigo
+          100: '#E0E7FF', // Very light indigo
+          200: '#C7D2FE', // Light indigo
+          300: '#A5B4FC', // Soft indigo
+          400: '#818CF8', // Medium indigo
+          500: '#6366F1', // Brand accent (indigo)
+          600: '#4F46E5', // Strong indigo
+          700: '#4338CA', // Deep indigo
+          800: '#3730A3', // Dark indigo
+          900: '#312E81', // Very dark indigo
+          950: '#1E1B4B', // Darkest indigo
+        },
+        // Shared semantic amber (decoupled from brand accent so `warning`
+        // stays amber across all apps regardless of the per-app accent hue).
+        amber: {
+          50: '#FFF5F0',
+          100: '#FFE6D9',
+          200: '#FFD4C1',
+          300: '#FFBFA6',
+          400: '#FFA589',
+          500: '#FF6B35',
+          600: '#F54E17',
+          700: '#DC4313',
+          800: '#B93810',
+          900: '#962D0D',
+          950: '#731F08',
         },
         graph: {
           node: {
@@ -73,8 +91,8 @@ const config = {
           },
         },
         semantic: {
-          success: '#00D4AA', // Using secondary green
-          warning: '#FF6B35', // Using accent orange
+          success: '#00D4AA', // teal-green — app-invariant semantic, not a token
+          warning: '#FF6B35', // orange — app-invariant; matches the amber-* scale
           error: '#DC2626', // Red for errors
           info: '#3B7AF5', // Using primary blue
         },
@@ -92,35 +110,13 @@ const config = {
           950: '#030712',
         },
       },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-knowledge':
-          'linear-gradient(135deg, #1B3A57 0%, #00D4AA 50%, #FF6B35 100%)',
-        'gradient-primary': 'linear-gradient(135deg, #1B3A57 0%, #3B7AF5 100%)',
-        'gradient-secondary':
-          'linear-gradient(135deg, #00B894 0%, #00D4AA 50%, #1AFFD1 100%)',
-        'gradient-accent':
-          'linear-gradient(135deg, #DC4313 0%, #FF6B35 50%, #FFA589 100%)',
-      },
-      boxShadow: {
-        'glow-primary': '0 0 20px rgba(27, 58, 87, 0.3)',
-        'glow-secondary': '0 0 20px rgba(0, 212, 170, 0.3)',
-        'glow-accent': '0 0 20px rgba(255, 107, 53, 0.3)',
-        'inner-glow': 'inset 0 0 20px rgba(0, 212, 170, 0.1)',
-      },
       animation: {
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         float: 'float 6s ease-in-out infinite',
-        glow: 'glow 2s ease-in-out infinite',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-10px)' },
-        },
-        glow: {
-          '0%, 100%': { opacity: '0.5' },
-          '50%': { opacity: '1' },
         },
       },
       typography: {

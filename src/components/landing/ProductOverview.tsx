@@ -9,7 +9,7 @@ export default function ProductOverview() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Main Headline */}
         <div className="mb-16 text-center">
-          <p className="mb-4 text-sm font-semibold tracking-wider text-cyan-400 uppercase">
+          <p className="text-secondary-400 mb-4 text-sm font-semibold tracking-wider uppercase">
             How It Works
           </p>
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
@@ -29,9 +29,9 @@ export default function ProductOverview() {
           <div className="mx-auto max-w-5xl">
             <div className="grid gap-4 md:grid-cols-3">
               {/* Layer 1: Knowledge Graph */}
-              <div className="relative rounded-2xl border border-cyan-500/50 bg-linear-to-br from-cyan-950/40 to-zinc-900 p-6">
+              <div className="border-secondary-500/50 from-secondary-950/40 relative rounded-2xl border bg-linear-to-br to-zinc-900 p-6">
                 <div className="absolute -top-3 left-6">
-                  <span className="rounded-full bg-cyan-600 px-3 py-1 text-xs font-medium text-white">
+                  <span className="bg-secondary-600 rounded-full px-3 py-1 text-xs font-medium text-white">
                     Structured
                   </span>
                 </div>
@@ -100,15 +100,15 @@ export default function ProductOverview() {
               </div>
 
               {/* Layer 2: Document Search */}
-              <div className="relative rounded-2xl border border-blue-500/50 bg-linear-to-br from-blue-950/40 to-zinc-900 p-6">
+              <div className="border-primary-500/50 from-primary-950/40 relative rounded-2xl border bg-linear-to-br to-zinc-900 p-6">
                 <div className="absolute -top-3 left-6">
-                  <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-medium text-white">
+                  <span className="bg-primary-600 rounded-full px-3 py-1 text-xs font-medium text-white">
                     Documents
                   </span>
                 </div>
                 <div className="mb-4 flex h-16 items-center justify-center">
                   <svg
-                    className="h-10 w-10 text-blue-400"
+                    className="text-primary-400 h-10 w-10"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -131,15 +131,15 @@ export default function ProductOverview() {
               </div>
 
               {/* Layer 3: AI Memory */}
-              <div className="relative rounded-2xl border border-purple-500/50 bg-linear-to-br from-purple-950/40 to-zinc-900 p-6">
+              <div className="border-accent-500/50 from-accent-950/40 relative rounded-2xl border bg-linear-to-br to-zinc-900 p-6">
                 <div className="absolute -top-3 left-6">
-                  <span className="rounded-full bg-purple-600 px-3 py-1 text-xs font-medium text-white">
+                  <span className="bg-accent-600 rounded-full px-3 py-1 text-xs font-medium text-white">
                     Memory
                   </span>
                 </div>
                 <div className="mb-4 flex h-16 items-center justify-center">
                   <svg
-                    className="h-10 w-10 text-purple-400"
+                    className="text-accent-400 h-10 w-10"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -172,9 +172,9 @@ export default function ProductOverview() {
           <div className="grid gap-6 md:grid-cols-3">
             {/* Multi-hop Reasoning */}
             <div className="group rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-purple-500/20">
+              <div className="bg-accent-500/20 mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
                 <svg
-                  className="h-6 w-6 text-purple-400"
+                  className="text-accent-400 h-6 w-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -204,9 +204,9 @@ export default function ProductOverview() {
 
             {/* Semantic Understanding */}
             <div className="group rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-500/20">
+              <div className="bg-secondary-500/20 mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
                 <svg
-                  className="h-6 w-6 text-cyan-400"
+                  className="text-secondary-400 h-6 w-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

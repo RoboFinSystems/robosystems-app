@@ -1,6 +1,11 @@
 'use client'
 
-import { customTheme, useGraphContext, useIsRepository } from '@/lib/core'
+import {
+  customTheme,
+  PageHeader,
+  useGraphContext,
+  useIsRepository,
+} from '@/lib/core'
 import type { GraphInfo, GraphMetricsResponse } from '@robosystems/client'
 import { getGraphMetrics, getGraphs } from '@robosystems/client'
 import { Alert, Badge, Card, Spinner } from 'flowbite-react'
@@ -141,26 +146,18 @@ export function GraphDashboardContent() {
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
-            <HiViewGrid className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
-              {data.graphInfo.graphName}
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              View metrics and manage your graph
-            </p>
-          </div>
-        </div>
-        {isRepository && (
-          <div className="flex flex-wrap gap-2">
-            <Badge color="info">Shared Repository</Badge>
-          </div>
-        )}
-      </div>
+      <PageHeader
+        icon={HiViewGrid}
+        title={data.graphInfo.graphName}
+        subtitle="View metrics and manage your graph"
+        actions={
+          isRepository && (
+            <div className="flex flex-wrap gap-2">
+              <Badge color="info">Shared Repository</Badge>
+            </div>
+          )
+        }
+      />
 
       {/* Metrics Overview - Only show if we have metrics */}
       {data.metrics && (
@@ -320,8 +317,8 @@ export function GraphDashboardContent() {
           onClick={() => router.push('/console')}
           className="flex items-center gap-4 rounded-lg border border-zinc-200 bg-white/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-zinc-300 hover:shadow-xl dark:border-zinc-700 dark:bg-zinc-950 dark:hover:border-zinc-500"
         >
-          <div className="rounded-lg bg-blue-100 p-3 dark:bg-blue-900">
-            <HiTerminal className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+          <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-3">
+            <HiTerminal className="text-primary-600 dark:text-primary-400 h-6 w-6" />
           </div>
           <div>
             <h3 className="font-semibold text-gray-900 dark:text-white">
@@ -352,8 +349,8 @@ export function GraphDashboardContent() {
           onClick={() => router.push('/usage')}
           className="flex items-center gap-4 rounded-lg border border-zinc-200 bg-white/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-zinc-300 hover:shadow-xl dark:border-zinc-700 dark:bg-zinc-950 dark:hover:border-zinc-500"
         >
-          <div className="rounded-lg bg-purple-100 p-3 dark:bg-purple-900">
-            <HiChartBar className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+          <div className="bg-secondary-100 dark:bg-secondary-900 rounded-lg p-3">
+            <HiChartBar className="text-secondary-600 dark:text-secondary-400 h-6 w-6" />
           </div>
           <div>
             <h3 className="font-semibold text-gray-900 dark:text-white">

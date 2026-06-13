@@ -1,6 +1,6 @@
 'use client'
 
-import { customTheme, useGraphContext } from '@/lib/core'
+import { customTheme, PageHeader, useGraphContext } from '@/lib/core'
 import { normalizeLocalUrl } from '@/lib/utils'
 import Editor from '@monaco-editor/react'
 import * as SDK from '@robosystems/client'
@@ -408,26 +408,17 @@ export function TablesContent() {
     return (
       <div className="mx-auto max-w-7xl space-y-6 p-6">
         {/* Header */}
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
-              <HiTable className="h-8 w-8 text-white" />
-            </div>
-            <div>
-              <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
-                Data Lake
-              </h1>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Query staging tables and sync extensions data
-              </p>
-            </div>
-          </div>
-
-          <Button color="green" onClick={() => setShowIngestModal(true)}>
-            <HiChip className="mr-2 h-4 w-4" />
-            Sync to Graph
-          </Button>
-        </div>
+        <PageHeader
+          icon={HiTable}
+          title="Data Lake"
+          subtitle="Query staging tables and sync extensions data"
+          actions={
+            <Button color="green" onClick={() => setShowIngestModal(true)}>
+              <HiChip className="mr-2 h-4 w-4" />
+              Sync to Graph
+            </Button>
+          }
+        />
 
         {error && (
           <Alert color="failure" icon={HiInformationCircle}>
@@ -595,8 +586,8 @@ export function TablesContent() {
                   </p>
                 </div>
 
-                <div className="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
-                  <p className="text-xs text-blue-800 dark:text-blue-200">
+                <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-3">
+                  <p className="text-primary-800 dark:text-primary-200 text-xs">
                     <strong>Note:</strong> Sync may take several minutes
                     depending on data volume. You'll be notified when the
                     operation completes.
@@ -625,33 +616,25 @@ export function TablesContent() {
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
-            <HiTable className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
-              Data Lake
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {isEntityGraph
-                ? 'View staging tables and sync extensions data'
-                : 'Manage staging tables and files'}
-            </p>
-          </div>
-        </div>
-
-        {/* Materialize Button */}
-        <Button
-          color="green"
-          onClick={() => setShowIngestModal(true)}
-          disabled={tables.length === 0}
-        >
-          <HiChip className="mr-2 h-4 w-4" />
-          {isEntityGraph ? 'Sync to Graph' : 'Ingest to Graph'}
-        </Button>
-      </div>
+      <PageHeader
+        icon={HiTable}
+        title="Data Lake"
+        subtitle={
+          isEntityGraph
+            ? 'View staging tables and sync extensions data'
+            : 'Manage staging tables and files'
+        }
+        actions={
+          <Button
+            color="green"
+            onClick={() => setShowIngestModal(true)}
+            disabled={tables.length === 0}
+          >
+            <HiChip className="mr-2 h-4 w-4" />
+            {isEntityGraph ? 'Sync to Graph' : 'Ingest to Graph'}
+          </Button>
+        }
+      />
 
       {error && (
         <Alert color="failure" icon={HiInformationCircle}>
@@ -801,7 +784,7 @@ export function TablesContent() {
                                 onClick={() => setSelectedTable(table)}
                                 className={`w-full rounded-lg border p-2.5 text-left transition-colors ${
                                   selectedTable?.tableName === table.tableName
-                                    ? 'border-blue-500 bg-blue-50 dark:border-blue-600 dark:bg-blue-950'
+                                    ? 'border-primary-500 bg-primary-50 dark:border-primary-600 dark:bg-primary-950'
                                     : 'border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800'
                                 }`}
                               >
@@ -1453,8 +1436,8 @@ export function TablesContent() {
                 </p>
               </div>
 
-              <div className="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
-                <p className="text-xs text-blue-800 dark:text-blue-200">
+              <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-3">
+                <p className="text-primary-800 dark:text-primary-200 text-xs">
                   <strong>Note:</strong> {isEntityGraph ? 'Sync' : 'Ingestion'}{' '}
                   may take several minutes depending on data volume. You'll be
                   notified when the operation completes.
