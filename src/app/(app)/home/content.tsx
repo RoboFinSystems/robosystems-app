@@ -108,7 +108,7 @@ export default function AllGraphsHomePage() {
       {/* Header */}
       <div className="mb-6 flex items-start justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
+          <div className="from-primary-500 to-secondary-600 rounded-lg bg-gradient-to-br p-3">
             <HiHome className="h-8 w-8 text-white" />
           </div>
           <div>
@@ -158,7 +158,7 @@ export default function AllGraphsHomePage() {
                         key={graph.graphId}
                         className={`${
                           isActive
-                            ? 'bg-blue-50 ring-2 ring-blue-500 ring-inset dark:bg-blue-900/20 dark:ring-blue-400'
+                            ? 'bg-primary-50 ring-primary-500 dark:bg-primary-900/20 dark:ring-primary-400 ring-2 ring-inset'
                             : 'bg-white dark:bg-zinc-800'
                         }`}
                       >
@@ -167,8 +167,8 @@ export default function AllGraphsHomePage() {
                             <div
                               className={`shrink-0 rounded-lg p-2 ${
                                 graph.isRepository
-                                  ? 'bg-purple-100 dark:bg-purple-900'
-                                  : 'bg-blue-100 dark:bg-blue-900'
+                                  ? 'bg-secondary-100 dark:bg-secondary-900'
+                                  : 'bg-primary-100 dark:bg-primary-900'
                               }`}
                               title={
                                 graph.isRepository
@@ -179,8 +179,8 @@ export default function AllGraphsHomePage() {
                               <HiDatabase
                                 className={`h-4 w-4 ${
                                   graph.isRepository
-                                    ? 'text-purple-600 dark:text-purple-400'
-                                    : 'text-blue-600 dark:text-blue-400'
+                                    ? 'text-secondary-600 dark:text-secondary-400'
+                                    : 'text-primary-600 dark:text-primary-400'
                                 }`}
                               />
                             </div>
@@ -271,7 +271,7 @@ export default function AllGraphsHomePage() {
                   theme={customTheme.card}
                   className={`p-4 ${
                     isActive
-                      ? 'bg-blue-50 ring-2 ring-blue-500 ring-inset dark:bg-blue-900/20 dark:ring-blue-400'
+                      ? 'bg-primary-50 ring-primary-500 dark:bg-primary-900/20 dark:ring-primary-400 ring-2 ring-inset'
                       : ''
                   }`}
                 >
@@ -282,8 +282,8 @@ export default function AllGraphsHomePage() {
                         <div
                           className={`rounded-lg p-2 ${
                             graph.isRepository
-                              ? 'bg-purple-100 dark:bg-purple-900'
-                              : 'bg-blue-100 dark:bg-blue-900'
+                              ? 'bg-secondary-100 dark:bg-secondary-900'
+                              : 'bg-primary-100 dark:bg-primary-900'
                           }`}
                           title={
                             graph.isRepository
@@ -294,8 +294,8 @@ export default function AllGraphsHomePage() {
                           <HiDatabase
                             className={`h-5 w-5 ${
                               graph.isRepository
-                                ? 'text-purple-600 dark:text-purple-400'
-                                : 'text-blue-600 dark:text-blue-400'
+                                ? 'text-secondary-600 dark:text-secondary-400'
+                                : 'text-primary-600 dark:text-primary-400'
                             }`}
                           />
                         </div>
@@ -391,8 +391,8 @@ export default function AllGraphsHomePage() {
             >
               <div className="space-y-4 p-6">
                 <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-blue-100 p-3 dark:bg-blue-900">
-                    <HiPlus className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-3">
+                    <HiPlus className="text-primary-600 dark:text-primary-400 h-6 w-6" />
                   </div>
                   <h3 className="font-heading text-xl font-bold text-gray-900 dark:text-white">
                     Create Your Graph
@@ -434,8 +434,8 @@ export default function AllGraphsHomePage() {
             >
               <div className="space-y-4 p-6">
                 <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-purple-100 p-3 dark:bg-purple-900">
-                    <HiDatabase className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                  <div className="bg-secondary-100 dark:bg-secondary-900 rounded-lg p-3">
+                    <HiDatabase className="text-secondary-600 dark:text-secondary-400 h-6 w-6" />
                   </div>
                   <h3 className="font-heading text-xl font-bold text-gray-900 dark:text-white">
                     Subscribe to Repository

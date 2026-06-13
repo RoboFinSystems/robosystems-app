@@ -279,7 +279,7 @@ export function UsageContent() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
+          <div className="from-primary-500 to-secondary-600 rounded-lg bg-gradient-to-br p-3">
             <HiChartBar className="h-8 w-8 text-white" />
           </div>
           <div>
@@ -322,7 +322,7 @@ export function UsageContent() {
               {/* Current Balance */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <HiCurrencyDollar className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <HiCurrencyDollar className="text-primary-600 dark:text-primary-400 h-5 w-5" />
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Current Balance
                   </span>
@@ -467,7 +467,7 @@ export function UsageContent() {
             {/* Query Limits */}
             <div className="rounded-lg bg-gray-50 p-4 dark:bg-zinc-800">
               <div className="mb-3 flex items-center gap-2">
-                <HiServer className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                <HiServer className="text-secondary-600 dark:text-secondary-400 h-5 w-5" />
                 <h4 className="font-medium text-gray-900 dark:text-white">
                   Query Limits
                 </h4>
@@ -503,7 +503,7 @@ export function UsageContent() {
             {/* Rate Limits */}
             <div className="rounded-lg bg-gray-50 p-4 dark:bg-zinc-800">
               <div className="mb-3 flex items-center gap-2">
-                <HiClock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <HiClock className="text-primary-600 dark:text-primary-400 h-5 w-5" />
                 <h4 className="font-medium text-gray-900 dark:text-white">
                   Rate Limits
                 </h4>

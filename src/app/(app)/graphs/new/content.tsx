@@ -86,7 +86,7 @@ export function NewGraphContent() {
             </p>
             <button
               onClick={() => setShowContactModal(true)}
-              className="text-blue-600 underline hover:text-blue-700"
+              className="text-primary-600 hover:text-primary-700 underline"
             >
               {(limits?.max_graphs || 0) === 0
                 ? 'Request access'

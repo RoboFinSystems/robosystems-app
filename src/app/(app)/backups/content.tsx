@@ -445,7 +445,7 @@ export default function BackupManagementContent() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
+          <div className="from-primary-500 to-secondary-600 rounded-lg bg-gradient-to-br p-3">
             <HiDatabase className="h-8 w-8 text-white" />
           </div>
           <div>
@@ -483,8 +483,8 @@ export default function BackupManagementContent() {
         <Card theme={customTheme.card}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-blue-100 p-2 dark:bg-blue-900">
-                <HiDownload className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-2">
+                <HiDownload className="text-primary-600 dark:text-primary-400 h-5 w-5" />
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white">

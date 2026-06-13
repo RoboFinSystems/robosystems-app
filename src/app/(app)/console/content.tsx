@@ -276,8 +276,8 @@ function getConsoleConfig(
     header: {
       title: 'Console',
       subtitle,
-      gradientFrom: 'from-blue-500',
-      gradientTo: 'to-purple-600',
+      gradientFrom: 'from-primary-500',
+      gradientTo: 'to-secondary-600',
     },
     welcome: {
       consoleName: 'RoboSystems Console',

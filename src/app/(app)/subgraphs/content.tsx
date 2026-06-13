@@ -197,7 +197,7 @@ export function SubgraphsContent() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
+          <div className="from-primary-500 to-secondary-600 rounded-lg bg-gradient-to-br p-3">
             <HiChip className="h-8 w-8 text-white" />
           </div>
           <div>
@@ -293,8 +293,8 @@ export function SubgraphsContent() {
                     >
                       <TableCell className="font-medium text-gray-900 dark:text-white">
                         <div className="flex items-center gap-3">
-                          <div className="shrink-0 rounded-lg bg-blue-100 p-2 dark:bg-blue-900">
-                            <HiChip className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                          <div className="bg-primary-100 dark:bg-primary-900 shrink-0 rounded-lg p-2">
+                            <HiChip className="text-primary-600 dark:text-primary-400 h-4 w-4" />
                           </div>
                           <div className="min-w-0">
                             <div className="font-semibold">
@@ -376,8 +376,8 @@ export function SubgraphsContent() {
                   {/* Header with name */}
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="rounded-lg bg-blue-100 p-2 dark:bg-blue-900">
-                        <HiChip className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                      <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-2">
+                        <HiChip className="text-primary-600 dark:text-primary-400 h-5 w-5" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <h3 className="font-semibold text-gray-900 dark:text-white">

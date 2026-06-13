@@ -143,7 +143,7 @@ export function GraphDashboardContent() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
+          <div className="from-primary-500 to-secondary-600 rounded-lg bg-gradient-to-br p-3">
             <HiViewGrid className="h-8 w-8 text-white" />
           </div>
           <div>
@@ -320,8 +320,8 @@ export function GraphDashboardContent() {
           onClick={() => router.push('/console')}
           className="flex items-center gap-4 rounded-lg border border-zinc-200 bg-white/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-zinc-300 hover:shadow-xl dark:border-zinc-700 dark:bg-zinc-950 dark:hover:border-zinc-500"
         >
-          <div className="rounded-lg bg-blue-100 p-3 dark:bg-blue-900">
-            <HiTerminal className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+          <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-3">
+            <HiTerminal className="text-primary-600 dark:text-primary-400 h-6 w-6" />
           </div>
           <div>
             <h3 className="font-semibold text-gray-900 dark:text-white">
@@ -352,8 +352,8 @@ export function GraphDashboardContent() {
           onClick={() => router.push('/usage')}
           className="flex items-center gap-4 rounded-lg border border-zinc-200 bg-white/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-zinc-300 hover:shadow-xl dark:border-zinc-700 dark:bg-zinc-950 dark:hover:border-zinc-500"
         >
-          <div className="rounded-lg bg-purple-100 p-3 dark:bg-purple-900">
-            <HiChartBar className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+          <div className="bg-secondary-100 dark:bg-secondary-900 rounded-lg p-3">
+            <HiChartBar className="text-secondary-600 dark:text-secondary-400 h-6 w-6" />
           </div>
           <div>
             <h3 className="font-semibold text-gray-900 dark:text-white">

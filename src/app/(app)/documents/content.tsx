@@ -690,7 +690,7 @@ export function DocumentsPageContent() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3">
+          <div className="from-primary-500 to-secondary-600 rounded-lg bg-gradient-to-br p-3">
             <HiDocumentText className="h-8 w-8 text-white" />
           </div>
           <div>
