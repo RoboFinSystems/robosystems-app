@@ -198,6 +198,7 @@ export function LibraryContent() {
                 graphId={graphId}
                 taxonomies={taxonomies}
                 baseStandard={baseStandard}
+                selectedTaxonomyId={selectedTaxonomyId}
                 selectedElementId={selectedElementId}
                 onSelectElement={setSelectedElementId}
               />
