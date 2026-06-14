@@ -2,6 +2,7 @@
 
 import {
   customTheme,
+  EmptyState,
   LoadingState,
   PageHeader,
   useGraphContext,
@@ -449,15 +450,11 @@ export function SubgraphsContent() {
         </div>
       ) : (
         <Card theme={customTheme.card}>
-          <div className="py-12 text-center">
-            <HiChip className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
-              No subgraphs found
-            </h3>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Get started by creating your first subgraph.
-            </p>
-          </div>
+          <EmptyState
+            icon={HiChip}
+            title="No subgraphs found"
+            description="Get started by creating your first subgraph."
+          />
         </Card>
       )}
 
