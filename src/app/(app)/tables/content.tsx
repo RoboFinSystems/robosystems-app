@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  ConfirmModal,
   customTheme,
   EmptyState,
   PageHeader,
@@ -80,6 +81,7 @@ export function TablesContent() {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [fileToDelete, setFileToDelete] = useState<FileInfo | null>(null)
   const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   // Load tables
   const fetchTables = useCallback(async () => {
@@ -311,7 +313,7 @@ export function TablesContent() {
 
     try {
       setDeleting(true)
-      setError(null)
+      setDeleteError(null)
 
       const response = await SDK.deleteFile({
         path: { graph_id: graphId, file_id: fileToDelete.file_id },
@@ -328,11 +330,11 @@ export function TablesContent() {
         await fetchTables()
         await fetchTableFiles(selectedTable)
       } else if (response.error) {
-        setError('Delete failed: ' + JSON.stringify(response.error))
+        setDeleteError('Delete failed: ' + JSON.stringify(response.error))
       }
     } catch (err) {
       console.error('Delete failed:', err)
-      setError('Failed to delete file')
+      setDeleteError('Failed to delete file')
     } finally {
       setDeleting(false)
     }
@@ -1091,6 +1093,7 @@ export function TablesContent() {
                                       color="failure"
                                       onClick={() => {
                                         setFileToDelete(file)
+                                        setDeleteError(null)
                                         setShowDeleteModal(true)
                                       }}
                                       title="Delete file"
@@ -1471,87 +1474,68 @@ export function TablesContent() {
       </Modal>
 
       {/* Delete File Modal */}
-      <Modal
+      <ConfirmModal
         show={showDeleteModal}
         onClose={() => {
           setShowDeleteModal(false)
           setFileToDelete(null)
+          setDeleteError(null)
         }}
-        size="md"
-        theme={customTheme.modal}
+        onConfirm={handleDeleteFile}
+        loading={deleting}
+        title="Delete File"
+        confirmLabel="Delete File"
       >
-        <ModalHeader>Delete File</ModalHeader>
-        <ModalBody>
-          <div className="space-y-4">
-            <div className="rounded-lg bg-red-50 p-3 dark:bg-red-900/30">
-              <p className="text-sm text-red-800 dark:text-red-300">
-                <strong>⚠️ Warning:</strong> This action cannot be undone. The
-                file and its data will be permanently removed from the staging
-                table.
-              </p>
-            </div>
+        <div className="space-y-4">
+          <div className="rounded-lg bg-red-50 p-3 dark:bg-red-900/30">
+            <p className="text-sm text-red-800 dark:text-red-300">
+              <strong>⚠️ Warning:</strong> This action cannot be undone. The
+              file and its data will be permanently removed from the staging
+              table.
+            </p>
+          </div>
 
-            {fileToDelete && (
-              <div>
-                <Label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                  File Details
-                </Label>
-                <div className="space-y-2 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-700 dark:bg-zinc-800">
-                  <div className="flex justify-between">
-                    <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-                      Name:
-                    </span>
-                    <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                      {fileToDelete.file_name}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-                      Rows:
-                    </span>
-                    <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                      {fileToDelete.row_count?.toLocaleString() || 'N/A'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-                      Size:
-                    </span>
-                    <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                      {formatBytes(fileToDelete.size_bytes || 0)}
-                    </span>
-                  </div>
+          {fileToDelete && (
+            <div>
+              <Label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                File Details
+              </Label>
+              <div className="space-y-2 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-700 dark:bg-zinc-800">
+                <div className="flex justify-between">
+                  <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                    Name:
+                  </span>
+                  <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    {fileToDelete.file_name}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                    Rows:
+                  </span>
+                  <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    {fileToDelete.row_count?.toLocaleString() || 'N/A'}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                    Size:
+                  </span>
+                  <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    {formatBytes(fileToDelete.size_bytes || 0)}
+                  </span>
                 </div>
               </div>
-            )}
+            </div>
+          )}
 
-            {error && (
-              <Alert color="failure" icon={HiInformationCircle}>
-                {error}
-              </Alert>
-            )}
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            color="failure"
-            onClick={handleDeleteFile}
-            disabled={deleting}
-          >
-            {deleting ? 'Deleting...' : 'Delete File'}
-          </Button>
-          <Button
-            color="gray"
-            onClick={() => {
-              setShowDeleteModal(false)
-              setFileToDelete(null)
-            }}
-            disabled={deleting}
-          >
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
+          {deleteError && (
+            <Alert color="failure" icon={HiInformationCircle}>
+              {deleteError}
+            </Alert>
+          )}
+        </div>
+      </ConfirmModal>
     </PageLayout>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  ConfirmModal,
   customTheme,
   EmptyState,
   LoadingState,
@@ -25,10 +26,6 @@ import {
   Badge,
   Button,
   Card,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
   Spinner,
   Table,
   TableBody,
@@ -441,67 +438,38 @@ export function SubgraphsContent() {
       )}
 
       {/* Delete Confirmation Modal */}
-      <Modal
+      <ConfirmModal
         show={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
-        size="md"
-        theme={{
-          content: {
-            base: 'relative h-full w-full p-4 md:h-auto',
-            inner: 'relative rounded-lg bg-white shadow dark:bg-gray-800',
-          },
-        }}
+        onConfirm={handleDeleteConfirm}
+        loading={isDeleting}
+        title="Delete Subgraph"
+        confirmLabel="Delete Subgraph"
+        confirmIcon={HiTrash}
       >
-        <ModalHeader className="border-b border-gray-200 dark:border-gray-700">
-          <span className="text-gray-900 dark:text-white">Delete Subgraph</span>
-        </ModalHeader>
-        <ModalBody className="bg-white dark:bg-gray-800">
-          <div className="space-y-4">
-            <div className="rounded-lg border-2 border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-900/20">
-              <div className="flex items-start gap-3">
-                <HiExclamationCircle className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
-                <div>
-                  <p className="font-semibold text-red-800 dark:text-red-300">
-                    This action is permanent
-                  </p>
-                </div>
+        <div className="space-y-4">
+          <div className="rounded-lg border-2 border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-900/20">
+            <div className="flex items-start gap-3">
+              <HiExclamationCircle className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
+              <div>
+                <p className="font-semibold text-red-800 dark:text-red-300">
+                  This action is permanent
+                </p>
               </div>
             </div>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              Are you sure you want to delete the subgraph{' '}
-              <strong className="text-gray-900 dark:text-white">
-                {subgraphToDelete?.display_name}
-              </strong>
-              ?
-            </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              All data in this subgraph will be permanently deleted.
-            </p>
           </div>
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            color="failure"
-            onClick={handleDeleteConfirm}
-            disabled={isDeleting}
-          >
-            {isDeleting ? (
-              <>
-                <Spinner size="sm" className="mr-2" />
-                Deleting...
-              </>
-            ) : (
-              <>
-                <HiTrash className="mr-2 h-5 w-5" />
-                Delete Subgraph
-              </>
-            )}
-          </Button>
-          <Button color="gray" onClick={() => setDeleteModalOpen(false)}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
+          <p className="text-sm text-gray-700 dark:text-gray-300">
+            Are you sure you want to delete the subgraph{' '}
+            <strong className="text-gray-900 dark:text-white">
+              {subgraphToDelete?.display_name}
+            </strong>
+            ?
+          </p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            All data in this subgraph will be permanently deleted.
+          </p>
+        </div>
+      </ConfirmModal>
     </PageLayout>
   )
 }

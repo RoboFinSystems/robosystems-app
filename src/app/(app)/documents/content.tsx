@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  ConfirmModal,
   customTheme,
   EmptyState,
   LoadingState,
@@ -27,10 +28,6 @@ import {
   Button,
   Card,
   Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
   Spinner,
   TextInput,
   Tooltip,
@@ -809,70 +806,43 @@ export function DocumentsPageContent() {
       )}
 
       {/* Delete Confirmation Modal */}
-      <Modal
-        theme={customTheme.modal}
+      <ConfirmModal
         show={showDeleteModal}
-        onClose={() => !deleting && setShowDeleteModal(false)}
-        size="md"
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+        loading={deleting}
+        title="Delete Document"
+        confirmLabel="Delete"
+        confirmIcon={HiTrash}
       >
-        <ModalHeader>Delete Document</ModalHeader>
-        <ModalBody>
-          <div className="space-y-4">
-            <div className="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
-              <div className="flex gap-2">
-                <HiExclamation className="h-5 w-5 text-red-600" />
-                <div>
-                  <h4 className="font-medium text-red-800 dark:text-red-300">
-                    This action cannot be undone
-                  </h4>
-                  <p className="mt-1 text-sm text-red-700 dark:text-red-400">
-                    This document will be permanently removed.
-                  </p>
-                </div>
+        <div className="space-y-4">
+          <div className="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
+            <div className="flex gap-2">
+              <HiExclamation className="h-5 w-5 text-red-600" />
+              <div>
+                <h4 className="font-medium text-red-800 dark:text-red-300">
+                  This action cannot be undone
+                </h4>
+                <p className="mt-1 text-sm text-red-700 dark:text-red-400">
+                  This document will be permanently removed.
+                </p>
               </div>
             </div>
-            {deleteTarget && (
-              <div>
-                <Label>Document</Label>
-                <p className="mt-1 text-sm font-medium text-gray-900 dark:text-white">
-                  {deleteTarget.document_title}
-                </p>
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  {deleteTarget.section_count} section
-                  {deleteTarget.section_count !== 1 ? 's' : ''} will be deleted
-                </p>
-              </div>
-            )}
           </div>
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            theme={customTheme.button}
-            color="failure"
-            onClick={handleDelete}
-            disabled={deleting}
-          >
-            {deleting ? (
-              <>
-                <Spinner size="sm" className="mr-2" />
-                Deleting...
-              </>
-            ) : (
-              <>
-                <HiTrash className="mr-2 h-4 w-4" />
-                Delete
-              </>
-            )}
-          </Button>
-          <Button
-            color="gray"
-            onClick={() => setShowDeleteModal(false)}
-            disabled={deleting}
-          >
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
+          {deleteTarget && (
+            <div>
+              <Label>Document</Label>
+              <p className="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+                {deleteTarget.document_title}
+              </p>
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                {deleteTarget.section_count} section
+                {deleteTarget.section_count !== 1 ? 's' : ''} will be deleted
+              </p>
+            </div>
+          )}
+        </div>
+      </ConfirmModal>
 
       <ToastContainer />
     </PageLayout>
