@@ -81,6 +81,7 @@ export function TablesContent() {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [fileToDelete, setFileToDelete] = useState<FileInfo | null>(null)
   const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   // Load tables
   const fetchTables = useCallback(async () => {
@@ -312,7 +313,7 @@ export function TablesContent() {
 
     try {
       setDeleting(true)
-      setError(null)
+      setDeleteError(null)
 
       const response = await SDK.deleteFile({
         path: { graph_id: graphId, file_id: fileToDelete.file_id },
@@ -329,11 +330,11 @@ export function TablesContent() {
         await fetchTables()
         await fetchTableFiles(selectedTable)
       } else if (response.error) {
-        setError('Delete failed: ' + JSON.stringify(response.error))
+        setDeleteError('Delete failed: ' + JSON.stringify(response.error))
       }
     } catch (err) {
       console.error('Delete failed:', err)
-      setError('Failed to delete file')
+      setDeleteError('Failed to delete file')
     } finally {
       setDeleting(false)
     }
@@ -1092,6 +1093,7 @@ export function TablesContent() {
                                       color="failure"
                                       onClick={() => {
                                         setFileToDelete(file)
+                                        setDeleteError(null)
                                         setShowDeleteModal(true)
                                       }}
                                       title="Delete file"
@@ -1477,6 +1479,7 @@ export function TablesContent() {
         onClose={() => {
           setShowDeleteModal(false)
           setFileToDelete(null)
+          setDeleteError(null)
         }}
         onConfirm={handleDeleteFile}
         loading={deleting}
@@ -1526,9 +1529,9 @@ export function TablesContent() {
             </div>
           )}
 
-          {error && (
+          {deleteError && (
             <Alert color="failure" icon={HiInformationCircle}>
-              {error}
+              {deleteError}
             </Alert>
           )}
         </div>
