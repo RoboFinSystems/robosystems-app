@@ -1,6 +1,11 @@
 'use client'
 
-import { customTheme, PageHeader, useGraphContext } from '@/lib/core'
+import {
+  customTheme,
+  PageHeader,
+  PageLayout,
+  useGraphContext,
+} from '@/lib/core'
 import Editor from '@monaco-editor/react'
 import * as SDK from '@robosystems/client'
 import { Alert, Badge, Card, Tabs, TextInput } from 'flowbite-react'
@@ -205,18 +210,18 @@ export function SchemaEditorContent() {
 
   if (!graphId) {
     return (
-      <div className="mx-auto max-w-7xl p-6">
+      <PageLayout className="space-y-0">
         <Alert color="warning" icon={HiInformationCircle}>
           Please select a graph from the dropdown in the top navigation bar to
           view its schema.
         </Alert>
-      </div>
+      </PageLayout>
     )
   }
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <div className="animate-pulse">
           <div className="mb-4 h-8 w-48 rounded bg-gray-200 dark:bg-gray-700"></div>
           <div className="space-y-4">
@@ -224,12 +229,12 @@ export function SchemaEditorContent() {
             <div className="h-32 rounded bg-gray-200 dark:bg-gray-700"></div>
           </div>
         </div>
-      </div>
+      </PageLayout>
     )
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 p-6">
+    <PageLayout>
       {/* Header */}
       <PageHeader
         icon={HiCode}
@@ -638,6 +643,6 @@ export function SchemaEditorContent() {
           </Card>
         </Tabs.Item>
       </Tabs>
-    </div>
+    </PageLayout>
   )
 }

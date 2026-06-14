@@ -4,6 +4,7 @@ import {
   customTheme,
   EmptyState,
   PageHeader,
+  PageLayout,
   useGraphContext,
 } from '@/lib/core'
 import { normalizeLocalUrl } from '@/lib/utils'
@@ -400,18 +401,18 @@ export function TablesContent() {
 
   if (!graphId) {
     return (
-      <div className="mx-auto max-w-7xl p-6">
+      <PageLayout className="space-y-0">
         <Alert color="warning" icon={HiInformationCircle}>
           Please select a graph to manage tables
         </Alert>
-      </div>
+      </PageLayout>
     )
   }
 
   // Simplified view for entity graphs — just query editor + sync button
   if (isEntityGraph) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         {/* Header */}
         <PageHeader
           icon={HiTable}
@@ -614,12 +615,12 @@ export function TablesContent() {
             </ModalFooter>
           </form>
         </Modal>
-      </div>
+      </PageLayout>
     )
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 p-6">
+    <PageLayout>
       {/* Header */}
       <PageHeader
         icon={HiTable}
@@ -1551,6 +1552,6 @@ export function TablesContent() {
           </Button>
         </ModalFooter>
       </Modal>
-    </div>
+    </PageLayout>
   )
 }

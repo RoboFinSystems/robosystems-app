@@ -4,6 +4,7 @@ import {
   customTheme,
   LoadingState,
   PageHeader,
+  PageLayout,
   useGraphContext,
   useIsRepository,
 } from '@/lib/core'
@@ -119,26 +120,26 @@ export function GraphDashboardContent() {
   // Loading state
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <LoadingState message="Loading dashboard..." />
-      </div>
+      </PageLayout>
     )
   }
 
   // Error state
   if (error || !data) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <Alert color="failure" icon={HiExclamationCircle}>
           <span className="font-medium">Error loading dashboard</span>
           <p className="mt-1 text-sm">{error || 'No data available'}</p>
         </Alert>
-      </div>
+      </PageLayout>
     )
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 p-6">
+    <PageLayout>
       {/* Header */}
       <PageHeader
         icon={HiViewGrid}
@@ -372,6 +373,6 @@ export function GraphDashboardContent() {
           </div>
         </button>
       </div>
-    </div>
+    </PageLayout>
   )
 }

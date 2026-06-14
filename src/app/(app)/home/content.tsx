@@ -95,9 +95,9 @@ export default function AllGraphsHomePage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <LoadingState message="Loading graphs..." />
-      </div>
+      </PageLayout>
     )
   }
 
