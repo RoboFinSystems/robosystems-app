@@ -416,7 +416,11 @@ export function DocumentsPageContent() {
   // --- Loading State ---
 
   if (loading) {
-    return <LoadingState size="lg" />
+    return (
+      <div className="mx-auto max-w-7xl space-y-6 p-6">
+        <LoadingState message="Loading documents..." />
+      </div>
+    )
   }
 
   // --- No Graph Selected ---

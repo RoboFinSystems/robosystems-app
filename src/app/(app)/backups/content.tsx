@@ -394,7 +394,11 @@ export default function BackupManagementContent() {
   }
 
   if (loading) {
-    return <LoadingState message="Loading backups..." />
+    return (
+      <div className="mx-auto max-w-7xl space-y-6 p-6">
+        <LoadingState message="Loading backups..." />
+      </div>
+    )
   }
 
   if (!selectedGraphId) {
