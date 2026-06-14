@@ -6,6 +6,7 @@ import {
   EmptyState,
   PageHeader,
   PageLayout,
+  StatCard,
   useApiError,
   useOrg,
   useToast,
@@ -353,30 +354,22 @@ export function OrganizationContent() {
                     </span>
                   </h2>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <Card theme={customTheme.card}>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        Total Graphs
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {usage.graph_details.length}
-                      </p>
-                    </Card>
-                    <Card theme={customTheme.card}>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        Credits Available
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {usage.graph_details
-                          .reduce(
-                            (sum: number, g: any) =>
-                              sum + (g.credits_available || 0),
-                            0
-                          )
-                          .toLocaleString(undefined, {
-                            maximumFractionDigits: 0,
-                          })}
-                      </p>
-                    </Card>
+                    <StatCard
+                      label="Total Graphs"
+                      value={usage.graph_details.length}
+                    />
+                    <StatCard
+                      label="Credits Available"
+                      value={usage.graph_details
+                        .reduce(
+                          (sum: number, g: any) =>
+                            sum + (g.credits_available || 0),
+                          0
+                        )
+                        .toLocaleString(undefined, {
+                          maximumFractionDigits: 0,
+                        })}
+                    />
                   </div>
                 </>
               )}

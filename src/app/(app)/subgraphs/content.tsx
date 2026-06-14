@@ -6,6 +6,7 @@ import {
   LoadingState,
   PageHeader,
   PageLayout,
+  StatCard,
   useGraphContext,
   useToast,
 } from '@/lib/core'
@@ -215,56 +216,36 @@ export function SubgraphsContent() {
 
       {/* Summary Stats */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 md:gap-6">
-        <Card theme={customTheme.card}>
-          <div className="space-y-2">
-            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Subgraphs
-            </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {listResponse?.subgraph_count ?? subgraphs.length}
-            </div>
-          </div>
-        </Card>
+        <StatCard
+          label="Subgraphs"
+          value={listResponse?.subgraph_count ?? subgraphs.length}
+        />
 
-        <Card theme={customTheme.card}>
-          <div className="space-y-2">
-            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Quota
-            </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {listResponse?.max_subgraphs
-                ? `${listResponse.subgraph_count}/${listResponse.max_subgraphs}`
-                : 'Unlimited'}
-            </div>
-          </div>
-        </Card>
+        <StatCard
+          label="Quota"
+          value={
+            listResponse?.max_subgraphs
+              ? `${listResponse.subgraph_count}/${listResponse.max_subgraphs}`
+              : 'Unlimited'
+          }
+        />
 
-        <Card theme={customTheme.card}>
-          <div className="space-y-2">
-            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Total Size
-            </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {formatSize(listResponse?.total_size_mb)}
-            </div>
-          </div>
-        </Card>
+        <StatCard
+          label="Total Size"
+          value={formatSize(listResponse?.total_size_mb)}
+        />
 
-        <Card theme={customTheme.card}>
-          <div className="space-y-2">
-            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Tier
-            </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {listResponse?.parent_graph_tier
-                ? listResponse.parent_graph_tier
-                    .split('-')
-                    .slice(-1)[0]
-                    .toUpperCase()
-                : 'N/A'}
-            </div>
-          </div>
-        </Card>
+        <StatCard
+          label="Tier"
+          value={
+            listResponse?.parent_graph_tier
+              ? listResponse.parent_graph_tier
+                  .split('-')
+                  .slice(-1)[0]
+                  .toUpperCase()
+              : 'N/A'
+          }
+        />
       </div>
 
       {/* Subgraphs List - Mobile Optimized */}
