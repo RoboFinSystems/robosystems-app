@@ -3,7 +3,12 @@
 import CancelSubscriptionModal, {
   type CancelMode,
 } from '@/components/app/CancelSubscriptionModal'
-import { ActiveSubscriptions, BrowseRepositories, useToast } from '@/lib/core'
+import {
+  ActiveSubscriptions,
+  BrowseRepositories,
+  PageLayout,
+  useToast,
+} from '@/lib/core'
 import {
   cancelRepositorySubscription,
   type GraphSubscriptionResponse,
@@ -58,7 +63,7 @@ export function SharedRepositoriesContent() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 p-6">
+    <PageLayout>
       <ActiveSubscriptions
         key={refreshKey}
         onOpenConsole={() => router.push('/console')}
@@ -86,7 +91,7 @@ export function SharedRepositoriesContent() {
         billingInterval={subToCancel?.billing_interval}
         currentPeriodEnd={subToCancel?.current_period_end ?? null}
       />
-    </div>
+    </PageLayout>
   )
 }
 

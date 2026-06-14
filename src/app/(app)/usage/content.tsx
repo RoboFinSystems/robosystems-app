@@ -5,6 +5,7 @@ import {
   EmptyState,
   LoadingState,
   PageHeader,
+  PageLayout,
   useGraphContext,
   useIsRepository,
 } from '@/lib/core'
@@ -160,16 +161,16 @@ export function UsageContent() {
   // Loading state
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <LoadingState message="Loading usage data..." />
-      </div>
+      </PageLayout>
     )
   }
 
   // No graph selected
   if (!graphId) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
@@ -191,14 +192,14 @@ export function UsageContent() {
             }
           />
         </Card>
-      </div>
+      </PageLayout>
     )
   }
 
   // Error state
   if (error || !data) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-heading text-3xl font-bold text-gray-900 dark:text-white">
@@ -224,7 +225,7 @@ export function UsageContent() {
             Go to Home
           </Button>
         </div>
-      </div>
+      </PageLayout>
     )
   }
 
@@ -271,7 +272,7 @@ export function UsageContent() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 p-6">
+    <PageLayout>
       {/* Header */}
       <PageHeader
         icon={HiChartBar}
@@ -614,6 +615,6 @@ export function UsageContent() {
           </div>
         </Card>
       )}
-    </div>
+    </PageLayout>
   )
 }

@@ -5,6 +5,7 @@ import {
   EmptyState,
   LoadingState,
   PageHeader,
+  PageLayout,
   useGraphContext,
   useIsRepository,
 } from '@/lib/core'
@@ -418,9 +419,9 @@ export function DocumentsPageContent() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <LoadingState message="Loading documents..." />
-      </div>
+      </PageLayout>
     )
   }
 
@@ -428,7 +429,7 @@ export function DocumentsPageContent() {
 
   if (!selectedGraphId) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <Card theme={customTheme.card}>
           <EmptyState
             icon={HiDocumentText}
@@ -436,7 +437,7 @@ export function DocumentsPageContent() {
             description="Please select a graph to manage your knowledge base."
           />
         </Card>
-      </div>
+      </PageLayout>
     )
   }
 
@@ -444,7 +445,7 @@ export function DocumentsPageContent() {
 
   if (error) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <Card theme={customTheme.card}>
           <div className="py-12 text-center">
             <HiExclamation className="mx-auto h-12 w-12 text-red-400" />
@@ -460,7 +461,7 @@ export function DocumentsPageContent() {
             </Button>
           </div>
         </Card>
-      </div>
+      </PageLayout>
     )
   }
 
@@ -688,7 +689,7 @@ export function DocumentsPageContent() {
   // --- Document List View ---
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 p-6">
+    <PageLayout>
       {/* Header */}
       <PageHeader
         icon={HiDocumentText}
@@ -874,6 +875,6 @@ export function DocumentsPageContent() {
       </Modal>
 
       <ToastContainer />
-    </div>
+    </PageLayout>
   )
 }

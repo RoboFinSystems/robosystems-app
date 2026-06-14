@@ -5,6 +5,7 @@ import {
   EmptyState,
   LoadingState,
   PageHeader,
+  PageLayout,
   useGraphContext,
   useIsRepository,
 } from '@/lib/core'
@@ -396,15 +397,15 @@ export default function BackupManagementContent() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <LoadingState message="Loading backups..." />
-      </div>
+      </PageLayout>
     )
   }
 
   if (!selectedGraphId) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <Card theme={customTheme.card}>
           <EmptyState
             icon={HiDatabase}
@@ -412,13 +413,13 @@ export default function BackupManagementContent() {
             description="Please select a graph to manage backups."
           />
         </Card>
-      </div>
+      </PageLayout>
     )
   }
 
   if (error) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <Card theme={customTheme.card}>
           <div className="py-12 text-center">
             <HiExclamation className="mx-auto h-12 w-12 text-red-400" />
@@ -434,12 +435,12 @@ export default function BackupManagementContent() {
             </Button>
           </div>
         </Card>
-      </div>
+      </PageLayout>
     )
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 p-6">
+    <PageLayout>
       {/* Header */}
       <PageHeader
         icon={HiDatabase}
@@ -1016,6 +1017,6 @@ export default function BackupManagementContent() {
 
       {/* Toast Notifications */}
       <ToastContainer />
-    </div>
+    </PageLayout>
   )
 }

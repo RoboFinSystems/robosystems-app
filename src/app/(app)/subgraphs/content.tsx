@@ -5,6 +5,7 @@ import {
   EmptyState,
   LoadingState,
   PageHeader,
+  PageLayout,
   useGraphContext,
   useToast,
 } from '@/lib/core'
@@ -173,27 +174,27 @@ export function SubgraphsContent() {
   // No graph selected state
   if (!currentGraphId) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <Alert color="warning" icon={HiExclamationCircle}>
           <span className="font-medium">No graph selected</span>
           <p className="mt-1 text-sm">
             Please select a graph from the home page to view its subgraphs.
           </p>
         </Alert>
-      </div>
+      </PageLayout>
     )
   }
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6 p-6">
+      <PageLayout>
         <LoadingState message="Loading subgraphs..." />
-      </div>
+      </PageLayout>
     )
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 p-6">
+    <PageLayout>
       {/* Header */}
       <PageHeader
         icon={HiChip}
@@ -520,6 +521,6 @@ export function SubgraphsContent() {
           </Button>
         </ModalFooter>
       </Modal>
-    </div>
+    </PageLayout>
   )
 }
