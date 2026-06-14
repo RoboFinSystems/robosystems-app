@@ -2,6 +2,7 @@
 
 import {
   customTheme,
+  EmptyState,
   LoadingState,
   PageHeader,
   useGraphContext,
@@ -429,15 +430,11 @@ export function DocumentsPageContent() {
     return (
       <div className="mx-auto max-w-7xl space-y-6 p-6">
         <Card theme={customTheme.card}>
-          <div className="py-12 text-center">
-            <HiDocumentText className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
-              No graph selected
-            </h3>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Please select a graph to manage your knowledge base.
-            </p>
-          </div>
+          <EmptyState
+            icon={HiDocumentText}
+            title="No graph selected"
+            description="Please select a graph to manage your knowledge base."
+          />
         </Card>
       </div>
     )
@@ -714,17 +711,15 @@ export function DocumentsPageContent() {
       {/* Document List */}
       {documents.length === 0 ? (
         <Card theme={customTheme.card}>
-          <div className="py-12 text-center">
-            <HiDocumentAdd className="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-500" />
-            <p className="font-medium text-gray-700 dark:text-gray-200">
-              Knowledge base is empty
-            </p>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              {isRepository
+          <EmptyState
+            icon={HiDocumentAdd}
+            title="Knowledge base is empty"
+            description={
+              isRepository
                 ? 'No documents have been indexed yet.'
-                : 'Upload policies, procedures, or reference documents to build your knowledge base.'}
-            </p>
-          </div>
+                : 'Upload policies, procedures, or reference documents to build your knowledge base.'
+            }
+          />
         </Card>
       ) : (
         <div className="grid gap-3">

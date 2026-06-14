@@ -1,6 +1,11 @@
 'use client'
 
-import { customTheme, PageHeader, useGraphContext } from '@/lib/core'
+import {
+  customTheme,
+  EmptyState,
+  PageHeader,
+  useGraphContext,
+} from '@/lib/core'
 import { normalizeLocalUrl } from '@/lib/utils'
 import Editor from '@monaco-editor/react'
 import * as SDK from '@robosystems/client'
@@ -1103,10 +1108,10 @@ export function TablesContent() {
                 </div>
               ) : (
                 <Card theme={customTheme.card}>
-                  <div className="py-12 text-center text-gray-500 dark:text-gray-400">
-                    <HiDatabase className="mx-auto mb-4 h-12 w-12" />
-                    <p>Select a table to view details</p>
-                  </div>
+                  <EmptyState
+                    icon={HiDatabase}
+                    title="Select a table to view details"
+                  />
                 </Card>
               )}
             </div>

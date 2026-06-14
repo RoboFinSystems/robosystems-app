@@ -2,6 +2,7 @@
 
 import {
   customTheme,
+  EmptyState,
   LoadingState,
   PageHeader,
   useGraphContext,
@@ -405,15 +406,11 @@ export default function BackupManagementContent() {
     return (
       <div className="mx-auto max-w-7xl space-y-6 p-6">
         <Card theme={customTheme.card}>
-          <div className="py-12 text-center">
-            <HiDatabase className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
-              No graph selected
-            </h3>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Please select a graph to manage backups.
-            </p>
-          </div>
+          <EmptyState
+            icon={HiDatabase}
+            title="No graph selected"
+            description="Please select a graph to manage backups."
+          />
         </Card>
       </div>
     )
@@ -563,17 +560,15 @@ export default function BackupManagementContent() {
       {/* Backups Table */}
       {backups.length === 0 ? (
         <Card theme={customTheme.card}>
-          <div className="py-12 text-center">
-            <HiDatabase className="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-500" />
-            <p className="font-medium text-gray-700 dark:text-gray-200">
-              No backups found
-            </p>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              {isRepository
+          <EmptyState
+            icon={HiDatabase}
+            title="No backups found"
+            description={
+              isRepository
                 ? 'No backups available yet. System backups are generated periodically.'
-                : 'Create your first backup to get started.'}
-            </p>
-          </div>
+                : 'Create your first backup to get started.'
+            }
+          />
         </Card>
       ) : (
         <Card theme={customTheme.card}>

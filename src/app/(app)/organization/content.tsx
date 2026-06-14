@@ -3,6 +3,7 @@
 import GraphLimitModal from '@/components/app/GraphLimitModal'
 import {
   customTheme,
+  EmptyState,
   PageHeader,
   PageLayout,
   useApiError,
@@ -505,15 +506,11 @@ export function OrganizationContent() {
                 </h2>
 
                 {!usage || usage.graph_details.length === 0 ? (
-                  <div className="py-12 text-center">
-                    <HiDatabase className="mx-auto mb-4 h-12 w-12 text-gray-400" />
-                    <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
-                      No Graphs
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-400">
-                      Create your first graph to get started
-                    </p>
-                  </div>
+                  <EmptyState
+                    icon={HiDatabase}
+                    title="No Graphs"
+                    description="Create your first graph to get started"
+                  />
                 ) : (
                   <div className="divide-y divide-gray-200 dark:divide-gray-700">
                     {usage.graph_details.map((graph: any) => (
@@ -566,15 +563,11 @@ export function OrganizationContent() {
             </div>
 
             {members.length === 0 ? (
-              <div className="py-12 text-center">
-                <HiUsers className="mx-auto mb-4 h-12 w-12 text-gray-400" />
-                <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
-                  No Members
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Invite team members to collaborate
-                </p>
-              </div>
+              <EmptyState
+                icon={HiUsers}
+                title="No Members"
+                description="Invite team members to collaborate"
+              />
             ) : (
               <div className="divide-y divide-gray-200 dark:divide-gray-700">
                 {members.map((member) => (
