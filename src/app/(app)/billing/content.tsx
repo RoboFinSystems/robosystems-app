@@ -5,6 +5,7 @@ import CancelSubscriptionModal, {
 } from '@/components/app/CancelSubscriptionModal'
 import {
   customTheme,
+  LoadingState,
   PageHeader,
   PageLayout,
   useApiError,
@@ -128,8 +129,8 @@ export function BillingContent() {
 
   if (loading || offeringsLoading) {
     return (
-      <div className="mx-auto flex h-96 max-w-7xl items-center justify-center">
-        <Spinner size="xl" />
+      <div className="mx-auto max-w-7xl space-y-6 p-6">
+        <LoadingState message="Loading billing data..." />
       </div>
     )
   }
@@ -1047,11 +1048,7 @@ function InvoicesTab({
   loading: boolean
 }) {
   if (loading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <Spinner size="xl" />
-      </div>
-    )
+    return <LoadingState />
   }
 
   if (invoices.length === 0) {

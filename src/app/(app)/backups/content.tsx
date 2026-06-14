@@ -2,6 +2,7 @@
 
 import {
   customTheme,
+  LoadingState,
   PageHeader,
   useGraphContext,
   useIsRepository,
@@ -394,13 +395,8 @@ export default function BackupManagementContent() {
 
   if (loading) {
     return (
-      <div className="flex h-64 items-center justify-center">
-        <div className="text-center">
-          <Spinner size="xl" />
-          <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-            Loading backups...
-          </p>
-        </div>
+      <div className="mx-auto max-w-7xl space-y-6 p-6">
+        <LoadingState message="Loading backups..." />
       </div>
     )
   }

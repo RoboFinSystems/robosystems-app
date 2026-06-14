@@ -2,6 +2,7 @@
 
 import {
   customTheme,
+  LoadingState,
   PageHeader,
   PageLayout,
   useGraphContext,
@@ -12,7 +13,6 @@ import {
   Badge,
   Button,
   Card,
-  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -96,14 +96,7 @@ export default function AllGraphsHomePage() {
   if (loading) {
     return (
       <div className="mx-auto max-w-7xl space-y-6 p-6">
-        <div className="flex h-64 items-center justify-center">
-          <div className="text-center">
-            <Spinner size="xl" />
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-              Loading graphs...
-            </p>
-          </div>
-        </div>
+        <LoadingState message="Loading graphs..." />
       </div>
     )
   }

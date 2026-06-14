@@ -2,12 +2,12 @@
 
 import {
   customTheme,
+  LoadingState,
   PageHeader,
   useGraphContext,
   useIsRepository,
 } from '@/lib/core'
 import { useToast } from '@/lib/core/hooks/use-toast'
-import { Spinner as AppSpinner } from '@/lib/core/ui-components'
 import type { Monaco } from '@monaco-editor/react'
 import type {
   DocumentDetailResponse,
@@ -417,8 +417,8 @@ export function DocumentsPageContent() {
 
   if (loading) {
     return (
-      <div className="flex h-64 items-center justify-center">
-        <AppSpinner size="lg" />
+      <div className="mx-auto max-w-7xl space-y-6 p-6">
+        <LoadingState message="Loading documents..." />
       </div>
     )
   }
