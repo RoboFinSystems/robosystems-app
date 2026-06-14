@@ -2,6 +2,7 @@
 
 import {
   customTheme,
+  LoadingState,
   PageHeader,
   useGraphContext,
   useIsRepository,
@@ -13,7 +14,7 @@ import {
   getGraphs,
   listCreditTransactions,
 } from '@robosystems/client'
-import { Alert, Badge, Button, Card, Progress, Spinner } from 'flowbite-react'
+import { Alert, Badge, Button, Card, Progress } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
@@ -159,14 +160,7 @@ export function UsageContent() {
   if (loading) {
     return (
       <div className="mx-auto max-w-7xl space-y-6 p-6">
-        <div className="flex h-64 items-center justify-center">
-          <div className="text-center">
-            <Spinner size="xl" />
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-              Loading usage data...
-            </p>
-          </div>
-        </div>
+        <LoadingState message="Loading usage data..." />
       </div>
     )
   }

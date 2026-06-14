@@ -1,6 +1,12 @@
 'use client'
 
-import { customTheme, PageHeader, useGraphContext, useToast } from '@/lib/core'
+import {
+  customTheme,
+  LoadingState,
+  PageHeader,
+  useGraphContext,
+  useToast,
+} from '@/lib/core'
 import { useOperationMonitoring } from '@/lib/core/task-monitoring/operationHooks'
 import type {
   ListSubgraphsResponse,
@@ -180,14 +186,7 @@ export function SubgraphsContent() {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-7xl space-y-6 p-6">
-        <div className="flex h-64 items-center justify-center">
-          <div className="text-center">
-            <Spinner size="xl" />
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-              Loading subgraphs...
-            </p>
-          </div>
-        </div>
+        <LoadingState message="Loading subgraphs..." />
       </div>
     )
   }

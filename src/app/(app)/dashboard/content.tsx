@@ -2,13 +2,14 @@
 
 import {
   customTheme,
+  LoadingState,
   PageHeader,
   useGraphContext,
   useIsRepository,
 } from '@/lib/core'
 import type { GraphInfo, GraphMetricsResponse } from '@robosystems/client'
 import { getGraphMetrics, getGraphs } from '@robosystems/client'
-import { Alert, Badge, Card, Spinner } from 'flowbite-react'
+import { Alert, Badge, Card } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
@@ -119,14 +120,7 @@ export function GraphDashboardContent() {
   if (loading) {
     return (
       <div className="mx-auto max-w-7xl space-y-6 p-6">
-        <div className="flex h-64 items-center justify-center">
-          <div className="text-center">
-            <Spinner size="xl" />
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-              Loading dashboard...
-            </p>
-          </div>
-        </div>
+        <LoadingState message="Loading dashboard..." />
       </div>
     )
   }
