@@ -274,7 +274,7 @@ export function SchemaEditorContent() {
         />
 
         <StatCard
-          label="Constraints"
+          label="Constraints & Indexes"
           value={constraints.length + indexes.length}
         />
       </div>
