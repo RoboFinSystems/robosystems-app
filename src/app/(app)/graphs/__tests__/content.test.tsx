@@ -18,6 +18,12 @@ vi.mock('@/lib/core', () => ({
     modal: {},
     button: {},
   },
+  StatCard: ({ label, value }: any) => (
+    <div data-testid="stat-card">
+      <span>{label}</span>
+      <span>{value}</span>
+    </div>
+  ),
 }))
 
 // Stub out the cancel-subscription modal — its internals (Flowbite Radio,

@@ -3,13 +3,12 @@
 import CancelSubscriptionModal, {
   type CancelMode,
 } from '@/components/app/CancelSubscriptionModal'
-import { customTheme, useToast, useUserLimits } from '@/lib/core'
+import { StatCard, useToast, useUserLimits } from '@/lib/core'
 import type { GraphInfo } from '@robosystems/client'
 import { getGraphs, opDeleteGraph } from '@robosystems/client'
 import {
   Badge,
   Button,
-  Card,
   Dropdown,
   DropdownDivider,
   DropdownItem,
@@ -173,36 +172,17 @@ export function GraphsContent() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
-        <Card theme={customTheme.card}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Total Graphs
-              </p>
-              <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
-                {graphs.length}
-              </p>
-            </div>
-            <HiDatabase className="h-10 w-10 text-gray-300 dark:text-gray-600" />
-          </div>
-        </Card>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <StatCard
+          label="Total Graphs"
+          value={graphs.length}
+          icon={HiDatabase}
+        />
 
-        <Card theme={customTheme.card}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Admin Access
-              </p>
-              <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
-                {graphs.filter((g) => g.role.toLowerCase() === 'admin').length}
-              </p>
-            </div>
-            <div className="bg-secondary-100 dark:bg-secondary-900 h-10 w-10 rounded-full p-2">
-              <div className="bg-secondary-500 h-6 w-6 rounded-full" />
-            </div>
-          </div>
-        </Card>
+        <StatCard
+          label="Admin Access"
+          value={graphs.filter((g) => g.role.toLowerCase() === 'admin').length}
+        />
       </div>
 
       {/* Filters */}

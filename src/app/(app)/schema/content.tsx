@@ -4,6 +4,7 @@ import {
   customTheme,
   PageHeader,
   PageLayout,
+  StatCard,
   useGraphContext,
 } from '@/lib/core'
 import Editor from '@monaco-editor/react'
@@ -254,56 +255,28 @@ export function SchemaEditorContent() {
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:grid-cols-4">
-        <Card theme={customTheme.card}>
-          <div className="space-y-2">
-            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Node Labels
-            </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {nodeLabels.length}
-            </div>
-          </div>
-        </Card>
+        <StatCard label="Node Labels" value={nodeLabels.length} />
 
-        <Card theme={customTheme.card}>
-          <div className="space-y-2">
-            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Relationships
-            </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {relationshipTypes.length}
-            </div>
-          </div>
-        </Card>
+        <StatCard label="Relationships" value={relationshipTypes.length} />
 
-        <Card theme={customTheme.card}>
-          <div className="space-y-2">
-            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Total Properties
-            </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {nodeLabels.reduce(
-                (sum, node) => sum + (node.properties?.length || 0),
-                0
-              ) +
-                relationshipTypes.reduce(
-                  (sum, rel) => sum + (rel.properties?.length || 0),
-                  0
-                )}
-            </div>
-          </div>
-        </Card>
+        <StatCard
+          label="Total Properties"
+          value={
+            nodeLabels.reduce(
+              (sum, node) => sum + (node.properties?.length || 0),
+              0
+            ) +
+            relationshipTypes.reduce(
+              (sum, rel) => sum + (rel.properties?.length || 0),
+              0
+            )
+          }
+        />
 
-        <Card theme={customTheme.card}>
-          <div className="space-y-2">
-            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Constraints
-            </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {constraints.length + indexes.length}
-            </div>
-          </div>
-        </Card>
+        <StatCard
+          label="Constraints & Indexes"
+          value={constraints.length + indexes.length}
+        />
       </div>
 
       {/* Search Bar */}

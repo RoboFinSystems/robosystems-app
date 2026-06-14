@@ -5,6 +5,7 @@ import {
   LoadingState,
   PageHeader,
   PageLayout,
+  StatCard,
   useGraphContext,
   useIsRepository,
 } from '@/lib/core'
@@ -163,51 +164,27 @@ export function GraphDashboardContent() {
             </h3>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:grid-cols-4">
-            <Card theme={customTheme.card}>
-              <div className="space-y-2">
-                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Total Nodes
-                </div>
-                <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {formatNumber(data.metrics.total_nodes)}
-                </div>
-              </div>
-            </Card>
+            <StatCard
+              label="Total Nodes"
+              value={formatNumber(data.metrics.total_nodes)}
+            />
 
-            <Card theme={customTheme.card}>
-              <div className="space-y-2">
-                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Relationships
-                </div>
-                <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {formatNumber(data.metrics.total_relationships)}
-                </div>
-              </div>
-            </Card>
+            <StatCard
+              label="Relationships"
+              value={formatNumber(data.metrics.total_relationships)}
+            />
 
             {!isRepository && (
-              <Card theme={customTheme.card}>
-                <div className="space-y-2">
-                  <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Storage
-                  </div>
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {((data.metrics as any).storage_size_gb || 0).toFixed(2)} GB
-                  </div>
-                </div>
-              </Card>
+              <StatCard
+                label="Storage"
+                value={`${((data.metrics as any).storage_size_gb || 0).toFixed(2)} GB`}
+              />
             )}
 
-            <Card theme={customTheme.card}>
-              <div className="space-y-2">
-                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Created
-                </div>
-                <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {new Date(data.graphInfo.createdAt).toLocaleDateString()}
-                </div>
-              </div>
-            </Card>
+            <StatCard
+              label="Created"
+              value={new Date(data.graphInfo.createdAt).toLocaleDateString()}
+            />
           </div>
         </>
       )}
