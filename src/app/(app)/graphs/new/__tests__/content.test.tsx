@@ -206,7 +206,7 @@ describe('NewGraphContent', () => {
       expect(screen.queryByText('Graph Limit Modal')).not.toBeInTheDocument()
     })
 
-    test('shows warning when at warning threshold (3 graphs remaining)', () => {
+    test('does not show a limit banner when low on remaining graphs', () => {
       mockUseUserLimits.mockReturnValue({
         limits: { max_graphs: 10 },
         remainingGraphs: 3,
@@ -220,6 +220,9 @@ describe('NewGraphContent', () => {
 
       expect(screen.getByText('Create New Knowledge Graph')).toBeInTheDocument()
       expect(screen.queryByText('Graph Limit Modal')).not.toBeInTheDocument()
+      expect(
+        screen.queryByText('remaining in your limit.', { exact: false })
+      ).not.toBeInTheDocument()
     })
 
     test('handles negative remainingGraphs gracefully', () => {

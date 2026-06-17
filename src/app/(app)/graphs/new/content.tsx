@@ -11,7 +11,7 @@ export function NewGraphContent() {
   const router = useRouter()
   const { user } = useUser()
   const { setCurrentGraph, refreshGraphs } = useGraphContext()
-  const { canCreateGraph, remainingGraphs, isLoading, limits } = useUserLimits()
+  const { canCreateGraph, isLoading, limits } = useUserLimits()
   const [showContactModal, setShowContactModal] = useState(false)
 
   // Check limits when component mounts or when loading completes
@@ -99,27 +99,15 @@ export function NewGraphContent() {
   }
 
   return (
-    <>
-      {remainingGraphs <= 3 && remainingGraphs > 0 && (
-        <div className="mx-auto mb-4 max-w-4xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-900 dark:bg-yellow-900/20">
-            <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-              You have {remainingGraphs} graph{remainingGraphs !== 1 ? 's' : ''}{' '}
-              remaining in your limit.
-            </p>
-          </div>
-        </div>
-      )}
-      <GraphCreationPage
-        // RoboSystems-specific configuration
-        allowGenericGraphs={true} // Allow both entity and generic graphs
-        requiredExtensions={[]} // No required extensions for flexibility
-        allowedExtensions={['roboledger', 'roboinvestor']} // Only show relevant schemas
-        showTierSelection={true}
-        onSuccess={handleSuccess}
-        backUrl="/dashboard"
-        title="Create New Knowledge Graph"
-      />
-    </>
+    <GraphCreationPage
+      // RoboSystems-specific configuration
+      allowGenericGraphs={true} // Allow both entity and generic graphs
+      requiredExtensions={[]} // No required extensions for flexibility
+      allowedExtensions={['roboledger', 'roboinvestor']} // Only show relevant schemas
+      showTierSelection={true}
+      onSuccess={handleSuccess}
+      backUrl="/dashboard"
+      title="Create New Knowledge Graph"
+    />
   )
 }
