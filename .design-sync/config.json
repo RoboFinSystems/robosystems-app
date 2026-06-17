@@ -1,0 +1,18 @@
+{
+  "pkg": "@robosystems/core",
+  "globalName": "RobosystemsCore",
+  "projectId": "f0e9916d-a879-4682-8a7c-c5b9b8f72adc",
+  "shape": "package",
+  "srcDir": ".",
+  "tsconfig": "tsconfig.json",
+  "cssEntry": ".ds-compiled.css",
+  "readmeHeader": ".design-sync/conventions.md",
+  "extraFonts": ["../../../.design-sync/ds-fonts.css"],
+  "runtimeFontPrefixes": ["JetBrains"],
+  "componentSrcMap": {
+    "SupportModal": null
+  },
+  "overrides": {
+    "ConfirmModal": { "cardMode": "single", "viewport": "560x440" }
+  }
+}
