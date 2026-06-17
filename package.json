@@ -24,6 +24,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
+    "build:types": "rm -rf src/lib/core/dist && tsc -p src/lib/core/tsconfig.build.json; test -f src/lib/core/dist/index.d.ts",
     "test": "vitest run --silent",
     "test:all": "npm run test && npm run format && npm run lint:fix && npm run typecheck && npm run cf-lint",
     "cf-lint": "uvx cfn-lint",

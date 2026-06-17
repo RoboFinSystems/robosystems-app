@@ -56,3 +56,4 @@ ds-bundle/
 .design-sync/learnings/
 .design-sync/node_modules
 src/lib/core/.ds-compiled.css
+src/lib/core/dist/
