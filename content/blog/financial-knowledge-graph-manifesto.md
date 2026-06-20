@@ -93,11 +93,11 @@ That's why RoboSystems is radically open source. Every algorithm. Every data tra
 
 Open source also means no vendor lock-in. No surprise price hikes. No feature gates. No asking permission to access your own data. The code is yours to run, modify, and extend forever.
 
-## The Kùzu Advantage: Built for Finance
+## The LadybugDB Advantage: Built for Finance
 
-We chose Kùzu as our graph engine for one reason: it's the only graph database designed for analytical workloads at scale.
+We chose LadybugDB as our graph engine for one reason: it's the only graph database designed for analytical workloads at scale.
 
-While other graph databases optimize for social networks (finding friends of friends), Kùzu is optimized for financial analysis:
+While other graph databases optimize for social networks (finding friends of friends), LadybugDB is optimized for financial analysis:
 
 - **Columnar storage** for lightning-fast aggregations
 - **Embedded architecture** for true multi-tenancy
@@ -146,6 +146,8 @@ This transformation doesn't require abandoning your existing systems. QuickBooks
 RoboSystems sits above them all, connecting their data into a unified graph. Our API-first architecture means your graph integrates with everything—your current tools and the AI agents of tomorrow.
 
 Start small. Connect your accounting system. Add your CRM. Layer in operational data. Watch as the graph reveals insights that were always there, just invisible.
+
+This isn't theory for us. It's what RoboLedger runs on for real month-end close work—an AI controller layer that sits above QuickBooks rather than replacing it, automating the mechanical parts of the close while every number traces back to its source and the policy behind it. We dogfood it on our own books: if we can run our own company's accounting on the graph, we can run anyone's.
 
 ## The Future Has Already Arrived
 
