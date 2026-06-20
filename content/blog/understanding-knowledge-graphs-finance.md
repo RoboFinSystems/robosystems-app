@@ -101,13 +101,15 @@ By the time you've analyzed last quarter's performance, you're halfway through t
 
 Knowledge graphs update in real-time. Every transaction immediately connects to its full context. You're not analyzing history; you're watching your business live.
 
-## RoboSystems + Kùzu: Built for Financial Reality
+## RoboSystems + LadybugDB: Built for Financial Reality
 
-We didn't pick Kùzu by accident. While other graph databases were built for social networks (who follows whom), Kùzu was built for analysis (what drives what).
+We didn't pick LadybugDB by accident. While other graph databases were built for social networks (who follows whom), LadybugDB was built for analysis (what drives what).
 
 ### Columnar Storage = Financial Speed
 
-Financial queries are aggregations: sum of revenue, average of margins, count of transactions. Kùzu's columnar architecture makes these calculations blazingly fast. What takes minutes in row-based systems takes milliseconds here.
+Financial queries are aggregations: sum of revenue, average of margins, count of transactions. LadybugDB's columnar architecture makes these calculations blazingly fast. What takes minutes in row-based systems takes milliseconds here.
+
+In accounting terms, this is exactly what a close needs: dozens of revenue and expense accounts rolling up into gross profit, operating income, and net income, with accruals and cost allocations flowing through to the right subtotal. RoboLedger walks that same chart-of-accounts hierarchy as a graph, so you can trace any line on the income statement straight down to the journal entries—and the policy—that produced it.
 
 ### Embedded Architecture = True Isolation
 

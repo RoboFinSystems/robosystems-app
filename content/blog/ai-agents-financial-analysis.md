@@ -156,6 +156,12 @@ Answers the hard questions:
 
 It doesn't guess. It models. Using your actual data, your actual relationships, your actual constraints.
 
+## Where This Gets Real: Accounting Agents
+
+Analysis is the obvious starting point, but the same idea reaches all the way into the books themselves. That's what RoboLedger is: accounting-specific agents that draft journal entries for your review, validate the close against the numbers, and apply your accounting policies consistently instead of leaving them in someone's head. It's an AI controller layer that sits on top of QuickBooks rather than replacing it—your ledger of record stays exactly where it is, and the agents handle the mechanical work of getting it closed and right.
+
+We run this on our own books. RoboLedger does our month-end close, which means we feel every rough edge before a customer does—if our agents can keep our company's accounting clean, they can do the same for yours. And because every entry traces back to its source and the policy that justified it, an agent drafting a number is always a number you can audit, not a black box you have to trust.
+
 ## The Elephant in the Room: Will This Replace Me?
 
 No. But it will replace the version of you that spends 60% of your time on mechanical tasks.
