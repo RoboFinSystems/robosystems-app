@@ -280,7 +280,7 @@ export default function SECRepositorySection() {
               </div>
               <div className="rounded-lg bg-black/40 p-2.5">
                 <code className="text-xs text-gray-300">
-                  npx -y @robosystems/mcp
+                  npx -y @robosystems/mcp@latest
                 </code>
               </div>
             </div>
