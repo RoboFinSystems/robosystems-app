@@ -270,7 +270,7 @@ export default function ApplicationsSection() {
                   Claude integration via Model Context Protocol for AI agents
                 </p>
                 <code className="block rounded-sm bg-zinc-800 p-2 text-xs text-gray-300">
-                  npx -y @robosystems/mcp
+                  npx -y @robosystems/mcp@latest
                 </code>
                 <div className="mt-4 flex gap-3">
                   <Link

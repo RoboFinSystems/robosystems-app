@@ -123,7 +123,7 @@ export default function ClientLibraries() {
             </p>
             <div className="rounded bg-black p-2">
               <code className="text-xs text-gray-300">
-                npx -y @robosystems/mcp
+                npx -y @robosystems/mcp@latest
               </code>
             </div>
             <div className="mt-4 flex gap-3">
