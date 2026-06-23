@@ -26,7 +26,6 @@ keywords:
     'XBRL',
   ]
 featured: true
-coverVideo: '/videos/financial-knowledge-graph.mp4'
 canonicalUrl: 'https://robosystems.ai/blog/building-financial-context-graphs'
 ---
 

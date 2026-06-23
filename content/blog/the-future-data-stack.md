@@ -24,7 +24,6 @@ keywords:
     'AI native architecture',
   ]
 featured: true
-coverVideo: '/videos/futuristic-brain-network.mp4'
 canonicalUrl: 'https://robosystems.ai/blog/the-future-data-stack'
 ---
 
