@@ -8,7 +8,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-export const revalidate = 3600
+// Short ISR window so catalog/publish/sync-youtube changes show up in minutes, not an hour.
+export const revalidate = 300
 
 export async function generateStaticParams() {
   const tickers = await getCoverageTickers().catch(() => [])

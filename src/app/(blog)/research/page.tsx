@@ -8,7 +8,8 @@ export const metadata = {
     'Equity research from the filings — one public company per report, every figure traceable to an SEC filing. No price targets.',
 }
 
-export const revalidate = 3600
+// Short ISR window so catalog/publish/sync-youtube changes show up in minutes, not an hour.
+export const revalidate = 300
 
 export default async function ResearchPage() {
   const items = await getAllCoverage().catch(() => [])
