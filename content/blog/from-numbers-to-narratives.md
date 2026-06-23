@@ -18,7 +18,6 @@ keywords:
     'AI financial analysis',
   ]
 featured: true
-coverVideo: '/videos/ai-powered-financial-insights.mp4'
 canonicalUrl: 'https://robosystems.ai/blog/from-numbers-to-narratives'
 ---
 

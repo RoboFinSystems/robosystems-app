@@ -1,7 +1,8 @@
 import { getAllPosts } from '@/lib/blog'
+import { getAllCoverage } from '@/lib/core/research'
 import type { MetadataRoute } from 'next'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://robosystems.ai'
 
   // Get all blog posts
@@ -13,6 +14,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }))
 
+  // Get all research coverage (from the S3 catalog)
+  const coverage = await getAllCoverage().catch(() => [])
+  const researchPages = coverage.map((item) => ({
+    url: `${baseUrl}/research/${item.ticker.toLowerCase()}`,
+    lastModified: item.date ? new Date(item.date) : new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }))
+
   return [
     {
       url: baseUrl,
@@ -22,6 +32,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/research`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
@@ -56,6 +72,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.6,
     },
+    ...researchPages,
     ...blogPosts,
   ]
 }
