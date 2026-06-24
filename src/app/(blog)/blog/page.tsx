@@ -1,4 +1,3 @@
-import VideoErrorBoundary from '@/components/common/VideoErrorBoundary'
 import { getAllPosts } from '@/lib/blog'
 import { format } from 'date-fns'
 import Image from 'next/image'
@@ -10,8 +9,8 @@ export const metadata = {
     'Insights on graph databases, AI-powered analytics, and the future of business intelligence',
 }
 
-export default function BlogPage() {
-  const posts = getAllPosts()
+export default async function BlogPage() {
+  const posts = await getAllPosts()
 
   return (
     <div className="min-h-screen bg-black">
@@ -70,44 +69,7 @@ export default function BlogPage() {
                 {/* Gradient overlay on hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-blue-500/0 to-purple-500/0 opacity-0 transition-opacity duration-300 group-hover:from-cyan-500/10 group-hover:via-blue-500/10 group-hover:to-purple-500/10 group-hover:opacity-100" />
 
-                {(post.coverVideo || post.coverImage) && (
-                  <Link href={`/blog/${post.slug}`}>
-                    <div className="relative h-48 overflow-hidden bg-gray-800">
-                      {post.coverVideo ? (
-                        <VideoErrorBoundary
-                          fallbackImage={post.coverImage}
-                          fallbackAlt={`Cover for ${post.title}`}
-                        >
-                          <video
-                            src={post.coverVideo}
-                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            preload="metadata"
-                          />
-                        </VideoErrorBoundary>
-                      ) : (
-                        <Image
-                          src={post.coverImage!}
-                          alt={`Cover image for article: ${post.title}`}
-                          fill
-                          className="object-cover transition-transform duration-300 group-hover:scale-110"
-                          loading="lazy"
-                        />
-                      )}
-                    </div>
-                  </Link>
-                )}
-
                 <div className="relative p-6">
-                  {post.featured && (
-                    <span className="mb-3 inline-block rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-semibold text-cyan-400">
-                      Featured
-                    </span>
-                  )}
-
                   <h2 className="mb-3 text-xl font-bold text-white transition-colors group-hover:text-cyan-400">
                     <Link href={`/blog/${post.slug}`}>
                       <span className="absolute inset-0" />
@@ -117,8 +79,12 @@ export default function BlogPage() {
 
                   <div className="mb-3 flex items-center gap-3 text-sm text-gray-400">
                     <span>{format(new Date(post.date), 'MMM d, yyyy')}</span>
-                    <span className="text-cyan-500">•</span>
-                    <span>{post.readingTime}</span>
+                    {post.readingTime && (
+                      <>
+                        <span className="text-cyan-500">•</span>
+                        <span>{post.readingTime}</span>
+                      </>
+                    )}
                   </div>
 
                   <p className="mb-4 line-clamp-3 text-gray-300">

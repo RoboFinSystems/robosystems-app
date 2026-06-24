@@ -5,8 +5,8 @@ import type { MetadataRoute } from 'next'
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://robosystems.ai'
 
-  // Get all blog posts
-  const posts = getAllPosts()
+  // Get all blog posts (from the S3 catalog)
+  const posts = await getAllPosts().catch(() => [])
   const blogPosts = posts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: new Date(post.date),

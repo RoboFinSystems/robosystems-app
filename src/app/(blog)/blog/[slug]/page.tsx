@@ -1,12 +1,14 @@
-import VideoErrorBoundary from '@/components/common/VideoErrorBoundary'
 import { getAllPosts, getPostBySlug, getPostSlugs } from '@/lib/blog'
 import { format } from 'date-fns'
-import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+
+const DEFAULT_OG_IMAGE = 'https://robosystems.ai/images/logo_black.png'
 
 export async function generateStaticParams() {
-  const slugs = getPostSlugs()
+  const slugs = await getPostSlugs()
   return slugs.map((slug) => ({
     slug: slug,
   }))
@@ -38,13 +40,13 @@ export async function generateMetadata({
       type: 'article',
       publishedTime: post.date,
       authors: [post.author],
-      images: post.coverImage ? [post.coverImage] : [],
+      images: [DEFAULT_OG_IMAGE],
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: post.metaDescription || post.excerpt,
-      images: post.coverImage ? [post.coverImage] : [],
+      images: [DEFAULT_OG_IMAGE],
     },
   }
 }
@@ -62,7 +64,7 @@ export default async function BlogPostPage({
   }
 
   // Get all posts for "More posts" section
-  const allPosts = getAllPosts()
+  const allPosts = await getAllPosts()
   const morePosts = allPosts.filter((p) => p.slug !== post.slug).slice(0, 3)
 
   // JSON-LD structured data for SEO
@@ -89,11 +91,8 @@ export default async function BlogPostPage({
       '@type': 'WebPage',
       '@id': `https://robosystems.ai/blog/${post.slug}`,
     },
-    image:
-      post.coverImage ||
-      post.coverVideo ||
-      'https://robosystems.ai/images/logo_black.png',
-    keywords: post.tags?.join(', '),
+    image: DEFAULT_OG_IMAGE,
+    keywords: (post.keywords || post.tags)?.join(', '),
   }
 
   return (
@@ -152,12 +151,6 @@ export default async function BlogPostPage({
             </div>
           </div>
 
-          {post.featured && (
-            <span className="mb-4 inline-block rounded-full bg-cyan-500/20 px-4 py-1 text-sm font-semibold text-cyan-400">
-              Featured Post
-            </span>
-          )}
-
           <h1 className="font-heading mb-6 text-4xl font-bold text-white md:text-5xl lg:text-6xl">
             {post.title}
           </h1>
@@ -168,8 +161,12 @@ export default async function BlogPostPage({
             <time dateTime={post.date}>
               {format(new Date(post.date), 'MMMM d, yyyy')}
             </time>
-            <span className="text-gray-600">•</span>
-            <span>{post.readingTime}</span>
+            {post.readingTime && (
+              <>
+                <span className="text-gray-600">•</span>
+                <span>{post.readingTime}</span>
+              </>
+            )}
           </div>
 
           {post.tags && post.tags.length > 0 && (
@@ -187,48 +184,31 @@ export default async function BlogPostPage({
         </div>
       </div>
 
-      {/* Cover Video or Image */}
-      {post.coverVideo ? (
-        <div className="mx-auto -mt-8 max-w-4xl px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-xl border border-gray-800 bg-black">
-            <VideoErrorBoundary
-              fallbackImage={post.coverImage}
-              fallbackAlt={`Cover for ${post.title}`}
-            >
-              <video
-                src={post.coverVideo}
-                className="h-auto max-h-[500px] w-full object-cover"
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="metadata"
-              >
-                Your browser does not support the video tag.
-              </video>
-            </VideoErrorBoundary>
-          </div>
-        </div>
-      ) : post.coverImage ? (
-        <div className="mx-auto -mt-8 max-w-4xl px-4 sm:px-6 lg:px-8">
-          <div className="relative h-96 overflow-hidden rounded-xl border border-gray-800">
-            <Image
-              src={post.coverImage}
-              alt={`${post.title} - detailed article header image`}
-              fill
-              className="object-cover"
-              priority
+      {/* Narration — "Listen to this story" */}
+      {post.narrationUrl && (
+        <div className="mx-auto max-w-4xl px-4 pt-8 sm:px-6 lg:px-8">
+          <div className="rounded-xl border border-gray-800 bg-gray-900/50 p-4">
+            <p className="mb-2 text-sm font-semibold text-cyan-400">
+              Listen to this story
+            </p>
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+            <audio
+              controls
+              preload="none"
+              src={post.narrationUrl}
+              className="w-full"
             />
           </div>
         </div>
-      ) : null}
+      )}
 
       {/* Content with dark theme styling */}
       <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-        <div
-          className="prose prose-lg prose-invert prose-headings:font-heading prose-headings:font-bold prose-headings:text-white prose-p:text-gray-300 prose-p:leading-relaxed prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:text-cyan-300 prose-strong:text-white prose-strong:font-semibold prose-code:text-cyan-400 prose-code:bg-gray-800 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-800 prose-blockquote:border-l-cyan-500 prose-blockquote:text-gray-400 prose-blockquote:italic prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:marker:text-cyan-500 prose-table:border-gray-700 prose-th:bg-gray-900 prose-th:text-white prose-td:text-gray-300 max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content || '' }}
-        />
+        <div className="prose prose-lg prose-invert prose-headings:font-heading prose-headings:font-bold prose-headings:text-white prose-p:text-gray-300 prose-p:leading-relaxed prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:text-cyan-300 prose-strong:text-white prose-strong:font-semibold prose-code:text-cyan-400 prose-code:bg-gray-800 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-800 prose-blockquote:border-l-cyan-500 prose-blockquote:text-gray-400 prose-blockquote:italic prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:marker:text-cyan-500 prose-table:border-gray-700 prose-th:bg-gray-900 prose-th:text-white prose-td:text-gray-300 max-w-none">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {post.content || ''}
+          </ReactMarkdown>
+        </div>
       </div>
 
       {/* Author Bio Section */}

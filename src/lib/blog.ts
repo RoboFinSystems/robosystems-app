@@ -1,12 +1,11 @@
-import fs from 'fs'
-import matter from 'gray-matter'
-import path from 'path'
-import readingTime from 'reading-time'
-import { remark } from 'remark'
-import remarkGfm from 'remark-gfm'
-import html from 'remark-html'
+// Blog catalog access. Posts are authored and published by robosystems-content-machine to
+// s3://robosystems-content/blog/ and served via the CloudFront CDN: a blog/index.json catalog
+// plus a post.md (and optional narration mp3) per post. Mirrors the research catalog pattern;
+// fetched server-side (SSG/ISR) so the blog stays statically rendered for SEO.
 
-const postsDirectory = path.join(process.cwd(), 'content/blog')
+const BLOG_CATALOG_URL =
+  process.env.NEXT_PUBLIC_BLOG_CATALOG_URL ||
+  'https://assets.robosystems.ai/blog/index.json'
 
 export interface BlogPost {
   slug: string
@@ -14,112 +13,84 @@ export interface BlogPost {
   date: string
   author: string
   excerpt: string
-  content?: string
-  readingTime?: string
-  tags?: string[]
-  featured?: boolean
-  coverImage?: string
-  coverVideo?: string
-  canonicalUrl?: string
   metaDescription?: string
+  tags?: string[]
+  keywords?: string[]
+  readingTime?: string
+  canonicalUrl?: string
+  narrationUrl?: string
+  content?: string // raw markdown body; only populated by getPostBySlug
+}
+
+interface CatalogEntry {
+  slug: string
+  title: string
+  date: string
+  author: string
+  excerpt: string
+  metaDescription?: string
+  tags?: string[]
+  keywords?: string[]
+  reading_time_minutes?: number
+  canonical_url?: string
+  assets?: { body?: string; narration_mp3?: string }
+}
+
+function toPost(e: CatalogEntry): BlogPost {
+  return {
+    slug: e.slug,
+    title: e.title,
+    date: e.date,
+    author: e.author,
+    excerpt: e.excerpt,
+    metaDescription: e.metaDescription,
+    tags: e.tags ?? [],
+    keywords: e.keywords,
+    readingTime: e.reading_time_minutes
+      ? `${e.reading_time_minutes} min read`
+      : undefined,
+    canonicalUrl: e.canonical_url,
+    narrationUrl: e.assets?.narration_mp3,
+  }
+}
+
+async function fetchCatalog(revalidate = 300): Promise<CatalogEntry[]> {
+  const res = await fetch(BLOG_CATALOG_URL, { next: { revalidate } })
+  if (!res.ok) throw new Error(`Blog catalog fetch failed: ${res.status}`)
+  const data = (await res.json()) as { posts?: CatalogEntry[] }
+  return data.posts ?? []
+}
+
+export async function getAllPosts(): Promise<BlogPost[]> {
+  try {
+    const entries = await fetchCatalog()
+    return entries
+      .map(toPost)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  } catch (error) {
+    console.error('Error loading blog catalog:', error)
+    return []
+  }
+}
+
+export async function getPostSlugs(): Promise<string[]> {
+  const posts = await getAllPosts()
+  return posts.map((p) => p.slug)
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
-    const realSlug = slug.replace(/\.md$/, '')
-    const fullPath = path.join(postsDirectory, `${realSlug}.md`)
-    const fileContents = fs.readFileSync(fullPath, 'utf8')
-
-    const { data, content } = matter(fileContents)
-
-    // Process markdown to HTML
-    const processedContent = await remark()
-      .use(remarkGfm)
-      .use(html)
-      .process(content)
-    const contentHtml = processedContent.toString()
-
-    // Calculate reading time
-    const stats = readingTime(content)
-
-    return {
-      slug: realSlug,
-      title: data.title || 'Untitled',
-      date: data.date || new Date().toISOString(),
-      author: data.author || 'RoboSystems Team',
-      excerpt: data.excerpt || content.substring(0, 160) + '...',
-      content: contentHtml,
-      readingTime: stats.text,
-      tags: data.tags || [],
-      featured: data.featured || false,
-      coverImage: data.coverImage || null,
-      coverVideo: data.coverVideo || null,
-      canonicalUrl: data.canonicalUrl || null,
-      metaDescription: data.metaDescription || null,
+    const entries = await fetchCatalog()
+    const entry = entries.find((e) => e.slug === slug)
+    if (!entry) return null
+    const post = toPost(entry)
+    if (entry.assets?.body) {
+      const res = await fetch(entry.assets.body, { next: { revalidate: 300 } })
+      if (res.ok) post.content = await res.text()
     }
+    return post
   } catch (error) {
-    console.error(`Error reading post ${slug}:`, error)
+    console.error(`Error loading post ${slug}:`, error)
     return null
-  }
-}
-
-export function getAllPosts(): BlogPost[] {
-  try {
-    // Create directory if it doesn't exist
-    if (!fs.existsSync(postsDirectory)) {
-      fs.mkdirSync(postsDirectory, { recursive: true })
-      return []
-    }
-
-    const fileNames = fs.readdirSync(postsDirectory)
-    const allPosts = fileNames
-      .filter((fileName) => fileName.endsWith('.md'))
-      .map((fileName) => {
-        const slug = fileName.replace(/\.md$/, '')
-        const fullPath = path.join(postsDirectory, fileName)
-        const fileContents = fs.readFileSync(fullPath, 'utf8')
-        const { data, content } = matter(fileContents)
-
-        // Calculate reading time
-        const stats = readingTime(content)
-
-        return {
-          slug,
-          title: data.title || 'Untitled',
-          date: data.date || new Date().toISOString(),
-          author: data.author || 'RoboSystems Team',
-          excerpt: data.excerpt || content.substring(0, 160) + '...',
-          readingTime: stats.text,
-          tags: data.tags || [],
-          featured: data.featured || false,
-          coverImage: data.coverImage || null,
-          coverVideo: data.coverVideo || null,
-        }
-      })
-
-    // Sort posts by featured first, then by date (newest first)
-    return allPosts.sort((a, b) => {
-      if (a.featured && !b.featured) return -1
-      if (!a.featured && b.featured) return 1
-      return new Date(b.date).getTime() - new Date(a.date).getTime()
-    })
-  } catch (error) {
-    console.error('Error reading posts:', error)
-    return []
-  }
-}
-
-export function getPostSlugs(): string[] {
-  try {
-    if (!fs.existsSync(postsDirectory)) {
-      return []
-    }
-    return fs
-      .readdirSync(postsDirectory)
-      .filter((fileName) => fileName.endsWith('.md'))
-      .map((fileName) => fileName.replace(/\.md$/, ''))
-  } catch (error) {
-    console.error('Error getting post slugs:', error)
-    return []
   }
 }
