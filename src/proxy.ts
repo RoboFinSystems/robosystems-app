@@ -16,10 +16,9 @@ export function proxy(request: NextRequest) {
     request.nextUrl.pathname.startsWith('/schema') ||
     request.nextUrl.pathname.startsWith('/tables')
 
-  // Public S3 bucket serving the research portal's images, video, and audio
+  // CloudFront CDN serving the research/blog portal's images, video, and audio
   // (the catalog + per-report assets produced by robosystems-content-machine).
-  const RESEARCH_ASSETS =
-    'https://robosystems-marketing-assets.s3.amazonaws.com'
+  const RESEARCH_ASSETS = 'https://assets.robosystems.ai'
 
   // Comprehensive CSP configuration for modern web apps
   const cspDirectives = [
