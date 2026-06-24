@@ -74,12 +74,9 @@ export default function Header() {
             >
               Pricing
             </Link>
-            <Link
-              href="/research"
-              className="hover:text-secondary-400 px-3 py-2 text-sm font-medium text-gray-300 transition-colors"
-            >
-              Research
-            </Link>
+            {/* Research is omitted from the desktop top nav to keep the row from
+                crowding/wrapping on lg screens — it's SEO-primary and stays reachable
+                via the mobile menu, the footer, and the sitemap. */}
             <Link
               href="/blog"
               className="hover:text-secondary-400 px-3 py-2 text-sm font-medium text-gray-300 transition-colors"
