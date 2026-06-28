@@ -1,3 +1,4 @@
+import { ResearchJsonLd } from '@/components/research/ResearchJsonLd'
 import {
   ResearchArticle,
   fetchBrief,
@@ -24,9 +25,28 @@ export async function generateMetadata({
   const { ticker } = await params
   const item = await getCoverage(ticker).catch(() => null)
   if (!item) return { title: 'Research | RoboSystems' }
+  const url = `https://robosystems.ai/research/${ticker.toLowerCase()}`
+  const image = item.assets.thumbnail // 1920×1080 CDN PNG — the report thumbnail
   return {
     title: `${item.title} | RoboSystems Research`,
-    description: item.summary?.slice(0, 160),
+    description: item.summary.slice(0, 160),
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'article',
+      url,
+      title: item.title,
+      description: item.summary.slice(0, 200),
+      images: image
+        ? [{ url: image, width: 1920, height: 1080, alt: item.title }]
+        : undefined,
+      publishedTime: item.date,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: item.title,
+      description: item.summary.slice(0, 200),
+      images: image ? [image] : undefined,
+    },
   }
 }
 
@@ -45,6 +65,7 @@ export default async function ResearchTickerPage({
 
   return (
     <div className="dark min-h-screen bg-black text-gray-100">
+      <ResearchJsonLd item={item} />
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <Link
           href="/research"

@@ -1,12 +1,33 @@
+import { BlogListJsonLd } from '@/components/blog/BlogJsonLd'
 import { getAllPosts } from '@/lib/blog'
 import { format } from 'date-fns'
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export const metadata = {
-  title: 'Blog | RoboSystems',
-  description:
-    'Insights on graph databases, AI-powered analytics, and the future of business intelligence',
+const TITLE = 'Blog | RoboSystems'
+const DESCRIPTION =
+  'Insights on graph databases, AI-powered analytics, and the future of business intelligence'
+const URL = 'https://robosystems.ai/blog'
+
+export const metadata: Metadata = {
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: URL },
+  openGraph: {
+    type: 'website',
+    url: URL,
+    siteName: 'RoboSystems',
+    title: TITLE,
+    description: DESCRIPTION,
+    // og:image comes from the generated opengraph-image.tsx in this segment.
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION,
+    // twitter:image comes from the generated twitter-image.tsx in this segment.
+  },
 }
 
 export default async function BlogPage() {
@@ -14,6 +35,7 @@ export default async function BlogPage() {
 
   return (
     <div className="min-h-screen bg-black">
+      <BlogListJsonLd posts={posts} />
       {/* Hero Section with RoboSystems theme */}
       <div className="relative overflow-hidden">
         {/* Animated background matching landing page */}

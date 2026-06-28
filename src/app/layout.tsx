@@ -1,5 +1,6 @@
 import { AuthProvider } from '@/lib/core'
 import { SessionWarningDialog } from '@/lib/core/auth-components/SessionWarningDialog'
+import { organizationJsonLd } from '@/lib/structured-data'
 import { ThemeModeScript } from 'flowbite-react'
 import type { Metadata, Viewport } from 'next'
 import { twMerge } from 'tailwind-merge'
@@ -42,9 +43,9 @@ export const metadata: Metadata = {
       'Unify structured data, document search, and AI memory in one platform. Query knowledge graphs, search SEC filings with hybrid full-text and semantic search, and analyze with AI agents via MCP.',
     images: [
       {
-        url: '/images/logo_black.png',
-        width: 512,
-        height: 512,
+        url: '/images/og-preview.png',
+        width: 1200,
+        height: 630,
         alt: 'RoboSystems - Financial Intelligence Platform',
       },
     ],
@@ -54,8 +55,9 @@ export const metadata: Metadata = {
     title: 'RoboSystems | Financial Intelligence Platform',
     description:
       'Unify structured data, document search, and AI memory in one platform. Hybrid full-text and semantic search across SEC filings, with AI-powered analysis via MCP.',
-    images: ['/images/logo_black.png'],
-    creator: '@robosystems',
+    images: ['/images/og-preview.png'],
+    site: '@robofinsystems',
+    creator: '@robofinsystems',
   },
   robots: {
     index: true,
@@ -68,10 +70,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  icons: {
-    icon: '/images/logos/robosystems.png',
-    apple: '/images/logos/robosystems.png',
-  },
 }
 
 export default function RootLayout({
@@ -83,6 +81,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <ThemeModeScript />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd).replace(/</g, '\\u003c'),
+          }}
+        />
       </head>
       <body
         className={twMerge('bg-zinc-50 font-sans dark:bg-black')}
