@@ -2,6 +2,15 @@ import { getAllPosts } from '@/lib/blog'
 import { getAllCoverage } from '@/lib/core/research'
 import type { MetadataRoute } from 'next'
 
+/** Newest valid date in a list, or `now` when none — keeps hub `lastmod` honest. */
+function latestDate(dates: (string | undefined)[]): Date {
+  const ts = dates
+    .filter((d): d is string => !!d)
+    .map((d) => new Date(d).getTime())
+    .filter((n) => !Number.isNaN(n))
+  return ts.length ? new Date(Math.max(...ts)) : new Date()
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://robosystems.ai'
 
@@ -32,13 +41,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${baseUrl}/blog`,
-      lastModified: new Date(),
+      lastModified: latestDate(posts.map((p) => p.date)),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/research`,
-      lastModified: new Date(),
+      lastModified: latestDate(coverage.map((c) => c.date)),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
