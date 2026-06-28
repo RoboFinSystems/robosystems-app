@@ -1,3 +1,4 @@
+import { BlogJsonLd } from '@/components/blog/BlogJsonLd'
 import { getAllPosts, getPostBySlug, getPostSlugs } from '@/lib/blog'
 import { format } from 'date-fns'
 import Link from 'next/link'
@@ -28,16 +29,17 @@ export async function generateMetadata({
     }
   }
 
+  const url = `https://robosystems.ai/blog/${slug}`
   return {
     title: `${post.title} | RoboSystems Blog`,
     description: post.metaDescription || post.excerpt,
-    ...(post.canonicalUrl && {
-      alternates: { canonical: post.canonicalUrl },
-    }),
+    // Self-referencing canonical, unless the post declares an external one (syndication).
+    alternates: { canonical: post.canonicalUrl || url },
     openGraph: {
       title: post.title,
       description: post.metaDescription || post.excerpt,
       type: 'article',
+      url,
       publishedTime: post.date,
       authors: [post.author],
       images: [DEFAULT_OG_IMAGE],
@@ -67,40 +69,9 @@ export default async function BlogPostPage({
   const allPosts = await getAllPosts()
   const morePosts = allPosts.filter((p) => p.slug !== post.slug).slice(0, 3)
 
-  // JSON-LD structured data for SEO
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: post.title,
-    description: post.excerpt,
-    author: {
-      '@type': 'Person',
-      name: post.author,
-    },
-    datePublished: post.date,
-    dateModified: post.date,
-    publisher: {
-      '@type': 'Organization',
-      name: 'RoboSystems',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://robosystems.ai/images/logo_black.png',
-      },
-    },
-    mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': `https://robosystems.ai/blog/${post.slug}`,
-    },
-    image: DEFAULT_OG_IMAGE,
-    keywords: (post.keywords || post.tags)?.join(', '),
-  }
-
   return (
     <article className="min-h-screen bg-black">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <BlogJsonLd post={post} />
       {/* Hero Section with RoboSystems theme */}
       <div className="relative overflow-hidden">
         {/* Animated background matching landing page */}
