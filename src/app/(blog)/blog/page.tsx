@@ -9,7 +9,6 @@ const TITLE = 'Blog | RoboSystems'
 const DESCRIPTION =
   'Insights on graph databases, AI-powered analytics, and the future of business intelligence'
 const URL = 'https://robosystems.ai/blog'
-const OG_IMAGE = 'https://robosystems.ai/images/logo_black.png'
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -21,13 +20,13 @@ export const metadata: Metadata = {
     siteName: 'RoboSystems',
     title: TITLE,
     description: DESCRIPTION,
-    images: [OG_IMAGE],
+    // og:image comes from the generated opengraph-image.tsx in this segment.
   },
   twitter: {
     card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
-    images: [OG_IMAGE],
+    // twitter:image comes from the generated twitter-image.tsx in this segment.
   },
 }
 

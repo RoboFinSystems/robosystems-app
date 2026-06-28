@@ -6,8 +6,6 @@ import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-const DEFAULT_OG_IMAGE = 'https://robosystems.ai/images/logo_black.png'
-
 export async function generateStaticParams() {
   const slugs = await getPostSlugs()
   return slugs.map((slug) => ({
@@ -42,13 +40,13 @@ export async function generateMetadata({
       url,
       publishedTime: post.date,
       authors: [post.author],
-      images: [DEFAULT_OG_IMAGE],
+      // og:image comes from the generated opengraph-image.tsx in this segment.
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: post.metaDescription || post.excerpt,
-      images: [DEFAULT_OG_IMAGE],
+      // twitter:image comes from the generated twitter-image.tsx in this segment.
     },
   }
 }
