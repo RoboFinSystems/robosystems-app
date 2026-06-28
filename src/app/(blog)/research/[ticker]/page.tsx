@@ -1,6 +1,6 @@
+import { ResearchJsonLd } from '@/components/research/ResearchJsonLd'
 import {
   ResearchArticle,
-  ResearchJsonLd,
   fetchBrief,
   getCoverage,
   getCoverageTickers,

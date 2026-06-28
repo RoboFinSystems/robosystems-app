@@ -1,13 +1,14 @@
-// Schema.org JSON-LD for the research portal. Server component — emits one or more
+// Schema.org JSON-LD for the public research portal. Server component — emits one or more
 // <script type="application/ld+json"> blocks derived entirely from the CoverageItem the
 // catalog already gives us (no extra fetches). Makes ticker pages eligible for Article,
 // Video, Podcast, and Breadcrumb rich results, and the index page for an ItemList carousel.
 //
-// `baseUrl`/`organization` are props (not hardcoded) so this stays portable across the apps
-// that share this subtree; robosystems-app passes its public origin.
+// App-local on purpose (not in the shared src/lib/core/research subtree): JSON-LD only helps
+// when a crawler can read the page, and roboinvestor-app's research portal is behind an auth
+// wall — so this is SEO scaffolding for robosystems-app's public portal only. The shared
+// data layer + display components still live in core; this consumes their types.
 
-import { youtubeId } from './catalog'
-import type { CoverageItem } from './types'
+import { youtubeId, type CoverageItem } from '@/lib/core/research'
 
 type Organization = { name: string; url: string; logo: string }
 

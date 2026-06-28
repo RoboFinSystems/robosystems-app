@@ -1,8 +1,5 @@
-import {
-  CoverageGrid,
-  ResearchListJsonLd,
-  getAllCoverage,
-} from '@/lib/core/research'
+import { ResearchListJsonLd } from '@/components/research/ResearchJsonLd'
+import { CoverageGrid, getAllCoverage } from '@/lib/core/research'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
