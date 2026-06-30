@@ -1,8 +1,14 @@
-# Building with @robosystems/core
+# Building with RoboSystems (core + app surface)
 
-`@robosystems/core` is the shared React design system for the RoboSystems family of
-apps (a knowledge-graph / financial-data SaaS). It is built on **Flowbite React** +
-**Tailwind CSS v4**. Components are exported from `window.RobosystemsCore.*`.
+This project is **RoboSystems' canonical design system**: the shared `@robosystems/core`
+React component library (buttons, modals, forms, layout, chat, …) **plus** robosystems-app's
+own **landing / brand surface** — the composed marketing sections unique to RoboSystems. Both
+are exported from `window.RobosystemsCore.*`; the Design System pane groups core under
+`ui-components` / `forms` / `layout` / `chat` / … and the app sections under **`landing`**.
+
+It is built on **Flowbite React** + **Tailwind CSS v4**, brand color **blue** (RoboSystems —
+the sibling apps recolor the same core: RoboLedger violet, RoboInvestor emerald). Use core
+primitives to build screens; use the `landing` sections when composing the marketing surface.
 
 ## Setup & wrapping
 
@@ -17,6 +23,32 @@ default — you do not import them.
 (A few data/auth components — providers, selectors, auth forms — read React context
 or fetch data and aren't meant for static composition; the presentational set below
 is what you build screens from.)
+
+## App landing surface (group `landing`)
+
+robosystems-app's own marketing sections — composed, full-bleed, **dark by default** (they
+paint their own near-black backgrounds and lean on layered blue gradients + the floating-blob
+motion system). Most take **no props** — drop them in and they fill the width.
+
+| Component (group `landing`)                    | What it is                                                          |
+| ---------------------------------------------- | ------------------------------------------------------------------- |
+| `HeroSection`                                  | "Financial Data, Finally Connected" — gradient hero + feature tiles |
+| `Header`                                       | Fixed top nav — RoboSystems logo/wordmark, section links, sign-in   |
+| `Footer`                                       | Site footer — product / applications columns, social, legal         |
+| `FeaturesGrid`                                 | Platform capability grid                                            |
+| `ApplicationsSection`                          | "Applications Powered by RoboSystems" — RoboLedger/RoboInvestor     |
+| `SECRepositorySection`                         | SEC-repository / equity-research pitch                              |
+| `IntegrationsSection`                          | "Connect & Extend" — official + build-your-own integrations         |
+| `OpenSourceSection`                            | "Open Source Foundation" — self-host + why-open-source              |
+| `ProductOverview`                              | Product overview band                                               |
+| `FinalCTA`                                     | Closing call-to-action band                                         |
+| `ContactForm`                                  | Name / email / company / message form                               |
+| `ContactModal`                                 | The contact form in a modal (`isOpen`, `onClose`, `title`, …)       |
+| `FloatingElements` / `FloatingElementsVariant` | Ambient brand-motion blobs (`variant`) behind sections              |
+
+`ContactModal` takes `isOpen` / `onClose` / `title` / `description` / `formType`;
+`FloatingElementsVariant` takes a `variant` (`hero`, `features`, `sec-repository`, …). The rest
+render standalone.
 
 ## Styling idiom — Tailwind utilities, brand palette
 
