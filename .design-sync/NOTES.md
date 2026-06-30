@@ -114,7 +114,20 @@ node .design-sync/compile-css.mjs src/app/globals.css src/lib/core/.ds-compiled.
 node .ds-sync/package-build.mjs --config .design-sync/config.json --node-modules ./node_modules --out ./ds-bundle
 node .design-sync/patch-bundle.mjs ./ds-bundle    # <-- do NOT skip
 node .ds-sync/package-validate.mjs ./ds-bundle
+node .design-sync/gen-manifest.mjs ./ds-bundle    # <-- do NOT skip (card index)
 ```
+
+**`_ds_manifest.json` (the pane's card index) MUST be generated and uploaded.**
+package-build does not emit it; the claude.ai/design app's server-side self-check
+normally rebuilds it, but that self-check does NOT fire on raw DesignSync file
+uploads (confirmed 2026-06-29 — `_ds_needs_recompile` left in the remote listing
+means it never ran). So a CLI sync leaves the OLD manifest in place: newly added
+components (e.g. the merged `landing` group) never appear in the pane, and any
+removed ones read "file not found". Run `gen-manifest.mjs` (derives namespace +
+components from the `_ds_bundle.js` header, cards from each HTML's `@dsCard` marker,
+tokens from `_ds_bundle.css`, fonts from `fonts.css`) and include `_ds_manifest.json`
+in the upload set. Verify with `get_file _ds_manifest.json` — it must list all 70
+components incl. the `landing` group.
 
 `preview-rebuild.mjs` does NOT touch `_ds_bundle.js`, so the shim survives subagent
 preview rebuilds — only full `package-build.mjs` / the `resync.mjs` driver overwrite
@@ -222,4 +235,4 @@ changed — they now come from real `.d.ts` instead of `[key:string]: unknown` s
   are dropped — the upload deletes their old paths.
 - `eslint.config.js` ignores `src/lib/core/dist/` (the generated `.d.ts`).
 
-Full run order: `build:types` → `compile-css.mjs` → `package-build.mjs` → `patch-bundle.mjs` → `package-validate.mjs`.
+Full run order: `build:types` → `compile-css.mjs` → `package-build.mjs` → `patch-bundle.mjs` → `package-validate.mjs` → `gen-manifest.mjs` (then upload `_ds_manifest.json`).
