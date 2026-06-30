@@ -4,10 +4,11 @@
   "projectId": "f0e9916d-a879-4682-8a7c-c5b9b8f72adc",
   "shape": "package",
   "srcDir": ".",
-  "tsconfig": "tsconfig.json",
+  "tsconfig": "../../../.design-sync/tsconfig.json",
   "cssEntry": ".ds-compiled.css",
   "readmeHeader": ".design-sync/conventions.md",
   "extraFonts": ["../../../.design-sync/ds-fonts.css"],
+  "extraEntries": ["../../../.design-sync/landing-entry.ts"],
   "runtimeFontPrefixes": ["JetBrains"],
   "componentSrcMap": {
     "SupportModal": null,
@@ -21,9 +22,27 @@
     "SSEClient": null,
     "AnimatedLogo": "ui-components/Logo.tsx",
     "LogoBadge": "ui-components/Logo.tsx",
-    "ProgressiveText": "components/console/ProgressiveText.tsx"
+    "ProgressiveText": "components/console/ProgressiveText.tsx",
+    "ApplicationsSection": "../../../src/components/landing/ApplicationsSection.tsx",
+    "ContactForm": "../../../src/components/landing/ContactForm.tsx",
+    "ContactModal": "../../../src/components/landing/ContactModal.tsx",
+    "FeaturesGrid": "../../../src/components/landing/FeaturesGrid.tsx",
+    "FinalCTA": "../../../src/components/landing/FinalCTA.tsx",
+    "FloatingElements": "../../../src/components/landing/FloatingElements.tsx",
+    "FloatingElementsVariant": "../../../src/components/landing/FloatingElementsVariant.tsx",
+    "Footer": "../../../src/components/landing/Footer.tsx",
+    "Header": "../../../src/components/landing/Header.tsx",
+    "HeroSection": "../../../src/components/landing/HeroSection.tsx",
+    "IntegrationsSection": "../../../src/components/landing/IntegrationsSection.tsx",
+    "OpenSourceSection": "../../../src/components/landing/OpenSourceSection.tsx",
+    "ProductOverview": "../../../src/components/landing/ProductOverview.tsx",
+    "SECRepositorySection": "../../../src/components/landing/SECRepositorySection.tsx"
   },
   "overrides": {
-    "ConfirmModal": { "cardMode": "single", "viewport": "560x440" }
+    "ConfirmModal": { "cardMode": "single", "viewport": "560x440" },
+    "ContactModal": { "cardMode": "single", "viewport": "640x600" },
+    "HeroSection": { "viewport": "1280x1000" },
+    "Header": { "cardMode": "single", "viewport": "1280x200" },
+    "FloatingElementsVariant": { "viewport": "960x460" }
   }
 }

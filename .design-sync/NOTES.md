@@ -1,9 +1,69 @@
-# design-sync NOTES — @robosystems/core
+# design-sync NOTES — RoboSystems (core + app landing surface)
 
 This repo is a **Next.js app**, not a published component library. The "design system"
 is the shared subtree at `src/lib/core/` (`@robosystems/core`), consumed as source —
 **no `dist/`, never installed into `node_modules`**. The sync therefore runs the
 package shape in **synth-entry mode**. Read this before any re-sync.
+
+This project's design project (`f0e9…`) is the **canonical home of BOTH** `@robosystems/core`
+(55 components) **and** robosystems-app's own landing surface (`src/components/landing/`, 14
+sections) — they ship in one bundle on `window.RobosystemsCore.*`. This is the inverse of
+roboinvestor-app, which _refocused_ its project to its own landing only and dropped core (a
+consumer); robosystems-app owns core, so its project keeps core and adds the app surface on top.
+
+## Merged landing surface — how it's wired (added 2026-06-29)
+
+Core's synth-entry + `build:types` path below is **unchanged**; landing is layered on via two
+seams, so a single build emits all ~70 components:
+
+- **`cfg.extraEntries: ["../../../.design-sync/landing-entry.ts"]`** — a barrel that re-exports
+  each landing **default** export as a named export (defaults are skipped by `export *`).
+  package-build merges it into the runtime global (`.bundle-entry.mjs`). Gives the 14 sections
+  **runtime availability** (the cards render). Bounded to the git repo root, so it reaches
+  `src/components/landing` even though `PKG_DIR` is `src/lib/core` (hence the `../../../`).
+- **`cfg.componentSrcMap`** + 14 landing pins (`"HeroSection":
+"../../../src/components/landing/HeroSection.tsx"`, …). Non-null pins _add_ a component to the
+  card list and resolve its src path relative to `PKG_DIR`; the group derives from the path →
+  group **`landing`**. Pins make the **cards**; the barrel makes them **render**.
+- **`cfg.tsconfig: "../../../.design-sync/tsconfig.json"`** (was core's `tsconfig.json`). One
+  app-rooted tsconfig serves both: core uses only relative + bare-pkg imports (its own `@/*` is
+  unused), landing uses `@/lib/core*` / `@/lib/config/*` / `next/*`. It defines `@/*` → `src/*`,
+  an exact-match for the `@/lib/core` barrel, and the two shims below. **Keep it clean JSON — no
+  `//` comment keys** (the engine's comment-stripper mangles them).
+
+### `[EXPORT_COLLISION]` on landing-entry.ts is BENIGN — do NOT "rename"
+
+Build prints `! [EXPORT_COLLISION] landing-entry.ts exports 14 name(s) the main package also
+exports`. False positive: the 14 names are in the barrel **and** in the pin-augmented `exported`
+set (pins add them), so the gate sees them "twice." It only **warns**, never drops. Runtime
+truth: validate reports `window.RobosystemsCore: 91 exports (70 fn)` — all 14 are bound. The
+`__dsMainNs` Object.assign that "wins collisions" carries only the synth-main (core) namespace,
+which has **no** landing keys, so it can't clobber them. Ignore the warning.
+
+### `next/navigation` shim (required for HeroSection)
+
+`HeroSection` calls `useSearchParams()`; in the static bundle there's no App Router context, so
+it returns null and its `openContact` effect throws → blank card (`✗ [RENDER] root empty`).
+`.design-sync/shims/next-navigation.tsx` returns a real empty `URLSearchParams` + no-op
+`useRouter`/`usePathname` (aliased in the tsconfig). Core uses only `useRouter`/`usePathname`
+(in handlers) → the shim is a safe superset; re-validate confirmed core's cards unchanged.
+`next/image` is shimmed for the same render-time reason (only `HeroSection` imports it).
+
+### Landing previews / overrides
+
+4 authored previews (`.design-sync/previews/`): `HeroSection` (tall, `1280x1000`), `Header`
+(`fixed` → black-backdrop wrap, single `1280x200`), `ContactModal` (Modal portal → single
+`640x600`; trips a **benign** `[RENDER_THIN]` 0px like core's `ConfirmModal` — the dialog
+paints), `FloatingElementsVariant` (`hero` + `features` variants in a framed parent,
+`960x460`). The other 10 sections render their real UI from the floor card — author nicer demos
+incrementally. CSS needs nothing new: the `./src/**` tailwind content glob already covers
+`src/components/landing`, and the safelist ships the full brand palette.
+
+### Deferred (Phase 2)
+
+App-distinctive _views_ (`platform/`, `research/`, `blog/`, `graphs/`, `open-source/`) need
+provider/data mocking (graph/entity/SSO contexts) → not in the barrel/pins yet. Add a
+`cfg.provider` wrapper + barrel/pin entries when featuring them.
 
 ## Build setup (how the bundle is produced)
 
