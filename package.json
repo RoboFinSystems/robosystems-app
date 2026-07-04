@@ -60,6 +60,7 @@
   },
   "overrides": {
     "dompurify": "^3.3.0",
+    "undici": "^8.5.0",
     "next": {
       "postcss": "^8.5.10"
     }
