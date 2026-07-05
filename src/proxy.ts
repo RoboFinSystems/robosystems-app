@@ -10,13 +10,6 @@ export function proxy(request: NextRequest) {
     request.nextUrl.hostname === 'localhost' ||
     request.nextUrl.hostname === '127.0.0.1'
 
-  // Check if this is a route using Monaco Editor. Keep this in sync with the
-  // routes that mount `@monaco-editor/react`: /schema, /tables, /documents.
-  const isMonacoRoute =
-    request.nextUrl.pathname.startsWith('/schema') ||
-    request.nextUrl.pathname.startsWith('/tables') ||
-    request.nextUrl.pathname.startsWith('/documents')
-
   // CloudFront CDN serving the research/blog portal's images, video, and audio
   // (the catalog + per-report assets produced by robosystems-content-machine).
   const RESEARCH_ASSETS = 'https://assets.robosystems.ai'
@@ -66,14 +59,19 @@ export function proxy(request: NextRequest) {
         'https://www.google-analytics.com https://analytics.google.com ' +
         'https://region1.google-analytics.com https://www.googletagmanager.com ' +
         'https://tagmanager.google.com wss://ws-us3.pusher.com https://sockjs-us3.pusher.com ' +
-        (isMonacoRoute ? 'https://cdn.jsdelivr.net ' : '')
+        // Monaco Editor loads its AMD loader, workers, and source maps from
+        // jsdelivr. Allow it on every route, not per-route: the CSP is fixed at
+        // the initial document load and persists across client-side navigation,
+        // so a route-gated allowance never applies once you navigate into the
+        // editor. script-src already trusts jsdelivr app-wide.
+        'https://cdn.jsdelivr.net'
       : "connect-src 'self' " +
         'https://api.robosystems.ai https://staging.api.robosystems.ai ' +
         'https://cloudflareinsights.com https://static.cloudflareinsights.com ' +
         'https://www.google-analytics.com https://analytics.google.com ' +
         'https://region1.google-analytics.com https://www.googletagmanager.com ' +
         'https://tagmanager.google.com wss://ws-us3.pusher.com https://sockjs-us3.pusher.com ' +
-        (isMonacoRoute ? 'https://cdn.jsdelivr.net ' : ''),
+        'https://cdn.jsdelivr.net',
 
     // Frame sources - Allow Cloudflare CAPTCHA and common embeds
     "frame-src 'self' " +
