@@ -995,7 +995,7 @@ function SubscriptionsTab({
             >
               {upgrading ? (
                 <div className="flex items-center gap-2">
-                  <Spinner size="sm" />
+                  <Spinner size="sm" className="text-white" />
                   <span>Processing...</span>
                 </div>
               ) : (

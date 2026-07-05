@@ -510,7 +510,7 @@ export function DocumentsPageContent() {
                   >
                     {saving ? (
                       <>
-                        <Spinner size="sm" className="mr-2" />
+                        <Spinner size="sm" className="mr-2 text-white" />
                         Saving...
                       </>
                     ) : (

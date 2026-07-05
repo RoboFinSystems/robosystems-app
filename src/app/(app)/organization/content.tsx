@@ -285,7 +285,7 @@ export function OrganizationContent() {
                   disabled={!editedName.trim() || updatingName}
                 >
                   {updatingName ? (
-                    <Spinner size="sm" />
+                    <Spinner size="sm" className="text-white" />
                   ) : (
                     <HiCheck className="h-4 w-4" />
                   )}

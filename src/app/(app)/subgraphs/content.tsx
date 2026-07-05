@@ -317,7 +317,7 @@ export function SubgraphsContent() {
                             className="px-3 transition-all hover:scale-110"
                           >
                             {backingUpId === subgraph.graph_id ? (
-                              <Spinner size="sm" />
+                              <Spinner size="sm" className="text-white" />
                             ) : (
                               <HiDatabase className="h-5 w-5" />
                             )}
@@ -408,7 +408,7 @@ export function SubgraphsContent() {
                       className="px-4 transition-all hover:scale-110"
                     >
                       {backingUpId === subgraph.graph_id ? (
-                        <Spinner size="sm" />
+                        <Spinner size="sm" className="text-white" />
                       ) : (
                         <HiDatabase className="h-5 w-5" />
                       )}
