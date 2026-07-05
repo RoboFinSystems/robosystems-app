@@ -10,11 +10,12 @@ export function proxy(request: NextRequest) {
     request.nextUrl.hostname === 'localhost' ||
     request.nextUrl.hostname === '127.0.0.1'
 
-  // Check if this is a route using Monaco Editor
+  // Check if this is a route using Monaco Editor. Keep this in sync with the
+  // routes that mount `@monaco-editor/react`: /schema, /tables, /documents.
   const isMonacoRoute =
-    request.nextUrl.pathname.startsWith('/query') ||
     request.nextUrl.pathname.startsWith('/schema') ||
-    request.nextUrl.pathname.startsWith('/tables')
+    request.nextUrl.pathname.startsWith('/tables') ||
+    request.nextUrl.pathname.startsWith('/documents')
 
   // CloudFront CDN serving the research/blog portal's images, video, and audio
   // (the catalog + per-report assets produced by robosystems-content-machine).

@@ -758,7 +758,7 @@ export default function BackupManagementContent() {
             {createOperationMonitor.isMonitoring &&
             createOperationMonitor.progress !== 100 ? (
               <>
-                <Spinner size="sm" className="mr-2" />
+                <Spinner size="sm" className="mr-2 text-white" />
                 Creating...
               </>
             ) : (
@@ -866,7 +866,7 @@ export default function BackupManagementContent() {
             {restoreOperationMonitor.isMonitoring &&
             restoreOperationMonitor.progress !== 100 ? (
               <>
-                <Spinner size="sm" className="mr-2" />
+                <Spinner size="sm" className="mr-2 text-white" />
                 Restoring...
               </>
             ) : (

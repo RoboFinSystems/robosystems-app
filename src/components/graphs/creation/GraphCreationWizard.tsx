@@ -481,7 +481,7 @@ export function GraphCreationWizard({
               >
                 {graphCreation.isLoading ? (
                   <>
-                    <Spinner size="sm" className="mr-2" />
+                    <Spinner size="sm" className="mr-2 text-white" />
                     Creating...
                   </>
                 ) : (

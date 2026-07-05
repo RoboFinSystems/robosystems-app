@@ -211,7 +211,7 @@ function ResetPasswordContent() {
               disabled={loading}
               className="group relative flex w-full justify-center rounded-md bg-white px-4 py-3 text-sm font-semibold text-black hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white focus-visible:outline-solid disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {loading && <Spinner size="sm" className="mr-2 border-black" />}
+              {loading && <Spinner size="sm" className="mr-2 text-black" />}
               {loading ? 'Resetting...' : 'Reset password'}
             </button>
           </div>
