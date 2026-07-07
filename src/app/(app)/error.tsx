@@ -1,5 +1,6 @@
 'use client'
 
+import { customTheme } from '@/lib/core/theme'
 import { Button } from 'flowbite-react'
 import Image from 'next/image'
 import { useEffect } from 'react'
@@ -52,12 +53,22 @@ export default function Error({
         )}
 
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Button color="primary" onClick={reset} className="inline-flex p-px">
+          <Button
+            theme={customTheme.button}
+            color="primary"
+            onClick={reset}
+            className="inline-flex p-px"
+          >
             <div className="mr-1 flex items-center gap-x-2">
               <HiRefresh className="text-xl" /> Try Again
             </div>
           </Button>
-          <Button color="gray" href="/home" className="inline-flex p-px">
+          <Button
+            theme={customTheme.button}
+            color="gray"
+            href="/home"
+            className="inline-flex p-px"
+          >
             <div className="mr-1 flex items-center gap-x-2">
               <HiChevronLeft className="text-xl" /> Go Home
             </div>
