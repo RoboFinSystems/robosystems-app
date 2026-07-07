@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  customTheme,
-  PageHeader,
-  PageLayout,
-  StatCard,
-  useGraphContext,
-} from '@/lib/core'
+import { PageHeader, PageLayout, StatCard, useGraphContext } from '@/lib/core'
 import Editor from '@monaco-editor/react'
 import * as SDK from '@robosystems/client'
 import { Alert, Badge, Card, Tabs, TextInput } from 'flowbite-react'
@@ -280,7 +274,7 @@ export function SchemaEditorContent() {
       </div>
 
       {/* Search Bar */}
-      <Card theme={customTheme.card}>
+      <Card>
         <div className="flex items-center gap-4">
           <div className="flex-1">
             <TextInput
@@ -297,7 +291,6 @@ export function SchemaEditorContent() {
       {/* Schema Viewer Tabs */}
       <Tabs
         aria-label="Schema tabs"
-        theme={customTheme.tabs}
         variant="underline"
         onActiveTabChange={(tab: number) =>
           setActiveTab(tab === 0 ? 'visual' : 'raw')
@@ -310,7 +303,7 @@ export function SchemaEditorContent() {
         >
           <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
             {/* Node Labels */}
-            <Card theme={customTheme.card}>
+            <Card>
               <div className="mb-4">
                 <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
                   Node Labels
@@ -390,7 +383,7 @@ export function SchemaEditorContent() {
             </Card>
 
             {/* Relationship Types */}
-            <Card theme={customTheme.card}>
+            <Card>
               <div className="mb-4">
                 <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
                   Relationship Types
@@ -494,7 +487,7 @@ export function SchemaEditorContent() {
 
             {/* Constraints */}
             {constraints.length > 0 && (
-              <Card theme={customTheme.card}>
+              <Card>
                 <div className="mb-4">
                   <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
                     Constraints
@@ -525,7 +518,7 @@ export function SchemaEditorContent() {
 
             {/* Indexes */}
             {indexes.length > 0 && (
-              <Card theme={customTheme.card}>
+              <Card>
                 <div className="mb-4">
                   <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
                     Indexes
@@ -571,7 +564,7 @@ export function SchemaEditorContent() {
           title="Export Schema"
           icon={HiDocumentAdd}
         >
-          <Card theme={customTheme.card}>
+          <Card>
             <div className="mb-4">
               <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
                 Export Schema

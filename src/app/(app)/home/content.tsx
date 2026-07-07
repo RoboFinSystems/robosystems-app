@@ -1,7 +1,6 @@
 'use client'
 
 import {
-  customTheme,
   LoadingState,
   PageHeader,
   PageLayout,
@@ -132,7 +131,7 @@ export default function AllGraphsHomePage() {
       {graphs.length > 0 ? (
         <div className="space-y-4">
           {/* Desktop Table View */}
-          <Card theme={customTheme.card} className="hidden md:block">
+          <Card className="hidden md:block">
             <div className="w-full">
               <Table>
                 <TableHead>
@@ -259,7 +258,6 @@ export default function AllGraphsHomePage() {
               return (
                 <Card
                   key={graph.graphId}
-                  theme={customTheme.card}
                   className={`p-4 ${
                     isActive
                       ? 'bg-primary-50 ring-primary-500 dark:bg-primary-900/20 dark:ring-primary-400 ring-2 ring-inset'
@@ -360,7 +358,7 @@ export default function AllGraphsHomePage() {
         </div>
       ) : (
         <div className="space-y-6">
-          <Card theme={customTheme.card}>
+          <Card>
             <div className="py-12 text-center">
               <HiDatabase className="mx-auto h-12 w-12 text-gray-400" />
               <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -376,10 +374,7 @@ export default function AllGraphsHomePage() {
           {/* Getting Started Options */}
           <div className="grid gap-6 md:grid-cols-2">
             {/* Create Graph Card */}
-            <Card
-              theme={customTheme.card}
-              className="transition-shadow hover:shadow-lg"
-            >
+            <Card className="transition-shadow hover:shadow-lg">
               <div className="space-y-4 p-6">
                 <div className="flex items-center gap-3">
                   <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-3">
@@ -419,10 +414,7 @@ export default function AllGraphsHomePage() {
             </Card>
 
             {/* Subscribe to Repository Card */}
-            <Card
-              theme={customTheme.card}
-              className="transition-shadow hover:shadow-lg"
-            >
+            <Card className="transition-shadow hover:shadow-lg">
               <div className="space-y-4 p-6">
                 <div className="flex items-center gap-3">
                   <div className="bg-secondary-100 dark:bg-secondary-900 rounded-lg p-3">

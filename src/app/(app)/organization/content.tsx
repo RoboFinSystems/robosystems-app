@@ -2,7 +2,6 @@
 
 import GraphLimitModal from '@/components/app/GraphLimitModal'
 import {
-  customTheme,
   EmptyState,
   PageHeader,
   PageLayout,
@@ -267,7 +266,7 @@ export function OrganizationContent() {
       />
 
       {/* Organization Info */}
-      <Card theme={customTheme.card}>
+      <Card>
         <div className="flex items-start justify-between">
           <div className="flex-1">
             {isEditingName ? (
@@ -336,7 +335,6 @@ export function OrganizationContent() {
       {/* Tabs */}
       <Tabs
         aria-label="Organization tabs"
-        theme={customTheme.tabs}
         variant="underline"
         onActiveTabChange={(tab) => setActiveTab(tab)}
       >
@@ -376,7 +374,7 @@ export function OrganizationContent() {
 
               {/* Graph Limits & Quotas */}
               {limits && (
-                <Card theme={customTheme.card}>
+                <Card>
                   <h2 className="font-heading text-xl font-semibold text-gray-900 dark:text-white">
                     Graph Limits & Quotas
                   </h2>
@@ -493,7 +491,7 @@ export function OrganizationContent() {
               )}
 
               {/* Organization Graphs */}
-              <Card theme={customTheme.card}>
+              <Card>
                 <h2 className="font-heading text-xl font-semibold text-gray-900 dark:text-white">
                   Organization Graphs
                 </h2>
@@ -540,7 +538,7 @@ export function OrganizationContent() {
 
         {/* Members Tab */}
         <Tabs.Item title="Members" icon={HiUsers}>
-          <Card theme={customTheme.card}>
+          <Card>
             <div className="flex items-center justify-between">
               <h2 className="font-heading text-xl font-semibold text-gray-900 dark:text-white">
                 Team Members
@@ -620,7 +618,6 @@ export function OrganizationContent() {
                       )}
                       {canRemove && member.role !== 'owner' && (
                         <Button
-                          theme={customTheme.button}
                           size="xs"
                           color="failure"
                           onClick={() =>
@@ -650,7 +647,6 @@ export function OrganizationContent() {
         show={showInviteModal}
         onClose={() => setShowInviteModal(false)}
         size="md"
-        theme={customTheme.modal}
       >
         <ModalHeader>Invite Team Member</ModalHeader>
         <ModalBody>

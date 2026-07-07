@@ -1,7 +1,6 @@
 'use client'
 
 import {
-  customTheme,
   PageHeader,
   PageLayout,
   useGraphContext,
@@ -156,7 +155,7 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
       />
 
       {/* What's Included */}
-      <Card theme={customTheme.card}>
+      <Card>
         <div className="space-y-4">
           <h2 className="font-heading text-xl font-bold text-zinc-900 dark:text-zinc-100">
             What's Included
@@ -217,7 +216,7 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
       </Card>
 
       {/* Quick Actions */}
-      <Card theme={customTheme.card}>
+      <Card>
         <div className="space-y-4">
           <h3 className="font-heading text-lg font-semibold text-zinc-900 dark:text-zinc-100">
             Quick Start
@@ -278,7 +277,7 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
       </Card>
 
       {/* Access via Console */}
-      <Card theme={customTheme.card} id="console-access">
+      <Card id="console-access">
         <div className="space-y-4">
           <div className="flex items-start gap-3">
             <div className="bg-secondary-100 dark:bg-secondary-900/30 rounded-lg p-2">
@@ -336,7 +335,7 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
       </Card>
 
       {/* Programmatic Access & Code Examples */}
-      <Card theme={customTheme.card} id="api-access" ref={codeExamplesRef}>
+      <Card id="api-access" ref={codeExamplesRef}>
         <div className="space-y-4">
           <div className="flex items-start gap-3">
             <div className="bg-primary-100 dark:bg-primary-900/30 rounded-lg p-2">

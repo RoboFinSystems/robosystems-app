@@ -1,7 +1,6 @@
 'use client'
 
 import {
-  customTheme,
   LoadingState,
   PageHeader,
   PageLayout,
@@ -200,7 +199,7 @@ export function GraphDashboardContent() {
       )}
 
       {/* Basic Information */}
-      <Card theme={customTheme.card}>
+      <Card>
         <h3 className="font-heading mb-4 text-lg font-semibold text-gray-900 dark:text-white">
           {isRepository ? 'Repository' : 'Graph'} Information
         </h3>
