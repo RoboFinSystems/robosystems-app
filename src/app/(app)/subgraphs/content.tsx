@@ -2,7 +2,6 @@
 
 import {
   ConfirmModal,
-  customTheme,
   EmptyState,
   LoadingState,
   PageHeader,
@@ -249,7 +248,7 @@ export function SubgraphsContent() {
       {subgraphs.length > 0 ? (
         <div className="space-y-4">
           {/* Desktop Table View */}
-          <Card theme={customTheme.card} className="hidden md:block">
+          <Card className="hidden md:block">
             <div className="w-full">
               <Table>
                 <TableHead>
@@ -323,7 +322,6 @@ export function SubgraphsContent() {
                             )}
                           </Button>
                           <Button
-                            theme={customTheme.button}
                             size="sm"
                             color="failure"
                             onClick={() => handleDeleteClick(subgraph)}
@@ -343,11 +341,7 @@ export function SubgraphsContent() {
           {/* Mobile Card View */}
           <div className="space-y-4 md:hidden">
             {subgraphs.map((subgraph) => (
-              <Card
-                key={subgraph.graph_id}
-                theme={customTheme.card}
-                className="p-4"
-              >
+              <Card key={subgraph.graph_id} className="p-4">
                 <div className="space-y-3">
                   {/* Header with name */}
                   <div className="flex items-start justify-between">
@@ -415,7 +409,6 @@ export function SubgraphsContent() {
                       )}
                     </Button>
                     <Button
-                      theme={customTheme.button}
                       size="sm"
                       color="failure"
                       onClick={() => handleDeleteClick(subgraph)}
@@ -430,7 +423,7 @@ export function SubgraphsContent() {
           </div>
         </div>
       ) : (
-        <Card theme={customTheme.card}>
+        <Card>
           <EmptyState
             icon={HiChip}
             title="No subgraphs found"

@@ -1,7 +1,6 @@
 'use client'
 
 import {
-  customTheme,
   EmptyState,
   LoadingState,
   PageHeader,
@@ -406,7 +405,7 @@ export default function BackupManagementContent() {
   if (!selectedGraphId) {
     return (
       <PageLayout>
-        <Card theme={customTheme.card}>
+        <Card>
           <EmptyState
             icon={HiDatabase}
             title="No graph selected"
@@ -420,7 +419,7 @@ export default function BackupManagementContent() {
   if (error) {
     return (
       <PageLayout>
-        <Card theme={customTheme.card}>
+        <Card>
           <div className="py-12 text-center">
             <HiExclamation className="mx-auto h-12 w-12 text-red-400" />
             <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -471,7 +470,7 @@ export default function BackupManagementContent() {
 
       {/* Download Quota Card for Shared Repositories */}
       {isRepository && downloadQuota && (
-        <Card theme={customTheme.card}>
+        <Card>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-2">
@@ -515,7 +514,7 @@ export default function BackupManagementContent() {
       {/* Stats Cards - Only for user graphs */}
       {!isRepository && backupStats && (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <Card theme={customTheme.card}>
+          <Card>
             <div className="space-y-2">
               <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
                 Total Backups
@@ -525,7 +524,7 @@ export default function BackupManagementContent() {
               </div>
             </div>
           </Card>
-          <Card theme={customTheme.card}>
+          <Card>
             <div className="space-y-2">
               <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
                 Success Rate
@@ -535,7 +534,7 @@ export default function BackupManagementContent() {
               </div>
             </div>
           </Card>
-          <Card theme={customTheme.card}>
+          <Card>
             <div className="space-y-2">
               <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
                 Total Size
@@ -545,7 +544,7 @@ export default function BackupManagementContent() {
               </div>
             </div>
           </Card>
-          <Card theme={customTheme.card}>
+          <Card>
             <div className="space-y-2">
               <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
                 Space Saved
@@ -560,7 +559,7 @@ export default function BackupManagementContent() {
 
       {/* Backups Table */}
       {backups.length === 0 ? (
-        <Card theme={customTheme.card}>
+        <Card>
           <EmptyState
             icon={HiDatabase}
             title="No backups found"
@@ -572,7 +571,7 @@ export default function BackupManagementContent() {
           />
         </Card>
       ) : (
-        <Card theme={customTheme.card}>
+        <Card>
           <Table>
             <TableHead>
               <TableHeadCell>
@@ -686,12 +685,7 @@ export default function BackupManagementContent() {
       )}
 
       {/* Create Backup Modal */}
-      <Modal
-        show={showCreateModal}
-        onClose={handleCloseCreateModal}
-        size="md"
-        theme={customTheme.modal}
-      >
+      <Modal show={showCreateModal} onClose={handleCloseCreateModal} size="md">
         <ModalHeader>Create Backup</ModalHeader>
         <ModalBody>
           <div className="space-y-4">
@@ -786,7 +780,6 @@ export default function BackupManagementContent() {
         show={showRestoreModal}
         onClose={() => setShowRestoreModal(false)}
         size="md"
-        theme={customTheme.modal}
       >
         <ModalHeader>Restore Backup</ModalHeader>
         <ModalBody>
@@ -898,7 +891,6 @@ export default function BackupManagementContent() {
         show={showDetailsModal}
         onClose={() => setShowDetailsModal(false)}
         size="lg"
-        theme={customTheme.modal}
       >
         <ModalHeader>Backup Details</ModalHeader>
         <ModalBody>

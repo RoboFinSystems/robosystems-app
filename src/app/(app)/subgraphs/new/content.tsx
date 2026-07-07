@@ -2,7 +2,6 @@
 
 import { SubgraphCreationWizard } from '@/components/subgraph/SubgraphCreationWizard'
 import { useGraphContext, useToast } from '@/lib/core'
-import { customTheme } from '@/lib/core/theme'
 import { Button } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { HiArrowLeft } from 'react-icons/hi'
@@ -29,7 +28,6 @@ export function NewSubgraphContent() {
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center">
                 <Button
-                  theme={customTheme.button}
                   color="gray"
                   size="sm"
                   onClick={handleCancel}
@@ -55,11 +53,7 @@ export function NewSubgraphContent() {
               <p className="mt-4 text-gray-600 dark:text-gray-400">
                 Please select a graph first before creating a subgraph.
               </p>
-              <Button
-                className="mt-6"
-                onClick={() => router.push('/home')}
-                theme={customTheme.button}
-              >
+              <Button className="mt-6" onClick={() => router.push('/home')}>
                 Select Graph
               </Button>
             </div>
@@ -77,7 +71,6 @@ export function NewSubgraphContent() {
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
               <Button
-                theme={customTheme.button}
                 color="gray"
                 size="sm"
                 onClick={handleCancel}

@@ -1,7 +1,6 @@
 'use client'
 
 import {
-  customTheme,
   EmptyState,
   LoadingState,
   PageHeader,
@@ -182,7 +181,7 @@ export function UsageContent() {
           </div>
         </div>
 
-        <Card theme={customTheme.card}>
+        <Card>
           <EmptyState
             icon={HiChartBar}
             title="No graph selected"
@@ -289,7 +288,7 @@ export function UsageContent() {
 
       {/* Credit Balance - For both graphs and repositories */}
       {data.creditSummary && (
-        <Card theme={customTheme.card}>
+        <Card>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
@@ -379,7 +378,7 @@ export function UsageContent() {
 
       {/* Storage Usage - Only for user graphs, not repositories */}
       {!isRepository && data.graphLimits && (
-        <Card theme={customTheme.card}>
+        <Card>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
@@ -446,7 +445,7 @@ export function UsageContent() {
 
       {/* Graph Limits & Quotas */}
       {data.graphLimits && (
-        <Card theme={customTheme.card}>
+        <Card>
           <h3 className="font-heading mb-4 text-lg font-semibold text-gray-900 dark:text-white">
             {isRepository ? 'Repository' : 'Graph'} Limits & Quotas
           </h3>
@@ -568,7 +567,7 @@ export function UsageContent() {
 
       {/* Recent Transactions */}
       {data.recentTransactions && data.recentTransactions.length > 0 && (
-        <Card theme={customTheme.card}>
+        <Card>
           <div className="mb-4">
             <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
               Recent Credit Transactions

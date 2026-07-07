@@ -2,7 +2,6 @@
 
 import {
   ConfirmModal,
-  customTheme,
   EmptyState,
   PageHeader,
   PageLayout,
@@ -449,7 +448,7 @@ export function TablesContent() {
         </div>
 
         {/* SQL Editor */}
-        <Card theme={customTheme.card}>
+        <Card>
           <div className="mb-2 flex items-center justify-between">
             <h3 className="text-sm font-medium text-gray-900 dark:text-white">
               SQL Query (DuckDB)
@@ -497,7 +496,7 @@ export function TablesContent() {
 
         {/* Query Results */}
         {loading && (
-          <Card theme={customTheme.card}>
+          <Card>
             <div className="flex items-center justify-center py-8">
               <Spinner />
               <span className="ml-2 text-gray-900 dark:text-white">
@@ -508,7 +507,7 @@ export function TablesContent() {
         )}
 
         {queryResult && (
-          <Card theme={customTheme.card}>
+          <Card>
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-sm font-medium text-gray-900 dark:text-white">
                 Results ({queryResult.rowCount} rows in{' '}
@@ -558,7 +557,6 @@ export function TablesContent() {
           show={showIngestModal}
           onClose={() => setShowIngestModal(false)}
           size="xl"
-          theme={customTheme.modal}
         >
           <form
             onSubmit={(e) => {
@@ -652,7 +650,7 @@ export function TablesContent() {
 
       {/* Overview Metrics */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:grid-cols-4">
-        <Card theme={customTheme.card}>
+        <Card>
           <div className="space-y-2">
             <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
               Total Tables
@@ -663,7 +661,7 @@ export function TablesContent() {
           </div>
         </Card>
 
-        <Card theme={customTheme.card}>
+        <Card>
           <div className="space-y-2">
             <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
               Total Rows
@@ -674,7 +672,7 @@ export function TablesContent() {
           </div>
         </Card>
 
-        <Card theme={customTheme.card}>
+        <Card>
           <div className="space-y-2">
             <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
               Total Files
@@ -685,7 +683,7 @@ export function TablesContent() {
           </div>
         </Card>
 
-        <Card theme={customTheme.card}>
+        <Card>
           <div className="space-y-2">
             <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
               Storage
@@ -702,14 +700,13 @@ export function TablesContent() {
       {/* Tabs */}
       <Tabs
         aria-label="Data Lake tabs"
-        theme={customTheme.tabs}
         variant="underline"
         onActiveTabChange={(tab: number) => setActiveTab(tab)}
       >
         <Tabs.Item title="Browse Tables" icon={HiTable}>
           {/* Mobile/Tablet Dropdown - Show on small/medium screens */}
           <div className="mb-4 lg:hidden">
-            <Card theme={customTheme.card}>
+            <Card>
               <Label
                 htmlFor="table-select"
                 className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
@@ -761,7 +758,7 @@ export function TablesContent() {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
             {/* Table List Sidebar - Hide on small/medium, show on large screens */}
             <div className="hidden lg:col-span-4 lg:block">
-              <Card theme={customTheme.card}>
+              <Card>
                 <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                   Staging Tables ({tables.length})
                 </h3>
@@ -865,7 +862,7 @@ export function TablesContent() {
               {selectedTable ? (
                 <div className="space-y-4">
                   {/* Compact Stats */}
-                  <Card theme={customTheme.card}>
+                  <Card>
                     <div className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">
                       {selectedTable.tableName}
                     </div>
@@ -899,7 +896,7 @@ export function TablesContent() {
 
                   {/* Data Preview */}
                   {selectedTable.rowCount > 0 && (
-                    <Card theme={customTheme.card}>
+                    <Card>
                       <div className="mb-3 flex items-center justify-between">
                         <h4 className="font-medium text-gray-900 dark:text-white">
                           Data Preview
@@ -994,7 +991,7 @@ export function TablesContent() {
 
                   {/* Files — hidden for entity graphs (data comes from extensions DB) */}
                   {!isEntityGraph && (
-                    <Card theme={customTheme.card}>
+                    <Card>
                       <div className="mb-3 flex items-center justify-between">
                         <h4 className="font-medium text-gray-900 dark:text-white">
                           Files ({tableFiles.length})
@@ -1089,7 +1086,6 @@ export function TablesContent() {
                                   </td>
                                   <td className="px-4 py-3">
                                     <Button
-                                      theme={customTheme.button}
                                       size="xs"
                                       color="failure"
                                       onClick={() => {
@@ -1112,7 +1108,7 @@ export function TablesContent() {
                   )}
                 </div>
               ) : (
-                <Card theme={customTheme.card}>
+                <Card>
                   <EmptyState
                     icon={HiDatabase}
                     title="Select a table to view details"
@@ -1140,7 +1136,7 @@ export function TablesContent() {
             </div>
 
             {/* SQL Editor */}
-            <Card theme={customTheme.card}>
+            <Card>
               <div className="mb-2 flex items-center justify-between">
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white">
                   SQL Query (DuckDB)
@@ -1189,7 +1185,7 @@ export function TablesContent() {
 
             {/* Query Results */}
             {loading && (
-              <Card theme={customTheme.card}>
+              <Card>
                 <div className="flex items-center justify-center py-8">
                   <Spinner />
                   <span className="ml-2 text-gray-900 dark:text-white">
@@ -1200,7 +1196,7 @@ export function TablesContent() {
             )}
 
             {queryResult && (
-              <Card theme={customTheme.card}>
+              <Card>
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="text-sm font-medium text-gray-900 dark:text-white">
                     Results ({queryResult.rowCount} rows in{' '}
@@ -1253,7 +1249,6 @@ export function TablesContent() {
         show={showUploadModal}
         onClose={() => setShowUploadModal(false)}
         size="xl"
-        theme={customTheme.modal}
       >
         <form
           onSubmit={(e) => {
@@ -1383,7 +1378,6 @@ export function TablesContent() {
         show={showIngestModal}
         onClose={() => setShowIngestModal(false)}
         size="xl"
-        theme={customTheme.modal}
       >
         <form
           onSubmit={(e) => {

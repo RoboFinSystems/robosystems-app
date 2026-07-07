@@ -4,7 +4,6 @@ import CancelSubscriptionModal, {
   type CancelMode,
 } from '@/components/app/CancelSubscriptionModal'
 import {
-  customTheme,
   LoadingState,
   PageHeader,
   PageLayout,
@@ -167,11 +166,7 @@ export function BillingContent() {
         </Alert>
       )}
 
-      <Tabs
-        aria-label="Billing tabs"
-        theme={customTheme.tabs}
-        variant="underline"
-      >
+      <Tabs aria-label="Billing tabs" variant="underline">
         <Tabs.Item active title="Overview" icon={HiCurrencyDollar}>
           <OverviewTab
             billingCustomer={billingCustomer}
@@ -274,7 +269,7 @@ function OverviewTab({
   return (
     <div className="space-y-6">
       {/* Customer Profile */}
-      <Card theme={customTheme.card}>
+      <Card>
         <div className="space-y-4">
           <div className="flex items-start justify-between">
             <div>
@@ -323,7 +318,7 @@ function OverviewTab({
 
       {/* Payment Method Status */}
       {billingEnabled && (
-        <Card theme={customTheme.card}>
+        <Card>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div
@@ -373,7 +368,7 @@ function OverviewTab({
 
       {/* Upcoming Invoice */}
       {upcomingInvoice && (
-        <Card theme={customTheme.card}>
+        <Card>
           <h3 className="font-heading mb-4 text-lg font-semibold text-gray-900 dark:text-white">
             Upcoming Invoice
           </h3>
@@ -705,7 +700,7 @@ function SubscriptionsTab({
             {graphSubscriptions.map((sub) => {
               const graph = graphs.find((g) => g.graphId === sub.resource_id)
               return (
-                <Card key={sub.id} theme={customTheme.card}>
+                <Card key={sub.id}>
                   <div className="space-y-4">
                     <div className="flex items-start justify-between">
                       <div>
@@ -784,7 +779,7 @@ function SubscriptionsTab({
             })}
           </div>
         ) : (
-          <Card theme={customTheme.card}>
+          <Card>
             <div className="py-12 text-center">
               <HiDatabase className="mx-auto mb-4 h-12 w-12 text-gray-400" />
               <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
@@ -806,7 +801,7 @@ function SubscriptionsTab({
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
             {repositorySubscriptions.map((sub) => (
-              <Card key={sub.id} theme={customTheme.card}>
+              <Card key={sub.id}>
                 <div className="space-y-4">
                   <div className="flex items-start justify-between">
                     <div>
@@ -868,7 +863,6 @@ function SubscriptionsTab({
         show={showUpgradeModal}
         onClose={() => !upgrading && setShowUpgradeModal(false)}
         size="lg"
-        theme={customTheme.modal}
       >
         <ModalHeader>Change Graph Tier</ModalHeader>
         <ModalBody>
@@ -1053,7 +1047,7 @@ function InvoicesTab({
 
   if (invoices.length === 0) {
     return (
-      <Card theme={customTheme.card}>
+      <Card>
         <div className="py-12 text-center">
           <HiClock className="mx-auto mb-4 h-12 w-12 text-gray-400" />
           <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
@@ -1068,7 +1062,7 @@ function InvoicesTab({
   }
 
   return (
-    <Card theme={customTheme.card}>
+    <Card>
       <div className="overflow-x-auto">
         <Table>
           <TableHead>

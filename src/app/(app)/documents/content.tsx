@@ -2,7 +2,6 @@
 
 import {
   ConfirmModal,
-  customTheme,
   EmptyState,
   LoadingState,
   PageHeader,
@@ -427,7 +426,7 @@ export function DocumentsPageContent() {
   if (!selectedGraphId) {
     return (
       <PageLayout>
-        <Card theme={customTheme.card}>
+        <Card>
           <EmptyState
             icon={HiDocumentText}
             title="No graph selected"
@@ -443,7 +442,7 @@ export function DocumentsPageContent() {
   if (error) {
     return (
       <PageLayout>
-        <Card theme={customTheme.card}>
+        <Card>
           <div className="py-12 text-center">
             <HiExclamation className="mx-auto h-12 w-12 text-red-400" />
             <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -652,7 +651,7 @@ export function DocumentsPageContent() {
         </div>
 
         {/* Content Area */}
-        <Card theme={customTheme.card} className="min-h-0 flex-1">
+        <Card className="min-h-0 flex-1">
           {detailLoading ? (
             <div className="flex h-full items-center justify-center">
               <Spinner size="lg" />
@@ -708,7 +707,7 @@ export function DocumentsPageContent() {
 
       {/* Document List */}
       {documents.length === 0 ? (
-        <Card theme={customTheme.card}>
+        <Card>
           <EmptyState
             icon={HiDocumentAdd}
             title="Knowledge base is empty"
@@ -724,7 +723,6 @@ export function DocumentsPageContent() {
           {documents.map((doc) => (
             <Card
               key={doc.id}
-              theme={customTheme.card}
               className="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-zinc-700"
               onClick={() => handleSelectDocument(doc)}
             >
