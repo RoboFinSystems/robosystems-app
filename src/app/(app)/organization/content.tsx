@@ -620,6 +620,7 @@ export function OrganizationContent() {
                       )}
                       {canRemove && member.role !== 'owner' && (
                         <Button
+                          theme={customTheme.button}
                           size="xs"
                           color="failure"
                           onClick={() =>

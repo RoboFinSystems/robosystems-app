@@ -323,6 +323,7 @@ export function SubgraphsContent() {
                             )}
                           </Button>
                           <Button
+                            theme={customTheme.button}
                             size="sm"
                             color="failure"
                             onClick={() => handleDeleteClick(subgraph)}
@@ -414,6 +415,7 @@ export function SubgraphsContent() {
                       )}
                     </Button>
                     <Button
+                      theme={customTheme.button}
                       size="sm"
                       color="failure"
                       onClick={() => handleDeleteClick(subgraph)}

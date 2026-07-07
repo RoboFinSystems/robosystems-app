@@ -1089,6 +1089,7 @@ export function TablesContent() {
                                   </td>
                                   <td className="px-4 py-3">
                                     <Button
+                                      theme={customTheme.button}
                                       size="xs"
                                       color="failure"
                                       onClick={() => {
