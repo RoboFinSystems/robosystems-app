@@ -370,7 +370,7 @@ export function TablesContent() {
   // Sample queries
   const sampleQueries = isEntityGraph
     ? [
-        { label: 'List all tables', sql: 'SHOW TABLES' },
+        { label: 'List all tables', sql: 'SHOW ALL TABLES' },
         { label: 'Preview entity', sql: 'SELECT * FROM Entity LIMIT 10' },
         { label: 'Preview accounts', sql: 'SELECT * FROM Element LIMIT 10' },
         {
@@ -379,24 +379,24 @@ export function TablesContent() {
         },
       ]
     : [
-        { label: 'List all tables', sql: 'SHOW TABLES' },
+        { label: 'List all tables', sql: 'SHOW ALL TABLES' },
         {
           label: 'Table info',
           sql: selectedTable
             ? `DESCRIBE ${selectedTable.tableName}`
-            : 'SHOW TABLES',
+            : 'SHOW ALL TABLES',
         },
         {
           label: 'Preview data',
           sql: selectedTable
             ? `SELECT * FROM ${selectedTable.tableName} LIMIT 10`
-            : 'SHOW TABLES',
+            : 'SHOW ALL TABLES',
         },
         {
           label: 'Row count',
           sql: selectedTable
             ? `SELECT COUNT(*) as total FROM ${selectedTable.tableName}`
-            : 'SHOW TABLES',
+            : 'SHOW ALL TABLES',
         },
       ]
 
