@@ -153,7 +153,7 @@ export function TablesContent() {
 
       try {
         setLoadingPreview(true)
-        const response = await SDK.queryTables({
+        const response = await SDK.executeSql({
           path: { graph_id: graphId },
           body: { sql: `SELECT * FROM ${table.tableName} LIMIT 10` },
         })
@@ -187,7 +187,7 @@ export function TablesContent() {
       setQueryResult(null)
 
       const startTime = Date.now()
-      const response = await SDK.queryTables({
+      const response = await SDK.executeSql({
         path: { graph_id: graphId },
         body: { sql: sqlQuery },
       })
@@ -222,8 +222,8 @@ export function TablesContent() {
       setUploading(true)
       setError(null)
 
-      // Step 1: Get upload URL
-      const uploadUrlResponse = await SDK.createFileUpload({
+      // Step 1: Get upload URL (content op — presign is in the envelope result)
+      const uploadUrlResponse = await SDK.opCreateFileUpload({
         path: { graph_id: graphId },
         body: {
           table_name: finalTableName,
@@ -232,11 +232,11 @@ export function TablesContent() {
         },
       })
 
-      if (!uploadUrlResponse.data) {
+      const uploadData = (uploadUrlResponse.data as any)?.result
+      if (!uploadData?.upload_url) {
         throw new Error('Failed to get upload URL')
       }
 
-      const uploadData = uploadUrlResponse.data as any
       const uploadUrl = normalizeLocalUrl(uploadData.upload_url)
       const fileId = uploadData.file_id
 
@@ -254,11 +254,11 @@ export function TablesContent() {
         throw new Error('Failed to upload to S3')
       }
 
-      // Step 3: Mark file as uploaded
-      await SDK.updateFile({
-        path: { graph_id: graphId, file_id: fileId },
+      // Step 3: Ingest the uploaded file (content op — file_id in the body)
+      await SDK.opIngestFile({
+        path: { graph_id: graphId },
         body: {
-          status: 'uploaded',
+          file_id: fileId,
         },
       })
 
@@ -314,8 +314,9 @@ export function TablesContent() {
       setDeleting(true)
       setDeleteError(null)
 
-      const response = await SDK.deleteFile({
-        path: { graph_id: graphId, file_id: fileToDelete.file_id },
+      const response = await SDK.opDeleteFile({
+        path: { graph_id: graphId },
+        body: { file_id: fileToDelete.file_id },
       })
 
       if (
