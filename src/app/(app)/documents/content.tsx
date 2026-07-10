@@ -16,11 +16,10 @@ import type {
   DocumentListItem,
 } from '@robosystems/client'
 import {
-  deleteDocument,
   getDocument,
   listDocuments,
-  updateDocument,
-  uploadDocument,
+  opDeleteDocument,
+  opIndexDocument,
 } from '@robosystems/client'
 import {
   Badge,
@@ -284,7 +283,7 @@ export function DocumentsPageContent() {
       setSaving(true)
 
       if (isNewDocument) {
-        const response = await uploadDocument({
+        const response = await opIndexDocument({
           path: { graph_id: selectedGraphId },
           body: {
             title: editTitle.trim(),
@@ -295,13 +294,14 @@ export function DocumentsPageContent() {
         })
 
         if (response.data) {
+          const result = (response.data as any).result
           showSuccess(
-            `Created "${editTitle.trim()}" (${response.data.sections_indexed} sections)`,
+            `Created "${editTitle.trim()}" (${result.sections_indexed} sections)`,
             5000
           )
 
           const created = await getDocument({
-            path: { graph_id: selectedGraphId, document_id: response.data.id },
+            path: { graph_id: selectedGraphId, document_id: result.id },
           })
           if (created.data) {
             setSelectedDoc(created.data)
@@ -317,12 +317,10 @@ export function DocumentsPageContent() {
           )
         }
       } else if (selectedDoc) {
-        const response = await updateDocument({
-          path: {
-            graph_id: selectedGraphId,
-            document_id: selectedDoc.id,
-          },
+        const response = await opIndexDocument({
+          path: { graph_id: selectedGraphId },
           body: {
+            document_id: selectedDoc.id,
             title: editTitle.trim() || undefined,
             content: editContent || undefined,
             tags: editTags.length > 0 ? editTags : null,
@@ -331,8 +329,9 @@ export function DocumentsPageContent() {
         })
 
         if (response.data) {
+          const result = (response.data as any).result
           showSuccess(
-            `Saved "${editTitle.trim()}" (${response.data.sections_indexed} sections)`,
+            `Saved "${editTitle.trim()}" (${result.sections_indexed} sections)`,
             5000
           )
 
@@ -368,17 +367,12 @@ export function DocumentsPageContent() {
     try {
       setDeleting(true)
 
-      const response = await deleteDocument({
-        path: {
-          graph_id: selectedGraphId,
-          document_id: deleteTarget.id,
-        },
+      const response = await opDeleteDocument({
+        path: { graph_id: selectedGraphId },
+        body: { document_id: deleteTarget.id },
       })
 
-      if (
-        response.response.status === 204 ||
-        response.response.status === 404
-      ) {
+      if (response.data) {
         showSuccess(`Deleted "${deleteTarget.document_title}"`, 5000)
         setShowDeleteModal(false)
         setDeleteTarget(null)
