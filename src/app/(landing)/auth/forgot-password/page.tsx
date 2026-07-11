@@ -1,7 +1,7 @@
 'use client'
 
-import { useAuth } from '@/lib/core/auth-components/AuthProvider'
-import { AnimatedLogo, Spinner } from '@/lib/core/ui-components'
+import { useAuth } from '@robosystems/core/auth-components/AuthProvider'
+import { AnimatedLogo, Spinner } from '@robosystems/core/ui-components'
 import { useState } from 'react'
 import { HiCheckCircle } from 'react-icons/hi'
 

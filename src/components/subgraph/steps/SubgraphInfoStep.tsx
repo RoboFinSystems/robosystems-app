@@ -1,6 +1,6 @@
 'use client'
 
-import { customTheme } from '@/lib/core/theme'
+import { customTheme } from '@robosystems/core/theme'
 import { Alert, Label, Textarea, TextInput } from 'flowbite-react'
 import { HiInformationCircle } from 'react-icons/hi'
 

@@ -4,15 +4,15 @@ import CancelSubscriptionModal, {
   type CancelMode,
 } from '@/components/app/CancelSubscriptionModal'
 import {
+  cancelRepositorySubscription,
+  type GraphSubscriptionResponse,
+} from '@robosystems/client'
+import {
   ActiveSubscriptions,
   BrowseRepositories,
   PageLayout,
   useToast,
-} from '@/lib/core'
-import {
-  cancelRepositorySubscription,
-  type GraphSubscriptionResponse,
-} from '@robosystems/client'
+} from '@robosystems/core'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 

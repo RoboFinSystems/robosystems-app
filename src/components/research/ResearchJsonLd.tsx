@@ -8,7 +8,7 @@
 // wall — so this is SEO scaffolding for robosystems-app's public portal only. The shared
 // data layer + display components still live in core; this consumes their types.
 
-import { youtubeId, type CoverageItem } from '@/lib/core/research'
+import { youtubeId, type CoverageItem } from '@robosystems/core/research'
 
 type Organization = { name: string; url: string; logo: string }
 

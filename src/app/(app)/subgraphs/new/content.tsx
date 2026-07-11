@@ -1,7 +1,7 @@
 'use client'
 
 import { SubgraphCreationWizard } from '@/components/subgraph/SubgraphCreationWizard'
-import { useGraphContext, useToast } from '@/lib/core'
+import { useGraphContext, useToast } from '@robosystems/core'
 import { Button } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { HiArrowLeft } from 'react-icons/hi'

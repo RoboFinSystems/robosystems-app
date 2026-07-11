@@ -2,7 +2,7 @@
 
 import GraphLimitModal from '@/components/app/GraphLimitModal'
 import { GraphCreationPage } from '@/components/graphs/creation'
-import { useGraphContext, useUser, useUserLimits } from '@/lib/core'
+import { useGraphContext, useUser, useUserLimits } from '@robosystems/core'
 import { Spinner } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'

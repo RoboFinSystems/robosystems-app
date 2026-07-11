@@ -1,4 +1,4 @@
-import { useGraphContext, useUser, useUserLimits } from '@/lib/core'
+import { useGraphContext, useUser, useUserLimits } from '@robosystems/core'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { useRouter } from 'next/navigation'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
@@ -39,7 +39,7 @@ vi.mock('@/components/app/GraphLimitModal', () => ({
   default: mockGraphLimitModal,
 }))
 
-vi.mock('@/lib/core', () => ({
+vi.mock('@robosystems/core', () => ({
   useGraphContext: vi.fn(),
   useUser: vi.fn(),
   useUserLimits: vi.fn(),

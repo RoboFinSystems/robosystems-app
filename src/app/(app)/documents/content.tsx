@@ -1,15 +1,5 @@
 'use client'
 
-import {
-  ConfirmModal,
-  EmptyState,
-  LoadingState,
-  PageHeader,
-  PageLayout,
-  useGraphContext,
-  useIsRepository,
-} from '@/lib/core'
-import { useToast } from '@/lib/core/hooks/use-toast'
 import type { Monaco } from '@monaco-editor/react'
 import type {
   DocumentDetailResponse,
@@ -21,6 +11,16 @@ import {
   opDeleteDocument,
   opIndexDocument,
 } from '@robosystems/client'
+import {
+  ConfirmModal,
+  EmptyState,
+  LoadingState,
+  PageHeader,
+  PageLayout,
+  useGraphContext,
+  useIsRepository,
+} from '@robosystems/core'
+import { useToast } from '@robosystems/core/hooks/use-toast'
 import {
   Badge,
   Button,

@@ -1,4 +1,4 @@
-import { customTheme } from '@/lib/core'
+import { customTheme } from '@robosystems/core'
 import { Label, Radio, Textarea, TextInput } from 'flowbite-react'
 
 interface GenericGraphStepProps {

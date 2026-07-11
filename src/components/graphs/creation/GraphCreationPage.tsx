@@ -1,6 +1,6 @@
 'use client'
 
-import { customTheme } from '@/lib/core'
+import { customTheme } from '@robosystems/core'
 import { Button } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { HiArrowLeft } from 'react-icons/hi'

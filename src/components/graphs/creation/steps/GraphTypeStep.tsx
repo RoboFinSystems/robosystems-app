@@ -1,4 +1,4 @@
-import { customTheme } from '@/lib/core'
+import { customTheme } from '@robosystems/core'
 import { Card } from 'flowbite-react'
 import { HiDatabase, HiOfficeBuilding } from 'react-icons/hi'
 

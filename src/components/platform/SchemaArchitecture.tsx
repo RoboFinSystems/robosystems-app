@@ -1,4 +1,4 @@
-import { AnimatedLogo } from '@/lib/core/ui-components/Logo'
+import { AnimatedLogo } from '@robosystems/core/ui-components/Logo'
 import Image from 'next/image'
 import FloatingElementsVariant from '../landing/FloatingElementsVariant'
 

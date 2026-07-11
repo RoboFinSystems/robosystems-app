@@ -9,7 +9,7 @@ vi.mock('@/lib/config/turnstile', () => ({
 }))
 
 // Mock the TurnstileWidget component
-vi.mock('@/lib/core/auth-components/TurnstileWidget', async () => {
+vi.mock('@robosystems/core/auth-components/TurnstileWidget', async () => {
   const React = await import('react')
   const MockTurnstileWidget = React.forwardRef((_props: any, ref) => {
     React.useImperativeHandle(ref, () => ({

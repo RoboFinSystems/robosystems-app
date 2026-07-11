@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { TierSelectionStep } from '../steps/TierSelectionStep'
 
 // Mock the theme
-vi.mock('@/lib/core', () => ({
+vi.mock('@robosystems/core', () => ({
   customTheme: {
     alert: {},
     card: {},
@@ -48,7 +48,7 @@ const mockCapacity = {
 const mockFetchGraphTiers = vi.fn()
 const mockFetchGraphCapacity = vi.fn()
 
-vi.mock('@/lib/core/lib/graph-tiers', () => ({
+vi.mock('@robosystems/core/lib/graph-tiers', () => ({
   fetchGraphTiers: (...args: any[]) => mockFetchGraphTiers(...args),
   fetchGraphCapacity: (...args: any[]) => mockFetchGraphCapacity(...args),
   getTierColor: (tier: any, allTiers: any[]) => {

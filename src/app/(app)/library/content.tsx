@@ -10,7 +10,7 @@ import {
   PageHeader,
   useGraphContext,
   type LibraryTaxonomy,
-} from '@/lib/core'
+} from '@robosystems/core'
 import { Alert, Select, Spinner } from 'flowbite-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { HiBookOpen, HiInformationCircle } from 'react-icons/hi'

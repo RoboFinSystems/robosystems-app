@@ -1,7 +1,7 @@
 'use client'
 
-import type { SidebarItemData } from '@/lib/core'
 import type { GraphInfo } from '@robosystems/client'
+import type { SidebarItemData } from '@robosystems/core'
 import {
   HiBookOpen,
   HiChartBar,

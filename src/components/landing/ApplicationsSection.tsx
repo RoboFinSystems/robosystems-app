@@ -1,6 +1,6 @@
 'use client'
 
-import { LogoBadge } from '@/lib/core/ui-components/Logo'
+import { LogoBadge } from '@robosystems/core/ui-components/Logo'
 import Link from 'next/link'
 import { useState } from 'react'
 import ContactModal from './ContactModal'

@@ -1,6 +1,6 @@
 'use client'
 
-import { customTheme } from '@/lib/core/theme'
+import { customTheme } from '@robosystems/core/theme'
 import { Card } from 'flowbite-react'
 import { HiChip, HiInformationCircle } from 'react-icons/hi'
 

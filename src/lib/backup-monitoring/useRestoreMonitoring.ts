@@ -9,7 +9,7 @@ import { useCallback, useRef, useState } from 'react'
 
 // TODO: Import getRestoreProgress when available in SDK
 // import { getRestoreProgress } from '@robosystems/client'
-import { useTaskMonitoring } from '@/lib/core/task-monitoring'
+import { useTaskMonitoring } from '@robosystems/core/task-monitoring'
 
 // TODO: Import RestoreProgressResponse type when available in SDK
 // import type { RestoreProgressResponse } from '@robosystems/client'

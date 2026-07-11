@@ -1,13 +1,13 @@
 'use client'
 
+import * as SDK from '@robosystems/client'
 import {
   isUUID,
   PageLayout,
   useApiError,
   useGraphContext,
   useToast,
-} from '@/lib/core'
-import * as SDK from '@robosystems/client'
+} from '@robosystems/core'
 import { Alert, Button, Card, Progress, Spinner } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'

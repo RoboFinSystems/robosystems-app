@@ -1,8 +1,13 @@
 'use client'
 
-import { PageHeader, PageLayout, StatCard, useGraphContext } from '@/lib/core'
 import Editor from '@monaco-editor/react'
 import * as SDK from '@robosystems/client'
+import {
+  PageHeader,
+  PageLayout,
+  StatCard,
+  useGraphContext,
+} from '@robosystems/core'
 import { Alert, Badge, Card, Tabs, TextInput } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import {

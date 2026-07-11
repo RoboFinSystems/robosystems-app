@@ -4,7 +4,7 @@ import {
   fetchBrief,
   getCoverage,
   getCoverageTickers,
-} from '@/lib/core/research'
+} from '@robosystems/core/research'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'

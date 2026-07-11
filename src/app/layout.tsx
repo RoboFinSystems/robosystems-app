@@ -1,6 +1,6 @@
-import { AuthProvider, customTheme } from '@/lib/core'
-import { SessionWarningDialog } from '@/lib/core/auth-components/SessionWarningDialog'
 import { organizationJsonLd } from '@/lib/structured-data'
+import { AuthProvider, customTheme } from '@robosystems/core'
+import { SessionWarningDialog } from '@robosystems/core/auth-components/SessionWarningDialog'
 import { ThemeModeScript, ThemeProvider } from 'flowbite-react'
 import type { Metadata, Viewport } from 'next'
 import { twMerge } from 'tailwind-merge'

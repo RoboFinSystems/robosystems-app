@@ -1,6 +1,6 @@
 'use client'
 
-import { customTheme } from '@/lib/core'
+import { customTheme } from '@robosystems/core'
 import {
   Alert,
   Button,
