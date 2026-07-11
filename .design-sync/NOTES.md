@@ -1,9 +1,11 @@
 # design-sync NOTES — RoboSystems (core + app landing surface)
 
 This repo is a **Next.js app**, not a published component library. The "design system"
-is the shared subtree at `src/lib/core/` (`@robosystems/core`), consumed as source —
-**no `dist/`, never installed into `node_modules`**. The sync therefore runs the
-package shape in **synth-entry mode**. Read this before any re-sync.
+is the **published npm package `@robosystems/core`** (repo `RoboFinSystems/robosystems-core`),
+installed at `node_modules/@robosystems/core` — compiled per-file ESM + a full `.d.ts`
+tree (the git subtree at `src/lib/core` was retired 2026-07-11). The sync still runs
+the package shape in **synth-entry mode**, now scanning the installed package's
+compiled files. Read this before any re-sync.
 
 This project's design project (`f0e9…`) is the **canonical home of BOTH** `@robosystems/core`
 (55 components) **and** robosystems-app's own landing surface (`src/components/landing/`, 14
@@ -25,11 +27,12 @@ seams, so a single build emits all ~70 components:
 "../../../src/components/landing/HeroSection.tsx"`, …). Non-null pins _add_ a component to the
   card list and resolve its src path relative to `PKG_DIR`; the group derives from the path →
   group **`landing`**. Pins make the **cards**; the barrel makes them **render**.
-- **`cfg.tsconfig: "../../../.design-sync/tsconfig.json"`** (was core's `tsconfig.json`). One
-  app-rooted tsconfig serves both: core uses only relative + bare-pkg imports (its own `@/*` is
-  unused), landing uses `@/lib/core*` / `@/lib/config/*` / `next/*`. It defines `@/*` → `src/*`,
-  an exact-match for the `@/lib/core` barrel, and the two shims below. **Keep it clean JSON — no
-  `//` comment keys** (the engine's comment-stripper mangles them).
+- **`cfg.tsconfig: "../../../.design-sync/tsconfig.json"`**. One app-rooted tsconfig serves
+  both: core's compiled files use only relative + bare-pkg imports, landing imports
+  `@robosystems/core` directly (bare specifier → the installed package; the old `@/lib/core*`
+  alias mappings were removed with the subtree) plus `@/lib/config/*` / `next/*`. It defines
+  `@/*` → `src/*` and the two shims below. **Keep it clean JSON — no `//` comment keys**
+  (the engine's comment-stripper mangles them).
 
 ### `[EXPORT_COLLISION]` on landing-entry.ts is BENIGN — do NOT "rename"
 
@@ -67,23 +70,26 @@ provider/data mocking (graph/entity/SSO contexts) → not in the barrel/pins yet
 
 ## Build setup (how the bundle is produced)
 
-- **Symlink** `node_modules/@robosystems/core -> ../../src/lib/core` so `PKG_DIR`
-  resolves (gitignored; mirrors how a monorepo would resolve it). Recreate on a
-  fresh clone: `ln -sfn ../../src/lib/core node_modules/@robosystems/core`.
-- `cfg.srcDir: "."` → source root IS the package dir. `cfg.tsconfig: "tsconfig.json"`
-  (core's own) for esbuild path resolution.
-- **No `--entry`** is passed → the converter synthesizes an entry from `src/` and
-  discovers components from PascalCase value exports. (Passing `--entry` would set
-  `synthEntry=false` and discover ZERO components, since there is no `.d.ts` tree.)
+- **`PKG_DIR` = `node_modules/@robosystems/core`** — the real installed package (no
+  symlink; `npm install` provides it). The package ships compiled per-file ESM (so
+  the synth scan and esbuild consume `.js`) plus a full `.d.ts` tree → **prop types
+  are real with no extra build step** (the old `build:types` step is retired).
+- `cfg.srcDir: "."` → scan root IS the package dir.
+- **No `--entry`** is passed → synth-entry mode; components discovered from
+  PascalCase value exports across the package files.
+- **`core-internal-entry.ts`** (in `cfg.extraEntries`): the package's real barrel
+  deliberately omits three internal components with design cards (`AnimatedLogo`,
+  `LogoBadge`, `ProgressiveText`); this extra entry re-exports them from their deep
+  module paths so they bind on `window.RobosystemsCore` (same seam as landing).
+  Their `componentSrcMap` pins are extensionless (`ui-components/Logo`) so the pin
+  resolver finds the compiled `.js`.
 - `--node-modules ./node_modules` (the app's — that's where react/flowbite/SDK resolve).
-- `.d.ts` props are **stubs** (`[key:string]: unknown`) in synth mode — the real
-  prop shapes live in the component source. Authored previews were written from source.
 
 ## CSS (the main lift — Tailwind v4, nothing static ships)
 
 - `.design-sync/compile-css.mjs` (durable) compiles `src/app/globals.css` →
-  `src/lib/core/.ds-compiled.css` via the app's own `@tailwindcss/postcss`, scanning
-  the config's content globs (cover `src/lib/core`), the previews dir, AND
+  `node_modules/@robosystems/core/.ds-compiled.css` via the app's own `@tailwindcss/postcss`,
+  scanning the config's content globs (incl. `node_modules/@robosystems/core/**/*.js`), the previews dir, AND
   `.design-sync/tw-safelist.txt`. Brand tokens come from BOTH `@theme` in globals.css
   AND `theme.extend.colors` in `tailwind.config.ts`. `@font-face` is **stripped** from
   the output (fonts are wired separately — see below).
@@ -94,8 +100,9 @@ provider/data mocking (graph/entity/SSO contexts) → not in the barrel/pins yet
   Layout/spacing utilities are component-usage-driven (broaden the safelist if needed).
 - `cfg.cssEntry: ".ds-compiled.css"` (bounded to PKG_DIR; appended to `_ds_bundle.css`,
   which `styles.css` @imports → ships to designs).
-- **`.ds-compiled.css` is gitignored** (regenerated each build; lives inside the subtree
-  dir but never committed/pushed).
+- **`.ds-compiled.css` lives inside `node_modules/@robosystems/core/`** (disposable by
+  construction — regenerated each build, wiped by any reinstall; `cfg.cssEntry` is
+  bounded to `PKG_DIR`, which is why it must sit in the package dir).
 
 ## process.env shim (CRITICAL — required after EVERY build)
 
@@ -110,7 +117,7 @@ refreshes `_ds_sync.json`'s `bundleSha12` (else validate reports the anchor stal
 **Run order, every time:**
 
 ```
-node .design-sync/compile-css.mjs src/app/globals.css src/lib/core/.ds-compiled.css
+node .design-sync/compile-css.mjs src/app/globals.css node_modules/@robosystems/core/.ds-compiled.css
 node .ds-sync/package-build.mjs --config .design-sync/config.json --node-modules ./node_modules --out ./ds-bundle
 node .design-sync/patch-bundle.mjs ./ds-bundle    # <-- do NOT skip
 node .ds-sync/package-validate.mjs ./ds-bundle
@@ -190,19 +197,20 @@ selectors, data views) — authorable incrementally on any later re-sync.
 - **Must re-run `patch-bundle.mjs` after every full build / driver run** (see above) —
   the single most important step; skipping it reintroduces the `process` ReferenceError
   and a stale anchor.
-- **Recompile `.ds-compiled.css`** when `globals.css` or `tailwind.config.ts` change
-  (brand tokens, fonts, utilities). The compiled file is gitignored, so a fresh clone
-  must compile it before the first build.
-- Recreate the `node_modules/@robosystems/core` symlink on a fresh clone.
-- Synth-entry `.d.ts` are stubs; the value is in the previews + this file. If the core
-  adds a real build with `dist/` + types later, point `--entry` at it and the contracts
-  get richer automatically.
-- This is one of 3 sibling apps (roboledger-app, roboinvestor-app) sharing this exact
-  core via subtree. Previews/config here are REUSABLE for those — only the brand color
-  palette in their `globals.css`/`tailwind.config.ts` differs (RoboSystems=blue,
-  RoboLedger=violet, RoboInvestor=emerald). Replication = copy `.design-sync/` (minus
-  projectId), recompile CSS against that app's globals, rebuild+patch, re-grade for
-  brand color, upload to that app's own project.
+- **Recompile `.ds-compiled.css` before every build** — it lives in
+  `node_modules/@robosystems/core/`, so ANY `npm install`/package bump wipes it.
+  Also recompile when `globals.css` or `tailwind.config.ts` change.
+- **Core changes reach this sync via the npm package**: bump `@robosystems/core`
+  in the app (`npm install @robosystems/core@<version>`), then re-run the pipeline.
+  The bundle reflects the installed version, not a local checkout — to preview
+  unreleased core work, install a `pack:local` tarball from the robosystems-core
+  repo first.
+- This is one of 3 sibling apps (roboledger-app, roboinvestor-app) consuming the same
+  published `@robosystems/core`. Previews/config here are REUSABLE for those — only
+  the brand color palette in their `globals.css`/`tailwind.config.ts` differs
+  (RoboSystems=blue, RoboLedger=violet, RoboInvestor=emerald). Replication = copy
+  `.design-sync/` (minus projectId), recompile CSS against that app's globals,
+  rebuild+patch, re-grade for brand color, upload to that app's own project.
 
 ## App identity / logo brand (per-app)
 
@@ -214,25 +222,19 @@ accent utilities) are already per-app via the compiled stylesheet; this fixes th
 JS-driven logo brand, which otherwise defaults to the RoboSystems blue mark on every app.
 Re-sync: keep `.design-sync/app-name` correct per app; the patch step handles the rest.
 
-## Real types build (`build:types`) — added after the initial sync
+## Real types (npm-package era — `build:types` retired 2026-07-11)
 
-The bundle is still synth-entry (esbuild over source); only component PROP TYPES
-changed — they now come from real `.d.ts` instead of `[key:string]: unknown` stubs.
+Prop types come from the `.d.ts` tree that **ships inside the installed package**
+(`node_modules/@robosystems/core/**/*.d.ts`, `"types": "./index.d.ts"`). There is
+no local types build step anymore — the old `npm run build:types` script was
+removed with the subtree.
 
-- `npm run build:types` = `rm -rf src/lib/core/dist && tsc -p src/lib/core/tsconfig.build.json`
-  (emitDeclarationOnly) → `src/lib/core/dist/**/*.d.ts` (gitignored). Two benign
-  `typeof jest` warnings in `hooks/use-user.ts` don't block emit (success = `dist/index.d.ts` exists).
-- core `package.json` `"types": "dist/index.d.ts"` points the converter at them.
-- **Run `npm run build:types` BEFORE `package-build` on every (re)sync** (after compile-css).
-- The real public API (`index.ts` exports) ≠ the synth all-source scan: it exposes
+- The real public API (barrel exports) ≠ the synth all-source scan: it exposes
   non-components (SDK clients, `AuthCore` namespace, `QueuedQueryError`, `GraphFilters`)
-  and omits internal components (logos, `ProgressiveText`, `SessionWarningDialog`,
-  `TurnstileWidget`). `cfg.componentSrcMap` reconciles this: 8 null-exclusions for the
-  non-components + 3 pins (`AnimatedLogo`, `LogoBadge`, `ProgressiveText`) to keep them.
-  Net **55 components** (was 57 under synth).
-- Pinning moved `AnimatedLogo`/`LogoBadge` group `general` → `ui-components` (group derives
-  from the pinned src path). On re-sync these regroup; `SessionWarningDialog` + `TurnstileWidget`
-  are dropped — the upload deletes their old paths.
-- `eslint.config.js` ignores `src/lib/core/dist/` (the generated `.d.ts`).
+  and omits internal components. `cfg.componentSrcMap` reconciles this: 8
+  null-exclusions for the non-components + 3 extensionless pins (`AnimatedLogo`,
+  `LogoBadge`, `ProgressiveText`) to keep them — with their runtime bindings coming
+  from `core-internal-entry.ts` (see Build setup). Net **55 core components** + the
+  landing surface.
 
-Full run order: `build:types` → `compile-css.mjs` → `package-build.mjs` → `patch-bundle.mjs` → `package-validate.mjs` → `gen-manifest.mjs` (then upload `_ds_manifest.json`).
+Full run order: `compile-css.mjs` → `package-build.mjs` → `patch-bundle.mjs` → `package-validate.mjs` → `gen-manifest.mjs` (then upload `_ds_manifest.json`).

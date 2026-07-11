@@ -8,7 +8,10 @@
   "cssEntry": ".ds-compiled.css",
   "readmeHeader": ".design-sync/conventions.md",
   "extraFonts": ["../../../.design-sync/ds-fonts.css"],
-  "extraEntries": ["../../../.design-sync/landing-entry.ts"],
+  "extraEntries": [
+    "../../../.design-sync/landing-entry.ts",
+    "../../../.design-sync/core-internal-entry.ts"
+  ],
   "runtimeFontPrefixes": ["JetBrains"],
   "componentSrcMap": {
     "SupportModal": null,
@@ -20,9 +23,9 @@
     "QueuedQueryError": null,
     "RoboSystemsClients": null,
     "SSEClient": null,
-    "AnimatedLogo": "ui-components/Logo.tsx",
-    "LogoBadge": "ui-components/Logo.tsx",
-    "ProgressiveText": "components/console/ProgressiveText.tsx",
+    "AnimatedLogo": "ui-components/Logo",
+    "LogoBadge": "ui-components/Logo",
+    "ProgressiveText": "components/console/ProgressiveText",
     "ApplicationsSection": "../../../src/components/landing/ApplicationsSection.tsx",
     "ContactForm": "../../../src/components/landing/ContactForm.tsx",
     "ContactModal": "../../../src/components/landing/ContactModal.tsx",
