@@ -81,8 +81,13 @@ provider/data mocking (graph/entity/SSO contexts) → not in the barrel/pins yet
   deliberately omits three internal components with design cards (`AnimatedLogo`,
   `LogoBadge`, `ProgressiveText`); this extra entry re-exports them from their deep
   module paths so they bind on `window.RobosystemsCore` (same seam as landing).
-  Their `componentSrcMap` pins are extensionless (`ui-components/Logo`) so the pin
-  resolver finds the compiled `.js`.
+- **ALL 55 core components carry explicit `.js` pins in `cfg.componentSrcMap`** —
+  this is load-bearing for GROUPING: the engine's src-enrichment fuzzy-finder only
+  matches `.tsx|.jsx`, so against the compiled package every unpinned component
+  collapses into group `general` (and its card path moves). Pin paths must include
+  the `.js` extension (the enrichment step checks `existsSync` verbatim). Group =
+  last non-generic dir of the pin path (`ui-components/chat/…` → `chat`). When core
+  adds a component, add its pin here too.
 - `--node-modules ./node_modules` (the app's — that's where react/flowbite/SDK resolve).
 
 ## CSS (the main lift — Tailwind v4, nothing static ships)
