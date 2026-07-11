@@ -47,12 +47,6 @@ jobs:
   create-deployment:
     needs: [runner, test]
     runs-on: ${{ fromJSON(needs.runner.outputs.runner_config) }}
-    # SECURITY (M8): gate the entire prod pipeline behind the "production" GitHub
-    # Environment. deploy-s3, build, and deploy-app all depend (transitively) on
-    # this job, so adding required reviewers to the "production" environment
-    # (Settings → Environments → production) forces a manual approval before any
-    # prod AWS mutation. With no protection rules configured this is a no-op.
-    environment: production
     outputs:
       deployment_id: ${{ steps.deployment.outputs.deployment_id }}
     steps:
