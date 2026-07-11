@@ -1,8 +1,8 @@
 'use client'
 
-import { useToast } from '@/lib/core'
-import { customTheme } from '@/lib/core/theme'
 import { client, opCreateSubgraph } from '@robosystems/client'
+import { useToast } from '@robosystems/core'
+import { customTheme } from '@robosystems/core/theme'
 import { Alert, Button, Card, Progress } from 'flowbite-react'
 import { useState } from 'react'
 import {

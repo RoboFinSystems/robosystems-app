@@ -1,4 +1,4 @@
-import { customTheme } from '@/lib/core'
+import { customTheme } from '@robosystems/core'
 import { Alert, Label, Textarea, TextInput, ToggleSwitch } from 'flowbite-react'
 import { HiInformationCircle } from 'react-icons/hi'
 import type { EntityCreate } from '../types'

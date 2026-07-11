@@ -1,6 +1,7 @@
 'use client'
 
 import GraphLimitModal from '@/components/app/GraphLimitModal'
+import * as SDK from '@robosystems/client'
 import {
   EmptyState,
   PageHeader,
@@ -9,8 +10,7 @@ import {
   useApiError,
   useOrg,
   useToast,
-} from '@/lib/core'
-import * as SDK from '@robosystems/client'
+} from '@robosystems/core'
 import { format } from 'date-fns'
 import {
   Alert,

@@ -1,15 +1,15 @@
 'use client'
 
+import { normalizeLocalUrl } from '@/lib/utils'
+import Editor from '@monaco-editor/react'
+import * as SDK from '@robosystems/client'
 import {
   ConfirmModal,
   EmptyState,
   PageHeader,
   PageLayout,
   useGraphContext,
-} from '@/lib/core'
-import { normalizeLocalUrl } from '@/lib/utils'
-import Editor from '@monaco-editor/react'
-import * as SDK from '@robosystems/client'
+} from '@robosystems/core'
 import {
   Alert,
   Badge,

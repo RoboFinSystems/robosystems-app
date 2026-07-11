@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { GraphTypeStep } from '../steps/GraphTypeStep'
 
 // Mock the theme
-vi.mock('@/lib/core', () => ({
+vi.mock('@robosystems/core', () => ({
   customTheme: {
     card: {},
   },

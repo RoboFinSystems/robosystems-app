@@ -1,12 +1,12 @@
-import { useUserLimits } from '@/lib/core'
 import * as RoboClient from '@robosystems/client'
+import { useUserLimits } from '@robosystems/core'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { useRouter } from 'next/navigation'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { GraphsContent } from '../content'
 
 // Mock dependencies
-vi.mock('@/lib/core', () => ({
+vi.mock('@robosystems/core', () => ({
   useUserLimits: vi.fn(),
   useToast: vi.fn(() => ({
     showSuccess: vi.fn(),

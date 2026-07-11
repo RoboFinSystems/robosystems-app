@@ -1,5 +1,5 @@
 import { getAllPosts } from '@/lib/blog'
-import { getAllCoverage } from '@/lib/core/research'
+import { getAllCoverage } from '@robosystems/core/research'
 import type { MetadataRoute } from 'next'
 
 /** Newest valid date in a list, or `now` when none — keeps hub `lastmod` honest. */

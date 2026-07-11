@@ -1,6 +1,6 @@
 'use client'
 
-import { customTheme } from '@/lib/core'
+import { customTheme } from '@robosystems/core'
 import { Button, Modal } from 'flowbite-react'
 import { useState } from 'react'
 import { HiPlus } from 'react-icons/hi'

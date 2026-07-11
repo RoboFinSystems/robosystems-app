@@ -5,11 +5,11 @@ import {
   ServiceOfferingsProvider,
   sidebarCookie,
   SidebarProvider,
-} from '@/lib/core'
+} from '@robosystems/core'
 import {
   getGraphSelection,
   persistGraphSelection,
-} from '@/lib/core/actions/graph-actions'
+} from '@robosystems/core/actions/graph-actions'
 import type { PropsWithChildren } from 'react'
 import { LayoutWrapper } from './layout-wrapper'
 

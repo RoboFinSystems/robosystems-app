@@ -20,7 +20,7 @@ vi.mock('../GraphCreationWizard', () => ({
 }))
 
 // Mock the theme
-vi.mock('@/lib/core', () => ({
+vi.mock('@robosystems/core', () => ({
   customTheme: {
     button: {},
     modal: {},

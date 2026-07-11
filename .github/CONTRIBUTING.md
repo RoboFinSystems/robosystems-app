@@ -455,24 +455,19 @@ Use Command Palette > `Tasks: Run Task` for:
 - **Test All**: Run all quality checks
 - **Create Feature**: Create feature branch
 - **Create PR**: Create pull request
-- **Core Pull/Push**: Manage core subtree
 
 ## Core Library Management
 
-The `/src/lib/core` directory is a git subtree shared across RoboSystems apps:
+Shared components come from the [`@robosystems/core`](https://www.npmjs.com/package/@robosystems/core) npm package, developed in [robosystems-core](https://github.com/RoboFinSystems/robosystems-core):
 
 ```bash
-# Pull latest core changes
-npm run core:pull
-
-# Push core changes (coordinate with team)
-npm run core:push
-
-# Initial subtree setup (rarely needed)
-npm run core:add
+# Adopt a new core release
+npm install @robosystems/core@<version>
 ```
 
-**Important**: Core library changes affect multiple applications. Coordinate with the team before pushing changes.
+Core changes are made in the robosystems-core repository (test there with `npm run test:all`, validate in an app with a `pack:local` tarball), released to npm through its CI pipeline, then adopted here with a deliberate version bump.
+
+**Important**: Core library changes affect multiple applications. Coordinate with the team before releasing.
 
 ## Questions and Support
 

@@ -8,6 +8,7 @@ const config = {
     './app/**/*.{ts,tsx,mdx}',
     './components/**/*.{ts,tsx,mdx}',
     'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
+    'node_modules/@robosystems/core/**/*.js',
     '.flowbite-react/class-list.json',
   ],
   darkMode: 'class',

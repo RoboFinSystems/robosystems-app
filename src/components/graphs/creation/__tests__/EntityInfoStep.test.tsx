@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { EntityInfoStep } from '../steps/EntityInfoStep'
 
 // Mock the theme
-vi.mock('@/lib/core', () => ({
+vi.mock('@robosystems/core', () => ({
   customTheme: {
     textInput: {},
     textarea: {},

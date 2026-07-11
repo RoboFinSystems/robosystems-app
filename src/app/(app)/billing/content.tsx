@@ -3,6 +3,7 @@
 import CancelSubscriptionModal, {
   type CancelMode,
 } from '@/components/app/CancelSubscriptionModal'
+import * as SDK from '@robosystems/client'
 import {
   LoadingState,
   PageHeader,
@@ -12,10 +13,12 @@ import {
   useOrg,
   useServiceOfferings,
   useToast,
-} from '@/lib/core'
-import { fetchGraphTiers, type GraphTier } from '@/lib/core/lib/graph-tiers'
-import { useTaskMonitoring } from '@/lib/core/task-monitoring/hooks'
-import * as SDK from '@robosystems/client'
+} from '@robosystems/core'
+import {
+  fetchGraphTiers,
+  type GraphTier,
+} from '@robosystems/core/lib/graph-tiers'
+import { useTaskMonitoring } from '@robosystems/core/task-monitoring/hooks'
 import { format } from 'date-fns'
 import {
   Alert,

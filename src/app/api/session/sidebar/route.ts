@@ -1,4 +1,4 @@
-import type { SidebarCookie } from '@/lib/core'
+import type { SidebarCookie } from '@robosystems/core'
 import { cookies } from 'next/headers'
 import type { NextRequest } from 'next/server'
 

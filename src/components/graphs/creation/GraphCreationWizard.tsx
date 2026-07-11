@@ -1,6 +1,6 @@
 'use client'
 
-import { customTheme, useGraphCreation, useOrg } from '@/lib/core'
+import { customTheme, useGraphCreation, useOrg } from '@robosystems/core'
 import { Alert, Button, Card, Progress, Spinner } from 'flowbite-react'
 import { useState } from 'react'
 import { HiArrowLeft, HiArrowRight, HiCheck } from 'react-icons/hi'

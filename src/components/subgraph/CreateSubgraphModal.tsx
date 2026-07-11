@@ -1,7 +1,7 @@
 'use client'
 
-import { customTheme, useToast } from '@/lib/core'
 import { client, opCreateSubgraph } from '@robosystems/client'
+import { customTheme, useToast } from '@robosystems/core'
 import { Button, Label, Textarea, TextInput } from 'flowbite-react'
 import { useState } from 'react'
 import { HiInformationCircle } from 'react-icons/hi'

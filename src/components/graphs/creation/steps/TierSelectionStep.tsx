@@ -1,4 +1,4 @@
-import { customTheme } from '@/lib/core'
+import { customTheme } from '@robosystems/core'
 import {
   fetchGraphCapacity,
   fetchGraphTiers,
@@ -7,7 +7,7 @@ import {
   getTierColor,
   type GraphTier,
   type TierCapacity,
-} from '@/lib/core/lib/graph-tiers'
+} from '@robosystems/core/lib/graph-tiers'
 import { Alert, Badge, Card, Spinner } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import { HiCheckCircle, HiInformationCircle } from 'react-icons/hi'

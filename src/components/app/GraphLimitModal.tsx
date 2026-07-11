@@ -1,6 +1,6 @@
 'use client'
 
-import { customTheme } from '@/lib/core/theme'
+import { customTheme } from '@robosystems/core/theme'
 import { Modal } from 'flowbite-react'
 import GraphLimitForm from './GraphLimitForm'
 

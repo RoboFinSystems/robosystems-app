@@ -3,9 +3,9 @@
 import CancelSubscriptionModal, {
   type CancelMode,
 } from '@/components/app/CancelSubscriptionModal'
-import { StatCard, useToast, useUserLimits } from '@/lib/core'
 import type { GraphInfo } from '@robosystems/client'
 import { getGraphs, opDeleteGraph } from '@robosystems/client'
+import { StatCard, useToast, useUserLimits } from '@robosystems/core'
 import {
   Badge,
   Button,

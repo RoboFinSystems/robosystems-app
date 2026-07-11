@@ -1,5 +1,7 @@
 'use client'
 
+import type { GraphInfo, GraphMetricsResponse } from '@robosystems/client'
+import { getGraphMetrics, getGraphs } from '@robosystems/client'
 import {
   LoadingState,
   PageHeader,
@@ -7,9 +9,7 @@ import {
   StatCard,
   useGraphContext,
   useIsRepository,
-} from '@/lib/core'
-import type { GraphInfo, GraphMetricsResponse } from '@robosystems/client'
-import { getGraphMetrics, getGraphs } from '@robosystems/client'
+} from '@robosystems/core'
 import { Alert, Badge, Card } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'

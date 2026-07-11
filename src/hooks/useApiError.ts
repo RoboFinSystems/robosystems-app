@@ -1,4 +1,4 @@
-import { useToast } from '@/lib/core'
+import { useToast } from '@robosystems/core'
 import { useCallback } from 'react'
 
 interface ApiError {

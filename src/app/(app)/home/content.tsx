@@ -1,13 +1,13 @@
 'use client'
 
+import type { GraphInfo } from '@robosystems/client'
+import { getGraphs } from '@robosystems/client'
 import {
   LoadingState,
   PageHeader,
   PageLayout,
   useGraphContext,
-} from '@/lib/core'
-import type { GraphInfo } from '@robosystems/client'
-import { getGraphs } from '@robosystems/client'
+} from '@robosystems/core'
 import {
   Badge,
   Button,

@@ -1,5 +1,5 @@
 'use client'
-import { Spinner, useUser } from '@/lib/core'
+import { Spinner, useUser } from '@robosystems/core'
 import AllGraphsHomePage from './content'
 
 export default function HomePage() {

@@ -1,6 +1,6 @@
 'use client'
 
-import { GraphFilters, GraphSelectorCore } from '@/lib/core'
+import { GraphFilters, GraphSelectorCore } from '@robosystems/core'
 import { HiCog, HiPencil } from 'react-icons/hi'
 
 export function GraphSelector() {

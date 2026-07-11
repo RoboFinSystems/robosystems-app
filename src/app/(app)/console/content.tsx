@@ -4,7 +4,7 @@ import {
   ConsoleContent,
   useGraphAwareConsoleConfig,
   type ConsoleBranding,
-} from '@/lib/core'
+} from '@robosystems/core'
 
 // RoboSystems is the parent app and sees every graph kind, so the console is
 // fully graph-aware: the example sets live in core (graphAwareConfig) and swap
