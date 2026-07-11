@@ -2,6 +2,23 @@ import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
 export function proxy(request: NextRequest) {
+  // M1: reject requests that bypass CloudFront by hitting the App Runner origin
+  // URL directly. CloudFront injects `X-Origin-Verify` with a shared secret; if
+  // the header doesn't match, refuse. Enforcement is gated on
+  // ORIGIN_VERIFY_ENFORCE (shipped 'false') so the secret + CloudFront header can
+  // roll out first, then enforcement is switched on with no 403 window. Also
+  // fails OPEN when the secret is unset (local dev). App Runner's health check is
+  // exempt via the matcher below (it hits the origin without the header).
+  const originSecret = process.env.ORIGIN_VERIFY_SECRET
+  const enforceOrigin = process.env.ORIGIN_VERIFY_ENFORCE === 'true'
+  if (
+    enforceOrigin &&
+    originSecret &&
+    request.headers.get('x-origin-verify') !== originSecret
+  ) {
+    return new NextResponse('Forbidden', { status: 403 })
+  }
+
   const response = NextResponse.next()
   const isDevelopment = process.env.NODE_ENV === 'development'
 
@@ -141,13 +158,18 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except:
-     * - api routes
+     * Run on all request paths EXCEPT:
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public files (images, icons, etc.)
+     * - api/utilities/health — App Runner's health check hits the origin
+     *   directly, without the CloudFront-injected X-Origin-Verify header, so it
+     *   must be exempt from the M1 origin check.
+     *
+     * NOTE: API routes are intentionally INCLUDED now (except the health check)
+     * so the M1 origin verification covers them too.
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|images|icons).*)',
+    '/((?!_next/static|_next/image|favicon.ico|images|icons|api/utilities/health).*)',
   ],
 }
