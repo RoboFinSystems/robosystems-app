@@ -527,7 +527,7 @@ function SubscriptionsTab({
           : 'Failed to cancel subscription'
 
       if (subscriptionToCancel.resource_type === 'graph') {
-        const response = await SDK.opDeleteGraph({
+        const response = await SDK.deleteGraph({
           path: { graph_id: subscriptionToCancel.resource_id },
           body: {
             confirm: subscriptionToCancel.resource_id,
@@ -630,7 +630,7 @@ function SubscriptionsTab({
 
     try {
       setUpgrading(true)
-      const response = await SDK.opChangeTier({
+      const response = await SDK.changeTier({
         path: { graph_id: subscriptionToUpgrade.resource_id },
         body: {
           new_tier: selectedTier as

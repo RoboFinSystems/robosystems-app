@@ -66,7 +66,7 @@ vi.mock('date-fns', () => ({
   formatDistanceToNow: (date: Date) => '5 minutes ago',
 }))
 vi.mock('@robosystems/client', () => ({
-  opDeleteGraph: vi.fn(() => Promise.resolve({ data: {}, error: null })),
+  deleteGraph: vi.fn(() => Promise.resolve({ data: {}, error: null })),
   getGraphs: vi.fn(() =>
     Promise.resolve({
       data: {
@@ -428,8 +428,8 @@ describe('GraphsContent', () => {
     })
   })
 
-  test('confirming immediate calls opDeleteGraph with at_period_end=false', async () => {
-    const mockOpDeleteGraph = vi.mocked(RoboClient.opDeleteGraph)
+  test('confirming immediate calls deleteGraph with at_period_end=false', async () => {
+    const mockOpDeleteGraph = vi.mocked(RoboClient.deleteGraph)
     mockOpDeleteGraph.mockClear()
 
     render(<GraphsContent />)
@@ -454,8 +454,8 @@ describe('GraphsContent', () => {
     })
   })
 
-  test('confirming period_end calls opDeleteGraph with at_period_end=true', async () => {
-    const mockOpDeleteGraph = vi.mocked(RoboClient.opDeleteGraph)
+  test('confirming period_end calls deleteGraph with at_period_end=true', async () => {
+    const mockOpDeleteGraph = vi.mocked(RoboClient.deleteGraph)
     mockOpDeleteGraph.mockClear()
 
     render(<GraphsContent />)

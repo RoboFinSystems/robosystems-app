@@ -2,12 +2,12 @@
 
 import type { BackupResponse, BackupStatsResponse } from '@robosystems/client'
 import {
+  createBackup,
   getBackupDownloadUrl,
   getBackupStats,
   listBackups,
   listSubgraphs,
-  opCreateBackup,
-  opRestoreBackup,
+  restoreBackup,
 } from '@robosystems/client'
 import {
   EmptyState,
@@ -271,7 +271,7 @@ export default function BackupManagementContent() {
     if (!selectedGraphId) return
 
     try {
-      const response = await opCreateBackup({
+      const response = await createBackup({
         path: { graph_id: selectedGraphId },
         body: {
           backup_format: 'full_dump',
@@ -307,7 +307,7 @@ export default function BackupManagementContent() {
     if (!selectedBackup || !selectedGraphId) return
 
     try {
-      const response = await opRestoreBackup({
+      const response = await restoreBackup({
         path: { graph_id: selectedBackup.graph_id },
         body: {
           backup_id: selectedBackup.backup_id,

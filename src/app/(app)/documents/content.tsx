@@ -6,10 +6,10 @@ import type {
   DocumentListItem,
 } from '@robosystems/client'
 import {
+  deleteDocument,
   getDocument,
+  indexDocument,
   listDocuments,
-  opDeleteDocument,
-  opIndexDocument,
 } from '@robosystems/client'
 import {
   ConfirmModal,
@@ -283,7 +283,7 @@ export function DocumentsPageContent() {
       setSaving(true)
 
       if (isNewDocument) {
-        const response = await opIndexDocument({
+        const response = await indexDocument({
           path: { graph_id: selectedGraphId },
           body: {
             title: editTitle.trim(),
@@ -317,7 +317,7 @@ export function DocumentsPageContent() {
           )
         }
       } else if (selectedDoc) {
-        const response = await opIndexDocument({
+        const response = await indexDocument({
           path: { graph_id: selectedGraphId },
           body: {
             document_id: selectedDoc.id,
@@ -367,7 +367,7 @@ export function DocumentsPageContent() {
     try {
       setDeleting(true)
 
-      const response = await opDeleteDocument({
+      const response = await deleteDocument({
         path: { graph_id: selectedGraphId },
         body: { document_id: deleteTarget.id },
       })

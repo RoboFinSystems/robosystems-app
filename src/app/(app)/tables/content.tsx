@@ -223,7 +223,7 @@ export function TablesContent() {
       setError(null)
 
       // Step 1: Get upload URL (content op — presign is in the envelope result)
-      const uploadUrlResponse = await SDK.opCreateFileUpload({
+      const uploadUrlResponse = await SDK.createFileUpload({
         path: { graph_id: graphId },
         body: {
           table_name: finalTableName,
@@ -255,7 +255,7 @@ export function TablesContent() {
       }
 
       // Step 3: Ingest the uploaded file (content op — file_id in the body)
-      await SDK.opIngestFile({
+      await SDK.ingestFile({
         path: { graph_id: graphId },
         body: {
           file_id: fileId,
@@ -283,7 +283,7 @@ export function TablesContent() {
       setIngesting(true)
       setError(null)
 
-      const response = await SDK.opMaterialize({
+      const response = await SDK.materialize({
         path: { graph_id: graphId },
         body: {
           rebuild: ingestOptions.rebuild,
@@ -314,7 +314,7 @@ export function TablesContent() {
       setDeleting(true)
       setDeleteError(null)
 
-      const response = await SDK.opDeleteFile({
+      const response = await SDK.deleteFile({
         path: { graph_id: graphId },
         body: { file_id: fileToDelete.file_id },
       })
