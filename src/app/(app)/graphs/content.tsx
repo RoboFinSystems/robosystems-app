@@ -4,7 +4,7 @@ import CancelSubscriptionModal, {
   type CancelMode,
 } from '@/components/app/CancelSubscriptionModal'
 import type { GraphInfo } from '@robosystems/client'
-import { getGraphs, opDeleteGraph } from '@robosystems/client'
+import { deleteGraph, getGraphs } from '@robosystems/client'
 import { StatCard, useToast, useUserLimits } from '@robosystems/core'
 import {
   Badge,
@@ -55,7 +55,7 @@ export function GraphsContent() {
     if (!graphToDelete) return
     try {
       setDeleting(true)
-      const response = await opDeleteGraph({
+      const response = await deleteGraph({
         path: { graph_id: graphToDelete.id },
         body: {
           confirm: graphToDelete.id,

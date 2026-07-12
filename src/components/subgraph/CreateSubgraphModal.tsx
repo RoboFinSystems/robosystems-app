@@ -1,6 +1,6 @@
 'use client'
 
-import { client, opCreateSubgraph } from '@robosystems/client'
+import { client, createSubgraph } from '@robosystems/client'
 import { customTheme, useToast } from '@robosystems/core'
 import { Button, Label, Textarea, TextInput } from 'flowbite-react'
 import { useState } from 'react'
@@ -77,7 +77,7 @@ export function CreateSubgraphModal({
       })
 
       // Create the subgraph
-      const response = await opCreateSubgraph({
+      const response = await createSubgraph({
         client,
         path: {
           graph_id: graphId,
