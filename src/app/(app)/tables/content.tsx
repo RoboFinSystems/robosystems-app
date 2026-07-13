@@ -73,7 +73,6 @@ export function TablesContent() {
   const [ingesting, setIngesting] = useState(false)
   const [ingestOptions, setIngestOptions] = useState({
     rebuild: false,
-    ignoreErrors: true,
   })
 
   // Delete state
@@ -287,7 +286,6 @@ export function TablesContent() {
         path: { graph_id: graphId },
         body: {
           rebuild: ingestOptions.rebuild,
-          ignore_errors: ingestOptions.ignoreErrors,
           ...(isEntityGraph && { source: 'extensions' }),
         },
       })
@@ -1416,28 +1414,6 @@ export function TablesContent() {
                 </div>
                 <p className="ml-6 text-xs text-gray-500 dark:text-gray-400">
                   Clear all existing data before ingesting (use with caution)
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="ignoreErrors"
-                    checked={ingestOptions.ignoreErrors}
-                    onChange={(e) =>
-                      setIngestOptions((prev) => ({
-                        ...prev,
-                        ignoreErrors: e.target.checked,
-                      }))
-                    }
-                    disabled={ingesting}
-                  />
-                  <Label htmlFor="ignoreErrors">
-                    Ignore errors during ingestion
-                  </Label>
-                </div>
-                <p className="ml-6 text-xs text-gray-500 dark:text-gray-400">
-                  Continue processing even if some records fail (recommended)
                 </p>
               </div>
 
