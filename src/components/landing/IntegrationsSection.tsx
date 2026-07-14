@@ -43,6 +43,14 @@ export default function IntegrationsSection() {
                 Sync your chart of accounts, transactions, and trial balance.
                 Full OAuth integration with real-time updates.
               </p>
+              <a
+                href="https://quickbooks.intuit.com/partners/affiliates?cid=par_pim_4TcakSEFQs73"
+                target="_blank"
+                rel="sponsored noopener noreferrer"
+                className="mt-3 inline-block text-sm text-green-400 hover:text-green-300"
+              >
+                Need a QuickBooks account? →
+              </a>
             </div>
 
             {/* SEC XBRL */}
