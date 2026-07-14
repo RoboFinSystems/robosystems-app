@@ -44,51 +44,18 @@ import {
   HiTrash,
 } from 'react-icons/hi'
 
+import {
+  formatDate,
+  SOURCE_FILTER_OPTIONS,
+  SourceBadge,
+  TYPE_FILTER_OPTIONS,
+  TypeBadge,
+} from './components/memory-badges'
 import type { MemoryFormValues } from './components/MemoryEditorModal'
 import { MemoryEditorModal } from './components/MemoryEditorModal'
 import { RecallPanel } from './components/RecallPanel'
 
 const PAGE_SIZE = 50
-
-// Freeform in the API; these presets cover the common values.
-const TYPE_FILTER_OPTIONS = ['note', 'fact', 'preference']
-const SOURCE_FILTER_OPTIONS = ['api', 'mcp', 'agent']
-
-const TYPE_BADGE_COLORS: Record<string, string> = {
-  note: 'info',
-  fact: 'success',
-  preference: 'purple',
-}
-
-const SOURCE_BADGE_COLORS: Record<string, string> = {
-  api: 'gray',
-  mcp: 'indigo',
-  agent: 'warning',
-}
-
-function TypeBadge({ memoryType }: { memoryType?: string | null }) {
-  if (!memoryType) return null
-  return (
-    <Badge color={TYPE_BADGE_COLORS[memoryType] || 'gray'} size="sm">
-      {memoryType}
-    </Badge>
-  )
-}
-
-function SourceBadge({ source }: { source?: string | null }) {
-  if (!source) return null
-  return (
-    <Badge color={SOURCE_BADGE_COLORS[source] || 'gray'} size="sm">
-      {source}
-    </Badge>
-  )
-}
-
-function formatDate(iso?: string | null): string {
-  if (!iso) return '—'
-  const date = new Date(iso)
-  return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString()
-}
 
 type View = { mode: 'list' } | { mode: 'detail'; memory: MemoryRecord }
 

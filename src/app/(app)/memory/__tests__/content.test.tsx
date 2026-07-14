@@ -155,6 +155,9 @@ vi.mock('@robosystems/client', () => ({
 
 vi.mock('react-icons/hi', () => ({
   HiArrowLeft: () => <span>Icon</span>,
+  HiArrowRight: () => <span>Icon</span>,
+  HiChevronDown: () => <span>Icon</span>,
+  HiChevronUp: () => <span>Icon</span>,
   HiExclamation: () => <span>Icon</span>,
   HiLightBulb: () => <span>Icon</span>,
   HiPencil: () => <span>Icon</span>,
