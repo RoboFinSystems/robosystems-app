@@ -162,7 +162,7 @@ export function GraphDashboardContent() {
               {isRepository ? 'Repository' : 'Graph'} Metrics
             </h3>
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:grid-cols-3">
             <StatCard
               label="Total Nodes"
               value={formatNumber(data.metrics.total_nodes)}
@@ -172,13 +172,6 @@ export function GraphDashboardContent() {
               label="Relationships"
               value={formatNumber(data.metrics.total_relationships)}
             />
-
-            {!isRepository && (
-              <StatCard
-                label="Storage"
-                value={`${((data.metrics as any).storage_size_gb || 0).toFixed(2)} GB`}
-              />
-            )}
 
             <StatCard
               label="Created"

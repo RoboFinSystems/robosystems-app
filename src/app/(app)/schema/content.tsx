@@ -40,21 +40,6 @@ interface SchemaProperty {
   unique?: boolean
 }
 
-interface SchemaConstraint {
-  id: string
-  type: 'unique' | 'exists' | 'node_key'
-  label: string
-  properties: string[]
-}
-
-interface SchemaIndex {
-  id: string
-  type: 'btree' | 'fulltext' | 'vector'
-  label: string
-  properties: string[]
-  state: 'online' | 'building' | 'failed'
-}
-
 export function SchemaEditorContent() {
   const { state: graphState } = useGraphContext()
   const graphId = graphState.currentGraphId
@@ -66,8 +51,6 @@ export function SchemaEditorContent() {
   const [relationshipTypes, setRelationshipTypes] = useState<
     RelationshipType[]
   >([])
-  const [constraints, setConstraints] = useState<SchemaConstraint[]>([])
-  const [indexes, setIndexes] = useState<SchemaIndex[]>([])
   const [rawSchema, setRawSchema] = useState('')
 
   // UI state
@@ -133,8 +116,6 @@ export function SchemaEditorContent() {
 
       setNodeLabels(labels)
       setRelationshipTypes(relationships)
-      setConstraints(schemaContent?.constraints || [])
-      setIndexes(schemaContent?.indexes || [])
 
       // Fetch export schema for the JSON tab (reusable format) and enhance relationships
       try {
@@ -168,8 +149,6 @@ export function SchemaEditorContent() {
           const rawSchemaData = {
             node_labels: labels,
             relationship_types: relationships,
-            constraints: schemaContent?.constraints || [],
-            indexes: schemaContent?.indexes || [],
             node_properties: schemaContent?.node_properties || {},
           }
           setRawSchema(JSON.stringify(rawSchemaData, null, 2))
@@ -183,8 +162,6 @@ export function SchemaEditorContent() {
         const rawSchemaData = {
           node_labels: labels,
           relationship_types: relationships,
-          constraints: schemaContent?.constraints || [],
-          indexes: schemaContent?.indexes || [],
           node_properties: schemaContent?.node_properties || {},
         }
         setRawSchema(JSON.stringify(rawSchemaData, null, 2))
@@ -253,7 +230,7 @@ export function SchemaEditorContent() {
       )}
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4 md:gap-6">
         <StatCard label="Node Labels" value={nodeLabels.length} />
 
         <StatCard label="Relationships" value={relationshipTypes.length} />
@@ -270,11 +247,6 @@ export function SchemaEditorContent() {
               0
             )
           }
-        />
-
-        <StatCard
-          label="Constraints & Indexes"
-          value={constraints.length + indexes.length}
         />
       </div>
 
@@ -489,78 +461,6 @@ export function SchemaEditorContent() {
                 </div>
               )}
             </Card>
-
-            {/* Constraints */}
-            {constraints.length > 0 && (
-              <Card>
-                <div className="mb-4">
-                  <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
-                    Constraints
-                  </h3>
-                </div>
-                <div className="space-y-3">
-                  {constraints.map((constraint) => (
-                    <div
-                      key={constraint.id}
-                      className="rounded-lg border border-gray-200 p-4 dark:border-gray-700"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium text-gray-900 dark:text-white">
-                            {constraint.type.toUpperCase()} on{' '}
-                            {constraint.label}
-                          </h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            Properties: {constraint.properties.join(', ')}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            )}
-
-            {/* Indexes */}
-            {indexes.length > 0 && (
-              <Card>
-                <div className="mb-4">
-                  <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
-                    Indexes
-                  </h3>
-                </div>
-                <div className="space-y-3">
-                  {indexes.map((index) => (
-                    <div
-                      key={index.id}
-                      className="rounded-lg border border-gray-200 p-4 dark:border-gray-700"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium text-gray-900 dark:text-white">
-                            {index.type.toUpperCase()} on {index.label}
-                          </h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            Properties: {index.properties.join(', ')}
-                          </p>
-                        </div>
-                        <Badge
-                          color={
-                            index.state === 'online'
-                              ? 'success'
-                              : index.state === 'building'
-                                ? 'warning'
-                                : 'failure'
-                          }
-                        >
-                          {index.state}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            )}
           </div>
         </Tabs.Item>
 
