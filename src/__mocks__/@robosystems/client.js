@@ -125,6 +125,14 @@ export const cancelSharedRepositorySubscription = vi.fn()
 export const getSharedRepositoryCredits = vi.fn()
 export const getRepositoryCredits = vi.fn()
 
+// Memory functions
+export const listMemories = vi.fn()
+export const getMemory = vi.fn()
+export const recallMemory = vi.fn()
+export const remember = vi.fn()
+export const updateMemory = vi.fn()
+export const forget = vi.fn()
+
 // Client
 export const client = mockClient
 
