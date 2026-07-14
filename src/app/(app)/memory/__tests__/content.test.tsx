@@ -46,6 +46,94 @@ vi.mock('@robosystems/core', () => ({
         </button>
       </div>
     ) : null,
+  MarkdownProse: ({ children }: any) => (
+    <div data-testid="markdown-prose">{children}</div>
+  ),
+  TagInput: ({ tags, onChange, id }: any) => (
+    <input
+      data-testid="tag-input"
+      id={id}
+      value={tags.join(',')}
+      onChange={(e: any) =>
+        onChange(e.target.value ? e.target.value.split(',') : [])
+      }
+    />
+  ),
+  CategoryInput: ({ value, onChange, id }: any) => (
+    <input
+      data-testid="category-input"
+      id={id}
+      value={value}
+      onChange={(e: any) => onChange(e.target.value)}
+    />
+  ),
+  SearchBar: ({
+    query,
+    onQueryChange,
+    onSearch,
+    placeholder,
+    buttonLabel = 'Search',
+    onClear,
+    showClear,
+  }: any) => (
+    <div>
+      <input
+        placeholder={placeholder}
+        value={query}
+        onChange={(e: any) => onQueryChange(e.target.value)}
+        onKeyDown={(e: any) => {
+          if (e.key === 'Enter') onSearch()
+        }}
+      />
+      <button onClick={onSearch}>{buttonLabel}</button>
+      {onClear && showClear ? <button onClick={onClear}>Clear</button> : null}
+    </div>
+  ),
+  SearchHitCard: ({ hit, onClick }: any) => (
+    <button type="button" onClick={onClick}>
+      <span>{hit.score.toFixed(2)}</span>
+      {hit.tags?.map((tag: string) => (
+        <span key={tag}>{tag}</span>
+      ))}
+      <p>{hit.snippet}</p>
+    </button>
+  ),
+  SearchResultsMeta: ({ children, total, query }: any) => (
+    <p>{children ?? `${total} results for "${query}"`}</p>
+  ),
+}))
+
+vi.mock('@/components/editor/EditorModal', () => ({
+  EditorModal: ({
+    show,
+    title,
+    onSave,
+    onClose,
+    canSave,
+    saving,
+    saveLabel = 'Save',
+    children,
+  }: any) =>
+    show ? (
+      <div data-testid="editor-modal">
+        <span>{title}</span>
+        {children}
+        <button onClick={onSave} disabled={saving || !canSave}>
+          {saveLabel}
+        </button>
+        <button onClick={onClose}>Close Editor</button>
+      </div>
+    ) : null,
+}))
+
+vi.mock('@/components/editor/MarkdownEditor', () => ({
+  MarkdownEditor: ({ value, onChange }: any) => (
+    <textarea
+      data-testid="markdown-editor"
+      value={value}
+      onChange={(e: any) => onChange(e.target.value)}
+    />
+  ),
 }))
 
 vi.mock('@robosystems/core/hooks/use-toast', () => ({
@@ -133,6 +221,7 @@ const mockUseIsRepository = vi.mocked(useIsRepository)
 const mockListMemories = vi.mocked(RoboClient.listMemories)
 const mockRecallMemory = vi.mocked(RoboClient.recallMemory)
 const mockRemember = vi.mocked(RoboClient.remember)
+const mockUpdateMemory = vi.mocked(RoboClient.updateMemory)
 const mockForget = vi.mocked(RoboClient.forget)
 
 const MEMORY_FIXTURE = {
@@ -255,7 +344,7 @@ describe('MemoryPageContent', () => {
     expect(mockListMemories).toHaveBeenCalledTimes(2)
   })
 
-  test('creates a memory via the remember operation', async () => {
+  test('creates a memory via the editor modal', async () => {
     mockRemember.mockResolvedValue({
       data: { status: 'completed' },
       error: undefined,
@@ -268,10 +357,10 @@ describe('MemoryPageContent', () => {
     })
     fireEvent.click(screen.getByText('New Memory'))
 
-    const textarea = screen.getByPlaceholderText(
-      'What should be remembered about this graph?'
-    )
-    fireEvent.change(textarea, {
+    const editorModal = screen.getByTestId('editor-modal')
+    expect(within(editorModal).getByText('New Memory')).toBeInTheDocument()
+
+    fireEvent.change(screen.getByTestId('markdown-editor'), {
       target: { value: 'Quarter close starts on the 25th' },
     })
     fireEvent.click(screen.getByText('Remember'))
@@ -288,8 +377,68 @@ describe('MemoryPageContent', () => {
       })
     })
     expect(mockShowSuccess).toHaveBeenCalledWith('Memory stored', 5000)
-    // Initial fetch + refetch after create
+    // Modal closes and the list refetches (initial fetch + post-create).
+    await waitFor(() => {
+      expect(screen.queryByTestId('editor-modal')).not.toBeInTheDocument()
+    })
     expect(mockListMemories).toHaveBeenCalledTimes(2)
+  })
+
+  test('edits a memory via the editor modal, pre-filled from the record', async () => {
+    mockListResponse([MEMORY_FIXTURE])
+    mockUpdateMemory.mockResolvedValue({
+      data: { status: 'completed' },
+      error: undefined,
+    } as any)
+
+    render(<MemoryPageContent />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Acme pays invoices net 30')).toBeInTheDocument()
+    })
+
+    const editTooltip = screen.getByTitle('Edit')
+    fireEvent.click(within(editTooltip).getByRole('button'))
+
+    const editorTextarea = screen.getByTestId('markdown-editor')
+    expect(editorTextarea).toHaveValue('Acme pays invoices net 30')
+
+    fireEvent.change(editorTextarea, {
+      target: { value: 'Acme pays invoices net 45' },
+    })
+    fireEvent.click(screen.getByText('Save'))
+
+    await waitFor(() => {
+      expect(mockUpdateMemory).toHaveBeenCalledWith({
+        path: { graph_id: 'kg_test' },
+        body: {
+          memory_id: 'mem_1',
+          text: 'Acme pays invoices net 45',
+          memory_type: 'fact',
+          tags: ['billing', 'acme'],
+          source_ref: null,
+        },
+      })
+    })
+    expect(mockShowSuccess).toHaveBeenCalledWith('Memory updated', 5000)
+  })
+
+  test('renders the memory detail through the markdown viewer', async () => {
+    mockListResponse([MEMORY_FIXTURE])
+
+    render(<MemoryPageContent />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Acme pays invoices net 30')).toBeInTheDocument()
+    })
+
+    fireEvent.click(screen.getByText('Acme pays invoices net 30'))
+
+    await waitFor(() => {
+      expect(screen.getByTestId('markdown-prose')).toHaveTextContent(
+        'Acme pays invoices net 30'
+      )
+    })
   })
 
   test('forgets a memory via the confirm modal', async () => {

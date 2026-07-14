@@ -1,6 +1,5 @@
 'use client'
 
-import type { Monaco } from '@monaco-editor/react'
 import type {
   DocumentDetailResponse,
   DocumentListItem,
@@ -15,23 +14,15 @@ import {
   ConfirmModal,
   EmptyState,
   LoadingState,
+  MarkdownProse,
   PageHeader,
   PageLayout,
   useGraphContext,
   useIsRepository,
 } from '@robosystems/core'
 import { useToast } from '@robosystems/core/hooks/use-toast'
-import {
-  Badge,
-  Button,
-  Card,
-  Label,
-  Spinner,
-  TextInput,
-  Tooltip,
-} from 'flowbite-react'
-import dynamic from 'next/dynamic'
-import { useCallback, useEffect, useState } from 'react'
+import { Badge, Button, Card, Label, Spinner, Tooltip } from 'flowbite-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   HiArrowLeft,
   HiDocumentAdd,
@@ -40,14 +31,11 @@ import {
   HiPencil,
   HiPlus,
   HiRefresh,
-  HiSave,
   HiTrash,
-  HiX,
 } from 'react-icons/hi'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 
-const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false })
+import type { DocumentFormValues } from './components/DocumentEditorModal'
+import { DocumentEditorModal } from './components/DocumentEditorModal'
 
 // --- Source Type Badge ---
 
@@ -75,37 +63,8 @@ function SourceBadge({ sourceType }: { sourceType: string }) {
   )
 }
 
-// --- Markdown Viewer ---
-
-function MarkdownViewer({ content }: { content: string }) {
-  return (
-    <div className="prose prose-base dark:prose-dark max-w-none px-6 py-4">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
-    </div>
-  )
-}
-
-// --- Monaco Editor Options ---
-
-const EDITOR_OPTIONS = {
-  minimap: { enabled: false },
-  fontSize: 14,
-  lineNumbers: 'on' as const,
-  scrollBeyondLastLine: false,
-  wordWrap: 'on' as const,
-  automaticLayout: true,
-  padding: { top: 12, bottom: 12 },
-  renderLineHighlight: 'all' as const,
-  cursorBlinking: 'smooth' as const,
-  cursorSmoothCaretAnimation: 'on' as const,
-  smoothScrolling: true,
-}
-
-async function setupMonacoTheme(monaco: Monaco) {
-  const { robosystemsTheme } = await import('@/lib/monaco-theme')
-  monaco.editor.defineTheme('robosystems', robosystemsTheme)
-  monaco.editor.setTheme('robosystems')
-}
+/** Create/edit happens in a modal over whichever view is active. */
+type EditorState = { open: boolean; doc?: DocumentDetailResponse }
 
 // --- Main Component ---
 
@@ -121,20 +80,15 @@ export function DocumentsPageContent() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Detail/editor view state
+  // Detail (viewer) state
   const [selectedDoc, setSelectedDoc] = useState<DocumentDetailResponse | null>(
     null
   )
   const [detailLoading, setDetailLoading] = useState(false)
-  const [isEditMode, setIsEditMode] = useState(false)
-  const [isNewDocument, setIsNewDocument] = useState(false)
-  const [editContent, setEditContent] = useState('')
-  const [editTitle, setEditTitle] = useState('')
-  const [editTags, setEditTags] = useState<string[]>([])
-  const [editFolder, setEditFolder] = useState('')
-  const [tagInput, setTagInput] = useState('')
+
+  // Editor modal state
+  const [editor, setEditor] = useState<EditorState>({ open: false })
   const [saving, setSaving] = useState(false)
-  const [hasChanges, setHasChanges] = useState(false)
 
   // Delete confirm state
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -145,10 +99,23 @@ export function DocumentsPageContent() {
 
   // --- Computed ---
 
-  const isInDetailView = selectedDoc !== null || detailLoading || isNewDocument
-  const canEdit =
-    !isRepository &&
-    (isNewDocument || selectedDoc?.source_type === 'uploaded_doc')
+  const isInDetailView = selectedDoc !== null || detailLoading
+  const canEdit = !isRepository && selectedDoc?.source_type === 'uploaded_doc'
+
+  // Suggestions come from the already-loaded document list.
+  const folderSuggestions = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          documents.map((d) => d.folder).filter((f): f is string => Boolean(f))
+        )
+      ),
+    [documents]
+  )
+  const tagSuggestions = useMemo(
+    () => Array.from(new Set(documents.flatMap((d) => d.tags ?? []))),
+    [documents]
+  )
 
   // --- Data Fetching ---
 
@@ -192,165 +159,93 @@ export function DocumentsPageContent() {
   // --- Navigation ---
 
   const goBackToList = () => {
-    if (isEditMode && hasChanges) {
-      if (!confirm('You have unsaved changes. Discard them?')) return
-    }
     setSelectedDoc(null)
-    setIsEditMode(false)
-    setIsNewDocument(false)
-    setHasChanges(false)
   }
 
-  const handleSelectDocument = async (
-    doc: DocumentListItem
-  ): Promise<boolean> => {
-    if (!selectedGraphId) return false
-
-    setDetailLoading(true)
-    setIsEditMode(false)
-    setIsNewDocument(false)
-    setHasChanges(false)
-
+  const fetchDocumentDetail = async (
+    documentId: string
+  ): Promise<DocumentDetailResponse | null> => {
+    if (!selectedGraphId) return null
     try {
       const response = await getDocument({
-        path: { graph_id: selectedGraphId, document_id: doc.id },
+        path: { graph_id: selectedGraphId, document_id: documentId },
       })
-
       if (!response.data) {
         throw new Error('Failed to load document')
       }
-
-      setSelectedDoc(response.data)
-      setEditContent(response.data.content)
-      setEditTitle(response.data.title)
-      setEditTags(response.data.tags || [])
-      setEditFolder(response.data.folder || '')
-      return true
+      return response.data
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Failed to load document'
       showError(msg, 5000)
-      return false
-    } finally {
-      setDetailLoading(false)
+      return null
     }
   }
+
+  const handleSelectDocument = async (doc: DocumentListItem) => {
+    setDetailLoading(true)
+    const detail = await fetchDocumentDetail(doc.id)
+    if (detail) {
+      setSelectedDoc(detail)
+    }
+    setDetailLoading(false)
+  }
+
+  // --- Editor entry points ---
 
   const handleNewDocument = () => {
-    setSelectedDoc(null)
-    setIsNewDocument(true)
-    setIsEditMode(true)
-    setEditTitle('')
-    setEditContent('')
-    setEditTags([])
-    setEditFolder('')
-    setTagInput('')
-    setHasChanges(false)
+    setEditor({ open: true })
   }
 
-  // --- Toggle Edit Mode ---
-
-  const enterEditMode = () => {
-    if (!selectedDoc) return
-    setEditContent(selectedDoc.content)
-    setEditTitle(selectedDoc.title)
-    setEditTags(selectedDoc.tags || [])
-    setEditFolder(selectedDoc.folder || '')
-    setTagInput('')
-    setHasChanges(false)
-    setIsEditMode(true)
-  }
-
-  const exitEditMode = () => {
-    if (hasChanges) {
-      if (!confirm('You have unsaved changes. Discard them?')) return
+  const handleEditFromList = async (doc: DocumentListItem) => {
+    const detail = await fetchDocumentDetail(doc.id)
+    if (detail) {
+      setEditor({ open: true, doc: detail })
     }
-    if (isNewDocument) {
-      setIsNewDocument(false)
-      setIsEditMode(false)
-      setSelectedDoc(null)
-    } else {
-      setIsEditMode(false)
-    }
-    setHasChanges(false)
   }
 
   // --- Save Handler (create or update) ---
 
-  const handleSave = async () => {
-    if (!selectedGraphId || !editTitle.trim() || !editContent.trim()) return
+  const handleSave = async (values: DocumentFormValues) => {
+    if (!selectedGraphId) return
+    const editingDoc = editor.doc
 
     try {
       setSaving(true)
 
-      if (isNewDocument) {
-        const response = await indexDocument({
-          path: { graph_id: selectedGraphId },
-          body: {
-            title: editTitle.trim(),
-            content: editContent,
-            tags: editTags.length > 0 ? editTags : null,
-            folder: editFolder.trim() || null,
-          },
-        })
+      const response = await indexDocument({
+        path: { graph_id: selectedGraphId },
+        body: {
+          ...(editingDoc ? { document_id: editingDoc.id } : {}),
+          title: values.title,
+          content: values.content,
+          tags: values.tags.length > 0 ? values.tags : null,
+          folder: values.folder || null,
+        },
+      })
 
-        if (response.data) {
-          const result = (response.data as any).result
-          showSuccess(
-            `Created "${editTitle.trim()}" (${result.sections_indexed} sections)`,
-            5000
-          )
-
-          const created = await getDocument({
-            path: { graph_id: selectedGraphId, document_id: result.id },
-          })
-          if (created.data) {
-            setSelectedDoc(created.data)
-          }
-
-          setIsNewDocument(false)
-          setIsEditMode(false)
-          setHasChanges(false)
-          fetchDocuments()
-        } else {
-          throw new Error(
-            response.error ? JSON.stringify(response.error) : 'Upload failed'
-          )
-        }
-      } else if (selectedDoc) {
-        const response = await indexDocument({
-          path: { graph_id: selectedGraphId },
-          body: {
-            document_id: selectedDoc.id,
-            title: editTitle.trim() || undefined,
-            content: editContent || undefined,
-            tags: editTags.length > 0 ? editTags : null,
-            folder: editFolder.trim() || null,
-          },
-        })
-
-        if (response.data) {
-          const result = (response.data as any).result
-          showSuccess(
-            `Saved "${editTitle.trim()}" (${result.sections_indexed} sections)`,
-            5000
-          )
-
-          const refreshed = await getDocument({
-            path: { graph_id: selectedGraphId, document_id: selectedDoc.id },
-          })
-          if (refreshed.data) {
-            setSelectedDoc(refreshed.data)
-          }
-
-          setIsEditMode(false)
-          setHasChanges(false)
-          fetchDocuments()
-        } else {
-          throw new Error(
-            response.error ? JSON.stringify(response.error) : 'Save failed'
-          )
-        }
+      if (!response.data) {
+        throw new Error(
+          response.error ? JSON.stringify(response.error) : 'Save failed'
+        )
       }
+
+      const result = (response.data as any).result
+      showSuccess(
+        `${editingDoc ? 'Saved' : 'Created'} "${values.title}" (${result.sections_indexed} sections)`,
+        5000
+      )
+      setEditor({ open: false })
+
+      // Show the created document, or refresh the open detail view.
+      if (!editingDoc) {
+        const created = await fetchDocumentDetail(result.id)
+        if (created) setSelectedDoc(created)
+      } else if (selectedDoc?.id === editingDoc.id) {
+        const refreshed = await fetchDocumentDetail(editingDoc.id)
+        if (refreshed) setSelectedDoc(refreshed)
+      }
+
+      fetchDocuments()
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Save failed'
       showError(msg, 8000)
@@ -379,7 +274,6 @@ export function DocumentsPageContent() {
 
         if (selectedDoc?.id === deleteTarget.id) {
           setSelectedDoc(null)
-          setIsEditMode(false)
         }
 
         fetchDocuments()
@@ -394,16 +288,19 @@ export function DocumentsPageContent() {
     }
   }
 
-  // --- Tag Input Handler ---
+  // --- Editor Modal (rendered in both list and detail views) ---
 
-  const handleAddTag = () => {
-    const val = tagInput.trim().toLowerCase()
-    if (val && !editTags.includes(val)) {
-      setEditTags([...editTags, val])
-      setHasChanges(true)
-    }
-    setTagInput('')
-  }
+  const editorModal = (
+    <DocumentEditorModal
+      show={editor.open}
+      initial={editor.doc}
+      saving={saving}
+      folderSuggestions={folderSuggestions}
+      tagSuggestions={tagSuggestions}
+      onSubmit={handleSave}
+      onClose={() => setEditor({ open: false })}
+    />
+  )
 
   // --- Loading State ---
 
@@ -455,11 +352,9 @@ export function DocumentsPageContent() {
     )
   }
 
-  // --- Document Detail / Editor View ---
+  // --- Document Detail (Viewer) View ---
 
   if (isInDetailView) {
-    const displayTitle = isEditMode ? editTitle : selectedDoc?.title || ''
-
     return (
       <div className="mx-auto flex h-[calc(100vh-64px)] max-w-7xl flex-col gap-4 overflow-hidden p-6">
         {/* Header */}
@@ -474,175 +369,84 @@ export function DocumentsPageContent() {
               <HiArrowLeft className="mr-1 h-4 w-4" />
               Back
             </Button>
-            {isEditMode ? (
-              <TextInput
-                value={editTitle}
-                onChange={(e) => {
-                  setEditTitle(e.target.value)
-                  setHasChanges(true)
-                }}
-                placeholder="Document title..."
-                className="flex-1"
-              />
-            ) : (
-              <h1 className="min-w-0 flex-1 text-2xl font-bold text-gray-900 dark:text-white">
-                {displayTitle}
-              </h1>
-            )}
+            <h1 className="min-w-0 flex-1 text-2xl font-bold text-gray-900 dark:text-white">
+              {selectedDoc?.title || ''}
+            </h1>
           </div>
-          {canEdit && (
+          {canEdit && selectedDoc && (
             <div className="flex flex-shrink-0 items-center gap-2">
-              {isEditMode ? (
-                <>
-                  <Button
-                    size="sm"
-                    onClick={handleSave}
-                    disabled={
-                      saving || !editTitle.trim() || !editContent.trim()
-                    }
-                  >
-                    {saving ? (
-                      <>
-                        <Spinner size="sm" className="mr-2 text-white" />
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        <HiSave className="mr-1 h-4 w-4" />
-                        Save
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    size="sm"
-                    color="gray"
-                    onClick={exitEditMode}
-                    disabled={saving}
-                  >
-                    Cancel
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button size="sm" color="gray" onClick={enterEditMode}>
-                    <HiPencil className="mr-1 h-4 w-4" />
-                    Edit
-                  </Button>
-                  <Button
-                    size="sm"
-                    color="gray"
-                    onClick={() => {
-                      const listItem = documents.find(
-                        (d) => d.id === selectedDoc?.id
-                      )
-                      if (listItem) {
-                        setDeleteTarget(listItem)
-                        setShowDeleteModal(true)
-                      }
-                    }}
-                  >
-                    <HiTrash className="mr-1 h-4 w-4 text-red-500" />
-                    Delete
-                  </Button>
-                </>
-              )}
+              <Button
+                size="sm"
+                color="gray"
+                onClick={() => setEditor({ open: true, doc: selectedDoc })}
+              >
+                <HiPencil className="mr-1 h-4 w-4" />
+                Edit
+              </Button>
+              <Button
+                size="sm"
+                color="gray"
+                onClick={() => {
+                  const listItem = documents.find(
+                    (d) => d.id === selectedDoc.id
+                  )
+                  if (listItem) {
+                    setDeleteTarget(listItem)
+                    setShowDeleteModal(true)
+                  }
+                }}
+              >
+                <HiTrash className="mr-1 h-4 w-4 text-red-500" />
+                Delete
+              </Button>
             </div>
           )}
         </div>
 
         {/* Properties Bar */}
-        <div className="space-y-2 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-zinc-800/50">
-          {/* Row 1: Folder */}
-          <div className="flex items-center gap-4">
-            <span className="w-12 flex-shrink-0 text-xs text-gray-500 dark:text-gray-400">
-              Folder
-            </span>
-            {isEditMode ? (
-              <TextInput
-                sizing="sm"
-                value={editFolder}
-                onChange={(e) => {
-                  setEditFolder(e.target.value)
-                  setHasChanges(true)
-                }}
-                placeholder="optional"
-                className="w-28"
-              />
-            ) : selectedDoc?.folder ? (
-              <Badge color="gray" size="sm">
-                {selectedDoc.folder}
-              </Badge>
-            ) : (
-              <span className="text-xs text-gray-400">none</span>
-            )}
-            <div className="flex-1" />
-            {!isNewDocument && selectedDoc && (
+        {selectedDoc && (
+          <div className="space-y-2 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-zinc-800/50">
+            {/* Row 1: Folder */}
+            <div className="flex items-center gap-4">
+              <span className="w-12 flex-shrink-0 text-xs text-gray-500 dark:text-gray-400">
+                Folder
+              </span>
+              {selectedDoc.folder ? (
+                <Badge color="gray" size="sm">
+                  {selectedDoc.folder}
+                </Badge>
+              ) : (
+                <span className="text-xs text-gray-400">none</span>
+              )}
+              <div className="flex-1" />
               <SourceBadge sourceType={selectedDoc.source_type} />
-            )}
-            {!isEditMode && selectedDoc && (
               <span className="text-xs text-gray-500 dark:text-gray-400">
                 {selectedDoc.sections_indexed} section
                 {selectedDoc.sections_indexed !== 1 ? 's' : ''}
               </span>
-            )}
-          </div>
-          {/* Row 2: Tags */}
-          <div className="flex flex-wrap items-center gap-4">
-            <span className="w-12 flex-shrink-0 text-xs text-gray-500 dark:text-gray-400">
-              Tags
-            </span>
-            {isEditMode ? (
-              <>
-                {editTags.map((tag) => (
+            </div>
+            {/* Row 2: Tags */}
+            <div className="flex flex-wrap items-center gap-4">
+              <span className="w-12 flex-shrink-0 text-xs text-gray-500 dark:text-gray-400">
+                Tags
+              </span>
+              {selectedDoc.tags && selectedDoc.tags.length > 0 ? (
+                selectedDoc.tags.map((tag) => (
                   <Badge
                     key={tag}
-                    color="info"
+                    color="gray"
                     size="sm"
                     className="whitespace-nowrap"
                   >
                     {tag}
-                    <button
-                      type="button"
-                      className="ml-1 inline-flex items-center"
-                      onClick={() => {
-                        setEditTags(editTags.filter((t) => t !== tag))
-                        setHasChanges(true)
-                      }}
-                    >
-                      <HiX className="h-3 w-3" />
-                    </button>
                   </Badge>
-                ))}
-                <TextInput
-                  sizing="sm"
-                  placeholder="add..."
-                  value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault()
-                      handleAddTag()
-                    }
-                  }}
-                  className="w-24 flex-shrink-0"
-                />
-              </>
-            ) : selectedDoc?.tags && selectedDoc.tags.length > 0 ? (
-              selectedDoc.tags.map((tag) => (
-                <Badge
-                  key={tag}
-                  color="gray"
-                  size="sm"
-                  className="whitespace-nowrap"
-                >
-                  {tag}
-                </Badge>
-              ))
-            ) : (
-              <span className="text-xs text-gray-400">none</span>
-            )}
+                ))
+              ) : (
+                <span className="text-xs text-gray-400">none</span>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Content Area */}
         <Card className="min-h-0 flex-1">
@@ -650,27 +454,55 @@ export function DocumentsPageContent() {
             <div className="flex h-full items-center justify-center">
               <Spinner size="lg" />
             </div>
-          ) : isEditMode ? (
-            <div className="h-full">
-              <Editor
-                height="100%"
-                language="markdown"
-                value={editContent}
-                onChange={(value) => {
-                  setEditContent(value || '')
-                  setHasChanges(true)
-                }}
-                beforeMount={setupMonacoTheme}
-                options={EDITOR_OPTIONS}
-              />
-            </div>
           ) : selectedDoc ? (
             <div className="h-full overflow-y-auto">
-              <MarkdownViewer content={selectedDoc.content} />
+              <MarkdownProse className="px-6 py-4">
+                {selectedDoc.content}
+              </MarkdownProse>
             </div>
           ) : null}
         </Card>
 
+        {/* Delete Confirmation Modal */}
+        <ConfirmModal
+          show={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDelete}
+          loading={deleting}
+          title="Delete Document"
+          confirmLabel="Delete"
+          confirmIcon={HiTrash}
+        >
+          <div className="space-y-4">
+            <div className="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
+              <div className="flex gap-2">
+                <HiExclamation className="h-5 w-5 text-red-600" />
+                <div>
+                  <h4 className="font-medium text-red-800 dark:text-red-300">
+                    This action cannot be undone
+                  </h4>
+                  <p className="mt-1 text-sm text-red-700 dark:text-red-400">
+                    This document will be permanently removed.
+                  </p>
+                </div>
+              </div>
+            </div>
+            {deleteTarget && (
+              <div>
+                <Label>Document</Label>
+                <p className="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+                  {deleteTarget.document_title}
+                </p>
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  {deleteTarget.section_count} section
+                  {deleteTarget.section_count !== 1 ? 's' : ''} will be deleted
+                </p>
+              </div>
+            )}
+          </div>
+        </ConfirmModal>
+
+        {editorModal}
         <ToastContainer />
       </div>
     )
@@ -768,10 +600,7 @@ export function DocumentsPageContent() {
                         <Button
                           size="xs"
                           color="gray"
-                          onClick={async () => {
-                            const success = await handleSelectDocument(doc)
-                            if (success) setIsEditMode(true)
-                          }}
+                          onClick={() => handleEditFromList(doc)}
                         >
                           <HiPencil className="h-3.5 w-3.5" />
                         </Button>
@@ -836,6 +665,7 @@ export function DocumentsPageContent() {
         </div>
       </ConfirmModal>
 
+      {editorModal}
       <ToastContainer />
     </PageLayout>
   )

@@ -40,7 +40,7 @@
     "@aws-sdk/client-sns": "^3.1059.0",
     "@monaco-editor/react": "^4.7.0",
     "@robosystems/client": "0.5.1",
-    "@robosystems/core": "^0.4.0",
+    "@robosystems/core": "file:../robosystems-core/robosystems-core-0.4.0.tgz",
     "date-fns": "^4.1.0",
     "flowbite": "^3.1",
     "flowbite-react": "^0.12.5",

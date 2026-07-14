@@ -12,6 +12,7 @@ import {
   ConfirmModal,
   EmptyState,
   LoadingState,
+  MarkdownProse,
   PageHeader,
   PageLayout,
   useGraphContext,
@@ -32,7 +33,7 @@ import {
   TableRow,
   Tooltip,
 } from 'flowbite-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   HiArrowLeft,
   HiExclamation,
@@ -43,8 +44,8 @@ import {
   HiTrash,
 } from 'react-icons/hi'
 
-import type { MemoryFormValues } from './components/MemoryForm'
-import { MemoryForm } from './components/MemoryForm'
+import type { MemoryFormValues } from './components/MemoryEditorModal'
+import { MemoryEditorModal } from './components/MemoryEditorModal'
 import { RecallPanel } from './components/RecallPanel'
 
 const PAGE_SIZE = 50
@@ -89,11 +90,10 @@ function formatDate(iso?: string | null): string {
   return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString()
 }
 
-type View =
-  | { mode: 'list' }
-  | { mode: 'detail'; memory: MemoryRecord }
-  | { mode: 'create' }
-  | { mode: 'edit'; memory: MemoryRecord }
+type View = { mode: 'list' } | { mode: 'detail'; memory: MemoryRecord }
+
+/** Create/edit happens in a modal over whichever view is active. */
+type EditorState = { open: boolean; memory?: MemoryRecord }
 
 type FeatureState = 'unknown' | 'available' | 'unavailable'
 
@@ -117,6 +117,7 @@ export function MemoryPageContent() {
 
   // View state machine
   const [view, setView] = useState<View>({ mode: 'list' })
+  const [editor, setEditor] = useState<EditorState>({ open: false })
   const [saving, setSaving] = useState(false)
 
   // Delete confirm state
@@ -213,7 +214,7 @@ export function MemoryPageContent() {
 
       if (response.data && response.data.status !== 'failed') {
         showSuccess('Memory stored', 5000)
-        setView({ mode: 'list' })
+        setEditor({ open: false })
         fetchMemories()
       } else {
         throw new Error(
@@ -250,15 +251,19 @@ export function MemoryPageContent() {
 
       if (response.data && response.data.status !== 'failed') {
         showSuccess('Memory updated', 5000)
+        setEditor({ open: false })
 
-        const refreshed = await getMemory({
-          path: { graph_id: selectedGraphId, memory_id: memory.id },
-        })
-        setView(
-          refreshed.data
-            ? { mode: 'detail', memory: refreshed.data }
-            : { mode: 'list' }
-        )
+        // Refresh the detail view if it is showing the edited record.
+        if (view.mode === 'detail' && view.memory.id === memory.id) {
+          const refreshed = await getMemory({
+            path: { graph_id: selectedGraphId, memory_id: memory.id },
+          })
+          setView(
+            refreshed.data
+              ? { mode: 'detail', memory: refreshed.data }
+              : { mode: 'list' }
+          )
+        }
         fetchMemories()
       } else {
         throw new Error(
@@ -287,10 +292,7 @@ export function MemoryPageContent() {
       if (response.data && response.data.status !== 'failed') {
         showSuccess('Memory forgotten', 5000)
 
-        if (
-          (view.mode === 'detail' || view.mode === 'edit') &&
-          view.memory.id === deleteTarget.id
-        ) {
+        if (view.mode === 'detail' && view.memory.id === deleteTarget.id) {
           setView({ mode: 'list' })
         }
         setDeleteTarget(null)
@@ -307,6 +309,45 @@ export function MemoryPageContent() {
       setDeleting(false)
     }
   }
+
+  // --- Editor helpers ---
+
+  const handleEditorSubmit = (values: MemoryFormValues) => {
+    if (editor.memory) {
+      handleUpdate(editor.memory, values)
+    } else {
+      handleCreate(values)
+    }
+  }
+
+  // Suggestions come from the already-loaded page of memories.
+  const tagSuggestions = useMemo(
+    () => Array.from(new Set(memories.flatMap((m) => m.tags ?? []))),
+    [memories]
+  )
+  const typeSuggestions = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          memories
+            .map((m) => m.memory_type)
+            .filter((t): t is string => Boolean(t))
+        )
+      ),
+    [memories]
+  )
+
+  const editorModal = (
+    <MemoryEditorModal
+      show={editor.open}
+      initial={editor.memory}
+      saving={saving}
+      typeSuggestions={typeSuggestions}
+      tagSuggestions={tagSuggestions}
+      onSubmit={handleEditorSubmit}
+      onClose={() => setEditor({ open: false })}
+    />
+  )
 
   // --- Loading State ---
 
@@ -391,50 +432,6 @@ export function MemoryPageContent() {
     )
   }
 
-  // --- Create / Edit Views ---
-
-  if (view.mode === 'create' || view.mode === 'edit') {
-    const editing = view.mode === 'edit' ? view.memory : undefined
-
-    return (
-      <PageLayout>
-        <div className="flex items-center gap-3">
-          <Button
-            size="sm"
-            color="gray"
-            onClick={() =>
-              setView(
-                editing ? { mode: 'detail', memory: editing } : { mode: 'list' }
-              )
-            }
-          >
-            <HiArrowLeft className="mr-1 h-4 w-4" />
-            Back
-          </Button>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {editing ? 'Edit Memory' : 'New Memory'}
-          </h1>
-        </div>
-        <Card>
-          <MemoryForm
-            initial={editing}
-            saving={saving}
-            submitLabel={editing ? 'Save' : 'Remember'}
-            onSubmit={(values) =>
-              editing ? handleUpdate(editing, values) : handleCreate(values)
-            }
-            onCancel={() =>
-              setView(
-                editing ? { mode: 'detail', memory: editing } : { mode: 'list' }
-              )
-            }
-          />
-        </Card>
-        <ToastContainer />
-      </PageLayout>
-    )
-  }
-
   // --- Detail View ---
 
   if (view.mode === 'detail') {
@@ -460,7 +457,7 @@ export function MemoryPageContent() {
             <Button
               size="sm"
               color="gray"
-              onClick={() => setView({ mode: 'edit', memory })}
+              onClick={() => setEditor({ open: true, memory })}
             >
               <HiPencil className="mr-1 h-4 w-4" />
               Edit
@@ -477,9 +474,7 @@ export function MemoryPageContent() {
         </div>
 
         <Card>
-          <p className="text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
-            {memory.text}
-          </p>
+          <MarkdownProse size="sm">{memory.text}</MarkdownProse>
         </Card>
 
         <Card>
@@ -555,6 +550,7 @@ export function MemoryPageContent() {
           </p>
         </ConfirmModal>
 
+        {editorModal}
         <ToastContainer />
       </PageLayout>
     )
@@ -575,7 +571,7 @@ export function MemoryPageContent() {
           </>
         }
         actions={
-          <Button onClick={() => setView({ mode: 'create' })}>
+          <Button onClick={() => setEditor({ open: true })}>
             <HiPlus className="mr-2 h-4 w-4" />
             New Memory
           </Button>
@@ -695,7 +691,7 @@ export function MemoryPageContent() {
                         <Button
                           size="xs"
                           color="gray"
-                          onClick={() => setView({ mode: 'edit', memory })}
+                          onClick={() => setEditor({ open: true, memory })}
                         >
                           <HiPencil className="h-3.5 w-3.5" />
                         </Button>
@@ -781,6 +777,7 @@ export function MemoryPageContent() {
         </div>
       </ConfirmModal>
 
+      {editorModal}
       <ToastContainer />
     </PageLayout>
   )

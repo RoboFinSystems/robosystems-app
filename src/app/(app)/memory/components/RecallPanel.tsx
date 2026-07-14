@@ -2,9 +2,9 @@
 
 import type { SearchHit } from '@robosystems/client'
 import { recallMemory } from '@robosystems/client'
-import { Badge, Button, Card, Spinner, TextInput } from 'flowbite-react'
+import { SearchBar, SearchHitCard, SearchResultsMeta } from '@robosystems/core'
+import { Card } from 'flowbite-react'
 import { useState } from 'react'
-import { HiSearch, HiX } from 'react-icons/hi'
 
 const RECALL_K = 10
 
@@ -14,8 +14,11 @@ interface RecallPanelProps {
 }
 
 /**
- * Semantic recall over the graph's memory store. Ranked search — renders
- * scored hits (the governance list below stays the exact-read surface).
+ * Semantic recall over the graph's memory store, rendered through the same
+ * search primitives as the document Search page. Ranked search — hits open
+ * the memory detail (the governance list below stays the exact-read
+ * surface). Deliberately no filters or pagination: recall is a top-k
+ * semantic probe, not a browse surface.
  */
 export function RecallPanel({ graphId, onSelectHit }: RecallPanelProps) {
   const [query, setQuery] = useState('')
@@ -78,30 +81,16 @@ export function RecallPanel({ graphId, onSelectHit }: RecallPanelProps) {
         </p>
       </div>
 
-      <div className="flex gap-2">
-        <TextInput
-          icon={HiSearch}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') handleRecall()
-          }}
-          placeholder="What do you want to recall?"
-          className="flex-1"
-        />
-        <Button
-          color="purple"
-          onClick={handleRecall}
-          disabled={searching || !query.trim()}
-        >
-          {searching ? <Spinner size="sm" /> : 'Recall'}
-        </Button>
-        {(hits !== null || notice) && (
-          <Button color="gray" onClick={handleClear}>
-            <HiX className="h-4 w-4" />
-          </Button>
-        )}
-      </div>
+      <SearchBar
+        query={query}
+        onQueryChange={setQuery}
+        onSearch={handleRecall}
+        loading={searching}
+        placeholder="What do you want to recall?"
+        buttonLabel="Recall"
+        onClear={handleClear}
+        showClear={hits !== null || notice !== null}
+      />
 
       {notice && (
         <p className="text-sm text-gray-500 dark:text-gray-400">{notice}</p>
@@ -114,31 +103,22 @@ export function RecallPanel({ graphId, onSelectHit }: RecallPanelProps) {
           </p>
         ) : (
           <div className="space-y-2">
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <SearchResultsMeta
+              total={total}
+              count={hits.length}
+              query={searchedQuery}
+            >
               Recalled {total} memor{total === 1 ? 'y' : 'ies'} for &quot;
               {searchedQuery}&quot; (showing {hits.length})
-            </p>
+            </SearchResultsMeta>
             {hits.map((hit) => (
-              <button
+              <SearchHitCard
                 key={hit.document_id}
-                type="button"
+                hit={hit}
+                showTitle={false}
+                showSourceType={false}
                 onClick={() => onSelectHit(hit.document_id)}
-                className="w-full rounded-lg border border-gray-200 p-3 text-left transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-zinc-700"
-              >
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge color="info" size="xs">
-                    {hit.score.toFixed(2)}
-                  </Badge>
-                  {hit.tags?.map((tag) => (
-                    <Badge key={tag} color="purple" size="xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-                <p className="mt-2 line-clamp-2 text-sm text-gray-600 dark:text-gray-300">
-                  {hit.snippet}
-                </p>
-              </button>
+              />
             ))}
           </div>
         ))}

@@ -133,6 +133,14 @@ export const remember = vi.fn()
 export const updateMemory = vi.fn()
 export const forget = vi.fn()
 
+// Document / knowledge-base functions
+export const listDocuments = vi.fn()
+export const getDocument = vi.fn()
+export const indexDocument = vi.fn()
+export const deleteDocument = vi.fn()
+export const searchDocuments = vi.fn()
+export const getDocumentSection = vi.fn()
+
 // Client
 export const client = mockClient
 
