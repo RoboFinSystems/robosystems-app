@@ -24,7 +24,6 @@ import {
   Button,
   Card,
   Label,
-  Select,
   Table,
   TableBody,
   TableCell,
@@ -44,13 +43,7 @@ import {
   HiTrash,
 } from 'react-icons/hi'
 
-import {
-  formatDate,
-  SOURCE_FILTER_OPTIONS,
-  SourceBadge,
-  TYPE_FILTER_OPTIONS,
-  TypeBadge,
-} from './components/memory-badges'
+import { formatDate, SourceBadge, TypeBadge } from './components/memory-badges'
 import type { MemoryFormValues } from './components/MemoryEditorModal'
 import { MemoryEditorModal } from './components/MemoryEditorModal'
 import { RecallPanel } from './components/RecallPanel'
@@ -79,8 +72,6 @@ export function MemoryPageContent() {
 
   // List controls
   const [offset, setOffset] = useState(0)
-  const [typeFilter, setTypeFilter] = useState('')
-  const [sourceFilter, setSourceFilter] = useState('')
 
   // View state machine
   const [view, setView] = useState<View>({ mode: 'list' })
@@ -109,8 +100,6 @@ export function MemoryPageContent() {
           query: {
             limit: PAGE_SIZE,
             offset,
-            memory_type: typeFilter || undefined,
-            source: sourceFilter || undefined,
           },
         })
 
@@ -137,7 +126,7 @@ export function MemoryPageContent() {
         setLoading(false)
       }
     },
-    [selectedGraphId, isRepository, offset, typeFilter, sourceFilter, showError]
+    [selectedGraphId, isRepository, offset, showError]
   )
 
   useEffect(() => {
@@ -525,8 +514,6 @@ export function MemoryPageContent() {
 
   // --- List View ---
 
-  const hasFilters = Boolean(typeFilter || sourceFilter)
-
   return (
     <PageLayout>
       <PageHeader
@@ -547,53 +534,13 @@ export function MemoryPageContent() {
 
       <RecallPanel graphId={selectedGraphId} onSelectHit={openDetailById} />
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
-        <Select
-          sizing="sm"
-          value={typeFilter}
-          onChange={(e) => {
-            setTypeFilter(e.target.value)
-            setOffset(0)
-          }}
-          aria-label="Filter by type"
-        >
-          <option value="">All types</option>
-          {TYPE_FILTER_OPTIONS.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </Select>
-        <Select
-          sizing="sm"
-          value={sourceFilter}
-          onChange={(e) => {
-            setSourceFilter(e.target.value)
-            setOffset(0)
-          }}
-          aria-label="Filter by source"
-        >
-          <option value="">All sources</option>
-          {SOURCE_FILTER_OPTIONS.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </Select>
-      </div>
-
       {/* Memory List */}
       {memories.length === 0 ? (
         <Card>
           <EmptyState
             icon={HiLightBulb}
-            title={hasFilters ? 'No matching memories' : 'No memories yet'}
-            description={
-              hasFilters
-                ? 'No memories match the current filters.'
-                : 'Store durable facts, notes, and preferences about this graph — or let AI agents remember them via MCP.'
-            }
+            title="No memories yet"
+            description="Store durable facts, notes, and preferences about this graph — or let AI agents remember them via MCP."
           />
         </Card>
       ) : (
