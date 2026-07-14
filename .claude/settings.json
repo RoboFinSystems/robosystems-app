@@ -11,6 +11,7 @@
       "Bash(git branch -r:*)",
       "Bash(git branch -v:*)",
       "Bash(git ls-tree:*)",
+      "Bash(git push:*)",
       "Bash(ls:*)",
       "Bash(tree:*)",
       "Bash(wc:*)",
@@ -88,7 +89,6 @@
       "Bash(npm run sync:push:*)"
     ],
     "deny": [
-      "Bash(git push:*)",
       "Bash(git reset:*)",
       "Bash(git clean:*)",
       "Bash(git branch -D:*)",
