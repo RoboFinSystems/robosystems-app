@@ -82,23 +82,9 @@ function MemoryEditorForm({
       saveLabel={initial ? 'Save' : 'Remember'}
       dirty={dirty}
     >
+      {/* Metadata above content — same layout convention as the document
+          editor modal. */}
       <div className="space-y-4">
-        <div>
-          <Label htmlFor="memory-text">Memory</Label>
-          <div className="mt-1">
-            <MarkdownEditor
-              id="memory-text"
-              value={text}
-              onChange={setText}
-              heightClassName="h-72"
-              maxLength={MAX_TEXT_LENGTH}
-              previewSize="sm"
-              lineNumbers="off"
-              focusOnMount
-            />
-          </div>
-        </div>
-
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="memory-type">Type</Label>
@@ -135,6 +121,22 @@ function MemoryEditorForm({
               suggestions={tagSuggestions}
               badgeColor="purple"
               aria-label="Memory tags"
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="memory-text">Memory</Label>
+          <div className="mt-1">
+            <MarkdownEditor
+              id="memory-text"
+              value={text}
+              onChange={setText}
+              heightClassName="h-72"
+              maxLength={MAX_TEXT_LENGTH}
+              previewSize="sm"
+              lineNumbers="off"
+              focusOnMount
             />
           </div>
         </div>

@@ -30,11 +30,18 @@ export interface MarkdownEditorProps {
   value: string
   onChange: (value: string) => void
   /**
-   * Tailwind height class for the editor/preview area, e.g. 'h-72' or
-   * 'h-[62vh]'. Monaco needs an explicit-height container — against an
-   * auto-height flex parent it renders 0px tall.
+   * Tailwind height class for the editor/preview area, e.g. 'h-72'.
+   * Monaco needs an explicit-height container — against an auto-height
+   * flex parent it renders 0px tall. Ignored when `fill` is set.
    */
-  heightClassName: string
+  heightClassName?: string
+  /**
+   * Fill the parent instead of using a fixed pane height: the editor
+   * stretches to `h-full` and the Write/Preview pane flexes, so it
+   * resizes with the surrounding modal/window. The parent must have a
+   * determinate height (e.g. a `flex-1 min-h-0` slot in a sized column).
+   */
+  fill?: boolean
   /** Renders a live character counter that turns red over the limit. */
   maxLength?: number
   /** Typography scale of the preview tab. */
@@ -74,7 +81,8 @@ function setupMonacoTheme(monaco: Monaco) {
 export function MarkdownEditor({
   value,
   onChange,
-  heightClassName,
+  heightClassName = 'h-72',
+  fill = false,
   maxLength,
   previewSize = 'base',
   lineNumbers = 'on',
@@ -130,13 +138,17 @@ export function MarkdownEditor({
         : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
     }`
 
+  const paneClass = fill ? 'min-h-0 flex-1' : heightClassName
+
   return (
     <div
       id={id}
-      className="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700"
+      className={`overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 ${
+        fill ? 'flex h-full min-h-0 flex-col' : ''
+      }`}
     >
       {/* Tabs + counter */}
-      <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-2 dark:border-gray-700 dark:bg-zinc-800">
+      <div className="flex shrink-0 items-center justify-between border-b border-gray-200 bg-gray-50 px-2 dark:border-gray-700 dark:bg-zinc-800">
         <div role="tablist" aria-label="Editor mode" className="flex">
           <button
             type="button"
@@ -174,7 +186,7 @@ export function MarkdownEditor({
           <div
             role="toolbar"
             aria-label="Formatting"
-            className="flex flex-wrap items-center gap-0.5 border-b border-gray-200 bg-gray-50 px-2 py-1 dark:border-gray-700 dark:bg-zinc-800"
+            className="flex shrink-0 flex-wrap items-center gap-0.5 border-b border-gray-200 bg-gray-50 px-2 py-1 dark:border-gray-700 dark:bg-zinc-800"
           >
             {TOOLBAR.map(({ command, icon: Icon, label }) => (
               <button
@@ -190,7 +202,7 @@ export function MarkdownEditor({
             ))}
           </div>
 
-          <div className={heightClassName}>
+          <div className={paneClass}>
             <Editor
               height="100%"
               language="markdown"
@@ -207,7 +219,7 @@ export function MarkdownEditor({
         </>
       ) : (
         <div
-          className={`${heightClassName} overflow-y-auto bg-white px-4 py-3 dark:bg-zinc-900`}
+          className={`${paneClass} overflow-y-auto bg-white px-4 py-3 dark:bg-zinc-900`}
         >
           {value.trim() ? (
             <MarkdownProse size={previewSize}>{value}</MarkdownProse>

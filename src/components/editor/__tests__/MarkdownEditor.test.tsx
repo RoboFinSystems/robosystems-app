@@ -100,6 +100,16 @@ describe('MarkdownEditor', () => {
     await waitFor(() => expect(onChange).toHaveBeenLastCalledWith('# title'))
   })
 
+  it('renders in fill mode without a fixed pane height', async () => {
+    const { container } = render(
+      <MarkdownEditor value="text" onChange={vi.fn()} fill />
+    )
+    const editor = await screen.findByTestId('monaco-editor')
+    expect(container.firstElementChild!.className).toContain('h-full')
+    expect(editor.parentElement!.className).toContain('flex-1')
+    expect(editor.parentElement!.className).not.toContain('h-72')
+  })
+
   it('hides the toolbar in preview mode', async () => {
     render(<Harness />)
     await screen.findByTestId('monaco-editor')

@@ -66,10 +66,11 @@ function DocumentEditorForm({
       saving={saving}
       canSave={canSave}
       dirty={dirty}
+      fullHeight
       initialFocus={titleRef}
     >
-      <div className="space-y-4">
-        <div>
+      <div className="flex min-h-0 flex-1 flex-col gap-4">
+        <div className="shrink-0">
           <Label htmlFor="document-title">Title</Label>
           <TextInput
             id="document-title"
@@ -81,7 +82,7 @@ function DocumentEditorForm({
           />
         </div>
 
-        <div className="flex flex-wrap items-start gap-6">
+        <div className="flex shrink-0 flex-wrap items-start gap-6">
           <div>
             <Label htmlFor="document-folder">Folder</Label>
             <CategoryInput
@@ -109,14 +110,16 @@ function DocumentEditorForm({
           </div>
         </div>
 
-        <div>
+        {/* min-h keeps the editor usable on short windows; below that the
+            modal body scrolls instead of the editor collapsing. */}
+        <div className="flex min-h-56 flex-1 flex-col">
           <Label htmlFor="document-content">Content</Label>
-          <div className="mt-1">
+          <div className="mt-1 min-h-0 flex-1">
             <MarkdownEditor
               id="document-content"
               value={content}
               onChange={setContent}
-              heightClassName="h-[62vh]"
+              fill
             />
           </div>
         </div>

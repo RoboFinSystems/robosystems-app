@@ -32,6 +32,12 @@ export interface EditorModalProps {
   savingLabel?: string
   /** Marks unsaved changes — close attempts require confirmation. */
   dirty?: boolean
+  /**
+   * Pin the modal to the viewport height (instead of content-sized up to
+   * the cap) and lay the body out as a flex column, so a `flex-1` editor
+   * inside resizes with the browser window rather than scrolling.
+   */
+  fullHeight?: boolean
   /** Where the focus trap should land when the modal opens. */
   initialFocus?: React.MutableRefObject<HTMLElement | null>
   children: ReactNode
@@ -55,6 +61,7 @@ export function EditorModal({
   saveLabel = 'Save',
   savingLabel = 'Saving...',
   dirty = false,
+  fullHeight = false,
   initialFocus,
   children,
 }: EditorModalProps) {
@@ -80,9 +87,13 @@ export function EditorModal({
         size={size}
         onClose={requestClose}
         initialFocus={initialFocus}
+        // twMerged onto the default inner classes (max-h-[90dvh] stays).
+        theme={fullHeight ? { content: { inner: 'h-[90dvh]' } } : undefined}
       >
         <ModalHeader>{title}</ModalHeader>
-        <ModalBody>{children}</ModalBody>
+        <ModalBody className={fullHeight ? 'flex flex-col' : undefined}>
+          {children}
+        </ModalBody>
         <ModalFooter>
           <Button onClick={onSave} disabled={saving || !canSave}>
             {saving ? (
