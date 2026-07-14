@@ -1,19 +1,22 @@
 import * as RoboClient from '@robosystems/client'
 import { useGraphContext, useIsRepository } from '@robosystems/core'
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { MemoryPageContent } from '../content'
 
-// Stable references — showError is a dependency of the page's fetch callback,
-// so fresh mocks per render would retrigger the fetch effect.
+// Stable references — passed into the (mocked) toast hook.
 const mockShowSuccess = vi.fn()
 const mockShowError = vi.fn()
+
+// The collection is exercised in its own suite; here it's a lightweight stub
+// that lets the page shell drive edit/delete and the loaded-count callback.
+let collectionProps: any = null
+vi.mock('../components/MemoryCollection', () => ({
+  MemoryCollection: (props: any) => {
+    collectionProps = props
+    return <div data-testid="memory-collection" />
+  },
+}))
 
 vi.mock('@robosystems/core', () => ({
   useGraphContext: vi.fn(),
@@ -32,7 +35,6 @@ vi.mock('@robosystems/core', () => ({
       <p>{description}</p>
     </div>
   ),
-  LoadingState: ({ message }: any) => <div>{message}</div>,
   ConfirmModal: ({ show, onConfirm, onClose, title, children }: any) =>
     show ? (
       <div data-testid="confirm-modal">
@@ -48,6 +50,29 @@ vi.mock('@robosystems/core', () => ({
     ) : null,
 }))
 
+vi.mock('../components/MemoryEditorModal', () => ({
+  MemoryEditorModal: ({ show, initial, onSubmit, onClose }: any) =>
+    show ? (
+      <div data-testid="editor-modal">
+        <span>{initial ? 'Edit Memory' : 'New Memory'}</span>
+        <button
+          data-testid="editor-submit"
+          onClick={() =>
+            onSubmit({
+              text: 'submitted text',
+              memoryType: 'note',
+              tags: [],
+              sourceRef: '',
+            })
+          }
+        >
+          Save
+        </button>
+        <button onClick={onClose}>Close Editor</button>
+      </div>
+    ) : null,
+}))
+
 vi.mock('@robosystems/core/hooks/use-toast', () => ({
   useToast: () => ({
     showSuccess: mockShowSuccess,
@@ -57,29 +82,19 @@ vi.mock('@robosystems/core/hooks/use-toast', () => ({
 }))
 
 vi.mock('@robosystems/client', () => ({
-  listMemories: vi.fn(),
-  getMemory: vi.fn(),
-  recallMemory: vi.fn(),
   remember: vi.fn(),
   updateMemory: vi.fn(),
   forget: vi.fn(),
 }))
 
 vi.mock('react-icons/hi', () => ({
-  HiArrowLeft: () => <span>Icon</span>,
   HiExclamation: () => <span>Icon</span>,
   HiLightBulb: () => <span>Icon</span>,
-  HiPencil: () => <span>Icon</span>,
   HiPlus: () => <span>Icon</span>,
-  HiRefresh: () => <span>Icon</span>,
-  HiSave: () => <span>Icon</span>,
-  HiSearch: () => <span>Icon</span>,
   HiTrash: () => <span>Icon</span>,
-  HiX: () => <span>Icon</span>,
 }))
 
 vi.mock('flowbite-react', () => ({
-  Badge: ({ children }: any) => <span data-testid="badge">{children}</span>,
   Button: ({ children, onClick, disabled }: any) => (
     <button onClick={onClick} disabled={disabled}>
       {children}
@@ -87,52 +102,12 @@ vi.mock('flowbite-react', () => ({
   ),
   Card: ({ children }: any) => <div data-testid="card">{children}</div>,
   Label: ({ children }: any) => <label>{children}</label>,
-  Select: ({ value, onChange, children, ...props }: any) => (
-    <select value={value} onChange={onChange} {...props}>
-      {children}
-    </select>
-  ),
-  Spinner: () => <span>Spinner</span>,
-  Table: ({ children }: any) => <table>{children}</table>,
-  TableBody: ({ children }: any) => <tbody>{children}</tbody>,
-  TableCell: ({ children, ...props }: any) => <td {...props}>{children}</td>,
-  TableHead: ({ children }: any) => (
-    <thead>
-      <tr>{children}</tr>
-    </thead>
-  ),
-  TableHeadCell: ({ children }: any) => <th>{children}</th>,
-  TableRow: ({ children, onClick }: any) => (
-    <tr onClick={onClick}>{children}</tr>
-  ),
-  Textarea: ({ value, onChange, placeholder, ...props }: any) => (
-    <textarea
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      {...props}
-    />
-  ),
-  TextInput: ({ value, onChange, onKeyDown, placeholder, ...props }: any) => (
-    <input
-      type="text"
-      value={value}
-      onChange={onChange}
-      onKeyDown={onKeyDown}
-      placeholder={placeholder}
-      {...props}
-    />
-  ),
-  Tooltip: ({ content, children }: any) => (
-    <div title={content}>{children}</div>
-  ),
 }))
 
 const mockUseGraphContext = vi.mocked(useGraphContext)
 const mockUseIsRepository = vi.mocked(useIsRepository)
-const mockListMemories = vi.mocked(RoboClient.listMemories)
-const mockRecallMemory = vi.mocked(RoboClient.recallMemory)
 const mockRemember = vi.mocked(RoboClient.remember)
+const mockUpdateMemory = vi.mocked(RoboClient.updateMemory)
 const mockForget = vi.mocked(RoboClient.forget)
 
 const MEMORY_FIXTURE = {
@@ -140,7 +115,7 @@ const MEMORY_FIXTURE = {
   text: 'Acme pays invoices net 30',
   memory_type: 'fact',
   source: 'mcp',
-  tags: ['billing', 'acme'],
+  tags: ['billing'],
   source_ref: null,
   provenance: null,
   created_by: 'user_1',
@@ -155,132 +130,62 @@ function setGraph(graphId: string | null, isRepository = false) {
   mockUseIsRepository.mockReturnValue({ isRepository } as any)
 }
 
-function mockListResponse(memories: any[], total = memories.length) {
-  mockListMemories.mockResolvedValue({
-    data: { total, memories, graph_id: 'kg_test' },
-    error: undefined,
-  } as any)
-}
-
 describe('MemoryPageContent', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    collectionProps = null
     setGraph('kg_test')
-    mockListResponse([])
   })
 
-  test('shows empty state and skips fetch when no graph is selected', async () => {
+  test('shows empty state when no graph is selected', () => {
     setGraph(null)
-
     render(<MemoryPageContent />)
-
-    await waitFor(() => {
-      expect(screen.getByText('No graph selected')).toBeInTheDocument()
-    })
-    expect(mockListMemories).not.toHaveBeenCalled()
+    expect(screen.getByText('No graph selected')).toBeInTheDocument()
+    expect(screen.queryByTestId('memory-collection')).not.toBeInTheDocument()
   })
 
-  test('shows repository notice and skips fetch for shared repositories', async () => {
+  test('shows repository notice for shared repositories', () => {
     setGraph('sec', true)
-
     render(<MemoryPageContent />)
-
-    await waitFor(() => {
-      expect(
-        screen.getByText('Not available for shared repositories')
-      ).toBeInTheDocument()
-    })
-    expect(mockListMemories).not.toHaveBeenCalled()
+    expect(
+      screen.getByText('Not available for shared repositories')
+    ).toBeInTheDocument()
+    expect(screen.queryByTestId('memory-collection')).not.toBeInTheDocument()
   })
 
-  test('renders memory rows from the list response', async () => {
-    mockListResponse([MEMORY_FIXTURE])
-
+  test('renders the header count from the collection callback', async () => {
     render(<MemoryPageContent />)
+    expect(screen.getByTestId('memory-collection')).toBeInTheDocument()
 
-    await waitFor(() => {
-      expect(screen.getByText('Acme pays invoices net 30')).toBeInTheDocument()
-    })
-    const table = screen.getByRole('table')
-    expect(within(table).getByText('fact')).toBeInTheDocument()
-    expect(within(table).getByText('billing')).toBeInTheDocument()
-    expect(mockListMemories).toHaveBeenCalledWith({
-      path: { graph_id: 'kg_test' },
-      query: {
-        limit: 50,
-        offset: 0,
-        memory_type: undefined,
-        source: undefined,
-      },
-    })
+    // The collection reports the loaded page + total.
+    collectionProps.onLoaded([MEMORY_FIXTURE], 7)
+    await waitFor(() =>
+      expect(screen.getByText(/7 memories stored/)).toBeInTheDocument()
+    )
   })
 
-  test('shows soft "not enabled" state when the API returns 503', async () => {
-    mockListMemories.mockResolvedValue({
-      data: undefined,
-      error: { detail: 'Semantic memory is not enabled' },
-      response: { status: 503 },
-    } as any)
-
+  test('opens the create modal from the header action', () => {
     render(<MemoryPageContent />)
-
-    await waitFor(() => {
-      expect(
-        screen.getByText('Semantic memory is not enabled')
-      ).toBeInTheDocument()
-    })
-    expect(screen.queryByText('Error loading memories')).not.toBeInTheDocument()
-    expect(mockShowError).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByText('New Memory'))
+    const modal = screen.getByTestId('editor-modal')
+    expect(modal).toHaveTextContent('New Memory')
   })
 
-  test('shows hard error with retry for unexpected failures', async () => {
-    mockListMemories.mockResolvedValue({
-      data: undefined,
-      error: { detail: 'boom' },
-      response: { status: 500 },
-    } as any)
-
-    render(<MemoryPageContent />)
-
-    await waitFor(() => {
-      expect(screen.getByText('Error loading memories')).toBeInTheDocument()
-    })
-
-    mockListResponse([MEMORY_FIXTURE])
-    fireEvent.click(screen.getByText('Retry'))
-
-    await waitFor(() => {
-      expect(screen.getByText('Acme pays invoices net 30')).toBeInTheDocument()
-    })
-    expect(mockListMemories).toHaveBeenCalledTimes(2)
-  })
-
-  test('creates a memory via the remember operation', async () => {
+  test('creates a memory via the editor modal', async () => {
     mockRemember.mockResolvedValue({
       data: { status: 'completed' },
       error: undefined,
     } as any)
 
     render(<MemoryPageContent />)
-
-    await waitFor(() => {
-      expect(screen.getByText('New Memory')).toBeInTheDocument()
-    })
     fireEvent.click(screen.getByText('New Memory'))
-
-    const textarea = screen.getByPlaceholderText(
-      'What should be remembered about this graph?'
-    )
-    fireEvent.change(textarea, {
-      target: { value: 'Quarter close starts on the 25th' },
-    })
-    fireEvent.click(screen.getByText('Remember'))
+    fireEvent.click(screen.getByTestId('editor-submit'))
 
     await waitFor(() => {
       expect(mockRemember).toHaveBeenCalledWith({
         path: { graph_id: 'kg_test' },
         body: {
-          text: 'Quarter close starts on the 25th',
+          text: 'submitted text',
           memory_type: 'note',
           tags: null,
           source_ref: null,
@@ -288,29 +193,52 @@ describe('MemoryPageContent', () => {
       })
     })
     expect(mockShowSuccess).toHaveBeenCalledWith('Memory stored', 5000)
-    // Initial fetch + refetch after create
-    expect(mockListMemories).toHaveBeenCalledTimes(2)
+  })
+
+  test('edits a memory opened from the collection', async () => {
+    mockUpdateMemory.mockResolvedValue({
+      data: { status: 'completed' },
+      error: undefined,
+    } as any)
+
+    render(<MemoryPageContent />)
+    // The collection asks the page to open the editor for a record.
+    collectionProps.onEdit(MEMORY_FIXTURE)
+
+    await waitFor(() =>
+      expect(screen.getByTestId('editor-modal')).toHaveTextContent(
+        'Edit Memory'
+      )
+    )
+    fireEvent.click(screen.getByTestId('editor-submit'))
+
+    await waitFor(() => {
+      expect(mockUpdateMemory).toHaveBeenCalledWith({
+        path: { graph_id: 'kg_test' },
+        body: {
+          memory_id: 'mem_1',
+          text: 'submitted text',
+          memory_type: 'note',
+          tags: null,
+          source_ref: null,
+        },
+      })
+    })
+    expect(mockShowSuccess).toHaveBeenCalledWith('Memory updated', 5000)
   })
 
   test('forgets a memory via the confirm modal', async () => {
-    mockListResponse([MEMORY_FIXTURE])
     mockForget.mockResolvedValue({
       data: { status: 'completed' },
       error: undefined,
     } as any)
 
     render(<MemoryPageContent />)
+    collectionProps.onDelete(MEMORY_FIXTURE)
 
-    await waitFor(() => {
-      expect(screen.getByText('Acme pays invoices net 30')).toBeInTheDocument()
-    })
-
-    const forgetTooltip = screen.getByTitle('Forget')
-    fireEvent.click(within(forgetTooltip).getByRole('button'))
-
-    await waitFor(() => {
+    await waitFor(() =>
       expect(screen.getByTestId('confirm-modal')).toBeInTheDocument()
-    })
+    )
     fireEvent.click(screen.getByTestId('confirm-button'))
 
     await waitFor(() => {
@@ -322,44 +250,18 @@ describe('MemoryPageContent', () => {
     expect(mockShowSuccess).toHaveBeenCalledWith('Memory forgotten', 5000)
   })
 
-  test('recalls memories and renders scored hits', async () => {
-    mockRecallMemory.mockResolvedValue({
-      data: {
-        total: 1,
-        hits: [
-          {
-            document_id: 'mem_1',
-            score: 0.87,
-            source_type: 'memory',
-            snippet: 'Acme pays invoices net 30',
-            tags: ['billing'],
-          },
-        ],
-        query: 'payment terms',
-        graph_id: 'kg_test',
-      },
+  test('bumps refreshKey after a mutation so the collection refetches', async () => {
+    mockRemember.mockResolvedValue({
+      data: { status: 'completed' },
       error: undefined,
     } as any)
 
     render(<MemoryPageContent />)
+    const initialKey = collectionProps.refreshKey
 
-    await waitFor(() => {
-      expect(
-        screen.getByPlaceholderText('What do you want to recall?')
-      ).toBeInTheDocument()
-    })
+    fireEvent.click(screen.getByText('New Memory'))
+    fireEvent.click(screen.getByTestId('editor-submit'))
 
-    const input = screen.getByPlaceholderText('What do you want to recall?')
-    fireEvent.change(input, { target: { value: 'payment terms' } })
-    fireEvent.keyDown(input, { key: 'Enter' })
-
-    await waitFor(() => {
-      expect(mockRecallMemory).toHaveBeenCalledWith({
-        path: { graph_id: 'kg_test' },
-        body: { query: 'payment terms', k: 10 },
-      })
-    })
-    expect(screen.getByText('0.87')).toBeInTheDocument()
-    expect(screen.getByText('Acme pays invoices net 30')).toBeInTheDocument()
+    await waitFor(() => expect(collectionProps.refreshKey).toBe(initialKey + 1))
   })
 })
