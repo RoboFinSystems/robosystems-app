@@ -12,6 +12,7 @@ import {
   HiDocumentText,
   HiGlobeAlt,
   HiHome,
+  HiLightBulb,
   HiSearch,
   HiTable,
   HiTerminal,
@@ -72,6 +73,11 @@ export const getNavigationItems = (
                 icon: HiDocumentText,
                 label: 'Knowledge Base',
                 href: '/documents',
+              },
+              {
+                icon: HiLightBulb,
+                label: 'Memory',
+                href: '/memory',
               },
               {
                 icon: HiTable,
