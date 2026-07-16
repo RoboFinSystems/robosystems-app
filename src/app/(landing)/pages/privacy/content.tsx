@@ -16,7 +16,7 @@ export default function PrivacyPolicy() {
           </h1>
 
           <p className="mb-12 text-gray-600 dark:text-gray-400">
-            Last Revision: October 1, 2025
+            Last Revision: July 16, 2026
           </p>
 
           <p className="mt-8 text-2xl font-semibold">
@@ -113,7 +113,7 @@ export default function PrivacyPolicy() {
             <li>IP addresses and device information</li>
             <li>Browser type and operating system</li>
             <li>Access times and referring URLs</li>
-            <li>Cookie data and similar tracking technologies</li>
+            <li>Cookie data from essential and preference cookies</li>
           </ul>
 
           <p>
@@ -261,17 +261,22 @@ export default function PrivacyPolicy() {
           <ul className="mb-6 list-disc space-y-3 pl-6">
             <li>
               <strong>Essential Cookies:</strong> Required for Platform
-              functionality and security
-            </li>
-            <li>
-              <strong>Analytics Cookies:</strong> Help us understand usage
-              patterns and improve our Services
+              functionality, authentication, and security
             </li>
             <li>
               <strong>Preference Cookies:</strong> Remember your settings and
-              preferences
+              preferences, such as theme and layout
             </li>
           </ul>
+
+          <p>
+            <strong>Analytics:</strong> For usage analytics we use Cloudflare
+            Web Analytics, a privacy-preserving, cookieless service. It measures
+            aggregate traffic — such as page views, referrers, and general
+            location — without setting cookies, tracking you across sites, or
+            fingerprinting your device. We do not use third-party advertising or
+            cross-site tracking cookies.
+          </p>
 
           <p>
             You can control cookies through your browser settings, but disabling
