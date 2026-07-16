@@ -1,3 +1,4 @@
+import { CloudflareAnalytics } from '@/components/analytics/CloudflareAnalytics'
 import { organizationJsonLd } from '@/lib/structured-data'
 import { AuthProvider, customTheme } from '@robosystems/core'
 import { SessionWarningDialog } from '@robosystems/core/auth-components/SessionWarningDialog'
@@ -98,6 +99,7 @@ export default function RootLayout({
             {children}
           </AuthProvider>
         </ThemeProvider>
+        <CloudflareAnalytics />
       </body>
     </html>
   )
