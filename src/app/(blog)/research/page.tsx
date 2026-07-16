@@ -1,5 +1,5 @@
 import { ResearchListJsonLd } from '@/components/research/ResearchJsonLd'
-import { CoverageGrid, getAllCoverage } from '@robosystems/core/research'
+import { CoverageBrowser, getAllCoverage } from '@robosystems/core/research'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -80,7 +80,7 @@ export default async function ResearchPage() {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <CoverageGrid items={items} />
+        <CoverageBrowser items={items} />
       </div>
     </div>
   )
