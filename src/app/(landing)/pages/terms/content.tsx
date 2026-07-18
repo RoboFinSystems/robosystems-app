@@ -16,7 +16,7 @@ export default function TermsOfService() {
           </h1>
 
           <p className="mb-12 text-gray-600 dark:text-gray-400">
-            Last Revision: October 1, 2025
+            Last Revision: July 17, 2026
           </p>
 
           <p className="mt-8 text-2xl font-semibold">
@@ -30,15 +30,14 @@ export default function TermsOfService() {
 
           <p>
             <strong>
-              RFS LLC is a Wyoming Limited Liability Company, operating under
-              the fictitious name RoboSystems (&quot;RoboSystems&quot;, the
-              &quot;Company,&quot; &quot;we,&quot; &quot;us,&quot;
-              &quot;our&quot;). RoboSystems provides a managed graph database
-              platform, data integration services, and access to shared data
-              repositories through the <Link href="/">RoboSystems.ai</Link>{' '}
-              website, APIs, and related applications including RoboLedger and
-              RoboInvestor (collectively, the &quot;Platform&quot; or
-              &quot;Services&quot;){' '}
+              RFS LLC is a Wyoming Limited Liability Company doing business as
+              RoboSystems (&quot;RoboSystems&quot;, the &quot;Company,&quot;
+              &quot;we,&quot; &quot;us,&quot; &quot;our&quot;). RoboSystems
+              provides a managed graph database platform, data integration
+              services, and access to shared data repositories through the{' '}
+              <Link href="/">RoboSystems.ai</Link> website, APIs, and related
+              applications including RoboLedger and RoboInvestor (collectively,
+              the &quot;Platform&quot; or &quot;Services&quot;){' '}
             </strong>
             subject to Your{' '}
             <strong>(&quot;You&quot; or &quot;Your&quot;) </strong>
@@ -86,11 +85,12 @@ export default function TermsOfService() {
           <ul className="mb-6 list-disc space-y-3 pl-6">
             <li>
               <strong>Graph Database Subscriptions:</strong> Managed graph
-              database instances for storing and analyzing your company's
-              financial and operational data. All database operations are
-              included - you only pay for AI agent calls and analysis
-              operations. Enterprise and Premium tiers include advanced subgraph
-              capabilities for version control and isolated environments.
+              database instances on dedicated infrastructure for storing and
+              analyzing your company's financial and operational data. All
+              database operations are included - AI credits are consumed only by
+              AI-powered operations. All subscription tiers include subgraph
+              capabilities for isolated environments, with the number of
+              subgraphs varying by tier.
             </li>
             <li>
               <strong>Platform Access:</strong> When you purchase a graph
@@ -99,13 +99,13 @@ export default function TermsOfService() {
               as through our APIs and Model Context Protocol (MCP) tools.
             </li>
             <li>
-              <strong>Subgraph Management:</strong> Enterprise and Premium
-              subscriptions include the ability to create unlimited subgraphs -
-              isolated database environments that share the parent graph's
-              infrastructure and credit pool. Use subgraphs for
-              development/staging environments, department-specific data
-              isolation, AI memory layers, or version-controlled snapshots of
-              your data.
+              <strong>Subgraph Management:</strong> Graph database subscriptions
+              include the ability to create subgraphs - isolated database
+              environments that share the parent graph's infrastructure and
+              credit pool. The number of subgraphs available varies by
+              subscription tier. Use subgraphs for development/staging
+              environments, department-specific data isolation, AI memory
+              layers, or version-controlled snapshots of your data.
             </li>
             <li>
               <strong>Shared Data Repository Subscriptions:</strong> Access to
@@ -114,9 +114,9 @@ export default function TermsOfService() {
               companies for benchmarking and analysis.
             </li>
             <li>
-              <strong>Integration Services:</strong> Connectors for QuickBooks,
-              Plaid, and other financial systems to automatically sync data into
-              your graph database.
+              <strong>Integration Services:</strong> Connectors for QuickBooks
+              and other financial systems to automatically sync data into your
+              graph database.
             </li>
           </ul>
 
@@ -317,13 +317,13 @@ export default function TermsOfService() {
 
           <p>
             <strong>
-              &quot;RoboSystems&quot;, &quot;
+              &quot;RoboSystems&quot; is a federally registered trademark of RFS
+              LLC. &quot;
               <Link href="/">robosystems.ai</Link>
               &quot;, the RoboSystems logos and any other product or service
-              name or slogan contained in the Site are marks of RoboSystems.
-              RoboSystems has applied for federal trademark registration and
-              these marks may not be copied, imitated or used, in whole or in
-              part, without the prior written permission of RoboSystems.{' '}
+              name or slogan contained in the Site are marks of RFS LLC. These
+              marks may not be copied, imitated or used, in whole or in part,
+              without the prior written permission of RoboSystems.{' '}
             </strong>
             You may not use any metatags or any other &quot;hidden text&quot;
             utilizing &quot;RoboSystems&quot; or any other name, trademark or
@@ -431,8 +431,9 @@ export default function TermsOfService() {
           </ul>
 
           <p>
-            <strong>Subgraph Access Control:</strong> For Enterprise and Premium
-            tiers, you can create subgraphs with granular access permissions:
+            <strong>Subgraph Access Control:</strong> You can create subgraphs
+            with granular access permissions, up to the limit included with your
+            subscription tier:
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
             <li>
@@ -455,8 +456,10 @@ export default function TermsOfService() {
 
           <p>
             <strong>Shared Repository Access:</strong> Subscriptions to shared
-            data repositories (like SEC data) are per-user subscriptions and
-            cannot be shared across multiple users without appropriate licenses.
+            data repositories (like SEC data) are purchased at the organization
+            level, and all members of your organization share access under your
+            subscription. Access may not be shared with, or provided to, anyone
+            outside your organization.
           </p>
 
           <p>
@@ -574,8 +577,14 @@ export default function TermsOfService() {
           <ul className="mb-6 list-disc space-y-3 pl-6">
             <li>We will provision a dedicated graph database instance</li>
             <li>You will receive API credentials and access endpoints</li>
-            <li>Initial setup may take up to 24 hours</li>
-            <li>You can immediately begin using the allocated credits</li>
+            <li>
+              Provisioning is typically completed within minutes, though some
+              setups may take longer
+            </li>
+            <li>
+              Your AI credit allocation is available as soon as provisioning
+              completes
+            </li>
           </ul>
 
           <p>
@@ -600,9 +609,10 @@ export default function TermsOfService() {
 
           <p>
             <strong>Subscription Tiers:</strong> We offer multiple subscription
-            tiers with varying AI credit allocations, base storage amounts, and
-            support levels. Current pricing and tier details are available on
-            our pricing page and may be updated from time to time.
+            tiers with varying dedicated infrastructure capacity, AI credit
+            allocations, and support levels. Current pricing and tier details
+            are available on our pricing page and may be updated from time to
+            time.
           </p>
 
           <p>
@@ -615,8 +625,9 @@ export default function TermsOfService() {
               credit-based usage pricing
             </li>
             <li>
-              <strong>Shared Repository Subscriptions:</strong> Per-user monthly
-              subscriptions for access to curated data repositories
+              <strong>Shared Repository Subscriptions:</strong>{' '}
+              Organization-level monthly subscriptions for access to curated
+              data repositories, shared by all members of your organization
             </li>
             <li>
               <strong>AI Credit System:</strong> Only AI operations (agent
@@ -645,11 +656,12 @@ export default function TermsOfService() {
           </p>
 
           <p>
-            <strong>Overage Charges:</strong> If You exceed your monthly AI
-            credit allocation, You may purchase additional credits at your
-            tier's overage rate or upgrade your subscription. Database
-            operations continue to work even if AI credits are exhausted.
-            Storage overages beyond your base allocation are billed separately.
+            <strong>Credit Exhaustion:</strong> If You exhaust your monthly AI
+            credit allocation, AI-powered features will be unavailable until
+            your next billing cycle begins or You upgrade your subscription
+            tier. Database operations continue to work even if AI credits are
+            exhausted. Storage is included with your subscription tier, subject
+            to the capacity of your tier's dedicated infrastructure.
           </p>
 
           <p>
@@ -665,7 +677,10 @@ export default function TermsOfService() {
               Graph database instances with specified AI credit allocations
             </li>
             <li>Unlimited database operations (queries, imports, exports)</li>
-            <li>Base storage allocation (100GB, 500GB, or 2TB by tier)</li>
+            <li>
+              Storage included with your tier's dedicated infrastructure
+              (capacity varies by tier)
+            </li>
             <li>Access to RoboLedger and RoboInvestor applications</li>
             <li>API access and MCP tools</li>
             <li>Technical support based on tier</li>
@@ -688,8 +703,6 @@ export default function TermsOfService() {
             </li>
             <li>Downgrade at the end of your current billing period</li>
             <li>Add or remove shared repository subscriptions</li>
-            <li>Purchase additional AI credits as needed</li>
-            <li>Add storage beyond your base allocation</li>
           </ul>
 
           <p>
@@ -729,7 +742,6 @@ export default function TermsOfService() {
             <li>Downgrading subscription tiers</li>
             <li>Dissatisfaction with Services</li>
             <li>Changes in your business requirements</li>
-            <li>Unused base storage allocation</li>
           </ul>
 
           <p>
