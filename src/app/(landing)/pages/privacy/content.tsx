@@ -16,7 +16,7 @@ export default function PrivacyPolicy() {
           </h1>
 
           <p className="mb-12 text-gray-600 dark:text-gray-400">
-            Last Revision: July 16, 2026
+            Last Revision: July 17, 2026
           </p>
 
           <p className="mt-8 text-2xl font-semibold">
@@ -30,14 +30,14 @@ export default function PrivacyPolicy() {
 
           <p>
             <strong>
-              RFS LLC is a Wyoming Limited Liability Company, operating under
-              the fictitious name RoboSystems (&quot;RoboSystems&quot;, the
-              &quot;Company,&quot; &quot;we,&quot; &quot;us,&quot;
-              &quot;our&quot;). We take your privacy seriously and are committed
-              to protecting your personal information. This Privacy Policy
-              describes how we collect, use, and share information when you use
-              our graph database platform, data integration services, and
-              applications including RoboLedger and RoboInvestor.
+              RFS LLC is a Wyoming Limited Liability Company doing business as
+              RoboSystems (&quot;RoboSystems&quot;, the &quot;Company,&quot;
+              &quot;we,&quot; &quot;us,&quot; &quot;our&quot;). We take your
+              privacy seriously and are committed to protecting your personal
+              information. This Privacy Policy describes how we collect, use,
+              and share information when you use our graph database platform,
+              data integration services, and applications including RoboLedger
+              and RoboInvestor.
             </strong>
           </p>
 
@@ -89,9 +89,9 @@ export default function PrivacyPolicy() {
 
           <p>
             <strong>Integration Data:</strong> When you connect third-party
-            services (like QuickBooks or Plaid), we collect authentication
-            tokens and sync data as authorized by you. We store this data
-            securely in your isolated graph database instance.
+            services (like QuickBooks), we collect authentication tokens and
+            sync data as authorized by you. We store this data securely in your
+            isolated graph database instance.
           </p>
 
           <p>
@@ -147,6 +147,16 @@ export default function PrivacyPolicy() {
               enforce our Terms of Service
             </li>
           </ul>
+
+          <p>
+            <strong>AI Features:</strong> AI-powered Platform features (such as
+            AI agents and natural language analysis) process your data only when
+            you invoke them. This processing is performed using AI models hosted
+            on AWS Bedrock within our cloud environment, and supporting
+            capabilities such as semantic search are computed entirely within
+            our infrastructure. Your data is not used to train AI models — by us
+            or by any model provider.
+          </p>
 
           <p>
             <strong>3. How We Share Your Information</strong>
@@ -279,6 +289,13 @@ export default function PrivacyPolicy() {
           </p>
 
           <p>
+            <strong>Bot Protection:</strong> Our public forms are protected by
+            Cloudflare Turnstile, which evaluates browser signals to distinguish
+            human visitors from automated bots. It does not track you across
+            sites.
+          </p>
+
+          <p>
             You can control cookies through your browser settings, but disabling
             certain cookies may limit Platform functionality.
           </p>
@@ -348,7 +365,7 @@ export default function PrivacyPolicy() {
           </p>
 
           <p>
-            <strong>Data Protection Officer</strong>
+            <strong>Privacy Contact</strong>
             <br />
             RFS LLC
             <br />
