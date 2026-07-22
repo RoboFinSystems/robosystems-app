@@ -117,13 +117,6 @@ Shared modules consumed as an npm package across RoboSystems frontend apps:
 - S3 + CloudFront for static asset hosting
 - CloudFormation templates in `/cloudformation/`
 
-## CI/CD
-
-- **`prod.yml`**: Production deployment to robosystems.ai
-- **`staging.yml`**: Staging deployment to staging.robosystems.ai
-- **`test-ci.yml`**: Automated testing on pull requests
-- **`build.yml`**: Reusable Docker image build for ECR, invoked by the deploy workflows
-
 ## Support
 
 - [Issues](https://github.com/RoboFinSystems/robosystems-app/issues)
