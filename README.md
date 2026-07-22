@@ -5,11 +5,13 @@ RoboSystems App is the web interface for the RoboSystems financial intelligence 
 - **Knowledge Graph Management**: Create and manage multiple isolated graph databases with tiered infrastructure
 - **Document Search**: Full-text and semantic search across SEC filings, uploaded documents, and connected sources
 - **AI Console**: Natural language and Cypher query terminal with streaming results and MCP integration
+- **AI Memory**: Browse, edit, and curate the per-graph semantic memory store behind remember/recall
 - **Schema Explorer**: Inspect node labels, relationships, constraints, and indexes
 - **Subgraph Workspaces**: Create isolated environments for development, testing, and collaboration
 - **Data Lake**: DuckDB staging tables for data validation and bulk ingestion
 - **Shared Repository Access**: Subscribe to and query SEC XBRL filings and public financial data
 - **Library**: Browse canonical taxonomies, elements, and reference data shared across graphs
+- **Research**: Public equity research pages built from SEC filings, every figure traceable to a filing
 - **Backup Management**: Create, download, and restore graph database backups
 - **Billing & Usage**: Manage subscriptions, view invoices, and track credit usage
 - **Organization Management**: Manage team members and organization settings
@@ -119,8 +121,8 @@ Shared modules consumed as an npm package across RoboSystems frontend apps:
 
 - **`prod.yml`**: Production deployment to robosystems.ai
 - **`staging.yml`**: Staging deployment to staging.robosystems.ai
-- **`test.yml`**: Automated testing on pull requests
-- **`build.yml`**: Docker image building for ECR
+- **`test-ci.yml`**: Automated testing on pull requests
+- **`build.yml`**: Reusable Docker image build for ECR, invoked by the deploy workflows
 
 ## Support
 
