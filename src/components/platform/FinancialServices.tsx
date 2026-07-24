@@ -9,8 +9,8 @@ export default function FinancialServices() {
       description:
         'Track investment portfolios with cost basis, holdings, and valuations for both PE/VC and public market positions.',
       currentFeatures: [
-        'PE & VC instruments: SAFEs, KISSes, convertible notes, LLC units, LP interests',
-        'Portfolios with positions, cost basis, and current valuations',
+        'PE & VC instruments: SAFEs, KISSes, convertible notes, LLC units, LP interests, warrants, options, RSUs',
+        'Portfolios with positions, cost basis, and current valuations — applied as atomic envelopes that roll back on failure',
         'Receive financial reports shared by your portfolio companies on RoboLedger',
       ],
     },
@@ -31,11 +31,12 @@ export default function FinancialServices() {
       icon: 'M13 10V3L4 14h7v7l9-11h-7z',
       gradient: 'from-indigo-500 to-purple-500',
       description:
-        'Connect Claude Desktop, Cursor, and other AI tools directly to your investment graph via the MCP protocol.',
+        'Connect Claude Desktop, Cursor, and other AI tools to your investment graph over MCP — every portfolio operation is exposed as a tool, so agents read and write.',
       currentFeatures: [
         '@robosystems/mcp for Claude Desktop and Cursor',
-        'Python and TypeScript client SDKs',
-        'Full REST API access with API key management',
+        'Portfolio, position, and security writes as agent-callable tools',
+        'GraphQL and REST APIs with Python and TypeScript SDKs',
+        'API key management for programmatic access',
       ],
     },
   ]
@@ -174,8 +175,8 @@ export default function FinancialServices() {
                 Connect AI Tools
               </h4>
               <p className="text-sm text-gray-400">
-                Use MCP to connect Claude Desktop or Cursor directly to your
-                investment graph for deeper analysis
+                Use MCP to connect Claude Desktop or Cursor to your investment
+                graph — analyze it and record positions without leaving the chat
               </p>
             </div>
           </div>
