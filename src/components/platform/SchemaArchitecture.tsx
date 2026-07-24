@@ -70,14 +70,11 @@ export default function SchemaArchitecture() {
     {
       name: 'RoboInvestor',
       description: 'Investment portfolio & securities extension',
-      components: [
-        'Portfolio',
-        'Security',
-        'Position',
-        'Trade',
-        'Benchmark',
-        'Market Data',
-      ],
+      // Portfolio/Security/Position only — Trade, Benchmark, and MarketData are
+      // declared in the schema but sit in the backend's _UNMATERIALIZED_TABLES
+      // set, so their tables never get created. Listing them here read as
+      // shipped and contradicted the roadmap in FinancialServices.
+      components: ['Portfolio', 'Security', 'Position'],
       app: 'roboinvestor' as const,
     },
   ]

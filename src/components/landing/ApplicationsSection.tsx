@@ -247,7 +247,7 @@ export default function ApplicationsSection() {
                       <span className="mr-2 text-green-400">•</span>
                       <span>
                         Track PE &amp; VC positions: SAFEs, convertible notes,
-                        LLC units, LP interests
+                        LLC units, LP interests, warrants, options, and RSUs
                       </span>
                     </li>
                     <li className="flex items-start">
@@ -287,7 +287,10 @@ export default function ApplicationsSection() {
                     </li>
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
-                      <span>MCP integration for Claude Desktop and Cursor</span>
+                      <span>
+                        MCP integration for Claude Desktop and Cursor — every
+                        portfolio operation is an agent-callable tool
+                      </span>
                     </li>
                   </ul>
                 </div>
