@@ -247,7 +247,6 @@ export default function IntegrationsSection() {
                 <code>{`adapters/
 ├── sec/           # Official: SEC EDGAR
 ├── quickbooks/    # Official: QuickBooks
-├── plaid/         # Official: Plaid Banking
 │
 └── your_erp/      # Your custom integration
     ├── client/

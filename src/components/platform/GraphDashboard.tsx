@@ -1,14 +1,17 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import {
+  HiBookOpen,
   HiChartBar,
   HiChevronDown,
   HiChip,
   HiCode,
+  HiCreditCard,
   HiDatabase,
   HiDocumentText,
   HiGlobeAlt,
   HiHome,
+  HiLightBulb,
   HiMenu,
   HiMoon,
   HiPlay,
@@ -47,11 +50,15 @@ export default function GraphDashboard() {
     { icon: HiTerminal, label: 'Console' },
     { icon: HiSearch, label: 'Search' },
     { icon: HiDocumentText, label: 'Knowledge Base' },
+    { icon: HiLightBulb, label: 'Memory' },
     { icon: HiTable, label: 'Data Lake' },
     { icon: HiCode, label: 'Schema' },
     { icon: HiChip, label: 'Subgraphs' },
     { icon: HiDatabase, label: 'Backups' },
     { icon: HiChartBar, label: 'Usage' },
+    { icon: HiGlobeAlt, label: 'Repositories' },
+    { icon: HiBookOpen, label: 'Library' },
+    { icon: HiCreditCard, label: 'Billing' },
   ]
 
   return (
@@ -141,7 +148,7 @@ export default function GraphDashboard() {
         </div>
 
         {/* Platform Interface */}
-        <div className="flex h-[480px]">
+        <div className="flex h-[560px]">
           {/* Sidebar */}
           <div className="hidden border-r border-gray-800 bg-zinc-950 p-4 lg:block lg:w-52">
             <div className="mb-4 rounded-lg bg-zinc-900 px-3 py-2">
@@ -158,7 +165,7 @@ export default function GraphDashboard() {
                 return (
                   <div
                     key={idx}
-                    className={`px-3 py-2 text-sm ${
+                    className={`px-3 py-1.5 text-sm ${
                       item.active
                         ? 'rounded-lg bg-zinc-800 text-white'
                         : 'text-gray-400 hover:text-white'
@@ -236,7 +243,7 @@ function GraphTable() {
       name: 'SEC EDGAR Filings',
       id: 'sec',
       graphType: 'repository',
-      schemaExtensions: ['roboinvestor'],
+      schemaExtensions: ['roboledger'],
       createdAt: '2/14/2026',
       isRepository: true,
       isActive: false,

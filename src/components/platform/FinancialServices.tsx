@@ -11,7 +11,7 @@ export default function FinancialServices() {
       currentFeatures: [
         'PE & VC instruments: SAFEs, KISSes, convertible notes, LLC units, LP interests',
         'Portfolios with positions, cost basis, and current valuations',
-        'Link private holdings to public company SEC filing graphs',
+        'Receive financial reports shared by your portfolio companies on RoboLedger',
       ],
     },
     {
@@ -19,10 +19,10 @@ export default function FinancialServices() {
       icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
       gradient: 'from-cyan-500 to-blue-500',
       description:
-        'Text-to-Cypher AI translates natural language into graph queries against 115,000+ XBRL filings from 10,000+ public companies.',
+        'Claude-powered deep research against 115,000+ XBRL filings from 10,000+ public companies — plain-English questions answered with narrative analysis.',
       currentFeatures: [
         '10-K and 10-Q financial statements and fundamentals',
-        'AI-generated Cypher queries from plain English',
+        'Answers backed by the data and the generated Cypher',
         'Peer comparison and industry analysis',
       ],
     },
@@ -44,7 +44,7 @@ export default function FinancialServices() {
     {
       title: 'Brokerage Sync',
       description:
-        'Connect public market accounts via Plaid to sync holdings automatically',
+        'Connect public market brokerage accounts to sync holdings automatically',
     },
     {
       title: 'Market Data',
@@ -151,7 +151,7 @@ export default function FinancialServices() {
               </h4>
               <p className="text-sm text-gray-400">
                 Add portfolios and positions — PE/VC instruments today, public
-                market brokerage sync coming via Plaid
+                market brokerage sync on the roadmap
               </p>
             </div>
 
