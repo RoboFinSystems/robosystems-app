@@ -30,22 +30,30 @@ function ProgressiveText({
   return <span>{displayedText}</span>
 }
 
-// Demo messages defined outside component to avoid re-creation on each render
+// Demo messages defined outside component to avoid re-creation on each render.
+// Mirrors the real graph-aware console for a RoboLedger entity graph: the AI
+// analyst welcome, /search + /recall commands, and operator answers rendered
+// as narrative + footer + Generated Cypher panel + data table.
 const DEMO_MESSAGES = [
   {
     type: 'system' as const,
-    content: `RoboSystems Console v1 - Graph: RFS LLC (kg9c3d6)
+    content: `RoboSystems Console v1 - Graph: kg9c3d6
 ═══════════════════════════════════════════════════════════════
-Claude powered interactive graph database console
+
+Ask in plain English and an AI analyst queries your ledger — transactions, journal entries, the trial balance, and the financial statements built from them. Every answer comes back with the data and the Cypher behind it.
+
 USAGE:
   Natural Language (default):
-    "What entity is in the graph?"
-    "How many facts are in the latest report?"
+    "Show me the trial balance"
+    "What are my largest expenses by category?"
+
   Direct Cypher Queries:
-    /query MATCH (n) RETURN count(n) as node_count
-    /query MATCH (e:Entity) RETURN e.name, e.identifier LIMIT 10
+    /query MATCH (e:Entity)-[:ENTITY_HAS_TRANSACTION]->(t:Transaction) WHERE t.is_live RETURN t.date, t.description, t.amount ORDER BY t.date DESC LIMIT 15
+
 COMMANDS:
   /query      - Execute a Cypher query
+  /search     - Search documents
+  /recall     - Recall semantic memories
   /mcp        - Show MCP connection setup
   /help       - Show this help message
   /clear      - Clear console history
@@ -56,139 +64,110 @@ How can I help you today?`,
   },
   {
     type: 'user' as const,
-    content: 'Show me the most recent SEC filings with their report types',
+    content: 'What are my largest expenses by category?',
     timestamp: '10:30:22',
   },
   {
     type: 'system' as const,
-    content: `Found recent SEC filings from 5 public companies.
-
-═══════════════════════════════════════════════════════════════
-Agent: financial
-Mode: quick
-Execution time: 1247ms
-Tokens used: 2341 (prompt: 1205, completion: 1136)
-Confidence: 94.2%
-Credits used: 0.03
-Results: 5 rows
-
-Generated Cypher:
-MATCH (e:Entity)-[:ENTITY_HAS_REPORT]->(r:Report)
-RETURN e.ticker, e.name, r.form,
-       r.report_date, r.filing_date
-ORDER BY r.filing_date DESC
+    content: `Your largest expense category this fiscal year is Payroll & Benefits at $412K — roughly 46% of total operating spend — followed by Cloud Infrastructure at $186K. Professional Services, Marketing, and Office & Equipment round out the top five.`,
+    timestamp: '10:30:29',
+    footer: `Query completed in 7215ms
+Rows returned: 5
+Credits used: 0.5`,
+    cypher: `MATCH (e:Entity)-[:ENTITY_HAS_TRANSACTION]->(t:Transaction)
+WHERE t.is_live AND t.category IS NOT NULL
+RETURN t.category, count(t) AS transactions, sum(t.amount) AS total
+ORDER BY total DESC
 LIMIT 5`,
-    timestamp: '10:30:24',
     data: [
       {
-        ticker: 'AAPL',
-        company: 'Apple Inc.',
-        form_type: '10-Q',
-        report_date: '2025-09-30',
-        filing_date: '2025-11-02',
+        category: 'Payroll & Benefits',
+        transactions: 96,
+        total: '412,480.00',
       },
       {
-        ticker: 'MSFT',
-        company: 'Microsoft Corporation',
-        form_type: '10-Q',
-        report_date: '2025-09-30',
-        filing_date: '2025-10-30',
+        category: 'Cloud Infrastructure',
+        transactions: 214,
+        total: '186,240.00',
       },
       {
-        ticker: 'GOOGL',
-        company: 'Alphabet Inc.',
-        form_type: '10-K',
-        report_date: '2025-06-30',
-        filing_date: '2025-10-28',
+        category: 'Professional Services',
+        transactions: 41,
+        total: '98,750.00',
       },
       {
-        ticker: 'AMZN',
-        company: 'Amazon.com Inc.',
-        form_type: '10-Q',
-        report_date: '2025-09-30',
-        filing_date: '2025-10-27',
+        category: 'Marketing',
+        transactions: 63,
+        total: '74,310.00',
       },
       {
-        ticker: 'TSLA',
-        company: 'Tesla Inc.',
-        form_type: '10-Q',
-        report_date: '2025-09-30',
-        filing_date: '2025-10-25',
+        category: 'Office & Equipment',
+        transactions: 38,
+        total: '52,190.00',
       },
     ],
   },
   {
     type: 'user' as const,
     content:
-      '/query MATCH (f:Fact)--(e:Element) OPTIONAL MATCH (f)-[:FACT_HAS_PERIOD]->(p:Period) RETURN e.name, f.value, p.start_date, p.end_date LIMIT 10',
+      '/query MATCH (en:Entry)-[:ENTRY_HAS_LINE_ITEM]->(li:LineItem)-[:LINE_ITEM_RELATES_TO_ELEMENT]->(el:Element) WHERE li.is_live RETURN el.name AS account, sum(li.debit_amount) AS debits, sum(li.credit_amount) AS credits ORDER BY debits DESC LIMIT 10',
     timestamp: '10:30:45',
   },
   {
     type: 'system' as const,
     content: `Query completed in 156ms
-Rows returned: 10
-Credits used: 0`,
+Rows returned: 10`,
     timestamp: '10:30:45',
     data: [
       {
-        element: 'Revenue',
-        value: '487250.00',
-        start_date: '2024-01-01',
-        end_date: '2024-03-31',
+        account: 'Cash and Cash Equivalents',
+        debits: '1,254,300.00',
+        credits: '1,082,150.00',
       },
       {
-        element: 'Cost of Revenue',
-        value: '245100.00',
-        start_date: '2024-01-01',
-        end_date: '2024-03-31',
+        account: 'Accounts Receivable',
+        debits: '486,220.00',
+        credits: '411,890.00',
       },
       {
-        element: 'Gross Profit',
-        value: '242150.00',
-        start_date: '2024-01-01',
-        end_date: '2024-03-31',
+        account: 'Payroll Expense',
+        debits: '412,480.00',
+        credits: '0.00',
       },
       {
-        element: 'Operating Expenses',
-        value: '128450.00',
-        start_date: '2024-01-01',
-        end_date: '2024-03-31',
+        account: 'Accounts Payable',
+        debits: '198,450.00',
+        credits: '232,760.00',
       },
       {
-        element: 'Net Income',
-        value: '85200.00',
-        start_date: '2024-01-01',
-        end_date: '2024-03-31',
+        account: 'Cloud Infrastructure Expense',
+        debits: '186,240.00',
+        credits: '3,120.00',
       },
       {
-        element: 'Total Assets',
-        value: '1250000.00',
-        start_date: null,
-        end_date: '2024-03-31',
+        account: 'Professional Services Expense',
+        debits: '98,750.00',
+        credits: '0.00',
       },
       {
-        element: 'Total Liabilities',
-        value: '425000.00',
-        start_date: null,
-        end_date: '2024-03-31',
+        account: 'Marketing Expense',
+        debits: '74,310.00',
+        credits: '1,850.00',
       },
       {
-        element: 'Stockholders Equity',
-        value: '825000.00',
-        start_date: null,
-        end_date: '2024-03-31',
+        account: 'Prepaid Expenses',
+        debits: '64,500.00',
+        credits: '41,200.00',
       },
       {
-        element: 'Cash and Equivalents',
-        value: '175000.00',
-        start_date: null,
-        end_date: '2024-03-31',
+        account: 'Accrued Liabilities',
+        debits: '22,340.00',
+        credits: '58,900.00',
       },
       {
-        element: 'Accounts Receivable',
-        value: '95000.00',
-        start_date: null,
-        end_date: '2024-03-31',
+        account: 'Revenue',
+        debits: '12,400.00',
+        credits: '924,880.00',
       },
     ],
   },
@@ -200,6 +179,8 @@ export default function ConsoleDemo() {
       type: 'system' | 'user'
       content: string
       timestamp: string
+      footer?: string
+      cypher?: string
       data?: any[]
       isAnimating?: boolean
     }>
@@ -314,6 +295,30 @@ export default function ConsoleDemo() {
                   message.content
                 )}
               </div>
+
+              {/* Execution footer - only show after animation completes */}
+              {message.footer && !message.isAnimating && (
+                <div className="mt-3 text-xs whitespace-pre-wrap text-gray-500">
+                  {message.footer}
+                </div>
+              )}
+
+              {/* Generated Cypher panel - only show after animation completes */}
+              {message.cypher && !message.isAnimating && (
+                <div className="mt-3 overflow-hidden rounded border border-gray-800 bg-gray-900/40">
+                  <div className="flex items-center justify-between border-b border-gray-800 px-3 py-1.5">
+                    <span className="text-xs tracking-wider text-gray-500 uppercase">
+                      Generated Cypher
+                    </span>
+                    <span className="rounded bg-cyan-600/90 px-2 py-0.5 text-xs font-medium text-white">
+                      Run
+                    </span>
+                  </div>
+                  <pre className="overflow-x-auto px-3 py-2 font-mono text-xs whitespace-pre-wrap text-cyan-300">
+                    {message.cypher}
+                  </pre>
+                </div>
+              )}
 
               {/* Data table - only show after animation completes */}
               {message.data &&

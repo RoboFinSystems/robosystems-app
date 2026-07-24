@@ -72,10 +72,11 @@ export default function PlatformContent() {
                 AI-Powered Interactive Console
               </h2>
               <p className="mx-auto max-w-3xl text-gray-400">
-                Interact with your knowledge graph using natural language or
-                direct Cypher queries. AI agents search documents, resolve
-                semantic elements, and persist memory across sessions&mdash;with
-                real-time execution monitoring.
+                Every graph comes with an AI analyst. Ask in plain English and
+                it generates the Cypher, runs it, and answers with a narrative
+                backed by the data and the query behind it&mdash;or drop into
+                direct Cypher yourself. Document search and semantic memory are
+                built into the same console.
               </p>
             </div>
 
@@ -102,8 +103,10 @@ export default function PlatformContent() {
                   Natural Language Queries
                 </h3>
                 <p className="text-sm text-gray-400">
-                  Ask questions in plain English and let our AI agents translate
-                  them into optimized Cypher queries with automatic execution.
+                  Ask questions in plain English and an AI analyst answers with
+                  a narrative, the underlying data, and the generated Cypher
+                  &mdash;ready to inspect and re-run. Examples adapt to each
+                  graph&apos;s schema.
                 </p>
               </div>
 
@@ -128,8 +131,8 @@ export default function PlatformContent() {
                 </h3>
                 <p className="text-sm text-gray-400">
                   Monitor query execution with live progress updates, streaming
-                  results, and detailed performance metrics including token
-                  usage.
+                  results, and per-query timing, row counts, and credit usage.
+                  Direct database queries are always free.
                 </p>
               </div>
 
@@ -150,11 +153,12 @@ export default function PlatformContent() {
                   </svg>
                 </div>
                 <h3 className="mb-2 text-lg font-semibold text-white">
-                  Intelligent Analytics
+                  Documents &amp; Memory
                 </h3>
                 <p className="text-sm text-gray-400">
-                  Get confidence scores, execution times, and optimized query
-                  suggestions powered by financial and research AI agents.
+                  Search your graph&apos;s document knowledge base and recall
+                  semantic memories that persist across sessions&mdash;the same
+                  context available to Claude over MCP.
                 </p>
               </div>
             </div>

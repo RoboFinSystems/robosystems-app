@@ -1,5 +1,6 @@
 import { AnimatedLogo } from '@robosystems/core/ui-components/Logo'
 import Image from 'next/image'
+import { HiDocumentText } from 'react-icons/hi'
 import FloatingElementsVariant from '../landing/FloatingElementsVariant'
 
 export default function SchemaArchitecture() {
@@ -21,23 +22,15 @@ export default function SchemaArchitecture() {
       color: 'purple',
     },
     {
-      name: 'Plaid',
-      type: 'Banking',
-      icon: '/images/plaid.png',
-      useImage: true,
+      name: 'Documents',
+      type: 'Knowledge Base',
+      icon: HiDocumentText,
+      useImage: false,
       features: [
-        'Bank transactions',
-        'Account balances',
-        'Credit card transactions',
+        'Policies, contracts & workpapers',
+        'Hybrid semantic search',
+        'Grounds AI answers',
       ],
-      color: 'green',
-    },
-    {
-      name: 'Plaid',
-      type: 'Investments',
-      icon: '/images/plaid.png',
-      useImage: true,
-      features: ['Portfolios', 'Holdings', 'Trading transactions'],
       color: 'green',
     },
   ]
@@ -60,14 +53,31 @@ export default function SchemaArchitecture() {
     },
     {
       name: 'RoboLedger',
-      description: 'Ledger management, close workflow & XBRL reporting',
-      components: ['Report', 'Fact', 'Transaction', 'Entry', 'Line Item'],
+      description:
+        'Event-driven double-entry ledger with XBRL-native reporting',
+      components: [
+        'Transaction',
+        'Entry',
+        'Line Item',
+        'Event',
+        'Agent',
+        'Report',
+        'Fact',
+        'Fact Set',
+      ],
       app: 'roboledger' as const,
     },
     {
       name: 'RoboInvestor',
       description: 'Investment portfolio & securities extension',
-      components: ['Portfolio', 'Security', 'Position', 'Holding'],
+      components: [
+        'Portfolio',
+        'Security',
+        'Position',
+        'Trade',
+        'Benchmark',
+        'Market Data',
+      ],
       app: 'roboinvestor' as const,
     },
   ]
@@ -75,7 +85,8 @@ export default function SchemaArchitecture() {
   const applications = [
     {
       name: 'RoboLedger App',
-      description: 'Ledger management, period close & AI-native reporting',
+      description:
+        'Complete accounting close platform — sync your books, map to US-GAAP, close the period, and publish XBRL-native financial reports',
       app: 'roboledger' as const,
     },
     {
@@ -353,6 +364,14 @@ function DataSourceCard({ name, type, icon, useImage, features, color }: any) {
       'border-green-500/30 bg-gradient-to-br from-green-500/10 to-emerald-500/10 hover:border-green-500/50 transition-all',
   }
 
+  const iconTextColors: Record<string, string> = {
+    cyan: 'text-cyan-400',
+    purple: 'text-purple-400',
+    green: 'text-green-400',
+  }
+
+  const IconComponent = useImage ? null : icon
+
   return (
     <div className={`group rounded-lg border p-4 ${colorClasses[color]}`}>
       <div className="mb-2 flex items-center gap-2">
@@ -367,7 +386,9 @@ function DataSourceCard({ name, type, icon, useImage, features, color }: any) {
             />
           </div>
         ) : (
-          <span className="text-2xl">{icon}</span>
+          <div className="flex h-8 w-8 items-center justify-center">
+            <IconComponent className={`h-7 w-7 ${iconTextColors[color]}`} />
+          </div>
         )}
         <div>
           <div className="font-semibold text-white">{name}</div>

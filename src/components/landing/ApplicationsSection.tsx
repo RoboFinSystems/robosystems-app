@@ -216,7 +216,8 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        Link private holdings to public company SEC filings
+                        Receive financial reports shared by your portfolio
+                        companies on RoboLedger
                       </span>
                     </li>
                   </ul>
@@ -236,7 +237,9 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        Text-to-Cypher AI for natural language financial queries
+                        Claude-powered deep research — plain-English questions
+                        become graph queries, answered with narrative financial
+                        analysis
                       </span>
                     </li>
                     <li className="flex items-start">

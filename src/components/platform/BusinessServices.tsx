@@ -6,13 +6,13 @@ export default function BusinessServices() {
       title: 'Data Integrations',
       icon: 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1',
       color: 'cyan',
-      highlight: 'QuickBooks · Plaid · SEC EDGAR',
+      highlight: 'QuickBooks · SEC EDGAR · Documents',
       description:
-        'Connect your accounting, banking, and regulatory data sources into the RoboLedger schema for a unified financial picture.',
+        'Connect your accounting and regulatory data sources into the RoboLedger schema for a unified financial picture.',
       features: [
         'QuickBooks OAuth — chart of accounts, journal entries, and transactions',
-        'Plaid bank feeds — real-time transactions from bank accounts and credit cards',
         'SEC EDGAR — US-GAAP XBRL taxonomy for account mapping and compliance',
+        'Document uploads — policies, contracts, and workpapers with hybrid semantic search',
       ],
     },
   ]
@@ -34,7 +34,7 @@ export default function BusinessServices() {
       gradient: 'from-purple-600 to-pink-600',
       capabilities: [
         'Ask Claude AI questions about your books',
-        'Natural language to Cypher query generation',
+        'Narrative answers with the data and generated Cypher',
         'MCP integration for Claude Desktop and Cursor',
       ],
     },
@@ -62,10 +62,9 @@ export default function BusinessServices() {
             Accounting Data Integration & Management
           </h2>
           <p className="mx-auto max-w-3xl text-gray-400">
-            Powered by the RoboLedger schema extension — unifying QuickBooks,
-            Plaid, and SEC XBRL data into a queryable knowledge graph for
-            full-cycle ledger management, period close, and AI-native financial
-            reporting
+            Powered by the RoboLedger schema extension — unifying QuickBooks and
+            SEC XBRL data into a queryable knowledge graph for full-cycle ledger
+            management, period close, and AI-native financial reporting
           </p>
         </div>
 
@@ -115,7 +114,7 @@ export default function BusinessServices() {
               </div>
               <h4 className="mb-2 text-sm font-semibold text-white">Connect</h4>
               <p className="text-xs text-gray-400">
-                QuickBooks, Plaid, and SEC EDGAR via OAuth
+                QuickBooks via OAuth plus SEC EDGAR XBRL data
               </p>
             </div>
             <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 to-violet-950/20 p-4 text-center transition-all hover:border-violet-500/30">
