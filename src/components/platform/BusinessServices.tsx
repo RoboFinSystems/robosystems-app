@@ -23,9 +23,11 @@ export default function BusinessServices() {
       icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
       gradient: 'from-indigo-600 to-blue-600',
       capabilities: [
+        'AI-triaged transaction inbox — preview what posts before it hits the GL',
         'US-GAAP auto-mapping with confidence scores',
-        'Period close workflow with financial statements',
-        'Visual Report Builder — Excel & formatted export',
+        'Live statements from the ledger, plus a guided period close',
+        'Report Creator — XBRL 2.1 and JSON-LD export',
+        'Plan — statements and assumptions across the actuals/forecast seam',
       ],
     },
     {
@@ -40,6 +42,57 @@ export default function BusinessServices() {
     },
   ]
 
+  // Mirrors the seven-step arc on roboledger.ai, collapsed to six by pairing
+  // reporting with planning. Tailwind classes are written out per step rather
+  // than interpolated so the JIT compiler can see them.
+  const workflowSteps = [
+    {
+      title: 'Connect',
+      description: 'QuickBooks via OAuth plus SEC EDGAR XBRL data',
+      bg: 'to-cyan-950/20',
+      border: 'hover:border-cyan-500/30',
+      badge: 'bg-cyan-500/20 text-cyan-400',
+    },
+    {
+      title: 'Triage Inbox',
+      description:
+        'Claude pre-classifies each transaction; preview what posts, then approve',
+      bg: 'to-violet-950/20',
+      border: 'hover:border-violet-500/30',
+      badge: 'bg-violet-500/20 text-violet-400',
+    },
+    {
+      title: 'Map to GAAP',
+      description: 'AI auto-maps chart of accounts to US-GAAP taxonomy',
+      bg: 'to-purple-950/20',
+      border: 'hover:border-purple-500/30',
+      badge: 'bg-purple-500/20 text-purple-400',
+    },
+    {
+      title: 'Review Ledger',
+      description:
+        'Transactions, trial balance, and live statements — no close required',
+      bg: 'to-fuchsia-950/20',
+      border: 'hover:border-fuchsia-500/30',
+      badge: 'bg-fuchsia-500/20 text-fuchsia-400',
+    },
+    {
+      title: 'Close Books',
+      description: 'Guided period close with XBRL-compliant statements',
+      bg: 'to-pink-950/20',
+      border: 'hover:border-pink-500/30',
+      badge: 'bg-pink-500/20 text-pink-400',
+    },
+    {
+      title: 'Report & Plan',
+      description:
+        'Report Creator, Claude AI Console, and forecast scenarios in the Plan grid',
+      bg: 'to-green-950/20',
+      border: 'hover:border-green-500/30',
+      badge: 'bg-green-500/20 text-green-400',
+    },
+  ]
+
   const visionHighlights = [
     {
       title: 'Reports as Structured Data',
@@ -49,7 +102,12 @@ export default function BusinessServices() {
     {
       title: 'AI-Native Close Workflow',
       description:
-        'From GAAP auto-mapping to guided period close to visual report builder — AI handles the mechanical work at machine speed so humans can focus on judgment.',
+        'From an AI-triaged transaction inbox to GAAP auto-mapping to guided period close — AI handles the mechanical work at machine speed so humans can focus on judgment.',
+    },
+    {
+      title: 'Close, Then Plan',
+      description:
+        'The closed months feed the forecast directly. Statements and a scenario’s assumptions sit in one grid spanning the actuals/forecast seam — the plan is driven by the ledger, not a spreadsheet copied out of it.',
     },
   ]
 
@@ -64,7 +122,8 @@ export default function BusinessServices() {
           <p className="mx-auto max-w-3xl text-gray-400">
             Powered by the RoboLedger schema extension — unifying QuickBooks and
             SEC XBRL data into a queryable knowledge graph for full-cycle ledger
-            management, period close, and AI-native financial reporting
+            management, period close, AI-native financial reporting, and forward
+            planning
           </p>
         </div>
 
@@ -87,7 +146,7 @@ export default function BusinessServices() {
           <h3 className="mb-6 text-center text-lg font-semibold text-white">
             The Vision: Knowledge Graph Driven Financial Reporting
           </h3>
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-3">
             {visionHighlights.map((item, idx) => (
               <div
                 key={idx}
@@ -107,60 +166,23 @@ export default function BusinessServices() {
           <h3 className="mb-6 text-center text-xl font-bold text-white">
             How It Works
           </h3>
-          <div className="grid gap-4 md:grid-cols-5">
-            <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 to-cyan-950/20 p-4 text-center transition-all hover:border-cyan-500/30">
-              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-400">
-                <span className="text-lg font-bold">1</span>
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+            {workflowSteps.map((step, idx) => (
+              <div
+                key={step.title}
+                className={`group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 ${step.bg} p-4 text-center transition-all ${step.border}`}
+              >
+                <div
+                  className={`mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg ${step.badge}`}
+                >
+                  <span className="text-lg font-bold">{idx + 1}</span>
+                </div>
+                <h4 className="mb-2 text-sm font-semibold text-white">
+                  {step.title}
+                </h4>
+                <p className="text-xs text-gray-400">{step.description}</p>
               </div>
-              <h4 className="mb-2 text-sm font-semibold text-white">Connect</h4>
-              <p className="text-xs text-gray-400">
-                QuickBooks via OAuth plus SEC EDGAR XBRL data
-              </p>
-            </div>
-            <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 to-violet-950/20 p-4 text-center transition-all hover:border-violet-500/30">
-              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-violet-500/20 text-violet-400">
-                <span className="text-lg font-bold">2</span>
-              </div>
-              <h4 className="mb-2 text-sm font-semibold text-white">
-                Map to GAAP
-              </h4>
-              <p className="text-xs text-gray-400">
-                AI auto-maps chart of accounts to US-GAAP taxonomy
-              </p>
-            </div>
-            <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 to-purple-950/20 p-4 text-center transition-all hover:border-purple-500/30">
-              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/20 text-purple-400">
-                <span className="text-lg font-bold">3</span>
-              </div>
-              <h4 className="mb-2 text-sm font-semibold text-white">
-                Review Ledger
-              </h4>
-              <p className="text-xs text-gray-400">
-                Transactions, journal entries, and trial balance
-              </p>
-            </div>
-            <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 to-pink-950/20 p-4 text-center transition-all hover:border-pink-500/30">
-              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-pink-500/20 text-pink-400">
-                <span className="text-lg font-bold">4</span>
-              </div>
-              <h4 className="mb-2 text-sm font-semibold text-white">
-                Close Books
-              </h4>
-              <p className="text-xs text-gray-400">
-                Guided period close with XBRL-compliant statements
-              </p>
-            </div>
-            <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 to-green-950/20 p-4 text-center transition-all hover:border-green-500/30">
-              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/20 text-green-400">
-                <span className="text-lg font-bold">5</span>
-              </div>
-              <h4 className="mb-2 text-sm font-semibold text-white">
-                Report &amp; Query
-              </h4>
-              <p className="text-xs text-gray-400">
-                Visual Report Builder and Claude AI Console
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </div>

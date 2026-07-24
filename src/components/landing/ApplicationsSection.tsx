@@ -66,11 +66,12 @@ export default function ApplicationsSection() {
               </div>
               <p className="mt-6 text-center text-sm text-gray-400">
                 RoboLedger syncs QuickBooks and SEC EDGAR data into the
-                RoboLedger schema for full ledger management, period close, and
-                AI-native financial reporting. RoboInvestor manages investment
-                portfolios and provides access to the SEC Shared Repository for
-                securities research. Both leverage MCP and Claude AI for natural
-                language queries against the knowledge graph.
+                RoboLedger schema for full ledger management, period close,
+                AI-native financial reporting, and forward planning.
+                RoboInvestor manages investment portfolios and provides access
+                to the SEC Shared Repository for securities research. Both
+                leverage MCP and Claude AI for natural language queries against
+                the knowledge graph.
               </p>
             </div>
           </div>
@@ -101,8 +102,9 @@ export default function ApplicationsSection() {
 
               <p className="mb-6 text-gray-300">
                 A complete accounting close platform — connect your data
-                sources, manage your ledger, close the books, and generate
-                XBRL-compliant financial reports with Claude AI.
+                sources, let Claude triage every transaction, close the books,
+                generate XBRL-compliant financial reports, and plan the months
+                ahead off the same ledger.
               </p>
 
               <div className="mb-8 space-y-4">
@@ -138,6 +140,13 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
+                        Event-driven inbox — Claude pre-classifies every
+                        transaction; preview the exact entries before they post
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-secondary-400 mr-2">•</span>
+                      <span>
                         AI auto-maps chart of accounts to US-GAAP taxonomy with
                         confidence scores
                       </span>
@@ -145,17 +154,51 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Guided period close — fiscal calendar, Balance Sheet,
-                        Income Statement, Cash Flow with XBRL compliance
-                        checking
+                        Live Balance Sheet, Income Statement, and Cash Flow
+                        straight from the ledger — no close required
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-secondary-400 mr-2">•</span>
+                      <span>
+                        Guided period close — fiscal calendar, depreciation and
+                        prepaid schedules, rule-engine gating before you lock
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-secondary-400 mr-2">•</span>
+                      <span>
+                        Report Creator — XBRL 2.1 and JSON-LD export, with
+                        publish lists for stakeholders
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-secondary-300 mb-3 font-semibold">
+                    Planning &amp; Analysis
+                  </h4>
+                  <ul className="space-y-2 text-sm text-gray-300">
+                    <li className="flex items-start">
+                      <span className="text-secondary-400 mr-2">•</span>
+                      <span>
+                        Plan — monthly statements and a scenario&apos;s
+                        assumptions in one grid across the actuals/forecast seam
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-secondary-400 mr-2">•</span>
+                      <span>
+                        Block Explorer — open any statement, schedule, or metric
+                        down to the facts and rules behind it
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
                         AI Console — ask Claude anything about your books in
-                        natural language; visual Report Builder for structured
-                        output
+                        natural language, grounded in your actual ledger
                       </span>
                     </li>
                   </ul>
