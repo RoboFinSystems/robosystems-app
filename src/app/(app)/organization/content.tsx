@@ -328,6 +328,9 @@ export function OrganizationContent() {
                 <span>{currentOrg.graph_count} graphs</span>
               </div>
             </div>
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              Org ID: <span className="font-mono">{currentOrg.id}</span>
+            </p>
           </div>
         </div>
       </Card>
@@ -640,6 +643,7 @@ export function OrganizationContent() {
         isOpen={showGraphLimitModal}
         onClose={() => setShowGraphLimitModal(false)}
         currentLimit={limits?.max_graphs ?? 0}
+        orgId={currentOrg.id}
       />
 
       {/* Invite Member Modal */}

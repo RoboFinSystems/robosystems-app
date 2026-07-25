@@ -5,10 +5,11 @@ import GraphLimitModal from '../GraphLimitModal'
 vi.mock('../GraphLimitForm', () => {
   return {
     __esModule: true,
-    default: vi.fn(({ onClose, userEmail }) => (
+    default: vi.fn(({ onClose, userEmail, orgId }) => (
       <div data-testid="graph-limit-form">
         <div>Mock GraphLimitForm</div>
         <div>User Email: {userEmail || 'None'}</div>
+        <div>Org ID: {orgId || 'None'}</div>
         <button onClick={onClose}>Close Form</button>
       </div>
     )),
@@ -59,6 +60,18 @@ describe('GraphLimitModal', () => {
     )
 
     expect(screen.getByText(`User Email: ${testEmail}`)).toBeInTheDocument()
+  })
+
+  it('passes orgId to GraphLimitForm', () => {
+    render(
+      <GraphLimitModal
+        isOpen={true}
+        onClose={mockOnClose}
+        orgId="org_test123"
+      />
+    )
+
+    expect(screen.getByText('Org ID: org_test123')).toBeInTheDocument()
   })
 
   it('calls onClose when form close button is clicked', () => {

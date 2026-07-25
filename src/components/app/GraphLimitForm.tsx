@@ -12,11 +12,13 @@ import { useRef, useState } from 'react'
 interface GraphLimitFormProps {
   onClose: () => void
   userEmail?: string
+  orgId?: string
 }
 
 export default function GraphLimitForm({
   onClose,
   userEmail = '',
+  orgId,
 }: GraphLimitFormProps) {
   const [formData, setFormData] = useState({
     name: '',
@@ -63,6 +65,7 @@ export default function GraphLimitForm({
           email: formData.email,
           company: formData.company,
           message: `[GRAPH LIMIT REQUEST]
+Org ID: ${orgId || 'Not available'}
 Phone: ${formData.phone || 'Not provided'}
 Graphs Needed: ${formData.graphsNeeded}
 Use Case: ${formData.useCase}`,
