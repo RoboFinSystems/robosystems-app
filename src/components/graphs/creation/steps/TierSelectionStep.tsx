@@ -121,11 +121,11 @@ export function TierSelectionStep({
             </h4>
             <p className="mt-1 text-sm text-blue-800 dark:text-blue-300">
               Credits are consumed only when RoboSystems invokes AI models
-              (Anthropic, OpenAI) on your behalf—such as our intelligent agents,
-              natural language processing, or AI-powered analysis. All direct
-              database operations, Cypher queries, data imports/exports, and API
-              calls are completely free, including MCP tool calls that don't
-              trigger AI processing.
+              (Anthropic Claude via AWS Bedrock) on your behalf—such as our
+              intelligent agents, natural language processing, or AI-powered
+              analysis. All direct database operations, Cypher queries, data
+              imports/exports, and API calls are completely free, including MCP
+              tool calls that don't trigger AI processing.
             </p>
           </div>
         </div>
