@@ -9,6 +9,7 @@ interface GraphLimitModalProps {
   onClose: () => void
   userEmail?: string
   currentLimit?: number
+  orgId?: string
 }
 
 export default function GraphLimitModal({
@@ -16,6 +17,7 @@ export default function GraphLimitModal({
   onClose,
   userEmail,
   currentLimit = 0,
+  orgId,
 }: GraphLimitModalProps) {
   return (
     <Modal show={isOpen} onClose={onClose} size="2xl" theme={customTheme.modal}>
@@ -53,7 +55,11 @@ export default function GraphLimitModal({
                 : `You've reached your current limit of ${currentLimit} graphs. Tell us about your needs and we'll increase your limit.`}
             </p>
           </div>
-          <GraphLimitForm onClose={onClose} userEmail={userEmail} />
+          <GraphLimitForm
+            onClose={onClose}
+            userEmail={userEmail}
+            orgId={orgId}
+          />
         </div>
       </div>
     </Modal>

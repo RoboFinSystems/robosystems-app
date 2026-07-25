@@ -2,7 +2,12 @@
 
 import GraphLimitModal from '@/components/app/GraphLimitModal'
 import { GraphCreationPage } from '@/components/graphs/creation'
-import { useGraphContext, useUser, useUserLimits } from '@robosystems/core'
+import {
+  useGraphContext,
+  useOrg,
+  useUser,
+  useUserLimits,
+} from '@robosystems/core'
 import { Spinner } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -10,6 +15,7 @@ import { useEffect, useState } from 'react'
 export function NewGraphContent() {
   const router = useRouter()
   const { user } = useUser()
+  const { currentOrg } = useOrg()
   const { setCurrentGraph, refreshGraphs } = useGraphContext()
   const { canCreateGraph, isLoading, limits } = useUserLimits()
   const [showContactModal, setShowContactModal] = useState(false)
@@ -71,6 +77,7 @@ export function NewGraphContent() {
           onClose={handleModalClose}
           userEmail={user?.email || ''}
           currentLimit={limits?.max_graphs || 0}
+          orgId={currentOrg?.id}
         />
         <div className="flex min-h-screen items-center justify-center">
           <div className="text-center">

@@ -41,6 +41,7 @@ vi.mock('@/components/app/GraphLimitModal', () => ({
 
 vi.mock('@robosystems/core', () => ({
   useGraphContext: vi.fn(),
+  useOrg: vi.fn(() => ({ currentOrg: { id: 'org_test123' } })),
   useUser: vi.fn(),
   useUserLimits: vi.fn(),
 }))

@@ -74,7 +74,7 @@ describe('GraphLimitForm', () => {
       json: async () => ({ success: true }),
     })
 
-    render(<GraphLimitForm onClose={mockOnClose} />)
+    render(<GraphLimitForm onClose={mockOnClose} orgId="org_test123" />)
 
     // Fill in the form
     fireEvent.change(screen.getByLabelText(/full name/i), {
@@ -113,8 +113,45 @@ describe('GraphLimitForm', () => {
     expect(body.email).toBe('john@example.com')
     expect(body.company).toBe('Acme Corp')
     expect(body.message).toContain('[GRAPH LIMIT REQUEST]')
+    expect(body.message).toContain('Org ID: org_test123')
     expect(body.message).toContain('Graphs Needed: 50')
     expect(body.type).toBe('graph-limit-request')
+  })
+
+  it('reports an unavailable org ID when none is provided', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true }),
+    })
+
+    render(<GraphLimitForm onClose={mockOnClose} />)
+
+    fireEvent.change(screen.getByLabelText(/full name/i), {
+      target: { value: 'John Doe' },
+    })
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'john@example.com' },
+    })
+    fireEvent.change(screen.getByLabelText(/company/i), {
+      target: { value: 'Acme Corp' },
+    })
+    fireEvent.change(screen.getByLabelText(/how many graphs/i), {
+      target: { value: '2' },
+    })
+    fireEvent.change(screen.getByLabelText(/use case/i), {
+      target: { value: 'Second entity' },
+    })
+
+    fireEvent.click(
+      screen.getByRole('button', { name: /request higher limit/i })
+    )
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledTimes(1)
+    })
+
+    const body = JSON.parse(mockFetch.mock.calls[0][1].body)
+    expect(body.message).toContain('Org ID: Not available')
   })
 
   it('shows success message after successful submission', async () => {
