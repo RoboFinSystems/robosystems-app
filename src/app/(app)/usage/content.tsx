@@ -3,6 +3,7 @@
 import type { GraphInfo } from '@robosystems/client'
 import {
   getCreditSummary,
+  getDatabaseHealth,
   getGraphLimits,
   getGraphs,
   listCreditTransactions,
@@ -74,11 +75,24 @@ interface CreditTransaction {
   created_at: string
 }
 
+/**
+ * Instance CPU/memory, returned only for dedicated single-tenant instances.
+ * Every field is null on shared repositories and packed tiers, so the card
+ * is rendered only when the API actually reports a status.
+ */
+interface InstanceResources {
+  cpu_usage_percent?: number | null
+  memory_usage_percent?: number | null
+  memory_usage_mb?: number | null
+  resource_status?: string | null
+}
+
 interface UsageData {
   graphInfo: GraphInfo
   creditSummary?: CreditSummary
   graphLimits?: GraphLimits
   recentTransactions?: CreditTransaction[]
+  instanceResources?: InstanceResources
 }
 
 export function UsageContent() {
@@ -119,14 +133,16 @@ export function UsageContent() {
       const usageData: UsageData = { graphInfo }
 
       // Fetch all usage data in parallel
-      const [limitsRes, creditRes, transactionsRes] = await Promise.allSettled([
-        getGraphLimits({ path: { graph_id: graphId } }),
-        getCreditSummary({ path: { graph_id: graphId } }),
-        listCreditTransactions({
-          path: { graph_id: graphId },
-          query: { limit: 10 },
-        }),
-      ])
+      const [limitsRes, creditRes, transactionsRes, healthRes] =
+        await Promise.allSettled([
+          getGraphLimits({ path: { graph_id: graphId } }),
+          getCreditSummary({ path: { graph_id: graphId } }),
+          listCreditTransactions({
+            path: { graph_id: graphId },
+            query: { limit: 10 },
+          }),
+          getDatabaseHealth({ path: { graph_id: graphId } }),
+        ])
 
       // Process limits (includes instance storage usage)
       if (limitsRes.status === 'fulfilled' && limitsRes.value.data) {
@@ -146,6 +162,15 @@ export function UsageContent() {
       ) {
         const txData = transactionsRes.value.data as any
         usageData.recentTransactions = txData.transactions || []
+      }
+
+      // Process instance resources. The API omits these unless the instance
+      // is dedicated, so an absent status simply means "not applicable here".
+      if (healthRes.status === 'fulfilled' && healthRes.value.data) {
+        const health = healthRes.value.data as unknown as InstanceResources
+        if (health.resource_status) {
+          usageData.instanceResources = health
+        }
       }
 
       setData(usageData)
@@ -249,6 +274,48 @@ export function UsageContent() {
     if (percentage >= 90) return 'red'
     if (percentage >= 75) return 'yellow'
     return 'blue'
+  }
+
+  /**
+   * Present `resource_status` rather than raw percentages, because high memory
+   * is usually the engine working as intended: materialization deliberately
+   * boosts toward the whole instance during syncs and period close. The API
+   * only reports "constrained" once load passes the point where the node
+   * starts shedding work, so that is the sole state worth acting on.
+   */
+  const getResourceStatusDisplay = (status: string) => {
+    switch (status) {
+      case 'idle':
+        return {
+          label: 'Idle',
+          badge: 'gray' as const,
+          bar: 'blue',
+          description: 'Plenty of headroom available.',
+        }
+      case 'busy':
+        return {
+          label: 'Busy',
+          badge: 'info' as const,
+          bar: 'blue',
+          description:
+            'Working normally. Expect this during data syncs and period close.',
+        }
+      case 'constrained':
+        return {
+          label: 'Constrained',
+          badge: 'warning' as const,
+          bar: 'yellow',
+          description:
+            'Sustained pressure on this instance. If it persists outside of syncs, consider upgrading your tier.',
+        }
+      default:
+        return {
+          label: status,
+          badge: 'gray' as const,
+          bar: 'blue',
+          description: '',
+        }
+    }
   }
 
   const formatTransactionType = (type: string) => {
@@ -440,6 +507,101 @@ export function UsageContent() {
               </Alert>
             )}
           </div>
+        </Card>
+      )}
+
+      {/* Instance Resources - dedicated single-tenant instances only */}
+      {!isRepository && data.instanceResources?.resource_status && (
+        <Card>
+          {(() => {
+            const resources = data.instanceResources!
+            const display = getResourceStatusDisplay(resources.resource_status!)
+            return (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
+                    Instance Resources
+                  </h3>
+                  <Badge color={display.badge}>{display.label}</Badge>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                  {typeof resources.cpu_usage_percent === 'number' && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">
+                          CPU
+                        </span>
+                        <span className="font-medium text-gray-900 dark:text-white">
+                          {resources.cpu_usage_percent.toFixed(1)}%
+                        </span>
+                      </div>
+                      <Progress
+                        progress={resources.cpu_usage_percent}
+                        size="lg"
+                        color={display.bar}
+                      />
+                    </div>
+                  )}
+
+                  {typeof resources.memory_usage_percent === 'number' && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">
+                          Memory
+                          {typeof resources.memory_usage_mb === 'number' && (
+                            <>
+                              {' '}
+                              &middot;{' '}
+                              {formatNumber(
+                                resources.memory_usage_mb / 1024
+                              )}{' '}
+                              GB in use
+                            </>
+                          )}
+                        </span>
+                        <span className="font-medium text-gray-900 dark:text-white">
+                          {resources.memory_usage_percent.toFixed(1)}%
+                        </span>
+                      </div>
+                      <Progress
+                        progress={resources.memory_usage_percent}
+                        size="lg"
+                        color={display.bar}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="rounded-lg bg-gray-50 p-4 dark:bg-zinc-800">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Dedicated instance
+                      </p>
+                      <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                        {display.description}
+                      </p>
+                    </div>
+                    <HiServer className="h-8 w-8 text-gray-400" />
+                  </div>
+                </div>
+
+                {resources.resource_status === 'constrained' && (
+                  <Alert color="warning" icon={HiExclamationCircle}>
+                    <span className="font-medium">
+                      Instance under sustained load
+                    </span>
+                    <p className="mt-1 text-sm">
+                      Heavy use during a data sync or period close is expected
+                      and clears on its own. If this persists while the graph is
+                      idle, consider upgrading to a higher tier.
+                    </p>
+                  </Alert>
+                )}
+              </div>
+            )
+          })()}
         </Card>
       )}
 
