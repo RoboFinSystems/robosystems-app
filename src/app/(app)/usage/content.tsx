@@ -39,6 +39,16 @@ interface CreditSummary {
   graph_tier: string
 }
 
+/**
+ * One piece of a graph's on-disk footprint, from `/limits` `instance.items`.
+ * Types: graph, memory, subgraph, vectors, staging.
+ */
+interface StorageItem {
+  type: string
+  id: string
+  bytes: number
+}
+
 interface GraphLimits {
   subscription_tier: string
   graph_tier: string
@@ -47,6 +57,9 @@ interface GraphLimits {
     current_usage_gb: number
     max_storage_gb: number
     approaching_limit: boolean
+  }
+  instance?: {
+    items?: StorageItem[]
   }
   queries: {
     concurrent_queries: number
@@ -284,12 +297,46 @@ export function UsageContent() {
    * has data in it — the number is right and the display destroys it. The cap
    * stays in GB because that is the unit the plan is sold in.
    */
-  const formatStorage = (gb: number) => {
-    const bytes = gb * 1024 ** 3
+  const formatBytes = (bytes: number) => {
     if (bytes < 1024) return `${Math.round(bytes)} B`
     if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(1)} KB`
     if (bytes < 1024 ** 3) return `${(bytes / 1024 ** 2).toFixed(1)} MB`
-    return `${gb.toFixed(2)} GB`
+    return `${(bytes / 1024 ** 3).toFixed(2)} GB`
+  }
+
+  const formatStorage = (gb: number) => formatBytes(gb * 1024 ** 3)
+
+  /**
+   * Collapse the itemized footprint to one row per type.
+   *
+   * A graph can contribute several items of the same type — a vector index per
+   * subgraph, one per memory database — and the per-item detail is noise at
+   * this altitude. What the tenant needs is which *kind* of storage is large,
+   * because that determines what they can do about it: staging is transient
+   * and clearable, the graph itself is not.
+   */
+  const summarizeStorage = (items: StorageItem[]) => {
+    const labels: Record<string, string> = {
+      graph: 'Graph',
+      memory: 'Memory',
+      subgraph: 'Subgraphs',
+      vectors: 'Vector indexes',
+      staging: 'Staging',
+    }
+
+    const byType = new Map<string, number>()
+    for (const item of items) {
+      byType.set(item.type, (byType.get(item.type) ?? 0) + item.bytes)
+    }
+
+    return [...byType.entries()]
+      .filter(([, bytes]) => bytes > 0)
+      .sort((a, b) => b[1] - a[1])
+      .map(([type, bytes]) => ({
+        type,
+        bytes,
+        label: labels[type] ?? type,
+      }))
   }
 
   /**
@@ -498,6 +545,37 @@ export function UsageContent() {
                 }
               />
             </div>
+
+            {/* Where the storage went. Answers "what can I do about it?" —
+                staging is transient, the graph itself is not. */}
+            {(() => {
+              const items = data.graphLimits?.instance?.items ?? []
+              const breakdown = summarizeStorage(items)
+              if (breakdown.length === 0) return null
+
+              return (
+                <div className="space-y-2 border-t border-gray-200 pt-4 dark:border-zinc-700">
+                  <p className="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+                    Breakdown
+                  </p>
+                  <ul className="space-y-1.5">
+                    {breakdown.map(({ type, label, bytes }) => (
+                      <li
+                        key={type}
+                        className="flex items-center justify-between text-sm"
+                      >
+                        <span className="text-gray-600 dark:text-gray-400">
+                          {label}
+                        </span>
+                        <span className="font-medium text-gray-900 tabular-nums dark:text-white">
+                          {formatBytes(bytes)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            })()}
 
             <div className="rounded-lg bg-gray-50 p-4 dark:bg-zinc-800">
               <div className="flex items-center justify-between">
