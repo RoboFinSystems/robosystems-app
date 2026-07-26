@@ -277,6 +277,22 @@ export function UsageContent() {
   }
 
   /**
+   * Scale a GB figure to a unit that can actually show it.
+   *
+   * Real graphs start in the megabytes against a 20 GB cap, so rendering the
+   * numerator as GB-with-2-decimals prints "0.00 GB" for a graph that plainly
+   * has data in it — the number is right and the display destroys it. The cap
+   * stays in GB because that is the unit the plan is sold in.
+   */
+  const formatStorage = (gb: number) => {
+    const bytes = gb * 1024 ** 3
+    if (bytes < 1024) return `${Math.round(bytes)} B`
+    if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(1)} KB`
+    if (bytes < 1024 ** 3) return `${(bytes / 1024 ** 2).toFixed(1)} MB`
+    return `${gb.toFixed(2)} GB`
+  }
+
+  /**
    * Present `resource_status` rather than raw percentages, because high memory
    * is usually the engine working as intended: materialization deliberately
    * boosts toward the whole instance during syncs and period close. The API
@@ -457,7 +473,7 @@ export function UsageContent() {
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">
-                  {data.graphLimits.storage.current_usage_gb.toFixed(2)} GB of{' '}
+                  {formatStorage(data.graphLimits.storage.current_usage_gb)} of{' '}
                   {formatNumber(data.graphLimits.storage.max_storage_gb)} GB
                   used
                 </span>
