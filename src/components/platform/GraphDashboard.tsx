@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import {
-  HiBookOpen,
   HiChartBar,
   HiChevronDown,
   HiChip,
@@ -57,7 +56,6 @@ export default function GraphDashboard() {
     { icon: HiDatabase, label: 'Backups' },
     { icon: HiChartBar, label: 'Usage' },
     { icon: HiGlobeAlt, label: 'Repositories' },
-    { icon: HiBookOpen, label: 'Library' },
     { icon: HiCreditCard, label: 'Billing' },
   ]
 
