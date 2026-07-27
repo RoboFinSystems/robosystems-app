@@ -3,7 +3,6 @@
 import type { GraphInfo } from '@robosystems/client'
 import type { SidebarItemData } from '@robosystems/core'
 import {
-  HiBookOpen,
   HiChartBar,
   HiChip,
   HiCode,
@@ -46,7 +45,6 @@ export const getNavigationItems = (
 
   const hasSelectedGraph = !!currentGraph
   const isRepository = currentGraph?.isRepository ?? false
-  const isGenericGraph = currentGraph?.graphType === 'generic'
 
   // Only show graph-dependent items if a graph is selected
   const graphDependentItems: SidebarItemData[] = hasSelectedGraph
@@ -117,17 +115,6 @@ export const getNavigationItems = (
       label: 'Repositories',
       href: '/repositories',
     },
-    // Library is for reporting taxonomies — hide when no graph is selected,
-    // and for generic graphs and repositories
-    ...(hasSelectedGraph && !isGenericGraph && !isRepository
-      ? [
-          {
-            icon: HiBookOpen,
-            label: 'Library',
-            href: '/library',
-          },
-        ]
-      : []),
     {
       icon: HiCreditCard,
       label: 'Billing',
