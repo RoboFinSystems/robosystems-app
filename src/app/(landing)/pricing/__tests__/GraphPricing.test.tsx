@@ -50,6 +50,7 @@ describe('GraphPricing', () => {
           monthly_price_per_graph: 129,
           monthly_credits_per_graph: 9000,
           max_subgraphs: 4,
+          instance_storage_limit_gb: 25,
           backup_retention_days: 14,
         },
       ])
@@ -61,8 +62,29 @@ describe('GraphPricing', () => {
     expect(screen.queryByText('$99')).not.toBeInTheDocument()
     expect(screen.getByText('9,000 AI credits per month')).toBeInTheDocument()
     expect(screen.getByText('Up to 4 subgraphs')).toBeInTheDocument()
+    expect(screen.getByText('25 GB graph storage')).toBeInTheDocument()
+    expect(screen.getByText('14-day backup retention')).toBeInTheDocument()
     // Untouched tiers keep their fallback values.
     expect(screen.getByText('$249')).toBeInTheDocument()
+  })
+
+  it('falls back on storage when the API omits it', async () => {
+    // A partial response must degrade per-field rather than blanking the row.
+    mockGetOfferings.mockReturnValue(
+      offeringsWith([
+        {
+          name: 'ladybug-standard',
+          display_name: 'Standard',
+          monthly_price_per_graph: 129,
+        },
+      ])
+    )
+
+    render(<GraphPricing isAuthenticated={false} onContactSales={vi.fn()} />)
+
+    await waitFor(() => expect(screen.getByText('$129')).toBeInTheDocument())
+    expect(screen.getByText('20 GB graph storage')).toBeInTheDocument()
+    expect(screen.getByText('8,000 AI credits per month')).toBeInTheDocument()
   })
 
   it('keeps fallback prices when the offerings call fails', async () => {

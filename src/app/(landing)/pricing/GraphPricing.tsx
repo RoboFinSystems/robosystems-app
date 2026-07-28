@@ -114,12 +114,9 @@ function useReconciledTiers(): Tier[] {
               monthlyCredits:
                 match.monthly_credits_per_graph ?? tier.monthlyCredits,
               maxSubgraphs: match.max_subgraphs ?? tier.maxSubgraphs,
+              storageGb: match.instance_storage_limit_gb ?? tier.storageGb,
               backupRetentionDays:
                 match.backup_retention_days ?? tier.backupRetentionDays,
-              // storageGb is deliberately not reconciled: the API serves
-              // instance_storage_limit_gb, but @robosystems/client 0.5.10
-              // predates that field. Add it here once the client is
-              // regenerated — until then the fallback carries it.
             }
           })
         )
