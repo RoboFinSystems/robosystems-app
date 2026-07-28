@@ -43,12 +43,12 @@ export default function PricingContent() {
         <section className="relative bg-zinc-950 py-16 sm:py-20">
           <FloatingElementsVariant variant="pricing" intensity={15} />
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <RepositoryPricing
+            <GraphPricing
               isAuthenticated={isAuthenticated}
               onContactSales={() => setShowContact(true)}
             />
 
-            <GraphPricing
+            <RepositoryPricing
               isAuthenticated={isAuthenticated}
               onContactSales={() => setShowContact(true)}
             />
