@@ -86,6 +86,19 @@ function tierFeatures(tier: Tier): string[] {
 }
 
 /**
+ * Take the live value only when it is a usable number.
+ *
+ * `??` is wrong here: it falls back on null/undefined but not on 0, so an API
+ * reporting `max_subgraphs: 0` would override a correct fallback of 10. None of
+ * these fields has a meaningful zero — a priced tier always has storage, a
+ * retention window and at least one subgraph — so zero means "no data", the
+ * same as absent.
+ */
+function positive(live: number | undefined, fallback: number): number {
+  return typeof live === 'number' && live > 0 ? live : fallback
+}
+
+/**
  * Reconcile display prices against the live offerings endpoint.
  *
  * Only overrides fields the API actually returns, so a partial or changed
@@ -109,14 +122,24 @@ function useReconciledTiers(): Tier[] {
             if (!match) return tier
             return {
               ...tier,
-              name: match.display_name ?? tier.name,
-              monthlyPrice: match.monthly_price_per_graph ?? tier.monthlyPrice,
-              monthlyCredits:
-                match.monthly_credits_per_graph ?? tier.monthlyCredits,
-              maxSubgraphs: match.max_subgraphs ?? tier.maxSubgraphs,
-              storageGb: match.instance_storage_limit_gb ?? tier.storageGb,
-              backupRetentionDays:
-                match.backup_retention_days ?? tier.backupRetentionDays,
+              name: match.display_name || tier.name,
+              monthlyPrice: positive(
+                match.monthly_price_per_graph,
+                tier.monthlyPrice
+              ),
+              monthlyCredits: positive(
+                match.monthly_credits_per_graph,
+                tier.monthlyCredits
+              ),
+              maxSubgraphs: positive(match.max_subgraphs, tier.maxSubgraphs),
+              storageGb: positive(
+                match.instance_storage_limit_gb,
+                tier.storageGb
+              ),
+              backupRetentionDays: positive(
+                match.backup_retention_days,
+                tier.backupRetentionDays
+              ),
             }
           })
         )
