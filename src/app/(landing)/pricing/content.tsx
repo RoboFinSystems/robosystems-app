@@ -48,7 +48,10 @@ export default function PricingContent() {
               onContactSales={() => setShowContact(true)}
             />
 
-            <GraphPricing onContactSales={() => setShowContact(true)} />
+            <GraphPricing
+              isAuthenticated={isAuthenticated}
+              onContactSales={() => setShowContact(true)}
+            />
 
             {/* FAQs */}
             <div className="mt-16">
