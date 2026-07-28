@@ -103,6 +103,33 @@ describe('GraphPricing', () => {
     expect(screen.getByText('$599')).toBeInTheDocument()
   })
 
+  it('ignores zeroed values rather than letting them override the fallback', async () => {
+    // `??` falls back on null/undefined but not 0, so an API reporting zeros
+    // used to overwrite correct fallbacks — this rendered "Up to 0 subgraphs"
+    // against a local API that had no config for the tier.
+    mockGetOfferings.mockReturnValue(
+      offeringsWith([
+        {
+          name: 'ladybug-large',
+          display_name: 'Large',
+          monthly_price_per_graph: 249,
+          monthly_credits_per_graph: 32000,
+          max_subgraphs: 0,
+          instance_storage_limit_gb: 0,
+          backup_retention_days: 0,
+        },
+      ])
+    )
+
+    render(<GraphPricing isAuthenticated={false} onContactSales={vi.fn()} />)
+
+    await waitFor(() => expect(screen.getByText('$249')).toBeInTheDocument())
+    expect(screen.getByText('Up to 10 subgraphs')).toBeInTheDocument()
+    expect(screen.getByText('50 GB graph storage')).toBeInTheDocument()
+    expect(screen.getByText('30-day backup retention')).toBeInTheDocument()
+    expect(screen.queryByText('Up to 0 subgraphs')).not.toBeInTheDocument()
+  })
+
   it('sends signed-out visitors to register and signed-in users to graph creation', () => {
     mockGetOfferings.mockReturnValue(offeringsWith([]))
 
