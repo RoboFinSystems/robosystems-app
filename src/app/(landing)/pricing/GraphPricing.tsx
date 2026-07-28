@@ -146,7 +146,9 @@ export default function GraphPricing({
   const tiers = useReconciledTiers()
 
   return (
-    <div className="mt-20">
+    // No top margin: this is the first block in the pricing section, which
+    // supplies its own padding. RepositoryPricing below carries the gap.
+    <div>
       <div className="mb-10 text-center">
         <div className="mb-4 inline-block rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 text-sm font-medium text-cyan-400">
           Dedicated Graphs
