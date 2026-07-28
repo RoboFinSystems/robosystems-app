@@ -108,6 +108,23 @@ interface UsageData {
   instanceResources?: InstanceResources
 }
 
+/**
+ * Tier strings from the API are `<engine>-<size>` composites
+ * (e.g. "ladybug-standard"). Display names match the billing config
+ * and the pricing page; unknown values fall through raw.
+ */
+const TIER_DISPLAY_NAMES: Record<string, string> = {
+  'ladybug-standard': 'Standard',
+  'ladybug-large': 'Large',
+  'ladybug-xlarge': 'XLarge',
+  'ladybug-shared': 'Shared',
+}
+
+const formatTierName = (tier: string) => TIER_DISPLAY_NAMES[tier] ?? tier
+
+const formatEngineName = (tier: string) =>
+  tier.startsWith('ladybug') ? 'LadybugDB' : tier
+
 export function UsageContent() {
   const router = useRouter()
   const { state: graphState } = useGraphContext()
@@ -797,14 +814,16 @@ export function UsageContent() {
                       Tier
                     </span>
                     <Badge color="purple">
-                      {data.graphLimits.subscription_tier}
+                      {formatTierName(data.graphLimits.subscription_tier)}
                     </Badge>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">
-                      Graph Type
+                      Engine
                     </span>
-                    <Badge color="gray">{data.graphLimits.graph_tier}</Badge>
+                    <Badge color="gray">
+                      {formatEngineName(data.graphLimits.graph_tier)}
+                    </Badge>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">
