@@ -81,7 +81,12 @@ function tierFeatures(tier: Tier): string[] {
     `Up to ${tier.maxSubgraphs} subgraphs`,
     `${tier.storageGb} GB graph storage`,
     `${tier.backupRetentionDays}-day backup retention`,
-    'Unlimited queries — only AI calls consume credits',
+    // A billing claim, deliberately not a volume one. "Unlimited queries" was
+    // false on three axes: rate limits apply (60/min), the connection pool is
+    // an LRU ceiling rather than a concurrency guarantee, and LadybugDB is
+    // single-writer per database. What IS true and never needs retracting is
+    // that database operations cost no credits — only AI does.
+    'Queries and MCP tools included — credits are for AI only',
   ]
 }
 
