@@ -40,7 +40,7 @@ import {
   TextInput,
   Tooltip,
 } from 'flowbite-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   HiCheckCircle,
   HiDatabase,
@@ -91,6 +91,32 @@ export default function BackupManagementContent() {
   const createOperationMonitor = useOperationMonitoring()
   const restoreOperationMonitor = useOperationMonitoring()
 
+  // The graph a request was issued for, readable from inside an in-flight call
+  // so a response that arrives after a graph switch can be dropped. This read
+  // is a chain — backups, then subgraphs, then a backup list per subgraph, then
+  // stats — so it has the widest window of any page here for a switch to land
+  // mid-flight.
+  const loadedGraphIdRef = useRef(selectedGraphId)
+  useEffect(() => {
+    loadedGraphIdRef.current = selectedGraphId
+  }, [selectedGraphId])
+
+  // The restore and details modals act on `selectedBackup`. Restore itself is
+  // addressed by `selectedBackup.graph_id`, so it stays correct across a
+  // switch, but leaving the panel open shows one graph's backup while the
+  // header names another.
+  useEffect(() => {
+    setSelectedBackup(null)
+    setShowRestoreModal(false)
+    setShowDetailsModal(false)
+    setShowCreateModal(false)
+    setBackups([])
+    setBackupStats(null)
+    setDownloadQuota(null)
+    setGraphIdToName({})
+    setError(null)
+  }, [selectedGraphId])
+
   const fetchBackupData = useCallback(async () => {
     if (!selectedGraphId) {
       setLoading(false)
@@ -105,6 +131,8 @@ export default function BackupManagementContent() {
       const backupsResponse = await listBackups({
         path: { graph_id: selectedGraphId },
       })
+
+      if (loadedGraphIdRef.current !== selectedGraphId) return
 
       if (!backupsResponse.data) {
         const errorMsg = (backupsResponse as any).error
@@ -168,6 +196,8 @@ export default function BackupManagementContent() {
         return dateB - dateA
       })
 
+      if (loadedGraphIdRef.current !== selectedGraphId) return
+
       setBackups(allBackups)
       setGraphIdToName(nameMap)
 
@@ -175,21 +205,24 @@ export default function BackupManagementContent() {
         const statsResponse = await getBackupStats({
           path: { graph_id: selectedGraphId },
         })
+        if (loadedGraphIdRef.current !== selectedGraphId) return
         if (statsResponse.data) {
           setBackupStats(statsResponse.data)
         }
       } catch (statsErr) {
+        if (loadedGraphIdRef.current !== selectedGraphId) return
         console.warn('Backup statistics not available:', statsErr)
         setBackupStats(null)
       }
     } catch (err) {
+      if (loadedGraphIdRef.current !== selectedGraphId) return
       console.error('Backup data fetch error:', err)
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to load backup data'
       setError(errorMessage)
       showError(`Failed to load backup data: ${errorMessage}`, 8000)
     } finally {
-      setLoading(false)
+      if (loadedGraphIdRef.current === selectedGraphId) setLoading(false)
     }
   }, [selectedGraphId, isRepository, showError])
 

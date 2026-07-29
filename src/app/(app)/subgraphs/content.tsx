@@ -34,7 +34,7 @@ import {
   TableRow,
 } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   HiChip,
   HiDatabase,
@@ -94,6 +94,24 @@ export function SubgraphsContent() {
     }
   }
 
+  // The graph a request was issued for, readable from inside an in-flight call
+  // so a response that arrives after a graph switch can be dropped.
+  const loadedGraphIdRef = useRef(currentGraphId)
+  useEffect(() => {
+    loadedGraphIdRef.current = currentGraphId
+  }, [currentGraphId])
+
+  // Subgraphs belong to the parent graph they were listed from. A delete
+  // confirm left open across a switch would send the previous parent's
+  // subgraph to the new one, and the list itself would show the old parent's
+  // subgraphs under the new parent's name until its own read returned.
+  useEffect(() => {
+    setDeleteModalOpen(false)
+    setSubgraphToDelete(null)
+    setSubgraphs([])
+    setListResponse(null)
+  }, [currentGraphId])
+
   const fetchSubgraphs = async () => {
     if (!currentGraphId) {
       setIsLoading(false)
@@ -107,15 +125,18 @@ export function SubgraphsContent() {
         path: { graph_id: currentGraphId },
       })
 
+      if (loadedGraphIdRef.current !== currentGraphId) return
+
       if (response.data) {
         setListResponse(response.data)
         setSubgraphs(response.data.subgraphs || [])
       }
     } catch (error: any) {
+      if (loadedGraphIdRef.current !== currentGraphId) return
       console.error('Failed to fetch subgraphs:', error)
       showError('Failed to load subgraphs')
     } finally {
-      setIsLoading(false)
+      if (loadedGraphIdRef.current === currentGraphId) setIsLoading(false)
     }
   }
 

@@ -26,7 +26,7 @@ import {
   Tabs,
   TextInput,
 } from 'flowbite-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   HiChip,
   HiCloudUpload,
@@ -46,7 +46,9 @@ export function TablesContent() {
 
   // State
   const [tables, setTables] = useState<TableInfo[]>([])
-  const [selectedTable, setSelectedTable] = useState<TableInfo | null>(null)
+  const [selectedTable, setSelectedTableState] = useState<TableInfo | null>(
+    null
+  )
   const [tableFiles, setTableFiles] = useState<FileInfo[]>([])
   const [sqlQuery, setSqlQuery] = useState(
     isEntityGraph ? 'SELECT * FROM Entity LIMIT 10' : ''
@@ -81,6 +83,48 @@ export function TablesContent() {
   const [deleting, setDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
 
+  // The graph a request was issued for, readable from inside an in-flight call
+  // so a response that arrives after a graph switch can be dropped.
+  const loadedGraphIdRef = useRef(graphId)
+  useEffect(() => {
+    loadedGraphIdRef.current = graphId
+  }, [graphId])
+
+  // The graph the current table selection was made in. The files/preview effect
+  // below re-runs the instant the graph changes — both fetchers depend on
+  // graphId — and that happens in the same commit as any state reset, so state
+  // alone cannot stop it firing once with the previous graph's table. This ref
+  // lets that effect recognise a selection it should not act on. Deliberately
+  // left pointing at the old graph by the reset below, and only moved forward
+  // when a selection is actually made against the graph now current.
+  const selectionGraphIdRef = useRef(graphId)
+
+  const selectTable = (table: TableInfo | null) => {
+    selectionGraphIdRef.current = graphId
+    setSelectedTableState(table)
+  }
+
+  // Tables, files and query results all describe one graph's staging area.
+  // Clearing them on a switch stops the previous graph's rows being shown
+  // under the new graph's name while its own list loads, and drops a pending
+  // file deletion whose file belongs to the graph being left.
+  useEffect(() => {
+    setTables([])
+    // Cleared here as well as re-seeded in fetchTables. Note this uses the raw
+    // setter: `selectionGraphIdRef` must keep pointing at the graph being left,
+    // so the files/preview effect in this same commit — which still holds the
+    // old selection — recognises it as stale and skips.
+    setSelectedTableState(null)
+    setTableFiles([])
+    setTablePreview(null)
+    setQueryResult(null)
+    setShowDeleteModal(false)
+    setFileToDelete(null)
+    setDeleteError(null)
+    setSelectedExistingTable('')
+    setError(null)
+  }, [graphId])
+
   // Load tables
   const fetchTables = useCallback(async () => {
     if (!graphId) return
@@ -92,6 +136,8 @@ export function TablesContent() {
       const response = await SDK.listTables({
         path: { graph_id: graphId },
       })
+
+      if (loadedGraphIdRef.current !== graphId) return
 
       if (response.data) {
         const data = response.data as any
@@ -105,23 +151,42 @@ export function TablesContent() {
 
         setTables(tableList)
 
-        // Auto-select first table with data if none selected
-        if (!selectedTable && tableList.length > 0) {
-          const firstTableWithData = tableList.find((t) => t.rowCount > 0)
-          if (firstTableWithData) {
-            setSelectedTable(firstTableWithData)
-          } else if (tableList.length > 0) {
-            setSelectedTable(tableList[0])
+        // Re-seed the selection from this graph's own list every load. The old
+        // `if (!selectedTable)` guard only ever seeded an empty selection, so a
+        // table carried over from another graph survived the switch and the
+        // effect below then read its files and previewed it — `SELECT * FROM
+        // <other graph's table>` — against the graph now selected. Keeping the
+        // selection only when this graph has a table of that name also drops
+        // `selectedTable` from the dependency list, which was re-running the
+        // whole table list read on every selection change.
+        selectionGraphIdRef.current = graphId
+        setSelectedTableState((current) => {
+          if (current) {
+            const match = tableList.find(
+              (t) => t.tableName === current.tableName
+            )
+            if (match) {
+              // Same table: keep the existing object unless its counts actually
+              // moved, so a routine list refresh doesn't re-trigger the files
+              // and preview reads through a new object identity.
+              const unchanged =
+                match.rowCount === current.rowCount &&
+                match.fileCount === current.fileCount &&
+                match.totalSizeBytes === current.totalSizeBytes
+              return unchanged ? current : match
+            }
           }
-        }
+          return tableList.find((t) => t.rowCount > 0) ?? tableList[0] ?? null
+        })
       }
     } catch (err) {
+      if (loadedGraphIdRef.current !== graphId) return
       console.error('Failed to fetch tables:', err)
       setError('Failed to load tables')
     } finally {
-      setLoading(false)
+      if (loadedGraphIdRef.current === graphId) setLoading(false)
     }
-  }, [graphId, selectedTable])
+  }, [graphId])
 
   // Load files for selected table
   const fetchTableFiles = useCallback(
@@ -133,6 +198,8 @@ export function TablesContent() {
           path: { graph_id: graphId },
           query: { table_name: table.tableName },
         })
+
+        if (loadedGraphIdRef.current !== graphId) return
 
         if (response.data) {
           const data = response.data as any
@@ -157,6 +224,8 @@ export function TablesContent() {
           body: { sql: `SELECT * FROM ${table.tableName} LIMIT 10` },
         })
 
+        if (loadedGraphIdRef.current !== graphId) return
+
         if (response.data) {
           const data = response.data as any
           setTablePreview({
@@ -167,10 +236,11 @@ export function TablesContent() {
           })
         }
       } catch (err) {
+        if (loadedGraphIdRef.current !== graphId) return
         console.error('Failed to fetch table preview:', err)
         setTablePreview(null)
       } finally {
-        setLoadingPreview(false)
+        if (loadedGraphIdRef.current === graphId) setLoadingPreview(false)
       }
     },
     [graphId]
@@ -347,6 +417,12 @@ export function TablesContent() {
 
   // Load files and preview when table selected
   useEffect(() => {
+    // Both fetchers are rebuilt when graphId changes, so this effect fires on a
+    // graph switch while still holding the previous graph's table. Reading that
+    // selection here would list files for — and run `SELECT * FROM` — a table
+    // name belonging to another graph, against the graph now selected.
+    if (selectionGraphIdRef.current !== graphId) return
+
     if (selectedTable) {
       fetchTableFiles(selectedTable)
       if (selectedTable.rowCount > 0) {
@@ -355,7 +431,7 @@ export function TablesContent() {
         setTablePreview(null)
       }
     }
-  }, [selectedTable, fetchTableFiles, fetchTablePreview])
+  }, [selectedTable, graphId, fetchTableFiles, fetchTablePreview])
 
   // Format bytes
   const formatBytes = (bytes: number) => {
@@ -719,7 +795,7 @@ export function TablesContent() {
                   const table = tables.find(
                     (t) => t.tableName === e.target.value
                   )
-                  if (table) setSelectedTable(table)
+                  if (table) selectTable(table)
                 }}
               >
                 <option value="">Choose a table...</option>
@@ -785,7 +861,7 @@ export function TablesContent() {
                             .map((table) => (
                               <button
                                 key={table.tableName}
-                                onClick={() => setSelectedTable(table)}
+                                onClick={() => selectTable(table)}
                                 className={`w-full rounded-lg border p-2.5 text-left transition-colors ${
                                   selectedTable?.tableName === table.tableName
                                     ? 'border-primary-500 bg-primary-50 dark:border-primary-600 dark:bg-primary-950'
@@ -824,7 +900,7 @@ export function TablesContent() {
                             .map((table) => (
                               <button
                                 key={table.tableName}
-                                onClick={() => setSelectedTable(table)}
+                                onClick={() => selectTable(table)}
                                 className={`w-full rounded-lg border p-2.5 text-left transition-colors ${
                                   selectedTable?.tableName === table.tableName
                                     ? 'border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-800'

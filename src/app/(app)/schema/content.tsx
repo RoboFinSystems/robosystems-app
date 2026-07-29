@@ -9,7 +9,7 @@ import {
   useGraphContext,
 } from '@robosystems/core'
 import { Alert, Badge, Card, Tabs, TextInput } from 'flowbite-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   HiCode,
   HiDatabase,
@@ -65,6 +65,20 @@ export function SchemaEditorContent() {
     rel?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+  // The graph a request was issued for, readable from inside an in-flight call
+  // so a response that arrives after a graph switch can be dropped. This read
+  // is two chained requests — introspection then the export schema — so a
+  // switch has a wide window to land between them.
+  const loadedGraphIdRef = useRef(graphId)
+  useEffect(() => {
+    loadedGraphIdRef.current = graphId
+    setNodeLabels([])
+    setRelationshipTypes([])
+    setRawSchema('')
+    setSearchTerm('')
+    setError(null)
+  }, [graphId])
+
   // Fetch schema data
   const fetchSchema = async () => {
     if (!graphId) {
@@ -73,12 +87,16 @@ export function SchemaEditorContent() {
       return
     }
 
+    const requestedGraphId = graphId
+
     try {
       setLoading(true)
 
       const response = await SDK.getGraphSchema({
         path: { graph_id: graphId },
       })
+
+      if (loadedGraphIdRef.current !== requestedGraphId) return
 
       if (!response.data) {
         throw new Error('No schema data returned')
@@ -124,6 +142,8 @@ export function SchemaEditorContent() {
           query: { format: 'json' },
         })
 
+        if (loadedGraphIdRef.current !== requestedGraphId) return
+
         if (exportResponse.data?.schema_definition) {
           const exportSchema: any = exportResponse.data.schema_definition
           setRawSchema(JSON.stringify(exportSchema, null, 2))
@@ -154,6 +174,7 @@ export function SchemaEditorContent() {
           setRawSchema(JSON.stringify(rawSchemaData, null, 2))
         }
       } catch (exportErr) {
+        if (loadedGraphIdRef.current !== requestedGraphId) return
         console.warn(
           'Failed to fetch export schema, using introspection:',
           exportErr
@@ -167,6 +188,7 @@ export function SchemaEditorContent() {
         setRawSchema(JSON.stringify(rawSchemaData, null, 2))
       }
     } catch (err: any) {
+      if (loadedGraphIdRef.current !== requestedGraphId) return
       console.error('Failed to fetch schema:', err)
       let errorMessage = 'Failed to load schema'
       if (err?.error?.detail) {
@@ -176,7 +198,7 @@ export function SchemaEditorContent() {
       }
       setError(errorMessage)
     } finally {
-      setLoading(false)
+      if (loadedGraphIdRef.current === requestedGraphId) setLoading(false)
     }
   }
 

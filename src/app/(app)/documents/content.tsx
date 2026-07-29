@@ -22,7 +22,7 @@ import {
 } from '@robosystems/core'
 import { useToast } from '@robosystems/core/hooks/use-toast'
 import { Badge, Button, Card, Label, Spinner, Tooltip } from 'flowbite-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   HiArrowLeft,
   HiDocumentAdd,
@@ -119,6 +119,30 @@ export function DocumentsPageContent() {
 
   // --- Data Fetching ---
 
+  // The graph a request was issued for, readable from inside an in-flight call
+  // so a response that arrives after a graph switch can be dropped.
+  const loadedGraphIdRef = useRef(selectedGraphId)
+  useEffect(() => {
+    loadedGraphIdRef.current = selectedGraphId
+  }, [selectedGraphId])
+
+  // Documents are per-graph rows, so every id here belongs to the graph it was
+  // read from. Carrying a selection across a switch pointed the viewer, the
+  // editor and the delete confirm at ids the new graph does not contain — the
+  // API scopes each id to its graph, so those requests fail rather than touch
+  // the wrong record, but the user saw another graph's document and got an
+  // unexplained error on save or delete.
+  useEffect(() => {
+    setSelectedDoc(null)
+    setDetailLoading(false)
+    setEditor({ open: false })
+    setShowDeleteModal(false)
+    setDeleteTarget(null)
+    setDocuments([])
+    setTotalDocuments(0)
+    setError(null)
+  }, [selectedGraphId])
+
   const fetchDocuments = useCallback(
     async (showSpinner = false) => {
       if (!selectedGraphId) {
@@ -134,6 +158,8 @@ export function DocumentsPageContent() {
           path: { graph_id: selectedGraphId },
         })
 
+        if (loadedGraphIdRef.current !== selectedGraphId) return
+
         if (!response.data) {
           throw new Error('Failed to fetch documents')
         }
@@ -141,12 +167,13 @@ export function DocumentsPageContent() {
         setDocuments(response.data.documents || [])
         setTotalDocuments(response.data.total || 0)
       } catch (err) {
+        if (loadedGraphIdRef.current !== selectedGraphId) return
         const msg =
           err instanceof Error ? err.message : 'Failed to load documents'
         setError(msg)
         showError(msg, 8000)
       } finally {
-        setLoading(false)
+        if (loadedGraphIdRef.current === selectedGraphId) setLoading(false)
       }
     },
     [selectedGraphId, showError]
@@ -170,11 +197,15 @@ export function DocumentsPageContent() {
       const response = await getDocument({
         path: { graph_id: selectedGraphId, document_id: documentId },
       })
+      // The read was issued against a graph that is no longer selected; its
+      // result must not open a viewer or seed the editor under the new one.
+      if (loadedGraphIdRef.current !== selectedGraphId) return null
       if (!response.data) {
         throw new Error('Failed to load document')
       }
       return response.data
     } catch (err) {
+      if (loadedGraphIdRef.current !== selectedGraphId) return null
       const msg = err instanceof Error ? err.message : 'Failed to load document'
       showError(msg, 5000)
       return null
