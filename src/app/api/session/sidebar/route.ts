@@ -3,11 +3,16 @@ import { cookies } from 'next/headers'
 import type { NextRequest } from 'next/server'
 
 export async function POST(req: NextRequest) {
-  const { isCollapsed } = (await req.json()) as SidebarCookie
+  let body: SidebarCookie
+  try {
+    body = (await req.json()) as SidebarCookie
+  } catch {
+    return Response.json({ error: 'Invalid request body' }, { status: 400 })
+  }
 
   // Set the cookie with proper options
   const cookieStore = await cookies()
-  cookieStore.set('sidebar-collapsed', String(isCollapsed), {
+  cookieStore.set('sidebar-collapsed', String(Boolean(body?.isCollapsed)), {
     path: '/',
     maxAge: 60 * 60 * 24 * 365, // 1 year
     sameSite: 'lax',
