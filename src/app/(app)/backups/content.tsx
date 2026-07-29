@@ -745,14 +745,16 @@ export default function BackupManagementContent() {
                 id="retention"
                 type="number"
                 min={1}
-                max={2555}
+                max={90}
                 value={createFormRetentionDays}
                 onChange={(e) =>
                   setCreateFormRetentionDays(parseInt(e.target.value))
                 }
               />
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                How long to keep the backup (1-2555 days)
+                How long to keep the backup (1-90 days). Storage expires backup
+                objects at 90 days regardless, and your graph tier may cap this
+                lower — the response reports the retention actually applied.
               </p>
             </div>
             {createOperationMonitor.isMonitoring && (
