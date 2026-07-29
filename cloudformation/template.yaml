@@ -197,23 +197,6 @@ Resources:
         - Key: CreatedBy
           Value: CloudFormation
 
-  # SNS Topic for Waitlist Notifications
-  WaitlistTopic:
-    Type: AWS::SNS::Topic
-    Condition: CreateSNSTopic
-    Properties:
-      TopicName: !Sub robosystems-app-${Environment}-waitlist
-      DisplayName: !Sub RoboSystems ${Environment} Waitlist
-      Tags:
-        - Key: Environment
-          Value: !Ref Environment
-        - Key: Service
-          Value: !Ref ServiceTag
-        - Key: Component
-          Value: !Ref ComponentTag
-        - Key: CreatedBy
-          Value: CloudFormation
-
   # Email Subscription for Contact Form
   ContactFormEmailSubscription:
     Type: AWS::SNS::Subscription
@@ -221,15 +204,6 @@ Resources:
     Properties:
       Protocol: email
       TopicArn: !Ref ContactFormTopic
-      Endpoint: !Ref NotificationEmail
-
-  # Email Subscription for Waitlist
-  WaitlistEmailSubscription:
-    Type: AWS::SNS::Subscription
-    Condition: CreateSNSTopic
-    Properties:
-      Protocol: email
-      TopicArn: !Ref WaitlistTopic
       Endpoint: !Ref NotificationEmail
 
   # IAM Role for App Runner to access ECR
@@ -284,7 +258,6 @@ Resources:
                     - sns:Publish
                   Resource:
                     - !Ref ContactFormTopic
-                    - !Ref WaitlistTopic
           - !Ref AWS::NoValue
         - PolicyName: SecretsManagerAccess
           PolicyDocument:
@@ -344,8 +317,6 @@ Resources:
                 Value: production
               - Name: SNS_CONTACT_TOPIC_ARN
                 Value: !If [CreateSNSTopic, !Ref ContactFormTopic, '']
-              - Name: SNS_WAITLIST_TOPIC_ARN
-                Value: !If [CreateSNSTopic, !Ref WaitlistTopic, '']
               - Name: REQUIRE_CAPTCHA
                 Value: 'true'
             RuntimeEnvironmentSecrets:
@@ -688,11 +659,6 @@ Outputs:
     Condition: CreateSNSTopic
     Description: SNS Topic ARN for contact form notifications
     Value: !Ref ContactFormTopic
-
-  WaitlistTopicArn:
-    Condition: CreateSNSTopic
-    Description: SNS Topic ARN for waitlist notifications
-    Value: !Ref WaitlistTopic
 
   PublicAccessInstructions:
     Condition: IsPublicMode
