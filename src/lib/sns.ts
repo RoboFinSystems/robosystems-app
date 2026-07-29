@@ -79,54 +79,6 @@ Submitted at: ${new Date().toISOString()}
       return false
     }
   }
-
-  async publishWaitlistForm(data: {
-    firstName: string
-    lastName: string
-    email: string
-    company: string
-    role: string
-    companySize: string
-    interestedIn: string[]
-    useCase: string
-    timeline: string
-  }): Promise<boolean> {
-    if (!this.client || !this.config.contactTopicArn) {
-      console.warn('SNS not configured for waitlist notifications')
-      return false
-    }
-
-    try {
-      const subject = 'New Waitlist Submission'
-      const message = `
-New waitlist submission received:
-
-Name: ${data.firstName} ${data.lastName}
-Email: ${data.email}
-Company: ${data.company}
-Role: ${data.role}
-Company Size: ${data.companySize}
-Interested In: ${data.interestedIn.join(', ')}
-Use Case: ${data.useCase}
-Timeline: ${data.timeline}
-
----
-Submitted at: ${new Date().toISOString()}
-      `.trim()
-
-      const command = new PublishCommand({
-        TopicArn: this.config.contactTopicArn,
-        Subject: subject,
-        Message: message,
-      })
-
-      await this.client.send(command)
-      return true
-    } catch (error) {
-      console.error('Failed to publish waitlist form to SNS:', error)
-      return false
-    }
-  }
 }
 
 // Export singleton instance

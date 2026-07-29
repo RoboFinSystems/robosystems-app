@@ -76,8 +76,3 @@ export const contactRateLimiter = rateLimit({
   interval: 60 * 60 * 1000, // 1 hour
   uniqueTokenPerInterval: 1000,
 })
-
-export const waitlistRateLimiter = rateLimit({
-  interval: 24 * 60 * 60 * 1000, // 24 hours
-  uniqueTokenPerInterval: 1000,
-})
