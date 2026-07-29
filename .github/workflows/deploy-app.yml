@@ -105,7 +105,7 @@ on:
 
       # SNS Configuration
       notification_email:
-        description: 'Email address for admin notifications (contact form, waitlist)'
+        description: 'Email address for admin notifications (contact and support forms)'
         required: true
         type: string
 
