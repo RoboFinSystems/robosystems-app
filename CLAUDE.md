@@ -85,8 +85,9 @@ npm run format:check # Check code formatting
   - `NEXT_PUBLIC_ROBOSYSTEMS_API_URL` - RoboSystems API endpoint
   - `SNS_CONTACT_TOPIC_ARN` - SNS topic for contact and support forms
   - `TURNSTILE_SECRET_KEY` / `NEXT_PUBLIC_TURNSTILE_SITE_KEY` - CAPTCHA configuration
-  - `TRUSTED_PROXY_HOPS` - proxies in front of the app that append to
-    `X-Forwarded-For`; optional, defaults to 1 (CloudFront)
+  - `TRUSTED_PROXY_HOPS` - fallback only; the client IP normally comes from
+    CloudFront's `CloudFront-Viewer-Address` header. Applies to requests that
+    did not arrive through CloudFront. Optional, defaults to 1
 
 ## Important Notes
 
