@@ -27,9 +27,19 @@ export async function generateMetadata({
   if (!item) return { title: 'Research | RoboSystems' }
   const url = `https://robosystems.ai/research/${ticker.toLowerCase()}`
   const image = item.assets.thumbnail // 1920×1080 CDN PNG — the report thumbnail
+  // Search vs social split. `title`/`summary` are the editorial copy, written for a
+  // YouTube thumbnail ("The First $100B Software Profit — Is the AI Capex Worth It?"),
+  // and Google was printing them verbatim: /research ranks ~7 and earned 0.00% CTR over
+  // 363 impressions. The catalog now also carries query-shaped seo_* copy — use it for
+  // the SERP, and keep the editorial hook on the OG/Twitter cards, where it works.
+  // Widened locally: @robosystems/core's CoverageItem predates these fields.
+  const seo = item as typeof item & {
+    seo_title?: string
+    seo_description?: string
+  }
   return {
-    title: `${item.title} | RoboSystems Research`,
-    description: item.summary.slice(0, 160),
+    title: `${seo.seo_title || item.title} | RoboSystems Research`,
+    description: (seo.seo_description || item.summary).slice(0, 160),
     alternates: { canonical: url },
     openGraph: {
       type: 'article',
