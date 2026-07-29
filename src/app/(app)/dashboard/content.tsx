@@ -12,7 +12,7 @@ import {
 } from '@robosystems/core'
 import { Alert, Badge, Card } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   HiChartBar,
   HiCloudDownload,
@@ -37,6 +37,16 @@ export function GraphDashboardContent() {
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<DashboardData | null>(null)
 
+  // The graph a request was issued for, readable from inside an in-flight call
+  // so a response that arrives after a graph switch can be dropped. Without it
+  // two reads race on a switch and whichever finishes last renders, so a slow
+  // graph could leave its metrics on screen under the newly selected name.
+  const loadedGraphIdRef = useRef(graphId)
+  useEffect(() => {
+    loadedGraphIdRef.current = graphId
+    setData(null)
+  }, [graphId])
+
   useEffect(() => {
     if (graphId) {
       fetchDashboardData()
@@ -45,6 +55,7 @@ export function GraphDashboardContent() {
   }, [graphId])
 
   const fetchDashboardData = async () => {
+    const requestedGraphId = graphId
     setLoading(true)
     setError(null)
 
@@ -54,6 +65,8 @@ export function GraphDashboardContent() {
       const graphInfo = graphsResponse.data?.graphs?.find(
         (g: GraphInfo) => g.graphId === graphId
       )
+
+      if (loadedGraphIdRef.current !== requestedGraphId) return
 
       if (!graphInfo) {
         setError('Graph or repository not found')
@@ -85,12 +98,15 @@ export function GraphDashboardContent() {
         dashboardData.metricsError = 'Metrics not available for repositories'
       }
 
+      if (loadedGraphIdRef.current !== requestedGraphId) return
+
       setData(dashboardData)
     } catch (err) {
+      if (loadedGraphIdRef.current !== requestedGraphId) return
       console.error('Failed to fetch dashboard data:', err)
       setError('Failed to load dashboard data')
     } finally {
-      setLoading(false)
+      if (loadedGraphIdRef.current === requestedGraphId) setLoading(false)
     }
   }
 

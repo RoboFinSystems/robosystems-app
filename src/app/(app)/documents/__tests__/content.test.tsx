@@ -412,6 +412,103 @@ describe('DocumentsPageContent', () => {
     )
   })
 
+  describe('switching graphs', () => {
+    test('abandons an open edit so a save cannot target the new graph', async () => {
+      mockListResponse([DOC_LIST_ITEM])
+
+      const { rerender } = render(<DocumentsPageContent />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Revenue Policy')).toBeInTheDocument()
+      })
+
+      const editTooltip = screen.getByTitle('Edit')
+      fireEvent.click(within(editTooltip).getByRole('button'))
+
+      await waitFor(() => {
+        expect(screen.getByTestId('editor-modal')).toBeInTheDocument()
+      })
+
+      // The user switches graphs with the editor still open. doc_1 is a row in
+      // kg_test; without the reset the editor stayed open holding it and Save
+      // posted document_id doc_1 against kg_other.
+      setGraph('kg_other')
+      mockListResponse([])
+      rerender(<DocumentsPageContent />)
+
+      // Wait for the new graph's list to settle before asserting. The page
+      // returns a loading state while fetching, which unmounts the modal on its
+      // own — asserting during that window would pass with or without the fix.
+      await waitFor(() => {
+        expect(screen.getByText('Knowledge base is empty')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByTestId('editor-modal')).not.toBeInTheDocument()
+      expect(mockIndexDocument).not.toHaveBeenCalled()
+    })
+
+    test('closes the delete confirm rather than deleting from the new graph', async () => {
+      mockListResponse([DOC_LIST_ITEM])
+
+      const { rerender } = render(<DocumentsPageContent />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Revenue Policy')).toBeInTheDocument()
+      })
+
+      const deleteTooltip = screen.getByTitle('Delete')
+      fireEvent.click(within(deleteTooltip).getByRole('button'))
+
+      await waitFor(() => {
+        expect(screen.getByTestId('confirm-modal')).toBeInTheDocument()
+      })
+
+      setGraph('kg_other')
+      mockListResponse([])
+      rerender(<DocumentsPageContent />)
+
+      // Settled view, for the same reason as above.
+      await waitFor(() => {
+        expect(screen.getByText('Knowledge base is empty')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByTestId('confirm-modal')).not.toBeInTheDocument()
+      expect(mockDeleteDocument).not.toHaveBeenCalled()
+    })
+
+    test('drops a list response that arrives after the graph moved on', async () => {
+      // kg_test's list is still in flight when the user switches to kg_other,
+      // whose list returns first. The late response must not repopulate the
+      // page with the previous graph's documents.
+      let resolveSlow: (value: any) => void = () => {}
+      mockListDocuments.mockReturnValueOnce(
+        new Promise((resolve) => {
+          resolveSlow = resolve
+        }) as any
+      )
+
+      const { rerender } = render(<DocumentsPageContent />)
+
+      setGraph('kg_other')
+      mockListResponse([])
+      rerender(<DocumentsPageContent />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Knowledge base is empty')).toBeInTheDocument()
+      })
+
+      resolveSlow({
+        data: { total: 1, documents: [DOC_LIST_ITEM], graph_id: 'kg_test' },
+        error: undefined,
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText('Knowledge base is empty')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Revenue Policy')).not.toBeInTheDocument()
+    })
+  })
+
   test('hides authoring affordances on shared repositories', async () => {
     setGraph('sec', true)
     mockListResponse([DOC_LIST_ITEM])

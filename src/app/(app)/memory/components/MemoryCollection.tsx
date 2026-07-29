@@ -4,7 +4,7 @@ import type { MemoryRecord, SearchHit } from '@robosystems/client'
 import { getMemory, listMemories, recallMemory } from '@robosystems/client'
 import { EmptyState, SearchBar } from '@robosystems/core'
 import { Button, Card, Select, Spinner } from 'flowbite-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   HiChevronDown,
   HiChevronUp,
@@ -72,6 +72,19 @@ export function MemoryCollection({
   const searchMode = hits !== null
   const hasActiveFilters = Boolean(typeFilter || sourceFilter)
 
+  // This component is remounted per graph, so an in-flight list read belongs to
+  // the graph that is going away. Its own setState calls are discarded on
+  // unmount, but `onLoaded` writes to the parent, which survives — without this
+  // guard the previous graph's memories would seed the new graph's editor
+  // suggestions and header count.
+  const activeRef = useRef(true)
+  useEffect(() => {
+    activeRef.current = true
+    return () => {
+      activeRef.current = false
+    }
+  }, [])
+
   // --- Browse-all fetch ---
 
   const fetchAll = useCallback(async () => {
@@ -87,6 +100,7 @@ export function MemoryCollection({
           source: sourceFilter || undefined,
         },
       })
+      if (!activeRef.current) return
       if (res.data) {
         const loaded = res.data.memories || []
         setMemories(loaded)

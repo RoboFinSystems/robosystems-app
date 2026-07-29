@@ -18,7 +18,7 @@ import {
 } from '@robosystems/core'
 import { Alert, Badge, Button, Card, Progress } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   HiChartBar,
   HiClock,
@@ -134,6 +134,16 @@ export function UsageContent() {
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<UsageData | null>(null)
 
+  // The graph a request was issued for, readable from inside an in-flight call
+  // so a response that arrives after a graph switch can be dropped. Without it
+  // two reads race on a switch and whichever finishes last renders — here that
+  // means credit balances and storage attributed to the wrong graph.
+  const loadedGraphIdRef = useRef(graphId)
+  useEffect(() => {
+    loadedGraphIdRef.current = graphId
+    setData(null)
+  }, [graphId])
+
   useEffect(() => {
     if (graphId) {
       fetchUsageData()
@@ -144,6 +154,7 @@ export function UsageContent() {
   }, [graphId])
 
   const fetchUsageData = async () => {
+    const requestedGraphId = graphId
     setLoading(true)
     setError(null)
 
@@ -153,6 +164,8 @@ export function UsageContent() {
       const graphInfo = graphsResponse.data?.graphs?.find(
         (g: GraphInfo) => g.graphId === graphId
       )
+
+      if (loadedGraphIdRef.current !== requestedGraphId) return
 
       if (!graphInfo) {
         setError('Graph or repository not found')
@@ -203,12 +216,15 @@ export function UsageContent() {
         }
       }
 
+      if (loadedGraphIdRef.current !== requestedGraphId) return
+
       setData(usageData)
     } catch (err) {
+      if (loadedGraphIdRef.current !== requestedGraphId) return
       console.error('Failed to fetch usage data:', err)
       setError('Failed to load usage data')
     } finally {
-      setLoading(false)
+      if (loadedGraphIdRef.current === requestedGraphId) setLoading(false)
     }
   }
 

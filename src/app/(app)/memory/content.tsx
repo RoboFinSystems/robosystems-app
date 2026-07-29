@@ -12,7 +12,7 @@ import {
 } from '@robosystems/core'
 import { useToast } from '@robosystems/core/hooks/use-toast'
 import { Button, Card, Label } from 'flowbite-react'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { HiExclamation, HiLightBulb, HiPlus, HiTrash } from 'react-icons/hi'
 
 import { MemoryCollection } from './components/MemoryCollection'
@@ -40,6 +40,19 @@ export function MemoryPageContent() {
   const [deleting, setDeleting] = useState(false)
 
   const refresh = () => setRefreshKey((k) => k + 1)
+
+  // Memory ids are per-graph, so an editor or delete confirm left open across a
+  // graph switch would submit the previous graph's memory_id against the new
+  // one. The API scopes ids to their graph and simply won't find it, so the
+  // user's edit is lost to an unexplained failure rather than applied
+  // elsewhere — but either way the modal is about a memory this graph does not
+  // have, so it is dismissed.
+  useEffect(() => {
+    setEditor({ open: false })
+    setDeleteTarget(null)
+    setLoadedMemories([])
+    setTotal(0)
+  }, [selectedGraphId])
 
   const handleLoaded = useCallback(
     (memories: MemoryRecord[], nextTotal: number) => {
@@ -236,6 +249,12 @@ export function MemoryPageContent() {
       />
 
       <MemoryCollection
+        // Every piece of the collection's state — the page offset, the type
+        // and source filters, the recall query and its hits, the expanded card
+        // — describes rows in one graph, and none of it is worth carrying to
+        // another. Remounting on the graph id resets all of it at once rather
+        // than leaving each new piece of state to be remembered individually.
+        key={selectedGraphId}
         graphId={selectedGraphId}
         refreshKey={refreshKey}
         onLoaded={handleLoaded}
