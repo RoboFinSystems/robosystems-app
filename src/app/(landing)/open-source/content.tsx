@@ -6,6 +6,7 @@ import BootstrapGuide from '@/components/open-source/BootstrapGuide'
 import ClientLibraries from '@/components/open-source/ClientLibraries'
 import GettingStarted from '@/components/open-source/GettingStarted'
 import SecXbrlPipeline from '@/components/open-source/SecXbrlPipeline'
+import Link from 'next/link'
 
 export default function OpenSourceContent() {
   return (
@@ -28,7 +29,16 @@ export default function OpenSourceContent() {
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
                 Build powerful financial intelligence tools with SEC filings,
                 graph databases, document search, and AI integration. Deploy
-                locally or to AWS with complete infrastructure automation.
+                locally or to AWS with complete infrastructure automation. The
+                whole meaning layer—ontology, taxonomies, calculation
+                structures—is open and yours to inspect:{' '}
+                <Link
+                  href="/blog/semantic-sovereignty"
+                  className="text-cyan-400 hover:text-cyan-300"
+                >
+                  semantic sovereignty
+                </Link>{' '}
+                for your financial data.
               </p>
             </div>
           </div>

@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 import ContactModal from './ContactModal'
 import FloatingElementsVariant from './FloatingElementsVariant'
@@ -102,10 +103,17 @@ export default function OpenSourceSection() {
                     />
                   </svg>
                   <div className="min-w-0 flex-1">
-                    <strong className="text-white">Transparency & Trust</strong>
+                    <strong className="text-white">Semantic Sovereignty</strong>
                     <p className="mt-1 text-sm break-words">
-                      See exactly how your financial data is processed and
-                      stored. No black boxes.
+                      Own what your numbers mean. Definitions, taxonomies, and
+                      calculation logic are open, inspectable artifacts—because
+                      a black box in your own cloud is still a black box.{' '}
+                      <Link
+                        href="/blog/semantic-sovereignty"
+                        className="text-secondary-400 hover:text-secondary-300"
+                      >
+                        Read the essay
+                      </Link>
                     </p>
                   </div>
                 </li>
