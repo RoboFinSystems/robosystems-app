@@ -85,9 +85,5 @@ export interface DatabaseInfo {
 }
 
 export type BackupStatus =
-  | 'pending'
-  | 'in_progress'
-  | 'completed'
-  | 'failed'
-  | 'expired'
+  'pending' | 'in_progress' | 'completed' | 'failed' | 'expired'
 export type BackupType = 'full' | 'incremental'
