@@ -13,16 +13,7 @@ interface GraphCreationModalProps extends GraphCreationConfig {
   buttonColor?: string
   showIcon?: boolean
   modalSize?:
-    | 'sm'
-    | 'md'
-    | 'lg'
-    | 'xl'
-    | '2xl'
-    | '3xl'
-    | '4xl'
-    | '5xl'
-    | '6xl'
-    | '7xl'
+    'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | '7xl'
 }
 
 export function GraphCreationModal({

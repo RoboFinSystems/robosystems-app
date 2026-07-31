@@ -634,9 +634,7 @@ function SubscriptionsTab({
         path: { graph_id: subscriptionToUpgrade.resource_id },
         body: {
           new_tier: selectedTier as
-            | 'ladybug-standard'
-            | 'ladybug-large'
-            | 'ladybug-xlarge',
+            'ladybug-standard' | 'ladybug-large' | 'ladybug-xlarge',
         },
       })
 
