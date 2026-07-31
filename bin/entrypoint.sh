@@ -20,7 +20,6 @@ set -eu
 
 echo "[entrypoint] RoboSystems App - Starting..."
 echo "[entrypoint] Node version: $(node --version)"
-echo "[entrypoint] NPM version: $(npm --version)"
 
 # ----------------------------------------------------------------------------
 # Detect Build Type
@@ -139,4 +138,7 @@ else
 fi
 
 echo "[entrypoint] Starting Next.js server on port ${PORT:-3000}..."
-exec npm start
+# Exec next directly: the runtime image has no npm CLI (see Dockerfile), and
+# this hands SIGTERM straight to the server instead of relying on npm to
+# forward it.
+exec /app/node_modules/.bin/next start
