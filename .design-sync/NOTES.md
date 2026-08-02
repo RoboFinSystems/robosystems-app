@@ -8,7 +8,7 @@ the package shape in **synth-entry mode**, now scanning the installed package's
 compiled files. Read this before any re-sync.
 
 This project's design project (`f0e9…`) is the **canonical home of BOTH** `@robosystems/core`
-(55 components) **and** robosystems-app's own landing surface (`src/components/landing/`, 14
+(71 components) **and** robosystems-app's own landing surface (`src/components/landing/`, 14
 sections) — they ship in one bundle on `window.RobosystemsCore.*`. This is the inverse of
 roboinvestor-app, which _refocused_ its project to its own landing only and dropped core (a
 consumer); robosystems-app owns core, so its project keeps core and adds the app surface on top.
@@ -16,7 +16,7 @@ consumer); robosystems-app owns core, so its project keeps core and adds the app
 ## Merged landing surface — how it's wired (added 2026-06-29)
 
 Core's synth-entry + `build:types` path below is **unchanged**; landing is layered on via two
-seams, so a single build emits all ~70 components:
+seams, so a single build emits all 85 components:
 
 - **`cfg.extraEntries: ["../../../.design-sync/landing-entry.ts"]`** — a barrel that re-exports
   each landing **default** export as a named export (defaults are skipped by `export *`).
@@ -81,7 +81,7 @@ provider/data mocking (graph/entity/SSO contexts) → not in the barrel/pins yet
   deliberately omits three internal components with design cards (`AnimatedLogo`,
   `LogoBadge`, `ProgressiveText`); this extra entry re-exports them from their deep
   module paths so they bind on `window.RobosystemsCore` (same seam as landing).
-- **ALL 55 core components carry explicit `.js` pins in `cfg.componentSrcMap`** —
+- **ALL 71 core components carry explicit `.js` pins in `cfg.componentSrcMap`** —
   this is load-bearing for GROUPING: the engine's src-enrichment fuzzy-finder only
   matches `.tsx|.jsx`, so against the compiled package every unpinned component
   collapses into group `general` (and its card path moves). Pin paths must include
@@ -138,8 +138,8 @@ components (e.g. the merged `landing` group) never appear in the pane, and any
 removed ones read "file not found". Run `gen-manifest.mjs` (derives namespace +
 components from the `_ds_bundle.js` header, cards from each HTML's `@dsCard` marker,
 tokens from `_ds_bundle.css`, fonts from `fonts.css`) and include `_ds_manifest.json`
-in the upload set. Verify with `get_file _ds_manifest.json` — it must list all 70
-components incl. the `landing` group.
+in the upload set. Verify with `get_file _ds_manifest.json` — it must list all 85
+components incl. the `landing` and `research` groups.
 
 `preview-rebuild.mjs` does NOT touch `_ds_bundle.js`, so the shim survives subagent
 preview rebuilds — only full `package-build.mjs` / the `resync.mjs` driver overwrite
@@ -196,6 +196,33 @@ selectors, data views) — authorable incrementally on any later re-sync.
 - **PasswordRequirements**: `isValid` is tri-state (undefined/true/false).
 - **ChatMessage**: `user` 'You'→teal right bubble / 'Agent'→gray left card; `isPartial`
   → spinner+progress; `taskId` → "Deep research" clock badge; body is react-markdown.
+
+## core 0.4.0 → 0.5.5 re-sync (2026-08-02)
+
+First re-sync since the npm migration; core had shipped 0.5.0–0.5.5 in between and the
+config was stale. What it took, so the next one is cheaper:
+
+- **15 new core components needed pins** in `cfg.componentSrcMap` (unpinned components
+  silently collapse into group `general` — `general` staying at 5 is the check that every
+  pin took): `SessionWarningDialog`, `TurnstileWidget` (auth-components); `ConsoleMarkdown`
+  (console); `SearchBar`, `SearchHitCard`, `SearchPagination`, `SearchResultsMeta` (search);
+  `CategoryInput`, `TagInput` (forms); `MarkdownProse` (ui-components); `CoverageBrowser`,
+  `CoverageCard`, `CoverageGrid`, `CoverageHistory`, `ResearchArticle` (**new `research`
+  group**).
+- **8 of those are omitted from core's public barrel** and tripped
+  `✗ [BUNDLE_EXPORT] not a component on window.RobosystemsCore` until they were added to
+  `core-internal-entry.ts` (same seam as AnimatedLogo/LogoBadge/ProgressiveText):
+  ConsoleMarkdown, SessionWarningDialog, TurnstileWidget, and all five `research/*`.
+  The other 7 (search/forms/MarkdownProse) ARE in the barrel and bound without help.
+  **Check this first when a newly pinned component renders a blank card.**
+- **10 non-visual exports pinned to `null`** so they do not get cards, joining the
+  existing 9: `TokenExpiredError`, `RoboSystemsAuthClient`, `SSOManager`, `GraphContext`,
+  `ErrorType`, `EventType`, `OperationError`, `ErrorRecovery`, `OperationMonitor`,
+  `TaskMonitor`.
+- Result: 70 → **85 cards** (71 core + 14 landing), validate clean (exit 0, 9 known-benign
+  warnings), all 390 files uploaded incl. `_ds_manifest.json`.
+- The 15 new cards show the **typographic floor card** — no authored previews yet. Not a
+  failure; author them incrementally in `.design-sync/previews/` as with the other 29.
 
 ## Re-sync risks / watch-list
 
