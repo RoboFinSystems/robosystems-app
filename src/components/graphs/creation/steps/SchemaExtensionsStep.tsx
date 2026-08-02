@@ -18,10 +18,12 @@ export function SchemaExtensionsStep({
   allowedExtensions,
   onExtensionsChange,
 }: SchemaExtensionsStepProps) {
-  const [extensions, setExtensions] = useState<AvailableExtension[]>([])
+  const [allExtensions, setAllExtensions] = useState<AvailableExtension[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Fetch the full list once. The effect captures nothing from props, so its
+  // empty dependency list is now accurate rather than suppressed.
   useEffect(() => {
     const fetchExtensions = async () => {
       try {
@@ -29,12 +31,7 @@ export function SchemaExtensionsStep({
         setError(null)
         const response = await getAvailableExtensions()
         if (response.data) {
-          const fetched = response.data.extensions
-          setExtensions(
-            allowedExtensions
-              ? fetched.filter((ext) => allowedExtensions.includes(ext.name))
-              : fetched
-          )
+          setAllExtensions(response.data.extensions)
         }
       } catch (err) {
         console.error('Failed to fetch extensions:', err)
@@ -44,8 +41,16 @@ export function SchemaExtensionsStep({
       }
     }
     fetchExtensions()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Narrowing happens at render rather than being baked in at fetch time, so a
+  // caller that changes allowedExtensions gets the right list without needing a
+  // refetch — and without the prop having to be an effect dependency, which
+  // would re-fetch on every parent render given it is passed as an array
+  // literal.
+  const extensions = allowedExtensions
+    ? allExtensions.filter((ext) => allowedExtensions.includes(ext.name))
+    : allExtensions
 
   const handleToggleExtension = (extensionName: string) => {
     // Don't allow deselecting required extensions

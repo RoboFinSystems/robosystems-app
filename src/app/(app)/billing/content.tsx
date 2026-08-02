@@ -39,7 +39,7 @@ import {
   Tabs,
 } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   HiArrowUp,
   HiCheckCircle,
@@ -76,15 +76,34 @@ export function BillingContent() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // The org a request was issued for, readable from inside an in-flight call so
+  // a response that arrives after an org switch can be dropped. Without it two
+  // reads race on a switch and whichever finishes last renders — here that
+  // means invoices, subscriptions and the upcoming invoice attributed to the
+  // wrong organization. Same guard the graph-scoped pages already carry.
+  const loadedOrgIdRef = useRef(currentOrg?.id)
+  useEffect(() => {
+    loadedOrgIdRef.current = currentOrg?.id
+    setBillingCustomer(null)
+    setOrgSubscriptions([])
+    setUpcomingInvoice(null)
+    setInvoices([])
+  }, [currentOrg?.id])
+
   useEffect(() => {
     if (currentOrg?.id) {
       loadBillingData()
     }
+    // loadBillingData is recreated every render, so depending on it would
+    // re-fetch in a loop; the org id is the only input that should re-trigger.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentOrg?.id])
 
   const loadBillingData = async () => {
-    if (!currentOrg?.id) return
+    // Pin the org for this call so both the requests and the guard below refer
+    // to the same one even if currentOrg changes while they are in flight.
+    const requestedOrgId = currentOrg?.id
+    if (!requestedOrgId) return
 
     try {
       setLoading(true)
@@ -93,11 +112,13 @@ export function BillingContent() {
       // Load organization billing data in parallel
       const [customerRes, subscriptionsRes, upcomingInvoiceRes, invoicesRes] =
         await Promise.allSettled([
-          SDK.getOrgBillingCustomer({ path: { org_id: currentOrg.id } }),
-          SDK.listOrgSubscriptions({ path: { org_id: currentOrg.id } }),
-          SDK.getOrgUpcomingInvoice({ path: { org_id: currentOrg.id } }),
-          SDK.listOrgInvoices({ path: { org_id: currentOrg.id } }),
+          SDK.getOrgBillingCustomer({ path: { org_id: requestedOrgId } }),
+          SDK.listOrgSubscriptions({ path: { org_id: requestedOrgId } }),
+          SDK.getOrgUpcomingInvoice({ path: { org_id: requestedOrgId } }),
+          SDK.listOrgInvoices({ path: { org_id: requestedOrgId } }),
         ])
+
+      if (loadedOrgIdRef.current !== requestedOrgId) return
 
       if (customerRes.status === 'fulfilled' && customerRes.value.data) {
         setBillingCustomer(customerRes.value.data)
@@ -121,11 +142,12 @@ export function BillingContent() {
         setInvoices(invoicesRes.value.data.invoices || [])
       }
     } catch (err) {
+      if (loadedOrgIdRef.current !== requestedOrgId) return
       const errorMsg = 'Failed to load billing data'
       setError(errorMsg)
       handleApiError(err, errorMsg)
     } finally {
-      setLoading(false)
+      if (loadedOrgIdRef.current === requestedOrgId) setLoading(false)
     }
   }
 
