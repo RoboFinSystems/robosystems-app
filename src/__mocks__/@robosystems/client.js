@@ -141,6 +141,25 @@ export const deleteDocument = vi.fn()
 export const searchDocuments = vi.fn()
 export const getDocumentSection = vi.fn()
 
+// Organization membership & invitations
+export const listOrgMembers = vi.fn()
+export const updateOrgMemberRole = vi.fn()
+export const removeOrgMember = vi.fn()
+export const createOrgInvitation = vi.fn()
+export const listOrgInvitations = vi.fn()
+export const revokeOrgInvitation = vi.fn()
+export const resendOrgInvitation = vi.fn()
+export const getInvitationPreview = vi.fn()
+export const getOrgLimits = vi.fn()
+export const getOrgUsage = vi.fn()
+export const updateOrg = vi.fn()
+
+// Graph membership
+export const listGraphMembers = vi.fn()
+export const addGraphMember = vi.fn()
+export const updateGraphMemberRole = vi.fn()
+export const removeGraphMember = vi.fn()
+
 // Client
 export const client = mockClient
 

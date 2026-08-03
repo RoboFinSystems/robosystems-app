@@ -244,6 +244,7 @@ function OverviewTab({
   showError: (message: string) => void
 }) {
   const [managingPayment, setManagingPayment] = useState(false)
+  const isOrgOwner = currentOrg?.role === 'owner'
 
   const handleManagePayment = async () => {
     if (!currentOrg?.id) return
@@ -372,21 +373,28 @@ function OverviewTab({
                 </p>
               </div>
             </div>
-            {!billingCustomer?.invoice_billing_enabled && (
-              <Button
-                color="blue"
-                size="sm"
-                onClick={handleManagePayment}
-                disabled={managingPayment}
-              >
-                <HiCreditCard className="mr-2 h-4 w-4" />
-                {managingPayment
-                  ? 'Opening...'
-                  : hasPaymentMethod
-                    ? 'Manage Payment Methods'
-                    : 'Add Payment Method'}
-              </Button>
-            )}
+            {!billingCustomer?.invoice_billing_enabled &&
+              (isOrgOwner ? (
+                <Button
+                  color="blue"
+                  size="sm"
+                  onClick={handleManagePayment}
+                  disabled={managingPayment}
+                >
+                  <HiCreditCard className="mr-2 h-4 w-4" />
+                  {managingPayment
+                    ? 'Opening...'
+                    : hasPaymentMethod
+                      ? 'Manage Payment Methods'
+                      : 'Add Payment Method'}
+                </Button>
+              ) : (
+                // The payment portal is owner-only server-side; showing the
+                // button to everyone just produced a 403 on click.
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Only the organization owner can manage payment methods.
+                </p>
+              ))}
           </div>
         </Card>
       )}
