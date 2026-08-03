@@ -13,6 +13,7 @@ vi.mock('@robosystems/core', () => ({
     showError: vi.fn(),
   })),
   useApiError: vi.fn(),
+  useOrg: vi.fn(() => ({ currentOrg: { id: 'org_1', name: 'Test Org' } })),
   customTheme: {
     card: {},
     modal: {},
@@ -24,6 +25,13 @@ vi.mock('@robosystems/core', () => ({
       <span>{value}</span>
     </div>
   ),
+}))
+
+// Stub the graph-members modal — it has its own test file, and it loads
+// members on open, which this page's tests have no reason to drive.
+vi.mock('@/components/app/GraphMembersModal', () => ({
+  default: ({ show, graphName }: { show: boolean; graphName: string }) =>
+    show ? <div data-testid="graph-members-modal">{graphName}</div> : null,
 }))
 
 // Stub out the cancel-subscription modal — its internals (Flowbite Radio,
@@ -117,6 +125,7 @@ vi.mock('react-icons/hi', () => ({
   HiRefresh: () => <span>Icon</span>,
   HiSearch: () => <span>Icon</span>,
   HiTrash: () => <span>Icon</span>,
+  HiUsers: () => <span>Icon</span>,
 }))
 
 // Mock Flowbite React components

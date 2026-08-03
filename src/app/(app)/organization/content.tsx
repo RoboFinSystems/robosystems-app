@@ -44,6 +44,7 @@ import {
 type OrgMember = SDK.OrgMemberResponse
 type OrgLimits = SDK.OrgLimitsResponse
 type OrgUsage = SDK.OrgUsageResponse
+type OrgInvitation = SDK.OrgInvitationResponse
 
 export function OrganizationContent() {
   const { currentOrg, refreshOrgs, loading: orgLoading } = useOrg()
@@ -52,10 +53,15 @@ export function OrganizationContent() {
 
   const [activeTab, setActiveTab] = useState(0)
   const [members, setMembers] = useState<OrgMember[]>([])
+  const [invitations, setInvitations] = useState<OrgInvitation[]>([])
   const [limits, setLimits] = useState<OrgLimits | null>(null)
   const [usage, setUsage] = useState<OrgUsage | null>(null)
   const [loading, setLoading] = useState(true)
   const [showInviteModal, setShowInviteModal] = useState(false)
+  const [inviteEmail, setInviteEmail] = useState('')
+  const [inviteRole, setInviteRole] = useState<SDK.OrgRole>('member')
+  const [sendingInvite, setSendingInvite] = useState(false)
+  const [inviteError, setInviteError] = useState('')
   const [showGraphLimitModal, setShowGraphLimitModal] = useState(false)
   const [isEditingName, setIsEditingName] = useState(false)
   const [editedName, setEditedName] = useState('')
@@ -91,17 +97,24 @@ export function OrganizationContent() {
         setLimits(limitsResponse.data)
       }
 
-      // Only load usage if admin/owner
+      // Usage and pending invitations are admin-only reads
       const isAdmin = ['owner', 'admin'].includes(currentOrg.role)
       if (isAdmin) {
-        const usageResponse = await SDK.getOrgUsage({
-          path: { org_id: currentOrg.id },
-          query: { days: 30 },
-        })
+        const [usageResponse, invitationsResponse] = await Promise.all([
+          SDK.getOrgUsage({
+            path: { org_id: currentOrg.id },
+            query: { days: 30 },
+          }),
+          SDK.listOrgInvitations({ path: { org_id: currentOrg.id } }),
+        ])
 
         if (usageResponse?.data) {
           setUsage(usageResponse.data)
         }
+
+        // Invitations are gated by a feature flag server-side; a 501 there
+        // shouldn't take the whole page down with it.
+        setInvitations(invitationsResponse?.data?.invitations || [])
       }
     } catch (error) {
       console.error('Failed to load organization data:', error)
@@ -172,6 +185,90 @@ export function OrganizationContent() {
       await loadOrgData()
     } catch (error) {
       handleApiError(error, 'Failed to remove member')
+    }
+  }
+
+  const openInviteModal = () => {
+    setInviteEmail('')
+    setInviteRole('member')
+    setInviteError('')
+    setShowInviteModal(true)
+  }
+
+  const handleSendInvitation = async () => {
+    if (!currentOrg?.id || !inviteEmail.trim()) return
+
+    try {
+      setSendingInvite(true)
+      setInviteError('')
+
+      const response = await SDK.createOrgInvitation({
+        path: { org_id: currentOrg.id },
+        body: { email: inviteEmail.trim(), role: inviteRole },
+      })
+
+      if (response.error) {
+        // The API is specific about why an invite is refused — an email that
+        // already has an account, or one already invited — and that detail is
+        // what tells the admin what to do next.
+        const detail = (response.error as { detail?: string })?.detail
+        throw new Error(detail || 'Failed to send invitation')
+      }
+
+      showSuccess(`Invitation sent to ${inviteEmail.trim()}`)
+      setShowInviteModal(false)
+      await loadOrgData()
+    } catch (error) {
+      setInviteError(
+        error instanceof Error ? error.message : 'Failed to send invitation'
+      )
+    } finally {
+      setSendingInvite(false)
+    }
+  }
+
+  const handleRevokeInvitation = async (
+    invitationId: string,
+    email: string
+  ) => {
+    if (!currentOrg?.id) return
+    if (!confirm(`Revoke the invitation for ${email}?`)) return
+
+    try {
+      const response = await SDK.revokeOrgInvitation({
+        path: { org_id: currentOrg.id, invitation_id: invitationId },
+      })
+
+      if (response.error) {
+        throw new Error('Failed to revoke invitation')
+      }
+
+      showSuccess(`Invitation for ${email} revoked`)
+      await loadOrgData()
+    } catch (error) {
+      handleApiError(error, 'Failed to revoke invitation')
+    }
+  }
+
+  const handleResendInvitation = async (
+    invitationId: string,
+    email: string
+  ) => {
+    if (!currentOrg?.id) return
+
+    try {
+      const response = await SDK.resendOrgInvitation({
+        path: { org_id: currentOrg.id, invitation_id: invitationId },
+      })
+
+      if (response.error) {
+        throw new Error('Failed to resend invitation')
+      }
+
+      showSuccess(`Invitation resent to ${email}`)
+      await loadOrgData()
+    } catch (error) {
+      handleApiError(error, 'Failed to resend invitation')
     }
   }
 
@@ -546,14 +643,12 @@ export function OrganizationContent() {
               <h2 className="font-heading text-xl font-semibold text-gray-900 dark:text-white">
                 Team Members
               </h2>
-              <Button
-                color="blue"
-                size="sm"
-                onClick={() => setShowInviteModal(true)}
-              >
-                <HiUserAdd className="mr-2 h-4 w-4" />
-                Invite Member
-              </Button>
+              {canChangeRole && (
+                <Button color="blue" size="sm" onClick={openInviteModal}>
+                  <HiUserAdd className="mr-2 h-4 w-4" />
+                  Invite Member
+                </Button>
+              )}
             </div>
 
             {members.length === 0 ? (
@@ -636,6 +731,77 @@ export function OrganizationContent() {
               </div>
             )}
           </Card>
+
+          {canChangeRole && invitations.length > 0 && (
+            <Card className="mt-4">
+              <h2 className="font-heading text-xl font-semibold text-gray-900 dark:text-white">
+                Pending Invitations
+              </h2>
+              <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                {invitations.map((invitation) => (
+                  <div
+                    key={invitation.id}
+                    className="flex items-center justify-between py-3"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-gray-900 dark:text-white">
+                          {invitation.email}
+                        </span>
+                        <Badge
+                          color={invitation.is_expired ? 'warning' : 'gray'}
+                          size="sm"
+                        >
+                          {invitation.is_expired ? 'Expired' : 'Invited'}
+                        </Badge>
+                      </div>
+                      <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+                        {invitation.invited_by_name
+                          ? `Invited by ${invitation.invited_by_name} · `
+                          : ''}
+                        {invitation.is_expired ? 'Expired' : 'Expires'}{' '}
+                        {format(new Date(invitation.expires_at), 'MMM d, yyyy')}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <Badge
+                        color={getRoleBadgeColor(invitation.role)}
+                        size="sm"
+                      >
+                        {invitation.role.charAt(0).toUpperCase() +
+                          invitation.role.slice(1)}
+                      </Badge>
+                      <Button
+                        size="xs"
+                        color="light"
+                        onClick={() =>
+                          handleResendInvitation(
+                            invitation.id,
+                            invitation.email
+                          )
+                        }
+                      >
+                        <HiMail className="mr-1 h-4 w-4" />
+                        Resend
+                      </Button>
+                      <Button
+                        size="xs"
+                        color="failure"
+                        onClick={() =>
+                          handleRevokeInvitation(
+                            invitation.id,
+                            invitation.email
+                          )
+                        }
+                      >
+                        <HiX className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
         </Tabs.Item>
       </Tabs>
       {/* Graph Limit Modal */}
@@ -654,20 +820,72 @@ export function OrganizationContent() {
       >
         <ModalHeader>Invite Team Member</ModalHeader>
         <ModalBody>
-          <div className="py-4 text-center">
-            <HiUserAdd className="mx-auto mb-4 h-12 w-12 text-gray-400" />
-            <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
-              Coming Soon
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Team member invitations are currently in development. You&apos;ll
-              be able to invite members by email and assign roles soon.
-            </p>
+          <div className="space-y-4">
+            {inviteError && (
+              <Alert color="failure" icon={HiExclamationCircle}>
+                {inviteError}
+              </Alert>
+            )}
+            <div>
+              <label
+                htmlFor="invite-email"
+                className="mb-1 block text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Email address
+              </label>
+              <TextInput
+                id="invite-email"
+                type="email"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                placeholder="colleague@company.com"
+                disabled={sendingInvite}
+              />
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                They&apos;ll get a link to create an account and join{' '}
+                {currentOrg.name}. Invitations are for people who don&apos;t
+                have a RoboSystems account yet.
+              </p>
+            </div>
+            <div>
+              <label
+                htmlFor="invite-role"
+                className="mb-1 block text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Role
+              </label>
+              <Select
+                id="invite-role"
+                value={inviteRole}
+                onChange={(e) => setInviteRole(e.target.value as SDK.OrgRole)}
+                disabled={sendingInvite}
+              >
+                <option value="member">Member</option>
+                <option value="admin">Admin</option>
+              </Select>
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                {inviteRole === 'admin'
+                  ? 'Admins manage members, billing, and every graph the organization owns.'
+                  : 'Members join the organization but get access to a graph only when granted it.'}
+              </p>
+            </div>
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button color="gray" onClick={() => setShowInviteModal(false)}>
-            Close
+          <Button
+            color="blue"
+            onClick={handleSendInvitation}
+            disabled={sendingInvite || !inviteEmail.trim()}
+          >
+            {sendingInvite && <Spinner size="sm" className="mr-2" />}
+            {sendingInvite ? 'Sending...' : 'Send Invitation'}
+          </Button>
+          <Button
+            color="gray"
+            onClick={() => setShowInviteModal(false)}
+            disabled={sendingInvite}
+          >
+            Cancel
           </Button>
         </ModalFooter>
       </Modal>

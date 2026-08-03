@@ -3,9 +3,10 @@
 import CancelSubscriptionModal, {
   type CancelMode,
 } from '@/components/app/CancelSubscriptionModal'
+import GraphMembersModal from '@/components/app/GraphMembersModal'
 import type { GraphInfo } from '@robosystems/client'
 import { deleteGraph, getGraphs } from '@robosystems/client'
-import { StatCard, useToast, useUserLimits } from '@robosystems/core'
+import { StatCard, useOrg, useToast, useUserLimits } from '@robosystems/core'
 import {
   Badge,
   Button,
@@ -32,6 +33,7 @@ import {
   HiRefresh,
   HiSearch,
   HiTrash,
+  HiUsers,
 } from 'react-icons/hi'
 
 interface GraphDatabase {
@@ -48,8 +50,12 @@ export function GraphsContent() {
   const [selectedRole, setSelectedRole] = useState<string>('all')
   const { limits, remainingGraphs, canCreateGraph } = useUserLimits()
   const { showSuccess, showError } = useToast()
+  const { currentOrg } = useOrg()
   const [graphToDelete, setGraphToDelete] = useState<GraphDatabase | null>(null)
   const [deleting, setDeleting] = useState(false)
+  const [graphForMembers, setGraphForMembers] = useState<GraphDatabase | null>(
+    null
+  )
 
   const handleDeleteConfirm = async (mode: CancelMode) => {
     if (!graphToDelete) return
@@ -300,6 +306,13 @@ export function GraphsContent() {
                         >
                           Schema Editor
                         </DropdownItem>
+                        <DropdownItem
+                          icon={HiUsers}
+                          disabled={graph.role.toLowerCase() !== 'admin'}
+                          onClick={() => setGraphForMembers(graph)}
+                        >
+                          Manage Members
+                        </DropdownItem>
                         <DropdownDivider />
                         <DropdownItem
                           icon={HiTrash}
@@ -318,6 +331,14 @@ export function GraphsContent() {
           </TableBody>
         </Table>
       </div>
+
+      <GraphMembersModal
+        show={graphForMembers !== null}
+        onClose={() => setGraphForMembers(null)}
+        graphId={graphForMembers?.id ?? ''}
+        graphName={graphForMembers?.name ?? ''}
+        orgId={currentOrg?.id}
+      />
 
       <CancelSubscriptionModal
         show={graphToDelete !== null}
