@@ -1,5 +1,6 @@
 'use client'
 
+import GraphMembersModal from '@/components/app/GraphMembersModal'
 import type { GraphInfo, GraphMetricsResponse } from '@robosystems/client'
 import { getGraphMetrics, getGraphs } from '@robosystems/client'
 import {
@@ -9,8 +10,9 @@ import {
   StatCard,
   useGraphContext,
   useIsRepository,
+  useOrg,
 } from '@robosystems/core'
-import { Alert, Badge, Card } from 'flowbite-react'
+import { Alert, Badge, Button, Card } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import {
@@ -19,6 +21,7 @@ import {
   HiCog,
   HiExclamationCircle,
   HiTerminal,
+  HiUsers,
   HiViewGrid,
 } from 'react-icons/hi'
 
@@ -33,9 +36,11 @@ export function GraphDashboardContent() {
   const { state: graphState } = useGraphContext()
   const graphId = graphState.currentGraphId
   const { isRepository, currentGraph } = useIsRepository()
+  const { currentOrg } = useOrg()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<DashboardData | null>(null)
+  const [showMembers, setShowMembers] = useState(false)
 
   // The graph a request was issued for, readable from inside an in-flight call
   // so a response that arrives after a graph switch can be dropped. Without it
@@ -162,11 +167,22 @@ export function GraphDashboardContent() {
         title={data.graphInfo.graphName}
         subtitle="View metrics and manage your graph"
         actions={
-          isRepository && (
-            <div className="flex flex-wrap gap-2">
-              <Badge color="info">Shared Repository</Badge>
-            </div>
-          )
+          <div className="flex flex-wrap items-center gap-2">
+            {isRepository && <Badge color="info">Shared Repository</Badge>}
+            {/* Shared repositories are subscription-based and have no member
+                list; graph membership is managed by graph admins only. */}
+            {!isRepository &&
+              data.graphInfo.role?.toLowerCase() === 'admin' && (
+                <Button
+                  color="gray"
+                  size="sm"
+                  onClick={() => setShowMembers(true)}
+                >
+                  <HiUsers className="mr-2 h-4 w-4" />
+                  Members
+                </Button>
+              )}
+          </div>
         }
       />
 
@@ -358,6 +374,14 @@ export function GraphDashboardContent() {
           </div>
         </button>
       </div>
+
+      <GraphMembersModal
+        show={showMembers}
+        onClose={() => setShowMembers(false)}
+        graphId={graphId ?? ''}
+        graphName={data.graphInfo.graphName}
+        orgId={currentOrg?.id}
+      />
     </PageLayout>
   )
 }
