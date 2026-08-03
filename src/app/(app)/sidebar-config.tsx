@@ -6,7 +6,6 @@ import {
   HiChartBar,
   HiChip,
   HiCode,
-  HiCreditCard,
   HiDatabase,
   HiDocumentText,
   HiGlobeAlt,
@@ -109,16 +108,15 @@ export const getNavigationItems = (
     : []
 
   // Always show these items
+  // Billing lives on the Organization page instead — it is org-scoped, unlike
+  // the user- and graph-scoped items here, and the org page already gates its
+  // tabs to owner/admin. The /billing route stays reachable: Stripe's portal
+  // return and checkout cancel URLs both point at it.
   const alwaysVisibleItems: SidebarItemData[] = [
     {
       icon: HiGlobeAlt,
       label: 'Repositories',
       href: '/repositories',
-    },
-    {
-      icon: HiCreditCard,
-      label: 'Billing',
-      href: '/billing',
     },
   ]
 

@@ -30,6 +30,7 @@ import {
 import { useCallback, useEffect, useState } from 'react'
 import {
   HiCheck,
+  HiCreditCard,
   HiDatabase,
   HiExclamationCircle,
   HiMail,
@@ -40,6 +41,7 @@ import {
   HiUsers,
   HiX,
 } from 'react-icons/hi'
+import { BillingContent } from '../billing/content'
 
 type OrgMember = SDK.OrgMemberResponse
 type OrgLimits = SDK.OrgLimitsResponse
@@ -72,6 +74,14 @@ export function OrganizationContent() {
   const canRemove = ['owner', 'admin'].includes(currentOrg?.role || '')
   const canEditOrg = ['owner', 'admin'].includes(currentOrg?.role || '')
   const canViewGraphs = ['owner', 'admin'].includes(currentOrg?.role || '')
+  // Billing is org-scoped — one customer per org — so it belongs beside the
+  // other org views rather than in the sidebar next to user- and graph-scoped
+  // items. Gating matches Graphs; members manage their own repository
+  // subscriptions from /repositories instead.
+  const canViewBilling = ['owner', 'admin'].includes(currentOrg?.role || '')
+  // Derived rather than hardcoded: the Graphs tab is conditional, so Billing's
+  // index shifts with it if the two gates ever diverge.
+  const billingTabIndex = canViewGraphs ? 2 : 1
 
   const loadOrgData = useCallback(async () => {
     if (!currentOrg?.id) return
@@ -803,6 +813,16 @@ export function OrganizationContent() {
             </Card>
           )}
         </Tabs.Item>
+
+        {/* Billing Tab - Admin Only */}
+        {canViewBilling && (
+          <Tabs.Item title="Billing" icon={HiCreditCard}>
+            {/* Rendered only while selected: Tabs mounts inactive panels, and
+                BillingContent fetches subscriptions, customer and invoices on
+                mount — which would fire on every visit to this page. */}
+            {activeTab === billingTabIndex && <BillingContent />}
+          </Tabs.Item>
+        )}
       </Tabs>
       {/* Graph Limit Modal */}
       <GraphLimitModal
