@@ -13,7 +13,7 @@ export const organizationJsonLd = {
   sameAs: [
     'https://github.com/RoboFinSystems',
     'https://x.com/robofinsystems',
-    'https://www.linkedin.com/company/robofinsystems',
+    'https://www.linkedin.com/company/robosystems',
     'https://www.youtube.com/@RoboSystems',
   ],
   founder: {
