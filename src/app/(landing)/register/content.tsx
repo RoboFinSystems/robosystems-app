@@ -1,10 +1,17 @@
 'use client'
 
 import { CURRENT_APP, SignUpForm } from '@robosystems/core'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 
-export default function RegisterContent() {
+function RegisterForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Organization invitations link here as /register?invite=<token>. The form
+  // resolves the token itself and joins the inviting organization instead of
+  // creating a personal one.
+  const inviteToken = searchParams.get('invite') || undefined
 
   return (
     <SignUpForm
@@ -15,6 +22,7 @@ export default function RegisterContent() {
       showConfirmPassword={true}
       showTermsAcceptance={true}
       redirectTo="/login"
+      inviteToken={inviteToken}
       onSuccess={() => {}}
       onRedirect={(url) => {
         // For better integration with Next.js navigation
@@ -26,5 +34,15 @@ export default function RegisterContent() {
       }}
       turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
     />
+  )
+}
+
+export default function RegisterContent() {
+  // useSearchParams needs a Suspense boundary, or the whole route opts out of
+  // static rendering.
+  return (
+    <Suspense fallback={null}>
+      <RegisterForm />
+    </Suspense>
   )
 }
