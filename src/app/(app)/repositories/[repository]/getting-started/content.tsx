@@ -250,7 +250,7 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
               </div>
             </button>
             <button
-              onClick={() => router.push('/billing')}
+              onClick={() => router.push('/organization?tab=billing')}
               className="flex flex-col items-start gap-2 rounded-lg border border-zinc-600 bg-zinc-700 p-4 text-left text-white transition-all hover:scale-[1.02] hover:border-zinc-500 hover:bg-zinc-600 hover:shadow-lg"
             >
               <HiCreditCard className="h-6 w-6" />

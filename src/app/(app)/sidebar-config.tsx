@@ -110,8 +110,8 @@ export const getNavigationItems = (
   // Always show these items
   // Billing lives on the Organization page instead — it is org-scoped, unlike
   // the user- and graph-scoped items here, and the org page already gates its
-  // tabs to owner/admin. The /billing route stays reachable: Stripe's portal
-  // return and checkout cancel URLs both point at it.
+  // tabs to owner/admin. /billing itself redirects to /organization?tab=billing
+  // so Stripe's portal return and checkout cancel URLs keep working.
   const alwaysVisibleItems: SidebarItemData[] = [
     {
       icon: HiGlobeAlt,

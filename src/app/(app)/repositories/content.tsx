@@ -72,7 +72,7 @@ export function SharedRepositoriesContent() {
           router.push(`/repositories/${repoId}/getting-started`)
         }
         onBackups={() => router.push('/backups')}
-        onBilling={() => router.push('/billing')}
+        onBilling={() => router.push('/organization?tab=subscriptions')}
         onBrowse={() => router.push('/repositories/browse')}
         onCancel={(subscription) => setSubToCancel(subscription)}
         emptyState={<BrowseRepositoriesContent />}
