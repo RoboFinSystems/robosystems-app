@@ -32,3 +32,12 @@ the writing lives in the repo rather than only in GitHub's database (backfilled
 them as records rather than as templates for the format above. None of them
 can affect a release — their tags already exist, so the workflow
 short-circuits before reading them.
+
+Read the generated ones for what they are: the workflow diffs from the
+immediately preceding tag, so a generated minor body describes only the final
+slice that carried the bump (`v1.2.0` covers `v1.1.61...v1.2.0`), **not** the
+line it closes — the patch releases of the prior line are summarized in no
+minor's notes. Each file's trailing Full Changelog link states its true span
+(`v1.0.0` is the exception: it spans from `initial`, so it covers everything).
+When a future minor deserves a line retrospective, write a curated file —
+that's the mechanism above.
