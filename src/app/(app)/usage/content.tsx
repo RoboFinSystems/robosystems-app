@@ -461,7 +461,7 @@ export function UsageContent() {
                 <Button
                   size="sm"
                   color="gray"
-                  onClick={() => router.push('/billing')}
+                  onClick={() => router.push('/organization?tab=billing')}
                 >
                   <HiCurrencyDollar className="mr-2 h-4 w-4" />
                   Buy Credits

@@ -45,6 +45,7 @@ export const updateUserPassword = vi.fn()
 export const getGraphs = vi.fn()
 export const selectGraph = vi.fn()
 export const createGraph = vi.fn()
+export const deleteGraph = vi.fn()
 export const getGraphMetrics = vi.fn()
 export const getGraphUsageStats = vi.fn()
 
@@ -153,6 +154,16 @@ export const getInvitationPreview = vi.fn()
 export const getOrgLimits = vi.fn()
 export const getOrgUsage = vi.fn()
 export const updateOrg = vi.fn()
+
+// Organization billing — backs the Billing / Subscriptions / Invoices tabs
+export const getOrgBillingCustomer = vi.fn()
+export const listOrgSubscriptions = vi.fn()
+export const getOrgUpcomingInvoice = vi.fn()
+export const listOrgInvoices = vi.fn()
+export const cancelOrgSubscription = vi.fn()
+export const createPortalSession = vi.fn()
+export const cancelRepositorySubscription = vi.fn()
+export const changeTier = vi.fn()
 
 // Graph membership
 export const listGraphMembers = vi.fn()

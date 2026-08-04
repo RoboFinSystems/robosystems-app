@@ -4,10 +4,12 @@ import GraphLimitModal from '@/components/app/GraphLimitModal'
 import * as SDK from '@robosystems/client'
 import {
   EmptyState,
+  LoadingState,
   PageHeader,
   PageLayout,
   StatCard,
   useApiError,
+  useGraphContext,
   useOrg,
   useToast,
 } from '@robosystems/core'
@@ -27,11 +29,14 @@ import {
   Tabs,
   TextInput,
 } from 'flowbite-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import {
   HiCheck,
   HiCreditCard,
+  HiCurrencyDollar,
   HiDatabase,
+  HiDocumentText,
   HiExclamationCircle,
   HiMail,
   HiOfficeBuilding,
@@ -41,19 +46,33 @@ import {
   HiUsers,
   HiX,
 } from 'react-icons/hi'
-import { BillingContent } from '../billing/content'
+import {
+  BillingAlerts,
+  InvoicesTab,
+  OverviewTab,
+  SubscriptionsTab,
+  useBillingData,
+} from './billing-panels'
 
 type OrgMember = SDK.OrgMemberResponse
 type OrgLimits = SDK.OrgLimitsResponse
 type OrgUsage = SDK.OrgUsageResponse
 type OrgInvitation = SDK.OrgInvitationResponse
 
-export function OrganizationContent() {
+/** Every tab this page can show, in the order they are rendered. */
+type OrgTabKey = 'graphs' | 'members' | 'billing' | 'subscriptions' | 'invoices'
+
+/** Tabs backed by the billing API — visiting any of them triggers the fetch. */
+const BILLING_TABS: OrgTabKey[] = ['billing', 'subscriptions', 'invoices']
+
+function OrganizationTabs() {
   const { currentOrg, refreshOrgs, loading: orgLoading } = useOrg()
+  const { state: graphState } = useGraphContext()
   const { handleApiError } = useApiError()
   const { showSuccess, showError, ToastContainer } = useToast()
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
-  const [activeTab, setActiveTab] = useState(0)
   const [members, setMembers] = useState<OrgMember[]>([])
   const [invitations, setInvitations] = useState<OrgInvitation[]>([])
   const [limits, setLimits] = useState<OrgLimits | null>(null)
@@ -79,9 +98,62 @@ export function OrganizationContent() {
   // items. Gating matches Graphs; members manage their own repository
   // subscriptions from /repositories instead.
   const canViewBilling = ['owner', 'admin'].includes(currentOrg?.role || '')
-  // Derived rather than hardcoded: the Graphs tab is conditional, so Billing's
-  // index shifts with it if the two gates ever diverge.
-  const billingTabIndex = canViewGraphs ? 2 : 1
+
+  // Single source of truth for tab order and index mapping, so a gate change
+  // can't silently shift a tab's index out from under the URL sync.
+  const tabKeys = useMemo<OrgTabKey[]>(
+    () => [
+      ...(canViewGraphs ? (['graphs'] as OrgTabKey[]) : []),
+      'members',
+      ...(canViewBilling ? BILLING_TABS : []),
+    ],
+    [canViewGraphs, canViewBilling]
+  )
+
+  // The tab the URL asked for, kept raw: role gating is still resolving on the
+  // first render, so validating it against tabKeys here would reject a valid
+  // ?tab=billing before we know the viewer is an admin.
+  const [requestedTab, setRequestedTab] = useState<OrgTabKey | null>(
+    () => (searchParams.get('tab') as OrgTabKey | null) ?? null
+  )
+  // Falls back to the first visible tab — /billing redirects everyone here, and
+  // a member arriving from a Stripe error has no billing tab to land on.
+  const activeTab =
+    requestedTab && tabKeys.includes(requestedTab) ? requestedTab : tabKeys[0]
+
+  // Billing data is fetched only once a billing tab is actually reached, and
+  // stays loaded afterwards so switching between the three doesn't refetch.
+  const [billingActivated, setBillingActivated] = useState(false)
+  useEffect(() => {
+    if (BILLING_TABS.includes(activeTab)) setBillingActivated(true)
+  }, [activeTab])
+
+  const billing = useBillingData(billingActivated)
+
+  const handleTabChange = (index: number) => {
+    const key = tabKeys[index]
+    if (!key) return
+    setRequestedTab(key)
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('tab', key)
+    // replace, not push: tab switches shouldn't stack up in the back button.
+    router.replace(`/organization?${params.toString()}`, { scroll: false })
+  }
+
+  /** Billing panels share one loading gate so they don't render half-empty. */
+  const renderBillingTab = (panel: React.ReactNode) => (
+    <>
+      <BillingAlerts
+        error={billing.error}
+        billingEnabled={billing.billingEnabled}
+      />
+      {billing.loading ? (
+        <LoadingState message="Loading billing data..." />
+      ) : (
+        panel
+      )}
+    </>
+  )
 
   const loadOrgData = useCallback(async () => {
     if (!currentOrg?.id) return
@@ -446,11 +518,15 @@ export function OrganizationContent() {
       <Tabs
         aria-label="Organization tabs"
         variant="underline"
-        onActiveTabChange={(tab) => setActiveTab(tab)}
+        onActiveTabChange={handleTabChange}
       >
         {/* Graphs Tab - Admin Only */}
         {canViewGraphs && (
-          <Tabs.Item active title="Graphs" icon={HiDatabase}>
+          <Tabs.Item
+            active={activeTab === 'graphs'}
+            title="Graphs"
+            icon={HiDatabase}
+          >
             <div className="space-y-6">
               {/* Usage Stats as individual cards in grid */}
               {usage && (
@@ -647,7 +723,11 @@ export function OrganizationContent() {
         )}
 
         {/* Members Tab */}
-        <Tabs.Item title="Members" icon={HiUsers}>
+        <Tabs.Item
+          active={activeTab === 'members'}
+          title="Members"
+          icon={HiUsers}
+        >
           <Card>
             <div className="flex items-center justify-between">
               <h2 className="font-heading text-xl font-semibold text-gray-900 dark:text-white">
@@ -814,13 +894,57 @@ export function OrganizationContent() {
           )}
         </Tabs.Item>
 
-        {/* Billing Tab - Admin Only */}
+        {/* Billing Tabs - Admin Only. Flattened to sit beside Graphs and
+            Members rather than nesting a second tab row inside one tab: all
+            five are org-scoped views of the same organization. */}
         {canViewBilling && (
-          <Tabs.Item title="Billing" icon={HiCreditCard}>
-            {/* Rendered only while selected: Tabs mounts inactive panels, and
-                BillingContent fetches subscriptions, customer and invoices on
-                mount — which would fire on every visit to this page. */}
-            {activeTab === billingTabIndex && <BillingContent />}
+          <Tabs.Item
+            active={activeTab === 'billing'}
+            title="Billing"
+            icon={HiCurrencyDollar}
+          >
+            {renderBillingTab(
+              <OverviewTab
+                billingCustomer={billing.billingCustomer}
+                upcomingInvoice={billing.upcomingInvoice}
+                hasPaymentMethod={billing.hasPaymentMethod}
+                billingEnabled={billing.billingEnabled}
+                router={router}
+                currentOrg={currentOrg}
+                subscriptions={billing.subscriptions}
+                showError={showError}
+              />
+            )}
+          </Tabs.Item>
+        )}
+
+        {canViewBilling && (
+          <Tabs.Item
+            active={activeTab === 'subscriptions'}
+            title="Subscriptions"
+            icon={HiCreditCard}
+          >
+            {renderBillingTab(
+              <SubscriptionsTab
+                subscriptions={billing.subscriptions}
+                graphs={graphState.graphs}
+                offerings={billing.offerings}
+                router={router}
+                onRefresh={billing.reload}
+              />
+            )}
+          </Tabs.Item>
+        )}
+
+        {canViewBilling && (
+          <Tabs.Item
+            active={activeTab === 'invoices'}
+            title="Invoices"
+            icon={HiDocumentText}
+          >
+            {renderBillingTab(
+              <InvoicesTab invoices={billing.invoices} loading={false} />
+            )}
           </Tabs.Item>
         )}
       </Tabs>
@@ -910,5 +1034,15 @@ export function OrganizationContent() {
         </ModalFooter>
       </Modal>
     </PageLayout>
+  )
+}
+
+export function OrganizationContent() {
+  // useSearchParams needs a Suspense boundary, or the whole route opts out of
+  // static rendering.
+  return (
+    <Suspense fallback={null}>
+      <OrganizationTabs />
+    </Suspense>
   )
 }

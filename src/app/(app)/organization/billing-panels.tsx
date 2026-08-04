@@ -6,10 +6,7 @@ import CancelSubscriptionModal, {
 import * as SDK from '@robosystems/client'
 import {
   LoadingState,
-  PageHeader,
-  PageLayout,
   useApiError,
-  useGraphContext,
   useOrg,
   useServiceOfferings,
   useToast,
@@ -36,18 +33,14 @@ import {
   TableHead,
   TableHeadCell,
   TableRow,
-  Tabs,
 } from 'flowbite-react'
-import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   HiArrowUp,
   HiCheckCircle,
   HiClock,
   HiCreditCard,
-  HiCurrencyDollar,
   HiDatabase,
-  HiDocumentText,
   HiDownload,
   HiExclamationCircle,
   HiInformationCircle,
@@ -55,13 +48,18 @@ import {
   HiXCircle,
 } from 'react-icons/hi'
 
-export function BillingContent() {
+/**
+ * Billing data for the organization page's Billing / Subscriptions / Invoices
+ * tabs — one fetch shared by all three.
+ *
+ * `enabled` gates the fetch so merely visiting /organization does not pull
+ * subscriptions, customer and invoices; the page flips it on the first time a
+ * billing tab is selected and leaves it on for the rest of the visit.
+ */
+export function useBillingData(enabled: boolean) {
   const { currentOrg } = useOrg()
-  const { state: graphState } = useGraphContext()
   const { offerings, isLoading: offeringsLoading } = useServiceOfferings()
   const { handleApiError } = useApiError()
-  const { showError, showSuccess } = useToast()
-  const router = useRouter()
 
   // Organization-level billing
   const [billingCustomer, setBillingCustomer] =
@@ -90,16 +88,7 @@ export function BillingContent() {
     setInvoices([])
   }, [currentOrg?.id])
 
-  useEffect(() => {
-    if (currentOrg?.id) {
-      loadBillingData()
-    }
-    // loadBillingData is recreated every render, so depending on it would
-    // re-fetch in a loop; the org id is the only input that should re-trigger.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentOrg?.id])
-
-  const loadBillingData = async () => {
+  const loadBillingData = useCallback(async () => {
     // Pin the org for this call so both the requests and the guard below refer
     // to the same one even if currentOrg changes while they are in flight.
     const requestedOrgId = currentOrg?.id
@@ -149,38 +138,51 @@ export function BillingContent() {
     } finally {
       if (loadedOrgIdRef.current === requestedOrgId) setLoading(false)
     }
+  }, [currentOrg?.id, handleApiError])
+
+  useEffect(() => {
+    if (enabled) {
+      loadBillingData()
+    }
+  }, [enabled, loadBillingData])
+
+  return {
+    billingCustomer,
+    subscriptions: orgSubscriptions,
+    upcomingInvoice,
+    invoices,
+    offerings,
+    // Offerings gate `billingEnabled`, so a panel rendered before they resolve
+    // would flash "Billing Disabled" against the `?? true` default.
+    loading: loading || offeringsLoading,
+    error,
+    billingEnabled: offerings?.billingEnabled ?? true,
+    hasPaymentMethod:
+      billingCustomer?.has_payment_method ||
+      billingCustomer?.invoice_billing_enabled ||
+      false,
+    reload: loadBillingData,
   }
+}
 
-  if (loading || offeringsLoading) {
-    return (
-      <PageLayout>
-        <LoadingState message="Loading billing data..." />
-      </PageLayout>
-    )
-  }
-
-  const billingEnabled = offerings?.billingEnabled ?? true
-  const hasPaymentMethod =
-    billingCustomer?.has_payment_method ||
-    billingCustomer?.invoice_billing_enabled ||
-    false
-
+/** Load failures and the instance-wide billing-off notice, shown above any billing tab. */
+export function BillingAlerts({
+  error,
+  billingEnabled,
+}: {
+  error: string | null
+  billingEnabled: boolean
+}) {
   return (
-    <PageLayout>
-      <PageHeader
-        icon={HiCreditCard}
-        title="Billing & Subscriptions"
-        subtitle="Manage subscription and payments"
-      />
-
+    <>
       {error && (
-        <Alert color="failure" icon={HiExclamationCircle}>
+        <Alert color="failure" icon={HiExclamationCircle} className="mb-6">
           {error}
         </Alert>
       )}
 
       {!billingEnabled && (
-        <Alert color="info" icon={HiInformationCircle}>
+        <Alert color="info" icon={HiInformationCircle} className="mb-6">
           <div>
             <h3 className="font-semibold">Billing Disabled</h3>
             <p className="text-sm">
@@ -190,41 +192,12 @@ export function BillingContent() {
           </div>
         </Alert>
       )}
-
-      <Tabs aria-label="Billing tabs" variant="underline">
-        <Tabs.Item active title="Overview" icon={HiCurrencyDollar}>
-          <OverviewTab
-            billingCustomer={billingCustomer}
-            upcomingInvoice={upcomingInvoice}
-            hasPaymentMethod={hasPaymentMethod}
-            billingEnabled={billingEnabled}
-            router={router}
-            currentOrg={currentOrg}
-            subscriptions={orgSubscriptions}
-            showError={showError}
-          />
-        </Tabs.Item>
-
-        <Tabs.Item title="Subscriptions" icon={HiDatabase}>
-          <SubscriptionsTab
-            subscriptions={orgSubscriptions}
-            graphs={graphState.graphs}
-            offerings={offerings}
-            router={router}
-            onRefresh={loadBillingData}
-          />
-        </Tabs.Item>
-
-        <Tabs.Item title="Invoices" icon={HiDocumentText}>
-          <InvoicesTab invoices={invoices} loading={false} />
-        </Tabs.Item>
-      </Tabs>
-    </PageLayout>
+    </>
   )
 }
 
 // Overview Tab
-function OverviewTab({
+export function OverviewTab({
   billingCustomer,
   upcomingInvoice,
   hasPaymentMethod,
@@ -452,7 +425,7 @@ function OverviewTab({
 }
 
 // Subscriptions Tab
-function SubscriptionsTab({
+export function SubscriptionsTab({
   subscriptions,
   graphs,
   offerings,
@@ -1065,7 +1038,7 @@ function SubscriptionsTab({
 }
 
 // Invoices Tab
-function InvoicesTab({
+export function InvoicesTab({
   invoices,
   loading,
 }: {

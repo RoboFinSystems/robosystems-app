@@ -192,7 +192,7 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
   }
 
   const handleRetry = () => {
-    router.push('/billing')
+    router.push('/organization?tab=billing')
   }
 
   const handleCancel = () => {
