@@ -20,12 +20,16 @@ export function NewGraphContent() {
   const { canCreateGraph, isLoading, limits } = useUserLimits()
   const [showContactModal, setShowContactModal] = useState(false)
 
-  // Check limits when component mounts or when loading completes
+  const isOrgAdmin = ['owner', 'admin'].includes(currentOrg?.role || '')
+
+  // Check limits when component mounts or when loading completes. Members are
+  // handled by their own branch below, so don't auto-open the limit form for
+  // them — it asks RoboSystems to raise a quota that is not what blocked them.
   useEffect(() => {
-    if (!isLoading && !canCreateGraph) {
+    if (!isLoading && !canCreateGraph && isOrgAdmin) {
       setShowContactModal(true)
     }
-  }, [isLoading, canCreateGraph])
+  }, [isLoading, canCreateGraph, isOrgAdmin])
 
   const handleSuccess = async (graphId: string) => {
     try {
@@ -64,6 +68,45 @@ export function NewGraphContent() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Spinner size="xl" />
+      </div>
+    )
+  }
+
+  // A member is refused for a reason RoboSystems cannot fix, so the
+  // request-a-higher-limit path below would be a dead end — that form asks us
+  // to raise a quota, while what they need is someone in their own org. Checked
+  // before the limit branch because the API reports both refusals through the
+  // same `can_create_graph` flag.
+  if (!isOrgAdmin) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="max-w-md text-center">
+          <h2 className="font-heading mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            Graph Creation Is Restricted
+          </h2>
+          <p className="mb-6 text-gray-600 dark:text-gray-400">
+            Creating a graph is billed to your organization, so only owners and
+            admins can do it. Ask one of them to create a graph or grant you
+            access to an existing one.
+          </p>
+          <p className="mb-6 text-sm text-gray-500 dark:text-gray-500">
+            You can subscribe to a shared repository yourself.
+          </p>
+          <div className="flex items-center justify-center gap-4">
+            <button
+              onClick={() => router.push('/home')}
+              className="text-primary-600 hover:text-primary-700 underline"
+            >
+              Back to graphs
+            </button>
+            <button
+              onClick={() => router.push('/repositories/browse')}
+              className="text-primary-600 hover:text-primary-700 underline"
+            >
+              Browse repositories
+            </button>
+          </div>
+        </div>
       </div>
     )
   }
