@@ -7,6 +7,7 @@ import {
   PageHeader,
   PageLayout,
   useGraphContext,
+  useOrg,
 } from '@robosystems/core'
 import {
   Badge,
@@ -34,8 +35,16 @@ import {
 export default function AllGraphsHomePage() {
   const router = useRouter()
   const { setCurrentGraph, state: graphState } = useGraphContext()
+  const { currentOrg } = useOrg()
   const [graphs, setGraphs] = useState<GraphInfo[]>([])
   const [loading, setLoading] = useState(true)
+
+  // Creating a graph commits the org to a recurring charge and consumes its
+  // quota, so the API restricts it to owners and admins. Read from org context
+  // rather than fetching limits: this page has no other reason to call the
+  // limits endpoint, and the role is already loaded app-wide. The API is the
+  // enforcement point — this only avoids offering an action that would 403.
+  const canCreateGraph = ['owner', 'admin'].includes(currentOrg?.role || '')
 
   useEffect(() => {
     fetchGraphs()
@@ -118,10 +127,12 @@ export default function AllGraphsHomePage() {
                 <HiGlobeAlt className="mr-2 h-4 w-4" />
                 Browse Repositories
               </Button>
-              <Button onClick={() => router.push('/graphs/new')}>
-                <HiPlus className="mr-2 h-4 w-4" />
-                Create Graph
-              </Button>
+              {canCreateGraph && (
+                <Button onClick={() => router.push('/graphs/new')}>
+                  <HiPlus className="mr-2 h-4 w-4" />
+                  Create Graph
+                </Button>
+              )}
             </>
           )
         }
@@ -365,53 +376,63 @@ export default function AllGraphsHomePage() {
                 No graphs or repositories found
               </h3>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Get started by creating a graph or subscribing to a shared
-                repository
+                {canCreateGraph
+                  ? 'Get started by creating a graph or subscribing to a shared repository'
+                  : 'Ask an organization owner or admin to create a graph or grant you access to an existing one. You can subscribe to a shared repository yourself.'}
               </p>
             </div>
           </Card>
 
           {/* Getting Started Options */}
-          <div className="grid gap-6 md:grid-cols-2">
+          {/* Members see a single card: the create path is not theirs to take,
+              and a disabled button would be a dead end rather than a next step
+              — unlike a quota, they cannot resolve this themselves. */}
+          <div
+            className={
+              canCreateGraph ? 'grid gap-6 md:grid-cols-2' : 'grid gap-6'
+            }
+          >
             {/* Create Graph Card */}
-            <Card className="transition-shadow hover:shadow-lg">
-              <div className="space-y-4 p-6">
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-3">
-                    <HiPlus className="text-primary-600 dark:text-primary-400 h-6 w-6" />
+            {canCreateGraph && (
+              <Card className="transition-shadow hover:shadow-lg">
+                <div className="space-y-4 p-6">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-3">
+                      <HiPlus className="text-primary-600 dark:text-primary-400 h-6 w-6" />
+                    </div>
+                    <h3 className="font-heading text-xl font-bold text-gray-900 dark:text-white">
+                      Create Your Graph
+                    </h3>
                   </div>
-                  <h3 className="font-heading text-xl font-bold text-gray-900 dark:text-white">
-                    Create Your Graph
-                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Build your own knowledge graph database. Store and query
+                    your data with full control over schema and access.
+                  </p>
+                  <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-500">✓</span>
+                      <span>Full read/write access</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-500">✓</span>
+                      <span>Custom schema and extensions</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-500">✓</span>
+                      <span>AI-powered operations</span>
+                    </li>
+                  </ul>
+                  <Button
+                    onClick={() => router.push('/graphs/new')}
+                    className="w-full"
+                    size="lg"
+                  >
+                    <HiPlus className="mr-2 h-5 w-5" />
+                    Create Graph
+                  </Button>
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Build your own knowledge graph database. Store and query your
-                  data with full control over schema and access.
-                </p>
-                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span>Full read/write access</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span>Custom schema and extensions</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span>AI-powered operations</span>
-                  </li>
-                </ul>
-                <Button
-                  onClick={() => router.push('/graphs/new')}
-                  className="w-full"
-                  size="lg"
-                >
-                  <HiPlus className="mr-2 h-5 w-5" />
-                  Create Graph
-                </Button>
-              </div>
-            </Card>
+              </Card>
+            )}
 
             {/* Subscribe to Repository Card */}
             <Card className="transition-shadow hover:shadow-lg">
