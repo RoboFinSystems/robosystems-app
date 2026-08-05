@@ -24,6 +24,7 @@ import {
   HiClock,
   HiCurrencyDollar,
   HiDatabase,
+  HiDocumentText,
   HiExclamationCircle,
   HiRefresh,
   HiServer,
@@ -78,6 +79,16 @@ interface GraphLimits {
     storage_billing_enabled: boolean
     storage_rate_per_gb_per_day: number
   }
+  /**
+   * Uploaded-document count against the tier cap, from `/limits`. Mirrors
+   * upload enforcement: connection-synced documents don't count, and a null
+   * cap means the tier is uncapped.
+   */
+  documents?: {
+    current_count: number
+    max_documents?: number | null
+    approaching_limit: boolean
+  } | null
 }
 
 interface CreditTransaction {
@@ -453,21 +464,9 @@ export function UsageContent() {
       {data.creditSummary && (
         <Card>
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
-                {isRepository ? 'Repository Credits' : 'Credit Balance'}
-              </h3>
-              {!isRepository && (
-                <Button
-                  size="sm"
-                  color="gray"
-                  onClick={() => router.push('/organization?tab=billing')}
-                >
-                  <HiCurrencyDollar className="mr-2 h-4 w-4" />
-                  Buy Credits
-                </Button>
-              )}
-            </div>
+            <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
+              {isRepository ? 'Repository Credits' : 'Credit Balance'}
+            </h3>
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {/* Current Balance */}
@@ -634,6 +633,75 @@ export function UsageContent() {
               </Alert>
             )}
           </div>
+        </Card>
+      )}
+
+      {/* Documents - knowledge-base usage against the tier cap. Its own
+          meter rather than a storage line: documents live in the platform
+          database, not on the instance volume, and the enforced limit is a
+          count, not bytes. */}
+      {!isRepository && data.graphLimits?.documents && (
+        <Card>
+          {(() => {
+            const docs = data.graphLimits!.documents!
+            const pct =
+              docs.max_documents != null && docs.max_documents > 0
+                ? (docs.current_count / docs.max_documents) * 100
+                : null
+
+            return (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
+                    Documents
+                  </h3>
+                  <Button
+                    size="sm"
+                    color="gray"
+                    onClick={() => router.push('/documents')}
+                  >
+                    <HiDocumentText className="mr-2 h-4 w-4" />
+                    Knowledge Base
+                  </Button>
+                </div>
+
+                {pct === null ? (
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {formatNumber(docs.current_count)} documents stored
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600 dark:text-gray-400">
+                        {formatNumber(docs.current_count)} of{' '}
+                        {formatNumber(docs.max_documents!)} documents used
+                      </span>
+                      <span className="font-medium text-gray-900 dark:text-white">
+                        {pct.toFixed(1)}%
+                      </span>
+                    </div>
+                    <Progress
+                      progress={pct}
+                      size="lg"
+                      color={docs.approaching_limit ? 'yellow' : 'blue'}
+                    />
+                  </div>
+                )}
+
+                {docs.approaching_limit && (
+                  <Alert color="warning" icon={HiExclamationCircle}>
+                    <span className="font-medium">
+                      Approaching document limit
+                    </span>
+                    <p className="mt-1 text-sm">
+                      You're nearing your document capacity. Remove unused
+                      documents or upgrade to a higher tier.
+                    </p>
+                  </Alert>
+                )}
+              </div>
+            )
+          })()}
         </Card>
       )}
 
