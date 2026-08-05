@@ -114,17 +114,17 @@ export const getNavigationItems = (
   // tabs to owner/admin. /billing itself redirects to /organization?tab=billing
   // so Stripe's portal return and checkout cancel URLs keep working.
   const alwaysVisibleItems: SidebarItemData[] = [
-    {
-      icon: HiGlobeAlt,
-      label: 'Repositories',
-      href: '/repositories',
-    },
-    // Account-wide rather than graph-dependent: the page lists every graph's
-    // MCP URL at once, since one graph is one connector.
+    // Follows the selected graph (one graph is one connector); listed above
+    // Repositories so the AI-connection path is easy to find.
     {
       icon: HiPuzzle,
       label: 'Connect',
       href: '/connect',
+    },
+    {
+      icon: HiGlobeAlt,
+      label: 'Repositories',
+      href: '/repositories',
     },
   ]
 
