@@ -37,7 +37,9 @@ describe('QueryInterfaceContent', () => {
     expect(branding.title).toBe('Console')
     expect(branding.consoleName).toBe('RoboSystems Console')
     expect(branding.mcp.serverName).toBe('robosystems')
-    expect(branding.mcp.packageName).toBe('@robosystems/mcp')
+    // The connector name is built from serverName + graph id; core's /mcp
+    // serves the remote URL, so there is no npm package to name.
+    expect(branding.mcp.packageName).toBeUndefined()
     // The parent app is brand-neutral — no example-set tiebreak.
     expect(branding.preferredKind).toBeUndefined()
   })
