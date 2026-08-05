@@ -6,6 +6,7 @@ import {
   getDatabaseHealth,
   getGraphLimits,
   getGraphs,
+  getSubgraphQuota,
   listCreditTransactions,
 } from '@robosystems/client'
 import {
@@ -23,8 +24,6 @@ import {
   HiChartBar,
   HiClock,
   HiCurrencyDollar,
-  HiDatabase,
-  HiDocumentText,
   HiExclamationCircle,
   HiRefresh,
   HiServer,
@@ -76,8 +75,6 @@ interface GraphLimits {
   credits?: {
     current_balance: number
     monthly_ai_credits: number
-    storage_billing_enabled: boolean
-    storage_rate_per_gb_per_day: number
   }
   /**
    * Uploaded-document count against the tier cap, from `/limits`. Mirrors
@@ -89,6 +86,15 @@ interface GraphLimits {
     max_documents?: number | null
     approaching_limit: boolean
   } | null
+}
+
+/**
+ * Subgraph count against the tier cap, from `/subgraphs/quota`. A tier that
+ * reports `max_allowed: 0` has no subgraph feature at all; null means uncapped.
+ */
+interface SubgraphQuota {
+  current_count: number
+  max_allowed?: number | null
 }
 
 interface CreditTransaction {
@@ -117,6 +123,25 @@ interface UsageData {
   graphLimits?: GraphLimits
   recentTransactions?: CreditTransaction[]
   instanceResources?: InstanceResources
+  subgraphQuota?: SubgraphQuota
+}
+
+/**
+ * One count-based cap, metered on the Capacity card.
+ *
+ * These are enforced as counts rather than bytes, which is why they can't fold
+ * into the storage card: documents live in the platform database, and subgraphs
+ * are refused at the tier cap regardless of how small they are.
+ */
+interface CapacityRow {
+  key: string
+  label: string
+  /** Singular form, for the approaching-limit warning. */
+  noun: string
+  current: number
+  max: number | null
+  approaching: boolean
+  remediation: string
 }
 
 /**
@@ -187,7 +212,7 @@ export function UsageContent() {
       const usageData: UsageData = { graphInfo }
 
       // Fetch all usage data in parallel
-      const [limitsRes, creditRes, transactionsRes, healthRes] =
+      const [limitsRes, creditRes, transactionsRes, healthRes, subgraphRes] =
         await Promise.allSettled([
           getGraphLimits({ path: { graph_id: graphId } }),
           getCreditSummary({ path: { graph_id: graphId } }),
@@ -196,6 +221,11 @@ export function UsageContent() {
             query: { limit: 10 },
           }),
           getDatabaseHealth({ path: { graph_id: graphId } }),
+          // Subgraphs hang off a parent graph, so the quota endpoint has
+          // nothing to answer for a shared repository and rejects the call.
+          isRepository
+            ? Promise.resolve(null)
+            : getSubgraphQuota({ path: { graph_id: graphId } }),
         ])
 
       // Process limits (includes instance storage usage)
@@ -225,6 +255,11 @@ export function UsageContent() {
         if (health.resource_status) {
           usageData.instanceResources = health
         }
+      }
+
+      if (subgraphRes.status === 'fulfilled' && subgraphRes.value?.data) {
+        usageData.subgraphQuota = subgraphRes.value
+          .data as unknown as SubgraphQuota
       }
 
       if (loadedGraphIdRef.current !== requestedGraphId) return
@@ -425,6 +460,50 @@ export function UsageContent() {
     }
   }
 
+  /**
+   * Everything the tier caps by count, in one meter per resource.
+   *
+   * A resource is listed only once the API reports it: a tier with no subgraph
+   * allowance returns `max_allowed: 0` and gets no meter, rather than a bar
+   * pinned at a limit of zero.
+   */
+  const buildCapacityRows = (): CapacityRow[] => {
+    const rows: CapacityRow[] = []
+
+    const docs = data.graphLimits?.documents
+    if (docs) {
+      rows.push({
+        key: 'documents',
+        label: 'Documents',
+        noun: 'document',
+        current: docs.current_count,
+        max: docs.max_documents ?? null,
+        approaching: docs.approaching_limit,
+        remediation: 'Remove unused documents or upgrade to a higher tier.',
+      })
+    }
+
+    const subgraphs = data.subgraphQuota
+    if (subgraphs && subgraphs.max_allowed !== 0) {
+      const max = subgraphs.max_allowed ?? null
+      rows.push({
+        key: 'subgraphs',
+        label: 'Subgraphs',
+        noun: 'subgraph',
+        current: subgraphs.current_count,
+        max,
+        // Matches the API's own threshold for document limits, so the two
+        // meters warn at the same point.
+        approaching: max !== null && subgraphs.current_count > max * 0.8,
+        remediation: 'Delete unused subgraphs or upgrade to a higher tier.',
+      })
+    }
+
+    return rows
+  }
+
+  const capacityRows = buildCapacityRows()
+
   const formatTransactionType = (type: string) => {
     // Convert from API format (e.g., "CONSUMPTION", "ALLOCATION", "PURCHASE")
     // to display format (e.g., "Consumption", "Allocation", "Purchase")
@@ -609,20 +688,6 @@ export function UsageContent() {
               )
             })()}
 
-            <div className="rounded-lg bg-gray-50 p-4 dark:bg-zinc-800">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Storage
-                  </p>
-                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
-                    Included in your subscription — no credit cost
-                  </p>
-                </div>
-                <HiDatabase className="h-8 w-8 text-gray-400" />
-              </div>
-            </div>
-
             {data.graphLimits.storage.approaching_limit && (
               <Alert color="warning" icon={HiExclamationCircle}>
                 <span className="font-medium">Approaching storage limit</span>
@@ -636,72 +701,66 @@ export function UsageContent() {
         </Card>
       )}
 
-      {/* Documents - knowledge-base usage against the tier cap. Its own
-          meter rather than a storage line: documents live in the platform
-          database, not on the instance volume, and the enforced limit is a
-          count, not bytes. */}
-      {!isRepository && data.graphLimits?.documents && (
+      {/* Capacity - the tier's count-based caps, one meter per resource.
+          Separate from storage because these are enforced as counts: documents
+          live in the platform database rather than the instance volume, and a
+          subgraph is refused at the cap however small it is. */}
+      {!isRepository && capacityRows.length > 0 && (
         <Card>
-          {(() => {
-            const docs = data.graphLimits!.documents!
-            const pct =
-              docs.max_documents != null && docs.max_documents > 0
-                ? (docs.current_count / docs.max_documents) * 100
-                : null
+          <div className="space-y-4">
+            <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
+              Capacity
+            </h3>
 
-            return (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
-                    Documents
-                  </h3>
-                  <Button
-                    size="sm"
-                    color="gray"
-                    onClick={() => router.push('/documents')}
-                  >
-                    <HiDocumentText className="mr-2 h-4 w-4" />
-                    Knowledge Base
-                  </Button>
-                </div>
+            <div className="space-y-4">
+              {capacityRows.map((row) => {
+                const pct =
+                  row.max !== null && row.max > 0
+                    ? (row.current / row.max) * 100
+                    : null
 
-                {pct === null ? (
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {formatNumber(docs.current_count)} documents stored
-                  </p>
-                ) : (
-                  <div className="space-y-3">
+                return (
+                  <div key={row.key} className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">
-                        {formatNumber(docs.current_count)} of{' '}
-                        {formatNumber(docs.max_documents!)} documents used
-                      </span>
                       <span className="font-medium text-gray-900 dark:text-white">
-                        {pct.toFixed(1)}%
+                        {row.label}
+                      </span>
+                      <span className="text-gray-600 tabular-nums dark:text-gray-400">
+                        {pct === null
+                          ? `${formatNumber(row.current)} used · no limit`
+                          : `${formatNumber(row.current)} of ${formatNumber(row.max!)} used`}
                       </span>
                     </div>
-                    <Progress
-                      progress={pct}
-                      size="lg"
-                      color={docs.approaching_limit ? 'yellow' : 'blue'}
-                    />
+                    {pct !== null && (
+                      <Progress
+                        progress={pct}
+                        size="lg"
+                        color={row.approaching ? 'yellow' : 'blue'}
+                      />
+                    )}
                   </div>
-                )}
+                )
+              })}
+            </div>
 
-                {docs.approaching_limit && (
-                  <Alert color="warning" icon={HiExclamationCircle}>
-                    <span className="font-medium">
-                      Approaching document limit
-                    </span>
-                    <p className="mt-1 text-sm">
-                      You're nearing your document capacity. Remove unused
-                      documents or upgrade to a higher tier.
-                    </p>
-                  </Alert>
-                )}
-              </div>
-            )
-          })()}
+            {capacityRows
+              .filter((row) => row.approaching)
+              .map((row) => (
+                <Alert
+                  key={row.key}
+                  color="warning"
+                  icon={HiExclamationCircle}
+                  className="mt-2"
+                >
+                  <span className="font-medium">
+                    Approaching {row.noun} limit
+                  </span>
+                  <p className="mt-1 text-sm">
+                    You're nearing your {row.noun} capacity. {row.remediation}
+                  </p>
+                </Alert>
+              ))}
+          </div>
         </Card>
       )}
 
