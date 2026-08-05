@@ -19,7 +19,6 @@ const ROBOSYSTEMS_BRANDING: ConsoleBranding = {
   closingMessage: 'How can I help you today?',
   mcp: {
     serverName: 'robosystems',
-    packageName: '@robosystems/mcp',
     contextIdFallback: 'your_graph_id',
   },
 }

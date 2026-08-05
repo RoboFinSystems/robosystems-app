@@ -45,7 +45,7 @@ export default function SecXbrlPipeline() {
             </li>
             <li className="flex items-start">
               <span className="mr-2 text-cyan-400">✓</span>
-              Integrate with Claude Desktop or Claude Code via MCP
+              Connect Claude, Claude Code, or Cursor over MCP
             </li>
             <li className="flex items-start">
               <span className="mr-2 text-cyan-400">✓</span>

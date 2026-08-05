@@ -253,8 +253,8 @@ export default function SECRepositorySection() {
                 <h4 className="font-semibold text-white">MCP Clients</h4>
               </div>
               <p className="text-sm text-gray-400">
-                Use with Claude Desktop, Claude Code, Cursor, or any
-                MCP-compatible AI client.
+                Use with Claude, Claude Code, Cursor, or any MCP-compatible AI
+                client — no install required.
               </p>
             </div>
 
@@ -278,9 +278,12 @@ export default function SECRepositorySection() {
                 </div>
                 <h4 className="font-semibold text-white">MCP Protocol</h4>
               </div>
+              <p className="mb-2 text-sm text-gray-400">
+                Paste one URL, add one header.
+              </p>
               <div className="rounded-lg bg-black/40 p-2.5">
-                <code className="text-xs text-gray-300">
-                  npx -y @robosystems/mcp@latest
+                <code className="text-xs break-all text-gray-300">
+                  https://api.robosystems.ai/v1/graphs/sec/mcp
                 </code>
               </div>
             </div>

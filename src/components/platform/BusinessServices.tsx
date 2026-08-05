@@ -37,7 +37,7 @@ export default function BusinessServices() {
       capabilities: [
         'Ask Claude AI questions about your books',
         'Narrative answers with the data and generated Cypher',
-        'MCP integration for Claude Desktop and Cursor',
+        'MCP integration for Claude, Claude Code, and Cursor',
       ],
     },
   ]
