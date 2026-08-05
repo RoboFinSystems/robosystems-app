@@ -11,6 +11,7 @@ import {
   HiGlobeAlt,
   HiHome,
   HiLightBulb,
+  HiPuzzle,
   HiSearch,
   HiTable,
   HiTerminal,
@@ -117,6 +118,13 @@ export const getNavigationItems = (
       icon: HiGlobeAlt,
       label: 'Repositories',
       href: '/repositories',
+    },
+    // Account-wide rather than graph-dependent: the page lists every graph's
+    // MCP URL at once, since one graph is one connector.
+    {
+      icon: HiPuzzle,
+      label: 'Connect',
+      href: '/connect',
     },
   ]
 

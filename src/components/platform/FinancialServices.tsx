@@ -31,9 +31,9 @@ export default function FinancialServices() {
       icon: 'M13 10V3L4 14h7v7l9-11h-7z',
       gradient: 'from-indigo-500 to-purple-500',
       description:
-        'Connect Claude Desktop, Cursor, and other AI tools to your investment graph over MCP — every portfolio operation is exposed as a tool, so agents read and write.',
+        'Connect Claude, Cursor, and other AI tools to your investment graph over MCP — every portfolio operation is exposed as a tool, so agents read and write.',
       currentFeatures: [
-        '@robosystems/mcp for Claude Desktop and Cursor',
+        'Remote MCP endpoint — one URL and an API key header, no install',
         'Portfolio, position, and security writes as agent-callable tools',
         'GraphQL and REST APIs with Python and TypeScript SDKs',
         'API key management for programmatic access',
@@ -175,8 +175,8 @@ export default function FinancialServices() {
                 Connect AI Tools
               </h4>
               <p className="text-sm text-gray-400">
-                Use MCP to connect Claude Desktop or Cursor to your investment
-                graph — analyze it and record positions without leaving the chat
+                Paste your graph's MCP URL into Claude or Cursor — analyze it
+                and record positions without leaving the chat
               </p>
             </div>
           </div>

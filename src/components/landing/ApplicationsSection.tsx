@@ -288,8 +288,8 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        MCP integration for Claude Desktop and Cursor — every
-                        portfolio operation is an agent-callable tool
+                        MCP integration for Claude, Claude Code, and Cursor —
+                        every portfolio operation is an agent-callable tool
                       </span>
                     </li>
                   </ul>
@@ -313,30 +313,23 @@ export default function ApplicationsSection() {
                   <div className="bg-accent-600 flex h-10 w-10 items-center justify-center rounded-lg">
                     <span className="text-xl font-bold text-white">AI</span>
                   </div>
-                  <h4 className="font-semibold text-white">MCP Client</h4>
+                  <h4 className="font-semibold text-white">MCP Endpoint</h4>
                 </div>
                 <p className="mb-4 text-sm text-gray-400">
-                  Claude integration via Model Context Protocol for AI agents
+                  Every graph is a remote MCP server — one URL, one header, no
+                  install
                 </p>
-                <code className="block rounded-sm bg-zinc-800 p-2 text-xs text-gray-300">
-                  npx -y @robosystems/mcp@latest
+                <code className="block rounded-sm bg-zinc-800 p-2 text-xs break-all text-gray-300">
+                  https://api.robosystems.ai/v1/graphs/sec/mcp
                 </code>
                 <div className="mt-4 flex gap-3">
-                  <Link
-                    href="https://www.npmjs.com/package/@robosystems/mcp"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-secondary-400 hover:text-secondary-300 text-sm"
-                  >
-                    npm →
-                  </Link>
                   <Link
                     href="https://github.com/RoboFinSystems/robosystems-mcp-client"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-secondary-400 hover:text-secondary-300 text-sm"
                   >
-                    GitHub →
+                    Legacy stdio bridge →
                   </Link>
                 </div>
               </div>

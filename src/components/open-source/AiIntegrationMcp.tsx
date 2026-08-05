@@ -23,7 +23,7 @@ export default function AiIntegrationMcp() {
               AI Integration via MCP
             </h3>
             <p className="text-lg text-purple-200">
-              Connect Claude Desktop, Claude Code, or any MCP client
+              Connect Claude, Claude Code, Cursor, or any MCP client
             </p>
           </div>
         </div>
@@ -41,9 +41,9 @@ export default function AiIntegrationMcp() {
           <ul className="space-y-2 text-gray-400">
             <li className="flex items-start">
               <span className="mr-2 text-purple-400">✓</span>
-              <strong className="text-white">Claude Desktop:</strong>
+              <strong className="text-white">Claude:</strong>
               <span className="ml-1">
-                Add to your config for conversational financial analysis
+                Add a custom connector for conversational financial analysis
               </span>
             </li>
             <li className="flex items-start">
@@ -55,33 +55,38 @@ export default function AiIntegrationMcp() {
             </li>
             <li className="flex items-start">
               <span className="mr-2 text-purple-400">✓</span>
-              <strong className="text-white">Custom MCP Clients:</strong>
+              <strong className="text-white">Cursor / VS Code:</strong>
               <span className="ml-1">
-                Build your own AI-powered financial tools
+                Point your editor at the same URL and query inline
               </span>
             </li>
           </ul>
         </div>
 
-        <div className="mb-6 rounded-xl bg-black/50 p-4">
-          <h4 className="mb-3 text-sm font-semibold text-white">
-            Claude Desktop Configuration (claude_desktop_config.json):
-          </h4>
-          <pre className="overflow-x-auto text-sm text-gray-300">
-            <code>{`{
-  "mcpServers": {
-    "robosystems": {
-      "command": "npx",
-      "args": ["-y", "@robosystems/mcp@latest"],
-      "env": {
-        "ROBOSYSTEMS_API_URL": "https://robosystems.ai",
-        "ROBOSYSTEMS_API_KEY": "rfs*",
-        "ROBOSYSTEMS_GRAPH_ID": "sec"
-      }
-    }
-  }
-}`}</code>
-          </pre>
+        <div className="mb-6 space-y-4 rounded-xl bg-black/50 p-4">
+          <div>
+            <h4 className="mb-1 text-sm font-semibold text-white">
+              Connect with one URL and one header — no install
+            </h4>
+            <p className="mb-3 text-xs text-gray-400">
+              The URL picks the graph: <code>sec</code> for the public SEC
+              repository, your graph id for a private ledger.
+            </p>
+            <pre className="overflow-x-auto text-sm text-gray-300">
+              <code>{`URL:    https://api.robosystems.ai/v1/graphs/sec/mcp
+Header: X-API-Key: rfs*`}</code>
+            </pre>
+          </div>
+          <div className="border-t border-purple-500/20 pt-4">
+            <h4 className="mb-3 text-sm font-semibold text-white">
+              Claude Code (one command):
+            </h4>
+            <pre className="overflow-x-auto text-sm text-gray-300">
+              <code>{`claude mcp add --transport http robosystems-sec \\
+  https://api.robosystems.ai/v1/graphs/sec/mcp \\
+  --header "X-API-Key: rfs*"`}</code>
+            </pre>
+          </div>
         </div>
 
         <div className="space-y-4 rounded-xl bg-black/50 p-4">

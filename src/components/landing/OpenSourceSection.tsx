@@ -359,7 +359,7 @@ export default function OpenSourceSection() {
                           @robosystems/mcp
                         </a>
                         <span className="self-start text-xs text-gray-500 sm:self-auto">
-                          MCP Client
+                          Legacy stdio bridge
                         </span>
                       </div>
                     </div>

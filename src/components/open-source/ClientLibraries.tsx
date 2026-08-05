@@ -116,32 +116,26 @@ export default function ClientLibraries() {
               </svg>
             </div>
             <h3 className="mb-3 text-xl font-semibold text-white">
-              MCP Client
+              MCP Endpoint
             </h3>
             <p className="mb-4 text-sm text-gray-400">
-              Model Context Protocol client for AI agent integration.
+              Every graph is a remote MCP server. Add the URL with an{' '}
+              <code className="text-gray-300">X-API-Key</code> header — no
+              install.
             </p>
             <div className="rounded bg-black p-2">
-              <code className="text-xs text-gray-300">
-                npx -y @robosystems/mcp@latest
+              <code className="text-xs break-all text-gray-300">
+                https://api.robosystems.ai/v1/graphs/sec/mcp
               </code>
             </div>
             <div className="mt-4 flex gap-3">
-              <a
-                href="https://www.npmjs.com/package/@robosystems/mcp"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-cyan-400 hover:text-cyan-300"
-              >
-                npm →
-              </a>
               <a
                 href="https://github.com/RoboFinSystems/robosystems-mcp-client"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-cyan-400 hover:text-cyan-300"
               >
-                GitHub →
+                Legacy stdio bridge →
               </a>
             </div>
           </div>
