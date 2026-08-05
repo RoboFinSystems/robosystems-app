@@ -1,7 +1,9 @@
 'use client'
 
 import type { GraphInfo } from '@robosystems/client'
+import type { McpConnectorUrl } from '@robosystems/core'
 import {
+  createMcpConnectorUrl,
   EmptyState,
   PageHeader,
   PageLayout,
@@ -16,6 +18,7 @@ import {
   HiInformationCircle,
   HiLink,
   HiPuzzle,
+  HiSparkles,
 } from 'react-icons/hi'
 
 const API_URL =
@@ -91,6 +94,76 @@ function Snippet({
   )
 }
 
+function ClaudeConnectorSection({ graph }: { graph: GraphInfo }) {
+  const [connector, setConnector] = useState<McpConnectorUrl | null>(null)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const generate = async () => {
+    setIsGenerating(true)
+    setError(null)
+    try {
+      const result = await createMcpConnectorUrl(graph.graphId, {
+        apiUrl: API_URL,
+        name: `Claude connector - ${graph.graphName}`,
+      })
+      setConnector(result)
+    } catch (e: any) {
+      setError(e?.message || 'Failed to generate connector URL')
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-xs font-medium tracking-wide text-zinc-500 uppercase dark:text-zinc-500">
+          Claude (claude.ai / Desktop) — Settings → Connectors → Add custom
+          connector
+        </p>
+        {!connector && (
+          <button
+            type="button"
+            onClick={generate}
+            disabled={isGenerating}
+            className="inline-flex shrink-0 items-center gap-1 rounded-md border border-zinc-300 px-2 py-1 text-xs text-zinc-600 transition-colors hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
+          >
+            <HiSparkles className="h-3.5 w-3.5" />
+            {isGenerating ? 'Generating…' : 'Generate connector URL'}
+          </button>
+        )}
+      </div>
+      {connector ? (
+        <>
+          <Snippet
+            heading="Paste this URL into the connector dialog — no header needed"
+            copyLabel="Connector URL"
+            code={connector.url}
+          />
+          <p className="text-xs text-zinc-500 dark:text-zinc-500">
+            The URL contains a key scoped to this graph only — treat it like a
+            password. Revoke it anytime in{' '}
+            <Link href="/settings" className="underline">
+              Settings → API Keys
+            </Link>
+            .
+          </p>
+        </>
+      ) : (
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          Claude&apos;s custom connectors can&apos;t send an API-key header, so
+          the connector URL carries its own graph-scoped key. Generate one to
+          get a pasteable URL.
+        </p>
+      )}
+      {error && (
+        <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
+      )}
+    </div>
+  )
+}
+
 function GraphConnectCard({
   graph,
   isCurrent,
@@ -119,12 +192,7 @@ function GraphConnectCard({
           </div>
         </div>
 
-        <Snippet
-          heading="Claude — Settings → Connectors → Add custom connector"
-          copyLabel="MCP URL"
-          code={`URL:    ${url}
-Header: X-API-Key: <your key>`}
-        />
+        <ClaudeConnectorSection graph={graph} />
 
         <Snippet
           heading="Claude Code"
@@ -160,12 +228,17 @@ export function ConnectContent() {
       />
 
       <Alert color="info" icon={HiInformationCircle}>
-        <span className="font-medium">You need an API key.</span> Keys are
-        account-wide, so the same key works for every graph below. Create one in{' '}
+        <span className="font-medium">
+          Claude Code and Cursor need an API key
+        </span>{' '}
+        — create one in{' '}
         <Link href="/settings" className="font-medium underline">
           Settings
-        </Link>
-        , then paste it as the <code>X-API-Key</code> header value.
+        </Link>{' '}
+        and paste it as the <code>X-API-Key</code> header value; one
+        account-wide key works for every graph below. For claude.ai / Claude
+        Desktop, generate a connector URL on the graph&apos;s card instead — it
+        carries its own graph-scoped key, no header needed.
       </Alert>
 
       {isLoading ? (
@@ -207,6 +280,11 @@ export function ConnectContent() {
               subgraph id.
             </li>
             <li>
+              A generated connector URL embeds a graph-scoped key: it works only
+              for that graph, is rejected everywhere else, and is revocable in
+              Settings → API Keys.
+            </li>
+            <li>
               Clients without HTTP transport support can use the{' '}
               <a
                 href="https://github.com/RoboFinSystems/robosystems-mcp-client"
@@ -214,9 +292,9 @@ export function ConnectContent() {
                 rel="noopener noreferrer"
                 className="text-primary-600 dark:text-primary-400 hover:underline"
               >
-                legacy stdio bridge
-              </a>
-              .
+                stdio bridge
+              </a>{' '}
+              in proxy mode.
             </li>
           </ul>
         </div>
