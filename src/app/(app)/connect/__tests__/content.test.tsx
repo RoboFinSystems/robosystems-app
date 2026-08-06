@@ -18,14 +18,12 @@ vi.mock('next/link', () => ({
 vi.mock('react-icons/hi', () => ({
   HiCheck: () => <span>Icon</span>,
   HiClipboardCopy: () => <span>Icon</span>,
-  HiInformationCircle: () => <span>Icon</span>,
   HiLink: () => <span>Icon</span>,
   HiPuzzle: () => <span>Icon</span>,
   HiSparkles: () => <span>Icon</span>,
 }))
 
 vi.mock('flowbite-react', () => ({
-  Alert: ({ children }: any) => <div>{children}</div>,
   Badge: ({ children }: any) => <span>{children}</span>,
   Card: ({ children }: any) => <div>{children}</div>,
 }))
@@ -44,7 +42,7 @@ describe('ConnectContent', () => {
     vi.clearAllMocks()
   })
 
-  test('renders one connector block per graph, anchored by graph id', () => {
+  test('renders only the selected graph, not the whole list', () => {
     setGraphs(
       [
         { graphId: 'sec', graphName: 'SEC Repository', isRepository: true },
@@ -55,23 +53,17 @@ describe('ConnectContent', () => {
 
     render(<ConnectContent />)
 
-    expect(screen.getByText('SEC Repository')).toBeInTheDocument()
     expect(screen.getByText('Acme Ledger')).toBeInTheDocument()
+    expect(screen.queryByText('SEC Repository')).not.toBeInTheDocument()
 
-    // The graph id is in the URL path, so each connector reaches exactly one
-    // graph — this is the guarantee the page exists to make visible.
     const body = document.body.textContent ?? ''
-    expect(body).toContain('https://api.robosystems.ai/v1/graphs/sec/mcp')
     expect(body).toContain('https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp')
-    expect(body).toContain('X-API-Key')
-
-    // Connector names carry the id so multiple graphs do not collide.
-    expect(body).toContain('robosystems-sec')
+    expect(body).not.toContain('https://api.robosystems.ai/v1/graphs/sec/mcp')
     expect(body).toContain('robosystems-kg1a2b3c')
   })
 
-  test('generates a graph-scoped connector URL for Claude on demand', async () => {
-    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }])
+  test('fills every snippet with the generated key', async () => {
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
     mockCreateMcpConnectorUrl.mockResolvedValue({
       url: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp?token=rfsc_test',
       endpoint: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp',
@@ -82,10 +74,11 @@ describe('ConnectContent', () => {
 
     render(<ConnectContent />)
 
-    // Before generation the token URL must not exist anywhere.
-    expect(document.body.textContent).not.toContain('?token=')
+    // Placeholders before generation — no real credential anywhere.
+    expect(document.body.textContent).toContain('<your key>')
+    expect(document.body.textContent).not.toContain('rfsc_test')
 
-    fireEvent.click(screen.getByText('Generate connector URL'))
+    fireEvent.click(screen.getByText('Generate connector key'))
 
     await waitFor(() => {
       expect(document.body.textContent).toContain(
@@ -93,35 +86,39 @@ describe('ConnectContent', () => {
       )
     })
 
-    // The mint is graph-scoped — that is what makes URL carriage acceptable.
+    // The same key lands in the header-based snippets too, so every copy
+    // button yields a working artifact — no <your key> placeholders left.
+    const body = document.body.textContent ?? ''
+    expect(body).toContain('X-API-Key: rfsc_test')
+    expect(body).toContain('"X-API-Key": "rfsc_test"')
+    expect(body).not.toContain('<your key>')
+
     expect(mockCreateMcpConnectorUrl).toHaveBeenCalledWith(
       'kg1a2b3c',
       expect.objectContaining({ name: 'Claude connector - Acme Ledger' })
     )
-    expect(document.body.textContent).toContain('treat it like a password')
   })
 
-  test('surfaces an error when connector generation fails', async () => {
-    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }])
+  test('surfaces an error when key generation fails', async () => {
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
     mockCreateMcpConnectorUrl.mockRejectedValue(new Error('nope'))
 
     render(<ConnectContent />)
-    fireEvent.click(screen.getByText('Generate connector URL'))
+    fireEvent.click(screen.getByText('Generate connector key'))
 
     await waitFor(() => {
       expect(screen.getByText('nope')).toBeInTheDocument()
     })
   })
 
-  test('does not advertise the npx stdio recipe', () => {
-    setGraphs([{ graphId: 'sec', graphName: 'SEC Repository' }])
+  test('prompts for a selection when graphs exist but none is selected', () => {
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], null)
 
     render(<ConnectContent />)
 
-    const body = document.body.textContent ?? ''
-    expect(body).not.toContain('mcpServers')
-    expect(body).not.toContain('npx')
-    expect(body).not.toContain('ROBOSYSTEMS_GRAPH_ID')
+    expect(screen.getByTestId('empty-state')).toHaveTextContent(
+      'No graph selected'
+    )
   })
 
   test('shows the empty state when the user has no graphs', () => {
@@ -130,5 +127,16 @@ describe('ConnectContent', () => {
     render(<ConnectContent />)
 
     expect(screen.getByTestId('empty-state')).toHaveTextContent('No graphs yet')
+  })
+
+  test('does not advertise the npx stdio recipe', () => {
+    setGraphs([{ graphId: 'sec', graphName: 'SEC Repository' }], 'sec')
+
+    render(<ConnectContent />)
+
+    const body = document.body.textContent ?? ''
+    expect(body).not.toContain('mcpServers')
+    expect(body).not.toContain('npx')
+    expect(body).not.toContain('ROBOSYSTEMS_GRAPH_ID')
   })
 })
