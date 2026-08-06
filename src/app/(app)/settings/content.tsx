@@ -112,7 +112,7 @@ const UserSettingsPageContent: FC<UserProps> = function ({ user, onRefresh }) {
           onSuccess={showSuccess}
           onError={showError}
         />
-        <ApiKeysCard theme={customTheme} />
+        <ApiKeysCard theme={customTheme} connectHref="/connect" />
       </div>
     </PageLayout>
   )
