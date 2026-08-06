@@ -137,7 +137,7 @@ export function ConnectContent() {
     <PageLayout>
       <PageHeader
         icon={HiPuzzle}
-        title="Connect"
+        title="MCP"
         subtitle="Add this graph to Claude, Claude Code, Cursor, or any MCP client — generate a key and every snippet below is ready to paste."
       />
 

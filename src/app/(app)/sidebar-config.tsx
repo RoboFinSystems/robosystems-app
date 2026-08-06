@@ -115,10 +115,12 @@ export const getNavigationItems = (
   // so Stripe's portal return and checkout cancel URLs keep working.
   const alwaysVisibleItems: SidebarItemData[] = [
     // Follows the selected graph (one graph is one connector); listed above
-    // Repositories so the AI-connection path is easy to find.
+    // Repositories so the AI-connection path is easy to find. Labeled "MCP"
+    // to avoid the stem collision with roboledger's "Connections" (data
+    // sources); the route stays /connect.
     {
       icon: HiPuzzle,
-      label: 'Connect',
+      label: 'MCP',
       href: '/connect',
     },
     {
