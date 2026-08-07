@@ -23,7 +23,6 @@ import {
 import { useOperationMonitoring } from '@robosystems/core/task-monitoring/operationHooks'
 import {
   Alert,
-  Badge,
   Button,
   Card,
   Spinner,
@@ -287,7 +286,6 @@ export function SubgraphsContent() {
               <Table>
                 <TableHead>
                   <TableHeadCell>Subgraph</TableHeadCell>
-                  <TableHeadCell>Status</TableHeadCell>
                   <TableHeadCell>Size</TableHeadCell>
                   <TableHeadCell>Created</TableHeadCell>
                   <TableHeadCell className="text-right">Actions</TableHeadCell>
@@ -304,13 +302,10 @@ export function SubgraphsContent() {
                             <HiChip className="text-primary-600 dark:text-primary-400 h-4 w-4" />
                           </div>
                           <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="font-semibold">
-                                {subgraph.display_name}
-                              </span>
-                              <Badge color="purple" size="sm">
-                                {subgraph.subgraph_type}
-                              </Badge>
+                            {/* Block, not inline: CopyableId below is
+                                inline-flex and would ride up alongside it. */}
+                            <div className="truncate font-semibold">
+                              {subgraph.display_name}
                             </div>
                             {/* The full id is the MCP address — visible and
                                 copyable, not hidden in a tooltip. */}
@@ -320,16 +315,6 @@ export function SubgraphsContent() {
                             />
                           </div>
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          color={
-                            subgraph.status === 'active' ? 'success' : 'gray'
-                          }
-                          size="sm"
-                        >
-                          {subgraph.status}
-                        </Badge>
                       </TableCell>
                       <TableCell className="text-gray-500 dark:text-gray-400">
                         <span className="text-xs">
@@ -366,12 +351,11 @@ export function SubgraphsContent() {
                           <Tooltip content="Delete subgraph">
                             <Button
                               size="sm"
-                              color="failure"
-                              outline
+                              color="gray"
                               onClick={() => handleDeleteClick(subgraph)}
                               aria-label={`Delete ${subgraph.display_name}`}
                             >
-                              <HiTrash className="h-4 w-4" />
+                              <HiTrash className="h-4 w-4 text-red-500" />
                             </Button>
                           </Tooltip>
                         </div>
@@ -402,19 +386,6 @@ export function SubgraphsContent() {
                         label="subgraph id"
                       />
                     </div>
-                  </div>
-
-                  {/* Type and Status */}
-                  <div className="flex flex-wrap gap-1.5">
-                    <Badge color="purple" size="sm">
-                      {subgraph.subgraph_type}
-                    </Badge>
-                    <Badge
-                      color={subgraph.status === 'active' ? 'success' : 'gray'}
-                      size="sm"
-                    >
-                      {subgraph.status}
-                    </Badge>
                   </div>
 
                   {/* Details */}
@@ -461,12 +432,11 @@ export function SubgraphsContent() {
                     </Button>
                     <Button
                       size="sm"
-                      color="failure"
-                      outline
+                      color="gray"
                       onClick={() => handleDeleteClick(subgraph)}
                       aria-label={`Delete ${subgraph.display_name}`}
                     >
-                      <HiTrash className="h-4 w-4" />
+                      <HiTrash className="h-4 w-4 text-red-500" />
                     </Button>
                   </div>
                 </div>

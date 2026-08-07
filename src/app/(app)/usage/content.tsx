@@ -40,7 +40,8 @@ interface CreditSummary {
 
 /**
  * One piece of a graph's on-disk footprint, from `/limits` `instance.items`.
- * Types: graph, memory, subgraph, vectors, staging.
+ * Types: graph, memory, subgraph, vectors, staging, transient (blue-green
+ * build artifacts), orphan (leftovers of deleted subgraphs).
  */
 interface StorageItem {
   type: string
@@ -393,6 +394,12 @@ export function UsageContent() {
       subgraph: 'Subgraphs',
       vectors: 'Vector indexes',
       staging: 'Staging',
+      // Neither of these belongs to anything the tenant can see listed. Kept
+      // out of the `subgraph` row on purpose: it is the row the Subgraphs page
+      // is reconciled against, and folding leftovers into it is what made the
+      // two pages report different footprints for the same subgraph.
+      transient: 'Build artifacts',
+      orphan: 'Unreferenced data',
     }
 
     const byType = new Map<string, number>()
