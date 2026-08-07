@@ -1,5 +1,6 @@
 'use client'
 
+import { SUBGRAPH_NAME_MAX_LENGTH } from '@/lib/mcp'
 import { customTheme } from '@robosystems/core/theme'
 import { Alert, Label, Textarea, TextInput } from 'flowbite-react'
 import { HiInformationCircle } from 'react-icons/hi'
@@ -15,6 +16,7 @@ interface SubgraphInfoStepProps {
   setFormData: (data: SubgraphFormData) => void
   errors: Record<string, string>
   setErrors: (errors: Record<string, string>) => void
+  graphId: string
 }
 
 export function SubgraphInfoStep({
@@ -22,8 +24,11 @@ export function SubgraphInfoStep({
   setFormData,
   errors,
   setErrors,
+  graphId,
 }: SubgraphInfoStepProps) {
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // The API lowercases the name itself; mirroring it here keeps the id
+    // preview honest about what will actually be created.
     const value = e.target.value.toLowerCase()
     setFormData({ ...formData, name: value })
     // Clear error when user starts typing
@@ -56,10 +61,14 @@ export function SubgraphInfoStep({
           <span className="font-medium">Subgraph Configuration</span>
           <div className="mt-2 text-sm">
             <p className="mb-2">
-              Configure your subgraph with a unique name and description:
+              The name becomes part of the subgraph's address, which is how MCP
+              clients and the API reach it:
             </p>
             <ul className="list-inside list-disc space-y-1">
-              <li>Names must be lowercase, alphanumeric with hyphens</li>
+              <li>
+                Names are lowercase letters and numbers only — no hyphens or
+                underscores — up to {SUBGRAPH_NAME_MAX_LENGTH} characters
+              </li>
               <li>Display names can contain any characters</li>
               <li>Descriptions help team members understand the purpose</li>
             </ul>
@@ -74,7 +83,7 @@ export function SubgraphInfoStep({
             Subgraph Name *
           </Label>
           <span className="text-xs text-gray-500 dark:text-gray-400">
-            (lowercase, alphanumeric, hyphens)
+            (lowercase letters and numbers, max {SUBGRAPH_NAME_MAX_LENGTH})
           </span>
         </div>
         <TextInput
@@ -85,6 +94,7 @@ export function SubgraphInfoStep({
           onChange={handleNameChange}
           color={errors.name ? 'failure' : undefined}
           theme={customTheme.textInput}
+          maxLength={SUBGRAPH_NAME_MAX_LENGTH}
           required
         />
         {errors.name && (
@@ -92,10 +102,22 @@ export function SubgraphInfoStep({
             {errors.name}
           </p>
         )}
-        <p className="text-xs text-gray-500 dark:text-gray-400">
-          This will be the unique identifier for your subgraph within the parent
-          graph.
-        </p>
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-zinc-800">
+          <p className="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+            Subgraph ID
+          </p>
+          <p className="mt-1 font-mono text-sm break-all text-gray-900 dark:text-white">
+            {graphId}
+            <span className="text-gray-400 dark:text-gray-500">_</span>
+            {formData.name || (
+              <span className="text-gray-400 dark:text-gray-500">name</span>
+            )}
+          </p>
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            This full id is the subgraph's address — you'll use it for MCP
+            connectors and API calls.
+          </p>
+        </div>
       </div>
 
       {/* Display Name */}

@@ -1,3 +1,4 @@
+import { listSubgraphs } from '@robosystems/client'
 import { createMcpConnectorUrl, useGraphContext } from '@robosystems/core'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
@@ -15,6 +16,11 @@ vi.mock('next/link', () => ({
   default: ({ children, href }: any) => <a href={href}>{children}</a>,
 }))
 
+const mockSearchParams = new URLSearchParams()
+vi.mock('next/navigation', () => ({
+  useSearchParams: () => mockSearchParams,
+}))
+
 vi.mock('react-icons/hi', () => ({
   HiCheck: () => <span>Icon</span>,
   HiClipboardCopy: () => <span>Icon</span>,
@@ -26,10 +32,19 @@ vi.mock('react-icons/hi', () => ({
 vi.mock('flowbite-react', () => ({
   Badge: ({ children }: any) => <span>{children}</span>,
   Card: ({ children }: any) => <div>{children}</div>,
+  Label: ({ children, htmlFor }: any) => (
+    <label htmlFor={htmlFor}>{children}</label>
+  ),
+  Select: ({ children, value, onChange, id }: any) => (
+    <select id={id} value={value} onChange={onChange}>
+      {children}
+    </select>
+  ),
 }))
 
 const mockUseGraphContext = vi.mocked(useGraphContext)
 const mockCreateMcpConnectorUrl = vi.mocked(createMcpConnectorUrl)
+const mockListSubgraphs = vi.mocked(listSubgraphs)
 
 const setGraphs = (graphs: any[], currentGraphId: string | null = null) => {
   mockUseGraphContext.mockReturnValue({
@@ -37,12 +52,18 @@ const setGraphs = (graphs: any[], currentGraphId: string | null = null) => {
   } as any)
 }
 
+const setSubgraphs = (subgraphs: any[]) => {
+  mockListSubgraphs.mockResolvedValue({ data: { subgraphs } } as any)
+}
+
 describe('ConnectContent', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockSearchParams.delete('workspace')
+    setSubgraphs([])
   })
 
-  test('renders only the selected graph, not the whole list', () => {
+  test('renders only the selected graph, not the whole list', async () => {
     setGraphs(
       [
         { graphId: 'sec', graphName: 'SEC Repository', isRepository: true },
@@ -138,5 +159,148 @@ describe('ConnectContent', () => {
     expect(body).not.toContain('mcpServers')
     expect(body).not.toContain('npx')
     expect(body).not.toContain('ROBOSYSTEMS_GRAPH_ID')
+  })
+
+  test('offers the graph and its subgraphs as connector targets', async () => {
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
+    setSubgraphs([
+      {
+        graph_id: 'kg1a2b3c_entities',
+        subgraph_name: 'entities',
+        display_name: 'Related Entities',
+      },
+    ])
+
+    render(<ConnectContent />)
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Related Entities — subgraph/)
+      ).toBeInTheDocument()
+    })
+    expect(screen.getByText(/Acme Ledger — parent graph/)).toBeInTheDocument()
+  })
+
+  test('re-addresses every snippet to the selected subgraph', async () => {
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
+    setSubgraphs([
+      {
+        graph_id: 'kg1a2b3c_entities',
+        subgraph_name: 'entities',
+        display_name: 'Related Entities',
+      },
+    ])
+
+    render(<ConnectContent />)
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Workspace')).toBeInTheDocument()
+    })
+
+    fireEvent.change(screen.getByLabelText('Workspace'), {
+      target: { value: 'kg1a2b3c_entities' },
+    })
+
+    const body = document.body.textContent ?? ''
+    expect(body).toContain(
+      'https://api.robosystems.ai/v1/graphs/kg1a2b3c_entities/mcp'
+    )
+    // The connector name follows the target, not the parent — a subgraph
+    // connector labeled with its parent's id is how they got confused.
+    expect(body).toContain('robosystems-kg1a2b3c_entities')
+    expect(body).not.toContain('"robosystems-kg1a2b3c"')
+  })
+
+  test('scopes the generated key to the selected subgraph', async () => {
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
+    setSubgraphs([
+      {
+        graph_id: 'kg1a2b3c_entities',
+        subgraph_name: 'entities',
+        display_name: 'Related Entities',
+      },
+    ])
+    mockCreateMcpConnectorUrl.mockResolvedValue({
+      url: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c_entities/mcp?token=rfsc_sub',
+      endpoint: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c_entities/mcp',
+      apiKey: 'rfsc_sub',
+      keyName: 'Claude connector - Acme Ledger / Related Entities',
+      graphId: 'kg1a2b3c_entities',
+    })
+
+    render(<ConnectContent />)
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Workspace')).toBeInTheDocument()
+    })
+    fireEvent.change(screen.getByLabelText('Workspace'), {
+      target: { value: 'kg1a2b3c_entities' },
+    })
+    fireEvent.click(screen.getByText('Generate connector key'))
+
+    await waitFor(() => {
+      expect(mockCreateMcpConnectorUrl).toHaveBeenCalledWith(
+        'kg1a2b3c_entities',
+        expect.objectContaining({
+          name: 'Claude connector - Acme Ledger / Related Entities',
+        })
+      )
+    })
+  })
+
+  test('honors a ?workspace= deep link before the subgraph list resolves', () => {
+    mockSearchParams.set('workspace', 'kg1a2b3c_entities')
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
+    mockListSubgraphs.mockReturnValue(new Promise(() => {}) as any)
+
+    render(<ConnectContent />)
+
+    expect(document.body.textContent).toContain(
+      'https://api.robosystems.ai/v1/graphs/kg1a2b3c_entities/mcp'
+    )
+  })
+
+  test('ignores a ?workspace= deep link outside the selected graph family', () => {
+    mockSearchParams.set('workspace', 'kgotherxyz_entities')
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
+
+    render(<ConnectContent />)
+
+    const body = document.body.textContent ?? ''
+    expect(body).not.toContain('kgotherxyz')
+    expect(body).toContain('https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp')
+  })
+
+  test('does not look for subgraphs on a shared repository', () => {
+    setGraphs(
+      [{ graphId: 'sec', graphName: 'SEC Repository', isRepository: true }],
+      'sec'
+    )
+
+    render(<ConnectContent />)
+
+    expect(mockListSubgraphs).not.toHaveBeenCalled()
+  })
+
+  test('keeps the page usable when the subgraph list fails', async () => {
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
+    mockListSubgraphs.mockRejectedValue(new Error('boom'))
+
+    render(<ConnectContent />)
+
+    await waitFor(() => {
+      expect(document.body.textContent).toContain(
+        'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp'
+      )
+    })
+    expect(screen.queryByLabelText('Workspace')).not.toBeInTheDocument()
+  })
+
+  test('no longer tells the user to hand-edit the id into the URL', () => {
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
+
+    render(<ConnectContent />)
+
+    expect(document.body.textContent).not.toContain('swap the id in the URL')
   })
 })

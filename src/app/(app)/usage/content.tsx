@@ -6,7 +6,6 @@ import {
   getDatabaseHealth,
   getGraphLimits,
   getGraphs,
-  getSubgraphQuota,
   listCreditTransactions,
 } from '@robosystems/client'
 import {
@@ -86,15 +85,17 @@ interface GraphLimits {
     max_documents?: number | null
     approaching_limit: boolean
   } | null
-}
-
-/**
- * Subgraph count against the tier cap, from `/subgraphs/quota`. A tier that
- * reports `max_allowed: 0` has no subgraph feature at all; null means uncapped.
- */
-interface SubgraphQuota {
-  current_count: number
-  max_allowed?: number | null
+  /**
+   * Subgraph count against the tier cap, from `/limits`. A tier that reports
+   * `max_allowed: 0` has no subgraph feature at all; null means uncapped.
+   * Absent for shared repositories and for subgraphs, which don't nest.
+   */
+  subgraphs?: {
+    current_count: number
+    max_allowed?: number | null
+    remaining?: number | null
+    approaching_limit: boolean
+  } | null
 }
 
 interface CreditTransaction {
@@ -123,7 +124,6 @@ interface UsageData {
   graphLimits?: GraphLimits
   recentTransactions?: CreditTransaction[]
   instanceResources?: InstanceResources
-  subgraphQuota?: SubgraphQuota
 }
 
 /**
@@ -211,8 +211,10 @@ export function UsageContent() {
 
       const usageData: UsageData = { graphInfo }
 
-      // Fetch all usage data in parallel
-      const [limitsRes, creditRes, transactionsRes, healthRes, subgraphRes] =
+      // Fetch all usage data in parallel. Subgraph capacity rides on
+      // `/limits` — it used to be a fifth call to a dedicated quota endpoint
+      // that no route ever reached.
+      const [limitsRes, creditRes, transactionsRes, healthRes] =
         await Promise.allSettled([
           getGraphLimits({ path: { graph_id: graphId } }),
           getCreditSummary({ path: { graph_id: graphId } }),
@@ -221,11 +223,6 @@ export function UsageContent() {
             query: { limit: 10 },
           }),
           getDatabaseHealth({ path: { graph_id: graphId } }),
-          // Subgraphs hang off a parent graph, so the quota endpoint has
-          // nothing to answer for a shared repository and rejects the call.
-          isRepository
-            ? Promise.resolve(null)
-            : getSubgraphQuota({ path: { graph_id: graphId } }),
         ])
 
       // Process limits (includes instance storage usage)
@@ -255,11 +252,6 @@ export function UsageContent() {
         if (health.resource_status) {
           usageData.instanceResources = health
         }
-      }
-
-      if (subgraphRes.status === 'fulfilled' && subgraphRes.value?.data) {
-        usageData.subgraphQuota = subgraphRes.value
-          .data as unknown as SubgraphQuota
       }
 
       if (loadedGraphIdRef.current !== requestedGraphId) return
@@ -483,18 +475,15 @@ export function UsageContent() {
       })
     }
 
-    const subgraphs = data.subgraphQuota
+    const subgraphs = data.graphLimits?.subgraphs
     if (subgraphs && subgraphs.max_allowed !== 0) {
-      const max = subgraphs.max_allowed ?? null
       rows.push({
         key: 'subgraphs',
         label: 'Subgraphs',
         noun: 'subgraph',
         current: subgraphs.current_count,
-        max,
-        // Matches the API's own threshold for document limits, so the two
-        // meters warn at the same point.
-        approaching: max !== null && subgraphs.current_count > max * 0.8,
+        max: subgraphs.max_allowed ?? null,
+        approaching: subgraphs.approaching_limit,
         remediation: 'Delete unused subgraphs or upgrade to a higher tier.',
       })
     }

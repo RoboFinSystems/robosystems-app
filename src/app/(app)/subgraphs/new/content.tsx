@@ -1,7 +1,7 @@
 'use client'
 
 import { SubgraphCreationWizard } from '@/components/subgraph/SubgraphCreationWizard'
-import { useGraphContext, useToast } from '@robosystems/core'
+import { useGraphContext } from '@robosystems/core'
 import { Button } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { HiArrowLeft } from 'react-icons/hi'
@@ -9,14 +9,17 @@ import { HiArrowLeft } from 'react-icons/hi'
 export function NewSubgraphContent() {
   const router = useRouter()
   const { state } = useGraphContext()
-  const { showError } = useToast()
   const currentGraph = state.currentGraphId
+  const parentGraphName = state.graphs.find(
+    (g) => g.graphId === currentGraph
+  )?.graphName
 
   const handleCancel = () => {
     router.push('/subgraphs')
   }
 
-  const handleSuccess = async (subgraphName: string) => {
+  // The wizard ends on its completion step; this fires when the user leaves it.
+  const handleSuccess = () => {
     router.push('/subgraphs')
   }
 
@@ -91,6 +94,7 @@ export function NewSubgraphContent() {
       <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         <SubgraphCreationWizard
           graphId={currentGraph}
+          parentGraphName={parentGraphName}
           onCancel={handleCancel}
           onSuccess={handleSuccess}
           className="mx-auto max-w-3xl"
