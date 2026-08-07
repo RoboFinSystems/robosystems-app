@@ -1,6 +1,7 @@
 'use client'
 
 import GraphMembersModal from '@/components/app/GraphMembersModal'
+import GraphMetadataModal from '@/components/app/GraphMetadataModal'
 import type { GraphInfo, GraphMetricsResponse } from '@robosystems/client'
 import { getGraphMetrics, getGraphs } from '@robosystems/client'
 import {
@@ -20,6 +21,7 @@ import {
   HiCloudDownload,
   HiCog,
   HiExclamationCircle,
+  HiPencil,
   HiTerminal,
   HiUsers,
   HiViewGrid,
@@ -33,7 +35,7 @@ interface DashboardData {
 
 export function GraphDashboardContent() {
   const router = useRouter()
-  const { state: graphState } = useGraphContext()
+  const { state: graphState, refreshGraphs } = useGraphContext()
   const graphId = graphState.currentGraphId
   const { isRepository, currentGraph } = useIsRepository()
   const { currentOrg } = useOrg()
@@ -41,6 +43,7 @@ export function GraphDashboardContent() {
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<DashboardData | null>(null)
   const [showMembers, setShowMembers] = useState(false)
+  const [showEditDetails, setShowEditDetails] = useState(false)
 
   // The graph a request was issued for, readable from inside an in-flight call
   // so a response that arrives after a graph switch can be dropped. Without it
@@ -159,6 +162,11 @@ export function GraphDashboardContent() {
     )
   }
 
+  // Matches the server-side gate on update-graph-metadata: admin on the graph,
+  // and never a shared repository.
+  const canEditDetails =
+    !isRepository && data.graphInfo.role?.toLowerCase() === 'admin'
+
   return (
     <PageLayout>
       {/* Header */}
@@ -225,9 +233,23 @@ export function GraphDashboardContent() {
 
       {/* Basic Information */}
       <Card>
-        <h3 className="font-heading mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-          {isRepository ? 'Repository' : 'Graph'} Information
-        </h3>
+        <div className="mb-4 flex items-center justify-between gap-2">
+          <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
+            {isRepository ? 'Repository' : 'Graph'} Information
+          </h3>
+          {/* Shared repositories are labelled by the platform for every
+              subscriber, so only user-graph admins get the edit affordance. */}
+          {canEditDetails && (
+            <Button
+              color="gray"
+              size="xs"
+              onClick={() => setShowEditDetails(true)}
+            >
+              <HiPencil className="mr-2 h-4 w-4" />
+              Edit
+            </Button>
+          )}
+        </div>
         <div className="space-y-3">
           <div className="flex flex-col gap-2 border-b border-gray-200 pb-3 sm:flex-row sm:justify-between dark:border-gray-700">
             <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -245,6 +267,30 @@ export function GraphDashboardContent() {
               {data.graphInfo.graphName}
             </span>
           </div>
+          {data.graphInfo.description && (
+            <div className="flex flex-col gap-2 border-b border-gray-200 pb-3 sm:flex-row sm:justify-between dark:border-gray-700">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Description
+              </span>
+              <span className="text-sm font-medium text-gray-900 sm:max-w-md sm:text-right dark:text-white">
+                {data.graphInfo.description}
+              </span>
+            </div>
+          )}
+          {data.graphInfo.tags && data.graphInfo.tags.length > 0 && (
+            <div className="flex flex-col gap-2 border-b border-gray-200 pb-3 sm:flex-row sm:justify-between dark:border-gray-700">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Tags
+              </span>
+              <div className="flex flex-wrap gap-2 sm:justify-end">
+                {data.graphInfo.tags.map((tag) => (
+                  <Badge key={tag} color="gray">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="flex flex-col gap-2 border-b border-gray-200 pb-3 sm:flex-row sm:justify-between dark:border-gray-700">
             <span className="text-sm text-gray-500 dark:text-gray-400">
               Graph Type
@@ -381,6 +427,22 @@ export function GraphDashboardContent() {
         graphId={graphId ?? ''}
         graphName={data.graphInfo.graphName}
         orgId={currentOrg?.id}
+      />
+
+      <GraphMetadataModal
+        show={showEditDetails}
+        onClose={() => setShowEditDetails(false)}
+        graphId={graphId ?? ''}
+        graphName={data.graphInfo.graphName}
+        description={data.graphInfo.description}
+        tags={data.graphInfo.tags}
+        onSaved={async () => {
+          // Both, and in this order: the card re-reads for its own copy, and
+          // the context holds the name the graph switcher and sidebar render,
+          // which would otherwise keep showing the old one until a reload.
+          await fetchDashboardData()
+          await refreshGraphs()
+        }}
       />
     </PageLayout>
   )
