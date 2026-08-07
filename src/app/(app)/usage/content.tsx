@@ -500,6 +500,28 @@ export function UsageContent() {
 
   const capacityRows = buildCapacityRows()
 
+  /**
+   * The storage meter is a cap meter, and the cap is enforced on durable bytes
+   * only: blue-green build artifacts (`transient` items) are reclaimed by the
+   * next successful materialization and excluded by the API's own enforcement.
+   * Counting them here would spike the bar toward 2x during every rebuild
+   * while the approaching-limit color (durable-based) stayed calm. They remain
+   * visible as their own "Build artifacts" row in the breakdown.
+   */
+  const transientBytes = (data.graphLimits?.instance?.items ?? [])
+    .filter((item) => item.type === 'transient')
+    .reduce((sum, item) => sum + item.bytes, 0)
+  const durableUsageGb = data.graphLimits
+    ? Math.max(
+        data.graphLimits.storage.current_usage_gb - transientBytes / 1024 ** 3,
+        0
+      )
+    : 0
+  const storageUsagePct =
+    data.graphLimits && data.graphLimits.storage.max_storage_gb > 0
+      ? (durableUsageGb / data.graphLimits.storage.max_storage_gb) * 100
+      : 0
+
   const formatTransactionType = (type: string) => {
     // Convert from API format (e.g., "CONSUMPTION", "ALLOCATION", "PURCHASE")
     // to display format (e.g., "Consumption", "Allocation", "Purchase")
@@ -627,25 +649,16 @@ export function UsageContent() {
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">
-                  {formatStorage(data.graphLimits.storage.current_usage_gb)} of{' '}
+                  {formatStorage(durableUsageGb)} of{' '}
                   {formatNumber(data.graphLimits.storage.max_storage_gb)} GB
                   used
                 </span>
                 <span className="font-medium text-gray-900 dark:text-white">
-                  {(
-                    (data.graphLimits.storage.current_usage_gb /
-                      data.graphLimits.storage.max_storage_gb) *
-                    100
-                  ).toFixed(1)}
-                  %
+                  {storageUsagePct.toFixed(1)}%
                 </span>
               </div>
               <Progress
-                progress={
-                  (data.graphLimits.storage.current_usage_gb /
-                    data.graphLimits.storage.max_storage_gb) *
-                  100
-                }
+                progress={storageUsagePct}
                 size="lg"
                 color={
                   data.graphLimits.storage.approaching_limit ? 'yellow' : 'blue'
