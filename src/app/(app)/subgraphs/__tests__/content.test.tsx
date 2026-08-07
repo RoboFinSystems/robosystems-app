@@ -147,6 +147,25 @@ describe('SubgraphsContent', () => {
     })
   })
 
+  test('prefers byte-precise sizes over the rounded MB figure', async () => {
+    setup({
+      parent_graph_name: 'Acme Ledger',
+      parent_graph_tier: 'ladybug-standard',
+      subgraph_count: 1,
+      max_subgraphs: 3,
+      total_size_bytes: 25 * 1024,
+      total_size_mb: 0.02,
+      subgraphs: [{ ...SUBGRAPH, size_bytes: 25 * 1024 }],
+    })
+
+    render(<SubgraphsContent />)
+
+    // 25600 bytes reads "25 KB"; the rounded 0.02 MB fallback would say "20 KB".
+    const sizes = await screen.findAllByText('25 KB')
+    expect(sizes.length).toBeGreaterThan(0)
+    expect(screen.queryByText('20 KB')).not.toBeInTheDocument()
+  })
+
   test('blocks creation and explains why at the tier cap', async () => {
     setup({
       parent_graph_name: 'Acme Ledger',

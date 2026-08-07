@@ -187,11 +187,17 @@ export function SubgraphsContent() {
     return new Date(dateString).toLocaleDateString()
   }
 
-  const formatSize = (sizeMb: number | null | undefined) => {
-    if (!sizeMb) return 'N/A'
-    if (sizeMb < 1) return `${(sizeMb * 1024).toFixed(0)} KB`
-    if (sizeMb >= 1024) return `${(sizeMb / 1024).toFixed(2)} GB`
-    return `${sizeMb.toFixed(2)} MB`
+  /** Byte-precise when the API provides size_bytes; the MB figure is the
+      fallback for servers that predate it. */
+  const formatSize = (
+    sizeBytes: number | null | undefined,
+    sizeMb: number | null | undefined
+  ) => {
+    const bytes = sizeBytes ?? (sizeMb != null ? sizeMb * 1024 ** 2 : null)
+    if (bytes == null) return 'N/A'
+    if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(0)} KB`
+    if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toFixed(2)} GB`
+    return `${(bytes / 1024 ** 2).toFixed(2)} MB`
   }
 
   const subgraphCount = listResponse?.subgraph_count ?? subgraphs.length
@@ -254,7 +260,10 @@ export function SubgraphsContent() {
         <StatCard label="Subgraphs" value={quotaValue} />
         <StatCard
           label="Total Size"
-          value={formatSize(listResponse?.total_size_mb)}
+          value={formatSize(
+            listResponse?.total_size_bytes,
+            listResponse?.total_size_mb
+          )}
         />
         <StatCard
           label="Tier"
@@ -318,7 +327,7 @@ export function SubgraphsContent() {
                       </TableCell>
                       <TableCell className="text-gray-500 dark:text-gray-400">
                         <span className="text-xs">
-                          {formatSize(subgraph.size_mb)}
+                          {formatSize(subgraph.size_bytes, subgraph.size_mb)}
                         </span>
                       </TableCell>
                       <TableCell className="text-gray-500 dark:text-gray-400">
@@ -395,7 +404,7 @@ export function SubgraphsContent() {
                         Size
                       </p>
                       <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {formatSize(subgraph.size_mb)}
+                        {formatSize(subgraph.size_bytes, subgraph.size_mb)}
                       </p>
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
