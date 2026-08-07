@@ -1,5 +1,6 @@
 'use client'
 
+import { CopyableId } from '@/components/CopyableId'
 import type {
   ListSubgraphsResponse,
   SubgraphSummary,
@@ -32,6 +33,7 @@ import {
   TableHead,
   TableHeadCell,
   TableRow,
+  Tooltip,
 } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -40,6 +42,7 @@ import {
   HiDatabase,
   HiExclamationCircle,
   HiPlus,
+  HiPuzzle,
   HiTrash,
 } from 'react-icons/hi'
 
@@ -58,6 +61,9 @@ export function SubgraphsContent() {
   const [isDeleting, setIsDeleting] = useState(false)
   const [backingUpId, setBackingUpId] = useState<string | null>(null)
   const backupOperationMonitor = useOperationMonitoring()
+
+  const connectHref = (subgraph: SubgraphSummary) =>
+    `/connect?workspace=${encodeURIComponent(subgraph.graph_id)}`
 
   const handleBackupClick = async (subgraph: SubgraphSummary) => {
     setBackingUpId(subgraph.graph_id)
@@ -189,6 +195,13 @@ export function SubgraphsContent() {
     return `${sizeMb.toFixed(2)} MB`
   }
 
+  const subgraphCount = listResponse?.subgraph_count ?? subgraphs.length
+  const quotaValue = listResponse?.max_subgraphs
+    ? `${subgraphCount} / ${listResponse.max_subgraphs}`
+    : `${subgraphCount}`
+  const atQuota =
+    !!listResponse?.max_subgraphs && subgraphCount >= listResponse.max_subgraphs
+
   // No graph selected state
   if (!currentGraphId) {
     return (
@@ -218,13 +231,19 @@ export function SubgraphsContent() {
         icon={HiChip}
         title="Subgraphs"
         subtitle={
-          <>
-            Manage subgraphs for{' '}
-            {listResponse?.parent_graph_name || 'selected graph'}
-          </>
+          <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span>
+              Isolated workspaces inside{' '}
+              {listResponse?.parent_graph_name || 'the selected graph'}
+            </span>
+            <CopyableId value={currentGraphId} label="parent graph id" />
+          </span>
         }
         actions={
-          <Button onClick={() => router.push('/subgraphs/new')}>
+          <Button
+            onClick={() => router.push('/subgraphs/new')}
+            disabled={atQuota}
+          >
             <HiPlus className="mr-2 h-4 w-4" />
             Create Subgraph
           </Button>
@@ -232,26 +251,12 @@ export function SubgraphsContent() {
       />
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 md:gap-6">
-        <StatCard
-          label="Subgraphs"
-          value={listResponse?.subgraph_count ?? subgraphs.length}
-        />
-
-        <StatCard
-          label="Quota"
-          value={
-            listResponse?.max_subgraphs
-              ? `${listResponse.subgraph_count}/${listResponse.max_subgraphs}`
-              : 'Unlimited'
-          }
-        />
-
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4 md:gap-6">
+        <StatCard label="Subgraphs" value={quotaValue} />
         <StatCard
           label="Total Size"
           value={formatSize(listResponse?.total_size_mb)}
         />
-
         <StatCard
           label="Tier"
           value={
@@ -265,6 +270,14 @@ export function SubgraphsContent() {
         />
       </div>
 
+      {atQuota && (
+        <Alert color="warning" icon={HiExclamationCircle}>
+          <span className="font-medium">Subgraph quota reached.</span> This
+          graph is at its tier limit of {listResponse?.max_subgraphs}. Delete a
+          subgraph or upgrade the tier to create another.
+        </Alert>
+      )}
+
       {/* Subgraphs List - Mobile Optimized */}
       {subgraphs.length > 0 ? (
         <div className="space-y-4">
@@ -274,7 +287,6 @@ export function SubgraphsContent() {
               <Table>
                 <TableHead>
                   <TableHeadCell>Subgraph</TableHeadCell>
-                  <TableHeadCell>Type</TableHeadCell>
                   <TableHeadCell>Status</TableHeadCell>
                   <TableHeadCell>Size</TableHeadCell>
                   <TableHeadCell>Created</TableHeadCell>
@@ -292,22 +304,22 @@ export function SubgraphsContent() {
                             <HiChip className="text-primary-600 dark:text-primary-400 h-4 w-4" />
                           </div>
                           <div className="min-w-0">
-                            <div className="font-semibold">
-                              {subgraph.display_name}
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold">
+                                {subgraph.display_name}
+                              </span>
+                              <Badge color="purple" size="sm">
+                                {subgraph.subgraph_type}
+                              </Badge>
                             </div>
-                            <div
-                              className="max-w-xs truncate font-mono text-xs text-gray-500 dark:text-gray-400"
-                              title={subgraph.graph_id}
-                            >
-                              {subgraph.subgraph_name}
-                            </div>
+                            {/* The full id is the MCP address — visible and
+                                copyable, not hidden in a tooltip. */}
+                            <CopyableId
+                              value={subgraph.graph_id}
+                              label="subgraph id"
+                            />
                           </div>
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge color="purple" size="sm">
-                          {subgraph.subgraph_type}
-                        </Badge>
                       </TableCell>
                       <TableCell>
                         <Badge
@@ -331,25 +343,37 @@ export function SubgraphsContent() {
                         <div className="flex items-center justify-end gap-2">
                           <Button
                             size="sm"
-                            color="gray"
-                            onClick={() => handleBackupClick(subgraph)}
-                            disabled={backingUpId === subgraph.graph_id}
-                            className="px-3 transition-all hover:scale-110"
+                            onClick={() => router.push(connectHref(subgraph))}
                           >
-                            {backingUpId === subgraph.graph_id ? (
-                              <Spinner size="sm" className="text-white" />
-                            ) : (
-                              <HiDatabase className="h-5 w-5" />
-                            )}
+                            <HiPuzzle className="mr-2 h-4 w-4" />
+                            Connect
                           </Button>
-                          <Button
-                            size="sm"
-                            color="failure"
-                            onClick={() => handleDeleteClick(subgraph)}
-                            className="px-3 transition-all hover:scale-110"
-                          >
-                            <HiTrash className="h-5 w-5" />
-                          </Button>
+                          <Tooltip content="Create backup">
+                            <Button
+                              size="sm"
+                              color="gray"
+                              onClick={() => handleBackupClick(subgraph)}
+                              disabled={backingUpId === subgraph.graph_id}
+                              aria-label={`Back up ${subgraph.display_name}`}
+                            >
+                              {backingUpId === subgraph.graph_id ? (
+                                <Spinner size="sm" />
+                              ) : (
+                                <HiDatabase className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </Tooltip>
+                          <Tooltip content="Delete subgraph">
+                            <Button
+                              size="sm"
+                              color="failure"
+                              outline
+                              onClick={() => handleDeleteClick(subgraph)}
+                              aria-label={`Delete ${subgraph.display_name}`}
+                            >
+                              <HiTrash className="h-4 w-4" />
+                            </Button>
+                          </Tooltip>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -365,19 +389,18 @@ export function SubgraphsContent() {
               <Card key={subgraph.graph_id} className="p-4">
                 <div className="space-y-3">
                   {/* Header with name */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-2">
-                        <HiChip className="text-primary-600 dark:text-primary-400 h-5 w-5" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
-                          {subgraph.display_name}
-                        </h3>
-                        <p className="mt-1 font-mono text-xs text-gray-500 dark:text-gray-400">
-                          {subgraph.subgraph_name}
-                        </p>
-                      </div>
+                  <div className="flex items-start gap-3">
+                    <div className="bg-primary-100 dark:bg-primary-900 shrink-0 rounded-lg p-2">
+                      <HiChip className="text-primary-600 dark:text-primary-400 h-5 w-5" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold text-gray-900 dark:text-white">
+                        {subgraph.display_name}
+                      </h3>
+                      <CopyableId
+                        value={subgraph.graph_id}
+                        label="subgraph id"
+                      />
                     </div>
                   </div>
 
@@ -415,27 +438,35 @@ export function SubgraphsContent() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex justify-end gap-2 pt-2">
+                  <div className="flex items-center justify-end gap-2 pt-2">
+                    <Button
+                      size="sm"
+                      onClick={() => router.push(connectHref(subgraph))}
+                    >
+                      <HiPuzzle className="mr-2 h-4 w-4" />
+                      Connect
+                    </Button>
                     <Button
                       size="sm"
                       color="gray"
                       onClick={() => handleBackupClick(subgraph)}
                       disabled={backingUpId === subgraph.graph_id}
-                      className="px-4 transition-all hover:scale-110"
+                      aria-label={`Back up ${subgraph.display_name}`}
                     >
                       {backingUpId === subgraph.graph_id ? (
-                        <Spinner size="sm" className="text-white" />
+                        <Spinner size="sm" />
                       ) : (
-                        <HiDatabase className="h-5 w-5" />
+                        <HiDatabase className="h-4 w-4" />
                       )}
                     </Button>
                     <Button
                       size="sm"
                       color="failure"
+                      outline
                       onClick={() => handleDeleteClick(subgraph)}
-                      className="px-4 transition-all hover:scale-110"
+                      aria-label={`Delete ${subgraph.display_name}`}
                     >
-                      <HiTrash className="h-5 w-5" />
+                      <HiTrash className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
@@ -448,7 +479,7 @@ export function SubgraphsContent() {
           <EmptyState
             icon={HiChip}
             title="No subgraphs found"
-            description="Get started by creating your first subgraph."
+            description="A subgraph is an isolated, writable graph inside this one — its own schema and data, with its own MCP connector. Create one to get started."
           />
         </Card>
       )}
@@ -481,8 +512,14 @@ export function SubgraphsContent() {
             </strong>
             ?
           </p>
+          {subgraphToDelete && (
+            <p className="font-mono text-xs text-gray-500 dark:text-gray-400">
+              {subgraphToDelete.graph_id}
+            </p>
+          )}
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            All data in this subgraph will be permanently deleted.
+            All data in this subgraph will be permanently deleted. Any MCP
+            connector pointing at it will stop resolving.
           </p>
         </div>
       </ConfirmModal>

@@ -55,6 +55,12 @@ export const getCreditSummary = vi.fn()
 export const listCreditTransactions = vi.fn()
 export const checkCreditBalance = vi.fn()
 
+// Subgraph functions
+export const listSubgraphs = vi.fn()
+export const createSubgraph = vi.fn()
+export const deleteSubgraph = vi.fn()
+export const getSubgraph = vi.fn()
+
 // Backup functions
 export const createBackup = vi.fn()
 export const listBackups = vi.fn()

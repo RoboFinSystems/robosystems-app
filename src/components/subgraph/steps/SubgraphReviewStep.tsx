@@ -1,5 +1,7 @@
 'use client'
 
+import { CopyableId } from '@/components/CopyableId'
+import { subgraphIdFor } from '@/lib/mcp'
 import { customTheme } from '@robosystems/core/theme'
 import { Card } from 'flowbite-react'
 import { HiChip, HiInformationCircle } from 'react-icons/hi'
@@ -19,6 +21,8 @@ export function SubgraphReviewStep({
   formData,
   graphId,
 }: SubgraphReviewStepProps) {
+  const subgraphId = subgraphIdFor(graphId, formData.name)
+
   return (
     <div className="space-y-6">
       {/* Summary Card */}
@@ -33,9 +37,7 @@ export function SubgraphReviewStep({
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               {formData.displayName}
             </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Subgraph Name: <span className="font-mono">{formData.name}</span>
-            </p>
+            <CopyableId value={subgraphId} label="subgraph id" />
             {formData.description && (
               <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
                 {formData.description}
@@ -52,21 +54,21 @@ export function SubgraphReviewStep({
         </h4>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+          <div className="rounded-lg border border-gray-200 p-4 sm:col-span-2 dark:border-gray-700">
             <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Parent Graph
+              Subgraph ID
             </dt>
-            <dd className="mt-1 font-mono text-sm text-gray-900 dark:text-white">
-              {graphId}
+            <dd className="mt-1 font-mono text-sm break-all text-gray-900 dark:text-white">
+              {subgraphId}
             </dd>
           </div>
 
           <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
             <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Subgraph Name
+              Parent Graph
             </dt>
-            <dd className="mt-1 font-mono text-sm text-gray-900 dark:text-white">
-              {formData.name}
+            <dd className="mt-1 font-mono text-sm break-all text-gray-900 dark:text-white">
+              {graphId}
             </dd>
           </div>
 
@@ -79,7 +81,7 @@ export function SubgraphReviewStep({
             </dd>
           </div>
 
-          <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+          <div className="rounded-lg border border-gray-200 p-4 sm:col-span-2 dark:border-gray-700">
             <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
               Description
             </dt>
@@ -103,17 +105,14 @@ export function SubgraphReviewStep({
                 <li>The subgraph will be created as an isolated environment</li>
                 <li>Data in the subgraph is isolated from the parent graph</li>
                 <li>You can manage and write data independently</li>
-                <li>Make sure the subgraph name is unique and descriptive</li>
+                <li>
+                  The subgraph ID is permanent — it is the address MCP clients
+                  and the API use to reach it
+                </li>
               </ul>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="text-center">
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          Ready to create your subgraph? Click "Create Subgraph" to proceed.
-        </p>
       </div>
     </div>
   )
