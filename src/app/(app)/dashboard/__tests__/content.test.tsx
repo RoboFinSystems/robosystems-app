@@ -13,6 +13,9 @@ const mockCore = vi.hoisted(() => ({
   graphId: 'kg123' as string | null,
   isRepository: false,
   role: 'admin',
+  description: undefined as string | undefined,
+  tags: undefined as string[] | undefined,
+  refreshGraphs: vi.fn(),
 }))
 
 vi.mock('@robosystems/core', () => ({
@@ -29,7 +32,10 @@ vi.mock('@robosystems/core', () => ({
       {label}: {value}
     </div>
   ),
-  useGraphContext: () => ({ state: { currentGraphId: mockCore.graphId } }),
+  useGraphContext: () => ({
+    state: { currentGraphId: mockCore.graphId },
+    refreshGraphs: mockCore.refreshGraphs,
+  }),
   useIsRepository: () => ({
     isRepository: mockCore.isRepository,
     currentGraph: { graphId: mockCore.graphId },
@@ -44,6 +50,11 @@ vi.mock('@/components/app/GraphMembersModal', () => ({
     show ? <div data-testid="members-modal" /> : null,
 }))
 
+vi.mock('@/components/app/GraphMetadataModal', () => ({
+  default: ({ show }: { show: boolean }) =>
+    show ? <div data-testid="metadata-modal" /> : null,
+}))
+
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn() }) }))
 
 describe('GraphDashboardContent', () => {
@@ -52,6 +63,8 @@ describe('GraphDashboardContent', () => {
     mockCore.graphId = 'kg123'
     mockCore.isRepository = false
     mockCore.role = 'admin'
+    mockCore.description = undefined
+    mockCore.tags = undefined
     mockSDK.getGraphs.mockImplementation(async () => ({
       data: {
         graphs: [
@@ -61,6 +74,8 @@ describe('GraphDashboardContent', () => {
             role: mockCore.role,
             isRepository: mockCore.isRepository,
             createdAt: '2026-01-01T00:00:00Z',
+            description: mockCore.description,
+            tags: mockCore.tags,
           },
         ],
       },
@@ -109,5 +124,74 @@ describe('GraphDashboardContent', () => {
     expect(
       screen.queryByRole('button', { name: /members/i })
     ).not.toBeInTheDocument()
+  })
+
+  it('offers metadata editing to a graph admin', async () => {
+    render(<GraphDashboardContent />)
+
+    const edit = await screen.findByRole('button', { name: /edit/i })
+    expect(screen.queryByTestId('metadata-modal')).not.toBeInTheDocument()
+
+    edit.click()
+
+    await waitFor(() => {
+      expect(screen.getByTestId('metadata-modal')).toBeInTheDocument()
+    })
+  })
+
+  it('hides metadata editing from non-admins', async () => {
+    mockCore.role = 'member'
+
+    render(<GraphDashboardContent />)
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Test Graph' })
+      ).toBeInTheDocument()
+    })
+    expect(
+      screen.queryByRole('button', { name: /edit/i })
+    ).not.toBeInTheDocument()
+  })
+
+  it('hides metadata editing on shared repositories', async () => {
+    mockCore.isRepository = true
+
+    render(<GraphDashboardContent />)
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Test Graph' })
+      ).toBeInTheDocument()
+    })
+    // Repository labels are platform-managed — update-graph-metadata 403s.
+    expect(
+      screen.queryByRole('button', { name: /edit/i })
+    ).not.toBeInTheDocument()
+  })
+
+  it('renders the description and tags when set', async () => {
+    mockCore.description = 'Primary operating entity'
+    mockCore.tags = ['consulting', 'production']
+
+    render(<GraphDashboardContent />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Primary operating entity')).toBeInTheDocument()
+    })
+    expect(screen.getByText('consulting')).toBeInTheDocument()
+    expect(screen.getByText('production')).toBeInTheDocument()
+  })
+
+  it('omits the description and tags rows when unset', async () => {
+    render(<GraphDashboardContent />)
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Test Graph' })
+      ).toBeInTheDocument()
+    })
+    expect(screen.queryByText('Description')).not.toBeInTheDocument()
+    expect(screen.queryByText('Tags')).not.toBeInTheDocument()
   })
 })
