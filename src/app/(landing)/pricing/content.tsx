@@ -94,6 +94,25 @@ export default function PricingContent() {
                 </div>
                 <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700">
                   <h4 className="mb-2 font-semibold text-white">
+                    How do backups work?
+                  </h4>
+                  <p className="text-gray-400">
+                    Backups are <span className="text-gray-300">on-demand</span>{' '}
+                    — you trigger one from the Backups page or the API whenever
+                    you want a restore point, and we keep it for your
+                    tier&apos;s retention window (7 days on Standard, 30 on
+                    Large, 90 on XLarge) before removing it. There&apos;s no
+                    automatic schedule, so if your graph holds data that
+                    isn&apos;t loaded from a connected source, take a backup
+                    when it matters to you. Graphs materialized from a
+                    connection — your accounting system, or SEC filings — can
+                    also be rebuilt from that source. Creating and downloading
+                    backups are included in your plan and don&apos;t consume
+                    credits.
+                  </p>
+                </div>
+                <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700">
+                  <h4 className="mb-2 font-semibold text-white">
                     Can I cancel my subscription?
                   </h4>
                   <p className="text-gray-400">
