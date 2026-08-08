@@ -161,7 +161,7 @@ export default function BackupManagementContent() {
       // download-only. Fall back to the repository check on a server that
       // predates the field.
       setRestoreSupported(
-        (backupsResponse.data as any)?.restore_supported ?? !isRepository
+        backupsResponse.data?.restore_supported ?? !isRepository
       )
 
       // Fetch subgraph backups for non-repository graphs
