@@ -71,7 +71,6 @@ export function SubgraphsContent() {
         path: { graph_id: subgraph.graph_id },
         body: {
           backup_format: 'full_dump',
-          encryption: false,
           retention_days: 90,
         },
       })

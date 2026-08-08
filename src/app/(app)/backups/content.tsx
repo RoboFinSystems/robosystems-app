@@ -75,6 +75,7 @@ export default function BackupManagementContent() {
     null
   )
   const [downloadQuota, setDownloadQuota] = useState<DownloadQuota | null>(null)
+  const [restoreSupported, setRestoreSupported] = useState(false)
   const [graphIdToName, setGraphIdToName] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -83,7 +84,6 @@ export default function BackupManagementContent() {
   const [showRestoreModal, setShowRestoreModal] = useState(false)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
 
-  const [createFormEncryption, setCreateFormEncryption] = useState(false)
   const [createFormRetentionDays, setCreateFormRetentionDays] = useState(90)
 
   const [restoreFormVerify, setRestoreFormVerify] = useState(true)
@@ -113,6 +113,7 @@ export default function BackupManagementContent() {
     setBackups([])
     setBackupStats(null)
     setDownloadQuota(null)
+    setRestoreSupported(false)
     setGraphIdToName({})
     setError(null)
   }, [selectedGraphId])
@@ -154,6 +155,14 @@ export default function BackupManagementContent() {
       } else {
         setDownloadQuota(null)
       }
+
+      // Restore is a graph-type property the server decides: entity graphs are
+      // materialized from the extensions database and shared repositories are
+      // download-only. Fall back to the repository check on a server that
+      // predates the field.
+      setRestoreSupported(
+        backupsResponse.data?.restore_supported ?? !isRepository
+      )
 
       // Fetch subgraph backups for non-repository graphs
       if (!isRepository) {
@@ -238,7 +247,6 @@ export default function BackupManagementContent() {
     ) {
       const timer = setTimeout(() => {
         fetchBackupData()
-        setCreateFormEncryption(false)
         setCreateFormRetentionDays(90)
         createOperationMonitor.reset()
         setShowCreateModal(false)
@@ -248,7 +256,6 @@ export default function BackupManagementContent() {
   }, [
     createOperationMonitor,
     fetchBackupData,
-    setCreateFormEncryption,
     setCreateFormRetentionDays,
     setShowCreateModal,
   ])
@@ -294,7 +301,6 @@ export default function BackupManagementContent() {
       createOperationMonitor.progress === 100
     ) {
       setShowCreateModal(false)
-      setCreateFormEncryption(false)
       setCreateFormRetentionDays(90)
       createOperationMonitor.reset()
     }
@@ -308,7 +314,6 @@ export default function BackupManagementContent() {
         path: { graph_id: selectedGraphId },
         body: {
           backup_format: 'full_dump',
-          encryption: createFormEncryption,
           retention_days: createFormRetentionDays,
         },
       })
@@ -364,14 +369,6 @@ export default function BackupManagementContent() {
 
   const handleDownloadBackup = async (backup: BackupResponse) => {
     if (!selectedGraphId) return
-
-    if (backup.encryption_enabled) {
-      showError(
-        'Encrypted backups cannot be downloaded for security reasons',
-        5000
-      )
-      return
-    }
 
     try {
       const response = await getBackupDownloadUrl({
@@ -487,7 +484,6 @@ export default function BackupManagementContent() {
             {!isRepository && (
               <Button
                 onClick={() => {
-                  setCreateFormEncryption(false)
                   setCreateFormRetentionDays(90)
                   createOperationMonitor.reset()
                   setShowCreateModal(true)
@@ -615,7 +611,6 @@ export default function BackupManagementContent() {
               )}
               <TableHeadCell>Status</TableHeadCell>
               <TableHeadCell>Size</TableHeadCell>
-              <TableHeadCell>Encrypted</TableHeadCell>
               <TableHeadCell>Actions</TableHeadCell>
             </TableHead>
             <TableBody className="divide-y">
@@ -650,17 +645,6 @@ export default function BackupManagementContent() {
                     {formatBytes(backup.compressed_size_bytes)}
                   </TableCell>
                   <TableCell>
-                    {backup.encryption_enabled ? (
-                      <Badge color="success" size="sm">
-                        Yes
-                      </Badge>
-                    ) : (
-                      <Badge color="gray" size="sm">
-                        No
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
                     <div className="flex gap-2">
                       <Tooltip content="View details">
                         <Button
@@ -674,28 +658,27 @@ export default function BackupManagementContent() {
                           <HiInformationCircle className="h-4 w-4" />
                         </Button>
                       </Tooltip>
-                      {!backup.encryption_enabled && (
-                        <Tooltip
-                          content={
+                      <Tooltip
+                        content={
+                          isRepository && downloadQuota?.remaining === 0
+                            ? 'Monthly download limit reached'
+                            : 'Download backup'
+                        }
+                      >
+                        <Button
+                          size="sm"
+                          color="gray"
+                          onClick={() => handleDownloadBackup(backup)}
+                          disabled={
                             isRepository && downloadQuota?.remaining === 0
-                              ? 'Monthly download limit reached'
-                              : 'Download backup'
                           }
                         >
-                          <Button
-                            size="sm"
-                            color="gray"
-                            onClick={() => handleDownloadBackup(backup)}
-                            disabled={
-                              isRepository && downloadQuota?.remaining === 0
-                            }
-                          >
-                            <HiDownload className="h-4 w-4" />
-                          </Button>
-                        </Tooltip>
-                      )}
-                      {/* Restore button - only for user graphs with encrypted backups */}
-                      {!isRepository && backup.encryption_enabled && (
+                          <HiDownload className="h-4 w-4" />
+                        </Button>
+                      </Tooltip>
+                      {/* Entity graphs are materialized from the extensions
+                          database, so restore is refused server-side there. */}
+                      {restoreSupported && (
                         <Tooltip content="Restore backup">
                           <Button
                             size="sm"
@@ -728,16 +711,6 @@ export default function BackupManagementContent() {
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 Complete database backup
               </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="encryption"
-                checked={createFormEncryption}
-                onChange={(e) => setCreateFormEncryption(e.target.checked)}
-              />
-              <Label htmlFor="encryption">
-                Enable encryption (recommended)
-              </Label>
             </div>
             <div>
               <Label htmlFor="retention">Retention Days</Label>
@@ -1009,16 +982,6 @@ export default function BackupManagementContent() {
                   <Label>Relationships</Label>
                   <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
                     {selectedBackup.relationship_count?.toLocaleString() || 0}
-                  </p>
-                </div>
-                <div>
-                  <Label>Encryption</Label>
-                  <p className="mt-1">
-                    {selectedBackup.encryption_enabled ? (
-                      <Badge color="success">Enabled</Badge>
-                    ) : (
-                      <Badge color="gray">Disabled</Badge>
-                    )}
                   </p>
                 </div>
                 <div>

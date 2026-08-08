@@ -23,12 +23,10 @@ export interface Backup {
   s3_key: string
   original_size_bytes: number
   compressed_size_bytes: number
-  encrypted_size_bytes: number
   compression_ratio: number
   node_count: number
   relationship_count: number
   backup_duration_seconds: number
-  encryption_enabled: boolean
   compression_enabled: boolean
   created_at: string
   completed_at: string | null
@@ -42,7 +40,6 @@ export interface BackupCreateForm {
   backup_format?: BackupFormat
   retention_days: number
   compression: boolean
-  encryption: boolean
 }
 
 export interface BackupRestoreForm {
