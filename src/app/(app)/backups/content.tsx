@@ -7,7 +7,6 @@ import {
   getBackupStats,
   listBackups,
   listSubgraphs,
-  restoreBackup,
 } from '@robosystems/client'
 import {
   EmptyState,
@@ -23,7 +22,6 @@ import {
   Badge,
   Button,
   Card,
-  Checkbox,
   Label,
   Modal,
   ModalBody,
@@ -42,14 +40,12 @@ import {
 } from 'flowbite-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
-  HiCheckCircle,
   HiDatabase,
   HiDownload,
   HiExclamation,
   HiInformationCircle,
   HiPlus,
   HiRefresh,
-  HiUpload,
 } from 'react-icons/hi'
 
 interface DownloadQuota {
@@ -75,21 +71,16 @@ export default function BackupManagementContent() {
     null
   )
   const [downloadQuota, setDownloadQuota] = useState<DownloadQuota | null>(null)
-  const [restoreSupported, setRestoreSupported] = useState(false)
   const [graphIdToName, setGraphIdToName] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const [showCreateModal, setShowCreateModal] = useState(false)
-  const [showRestoreModal, setShowRestoreModal] = useState(false)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
 
   const [createFormRetentionDays, setCreateFormRetentionDays] = useState(90)
 
-  const [restoreFormVerify, setRestoreFormVerify] = useState(true)
-
   const createOperationMonitor = useOperationMonitoring()
-  const restoreOperationMonitor = useOperationMonitoring()
 
   // The graph a request was issued for, readable from inside an in-flight call
   // so a response that arrives after a graph switch can be dropped. This read
@@ -101,19 +92,15 @@ export default function BackupManagementContent() {
     loadedGraphIdRef.current = selectedGraphId
   }, [selectedGraphId])
 
-  // The restore and details modals act on `selectedBackup`. Restore itself is
-  // addressed by `selectedBackup.graph_id`, so it stays correct across a
-  // switch, but leaving the panel open shows one graph's backup while the
-  // header names another.
+  // The details modal acts on `selectedBackup`, so leaving it open across a
+  // graph switch would show one graph's backup while the header names another.
   useEffect(() => {
     setSelectedBackup(null)
-    setShowRestoreModal(false)
     setShowDetailsModal(false)
     setShowCreateModal(false)
     setBackups([])
     setBackupStats(null)
     setDownloadQuota(null)
-    setRestoreSupported(false)
     setGraphIdToName({})
     setError(null)
   }, [selectedGraphId])
@@ -155,14 +142,6 @@ export default function BackupManagementContent() {
       } else {
         setDownloadQuota(null)
       }
-
-      // Restore is a graph-type property the server decides: entity graphs are
-      // materialized from the extensions database and shared repositories are
-      // download-only. Fall back to the repository check on a server that
-      // predates the field.
-      setRestoreSupported(
-        backupsResponse.data?.restore_supported ?? !isRepository
-      )
 
       // Fetch subgraph backups for non-repository graphs
       if (!isRepository) {
@@ -261,39 +240,10 @@ export default function BackupManagementContent() {
   ])
 
   useEffect(() => {
-    if (
-      restoreOperationMonitor.progress === 100 &&
-      restoreOperationMonitor.operationId &&
-      !restoreOperationMonitor.error
-    ) {
-      const timer = setTimeout(() => {
-        showSuccess('Backup restored successfully!', 5000)
-        fetchBackupData()
-        setShowRestoreModal(false)
-        setRestoreFormVerify(true)
-        restoreOperationMonitor.reset()
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
-  }, [
-    restoreOperationMonitor,
-    fetchBackupData,
-    showSuccess,
-    setShowRestoreModal,
-    setRestoreFormVerify,
-  ])
-
-  useEffect(() => {
     if (createOperationMonitor.error) {
       showError(`Backup Creation Failed: ${createOperationMonitor.error}`, 8000)
     }
   }, [createOperationMonitor.error, showError])
-
-  useEffect(() => {
-    if (restoreOperationMonitor.error) {
-      showError(`Restore Failed: ${restoreOperationMonitor.error}`, 8000)
-    }
-  }, [restoreOperationMonitor.error, showError])
 
   const handleCloseCreateModal = () => {
     if (
@@ -338,32 +288,6 @@ export default function BackupManagementContent() {
       } else {
         showError(err.message || 'Failed to create backup', 5000)
       }
-    }
-  }
-
-  const handleRestoreBackup = async () => {
-    if (!selectedBackup || !selectedGraphId) return
-
-    try {
-      const response = await restoreBackup({
-        path: { graph_id: selectedBackup.graph_id },
-        body: {
-          backup_id: selectedBackup.backup_id,
-          verify_after_restore: restoreFormVerify,
-        },
-      })
-
-      if (response.data) {
-        const operationId = response.data.operationId
-        await restoreOperationMonitor.startMonitoring(operationId)
-        // Success/failure handled by useEffect hooks monitoring restoreOperationMonitor
-        // Modal will auto-close on success
-      } else {
-        throw new Error('Failed to start restore')
-      }
-    } catch (err) {
-      console.error('Restore error:', err)
-      showError('Failed to restore backup', 5000)
     }
   }
 
@@ -424,6 +348,27 @@ export default function BackupManagementContent() {
     )
   }
 
+  // Scheduled backups are taken nightly on the customer's behalf and appear in
+  // this list alongside their own. Distinguishing them matters because only
+  // self-requested backups count against the tier's daily limit — without the
+  // badge, someone hitting that limit has no way to see why.
+  const getOriginBadge = (initiatedBy?: string) => {
+    const isScheduled = initiatedBy === 'scheduled'
+    return (
+      <Tooltip
+        content={
+          isScheduled
+            ? 'Taken automatically each night. Does not count against your daily backup limit.'
+            : 'Requested from this page. Counts against your daily backup limit.'
+        }
+      >
+        <Badge color={isScheduled ? 'purple' : 'gray'} size="sm">
+          {isScheduled ? 'scheduled' : 'manual'}
+        </Badge>
+      </Tooltip>
+    )
+  }
+
   if (loading) {
     return (
       <PageLayout>
@@ -474,7 +419,7 @@ export default function BackupManagementContent() {
       <PageHeader
         icon={HiDatabase}
         title="Backups"
-        subtitle="Manage database backups and restores"
+        subtitle="Manage database backups"
         actions={
           <>
             <Button color="gray" onClick={fetchBackupData}>
@@ -610,6 +555,7 @@ export default function BackupManagementContent() {
                 <TableHeadCell>Source</TableHeadCell>
               )}
               <TableHeadCell>Status</TableHeadCell>
+              <TableHeadCell>Origin</TableHeadCell>
               <TableHeadCell>Size</TableHeadCell>
               <TableHeadCell>Actions</TableHeadCell>
             </TableHead>
@@ -641,6 +587,7 @@ export default function BackupManagementContent() {
                     </TableCell>
                   )}
                   <TableCell>{getStatusBadge(backup.status)}</TableCell>
+                  <TableCell>{getOriginBadge(backup.initiated_by)}</TableCell>
                   <TableCell>
                     {formatBytes(backup.compressed_size_bytes)}
                   </TableCell>
@@ -676,21 +623,6 @@ export default function BackupManagementContent() {
                           <HiDownload className="h-4 w-4" />
                         </Button>
                       </Tooltip>
-                      {/* Entity graphs are materialized from the extensions
-                          database, so restore is refused server-side there. */}
-                      {restoreSupported && (
-                        <Tooltip content="Restore backup">
-                          <Button
-                            size="sm"
-                            onClick={() => {
-                              setSelectedBackup(backup)
-                              setShowRestoreModal(true)
-                            }}
-                          >
-                            <HiUpload className="h-4 w-4" />
-                          </Button>
-                        </Tooltip>
-                      )}
                     </div>
                   </TableCell>
                 </TableRow>
@@ -783,117 +715,6 @@ export default function BackupManagementContent() {
         </ModalFooter>
       </Modal>
 
-      {/* Restore Modal */}
-      <Modal
-        show={showRestoreModal}
-        onClose={() => setShowRestoreModal(false)}
-        size="md"
-      >
-        <ModalHeader>Restore Backup</ModalHeader>
-        <ModalBody>
-          <div className="space-y-4">
-            <div className="rounded-lg bg-yellow-50 p-4 dark:bg-yellow-900/20">
-              <div className="flex gap-2">
-                <HiExclamation className="h-5 w-5 text-yellow-600" />
-                <div>
-                  <h4 className="font-medium text-yellow-800 dark:text-yellow-300">
-                    Warning
-                  </h4>
-                  <p className="mt-1 text-sm text-yellow-700 dark:text-yellow-400">
-                    This will replace your current database with the backup.
-                    This operation cannot be undone.
-                  </p>
-                </div>
-              </div>
-            </div>
-            {selectedBackup && (
-              <div>
-                <Label>Backup Details</Label>
-                <div className="mt-2 space-y-1 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-300">
-                      Created:
-                    </span>
-                    <span className="text-gray-900 dark:text-white">
-                      {formatDate(selectedBackup.created_at)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-300">
-                      Size:
-                    </span>
-                    <span className="text-gray-900 dark:text-white">
-                      {formatBytes(selectedBackup.compressed_size_bytes)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="verify"
-                checked={restoreFormVerify}
-                onChange={(e) => setRestoreFormVerify(e.target.checked)}
-              />
-              <Label htmlFor="verify">Verify database after restore</Label>
-            </div>
-            {restoreOperationMonitor.isMonitoring && (
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm text-gray-700 dark:text-gray-300">
-                  <span>Progress</span>
-                  <span>{restoreOperationMonitor.progress}%</span>
-                </div>
-                <Progress
-                  progress={restoreOperationMonitor.progress}
-                  color="blue"
-                />
-                {restoreOperationMonitor.currentStep && (
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {restoreOperationMonitor.currentStep}
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            onClick={handleRestoreBackup}
-            disabled={
-              restoreOperationMonitor.isMonitoring &&
-              restoreOperationMonitor.progress !== 100
-            }
-          >
-            {restoreOperationMonitor.isMonitoring &&
-            restoreOperationMonitor.progress !== 100 ? (
-              <>
-                <Spinner size="sm" className="mr-2 text-white" />
-                Restoring...
-              </>
-            ) : (
-              <>
-                <HiCheckCircle className="mr-2 h-4 w-4" />
-                Restore Backup
-              </>
-            )}
-          </Button>
-          <Button
-            color="gray"
-            onClick={() => {
-              setShowRestoreModal(false)
-              setRestoreFormVerify(true)
-              restoreOperationMonitor.reset()
-            }}
-            disabled={
-              restoreOperationMonitor.isMonitoring &&
-              restoreOperationMonitor.progress !== 100
-            }
-          >
-            {restoreOperationMonitor.progress === 100 ? 'Close' : 'Cancel'}
-          </Button>
-        </ModalFooter>
-      </Modal>
-
       {/* Details Modal */}
       <Modal
         show={showDetailsModal}
@@ -916,6 +737,26 @@ export default function BackupManagementContent() {
                   <div className="mt-1">
                     {getStatusBadge(selectedBackup.status)}
                   </div>
+                </div>
+                <div>
+                  <Label>Origin</Label>
+                  <div className="mt-1">
+                    {getOriginBadge(selectedBackup.initiated_by)}
+                  </div>
+                </div>
+                <div>
+                  <Label>Semantic Memory</Label>
+                  <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                    {/* Three states, not two. Null means the backup predates
+                        memory capture and makes no claim either way, which is
+                        a different answer from "the graph had none" — showing
+                        both as "Not included" would erase that. */}
+                    {selectedBackup.memory_included === true
+                      ? 'Included'
+                      : selectedBackup.memory_included === false
+                        ? 'None to include'
+                        : 'Not recorded'}
+                  </p>
                 </div>
                 {isRepository ? (
                   <>
