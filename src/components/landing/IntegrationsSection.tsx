@@ -41,7 +41,7 @@ export default function IntegrationsSection() {
               </div>
               <p className="text-sm text-gray-400">
                 Sync your chart of accounts, transactions, and trial balance.
-                Full OAuth integration with real-time updates.
+                Full OAuth integration with on-demand sync.
               </p>
               <a
                 href="https://quickbooks.intuit.com/partners/affiliates?cid=par_pim_4TcakSEFQs73"
