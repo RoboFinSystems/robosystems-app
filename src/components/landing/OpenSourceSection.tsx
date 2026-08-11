@@ -414,7 +414,7 @@ export default function OpenSourceSection() {
                     <code>{`# Clone and install tools
 git clone https://github.com/RoboFinSystems/robosystems
 cd robosystems
-brew install uv just  # or: pip install uv && cargo install just
+brew install uv just
 
 # Start local Docker stack
 just start

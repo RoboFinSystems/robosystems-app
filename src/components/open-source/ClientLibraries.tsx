@@ -125,7 +125,7 @@ export default function ClientLibraries() {
             </p>
             <div className="rounded bg-black p-2">
               <code className="text-xs break-all text-gray-300">
-                https://api.robosystems.ai/v1/graphs/sec/mcp
+                https://api.robosystems.ai/v1/graphs/{'{GRAPH_ID}'}/mcp
               </code>
             </div>
             <div className="mt-4 flex gap-3">
