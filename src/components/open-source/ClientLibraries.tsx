@@ -140,6 +140,20 @@ export default function ClientLibraries() {
             </div>
           </div>
         </div>
+
+        <p className="mt-8 text-center text-sm text-gray-400">
+          Connecting your own data source? Build it as an{' '}
+          <a
+            href="https://github.com/RoboFinSystems/robosystems-integration-template"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-cyan-400 hover:text-cyan-300"
+          >
+            integration
+          </a>{' '}
+          against these clients rather than in the core &mdash; it survives
+          every upgrade and moves with you between self-hosted and managed.
+        </p>
       </div>
     </section>
   )

@@ -6,12 +6,12 @@ export default function BusinessServices() {
       title: 'Data Integrations',
       icon: 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1',
       color: 'cyan',
-      highlight: 'QuickBooks · SEC EDGAR · Documents',
+      highlight: 'QuickBooks · Documents',
       description:
-        'Connect your accounting and regulatory data sources into the RoboLedger schema for a unified financial picture.',
+        'Connect your accounting data and documents into the RoboLedger schema for a unified financial picture.',
       features: [
         'QuickBooks OAuth — chart of accounts, journal entries, and transactions',
-        'SEC EDGAR — US-GAAP XBRL taxonomy for account mapping and compliance',
+        'US-GAAP taxonomy — AI auto-mapping for the chart of accounts',
         'Document uploads — policies, contracts, and workpapers with hybrid semantic search',
       ],
     },
@@ -48,7 +48,7 @@ export default function BusinessServices() {
   const workflowSteps = [
     {
       title: 'Connect',
-      description: 'QuickBooks via OAuth plus SEC EDGAR XBRL data',
+      description: 'QuickBooks via OAuth, plus your own documents',
       bg: 'to-cyan-950/20',
       border: 'hover:border-cyan-500/30',
       badge: 'bg-cyan-500/20 text-cyan-400',
@@ -97,7 +97,7 @@ export default function BusinessServices() {
     {
       title: 'Reports as Structured Data',
       description:
-        'RoboLedger creates XBRL-native financial reports — inherently queryable, comparable across periods, and ready for SEC filing.',
+        'RoboLedger creates XBRL-native financial reports — inherently queryable, comparable across periods, and ready to publish to stakeholders.',
     },
     {
       title: 'AI-Native Close Workflow',
@@ -121,9 +121,9 @@ export default function BusinessServices() {
           </h2>
           <p className="mx-auto max-w-3xl text-gray-400">
             Powered by the RoboLedger schema extension — unifying QuickBooks and
-            SEC XBRL data into a queryable knowledge graph for full-cycle ledger
-            management, period close, AI-native financial reporting, and forward
-            planning
+            your documents into a queryable knowledge graph for full-cycle
+            ledger management, period close, AI-native financial reporting, and
+            forward planning
           </p>
         </div>
 
