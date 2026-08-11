@@ -1,6 +1,6 @@
 'use client'
 
-import type { AuthUser } from '@robosystems/core'
+import type { AuthProviders, AuthUser } from '@robosystems/core'
 import { useOptionalAuth } from '@robosystems/core/auth-components'
 import { RoboSystemsAuthClient } from '@robosystems/core/auth-core/client'
 import { getAppConfig } from '@robosystems/core/auth-core/config'
@@ -8,7 +8,6 @@ import { useSSO } from '@robosystems/core/auth-core/sso'
 import { LogoBadge, Spinner } from '@robosystems/core/ui-components'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { PlatformIdentityHeader } from './PlatformIdentityHeader'
-import { fetchAuthProviders, type AuthProviders } from './providers'
 import {
   markBridgeAttempt,
   parseDestination,
@@ -111,12 +110,16 @@ export function SignInForm({
     }
   }, [])
 
+  const authClient = useMemo(() => new RoboSystemsAuthClient(apiUrl), [apiUrl])
+  const { checkSSOAuthentication, handleSSOLogin, navigateToApp } =
+    useSSO(apiUrl)
+
   // Posture is a rendering hint fetched in parallel with the auth check; a
   // null result (endpoint missing, network failure) renders the default
   // password posture — the backend enforces regardless.
   useEffect(() => {
     let cancelled = false
-    fetchAuthProviders(apiUrl).then((posture) => {
+    authClient.getAuthProviders().then((posture) => {
       if (!cancelled) {
         setProviders(posture)
       }
@@ -124,11 +127,7 @@ export function SignInForm({
     return () => {
       cancelled = true
     }
-  }, [apiUrl])
-
-  const authClient = useMemo(() => new RoboSystemsAuthClient(apiUrl), [apiUrl])
-  const { checkSSOAuthentication, handleSSOLogin, navigateToApp } =
-    useSSO(apiUrl)
+  }, [authClient])
 
   /**
    * Post-auth routing. A cross-app return_to initiates the SSO bridge to

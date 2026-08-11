@@ -1,11 +1,11 @@
 'use client'
 
+import type { AuthProviders } from '@robosystems/core'
 import { TurnstileWidget } from '@robosystems/core/auth-components/TurnstileWidget'
 import { RoboSystemsAuthClient } from '@robosystems/core/auth-core/client'
 import { Spinner } from '@robosystems/core/ui-components'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { PlatformIdentityHeader } from './PlatformIdentityHeader'
-import { fetchAuthProviders, type AuthProviders } from './providers'
 import {
   loginPathWith,
   parseDestination,
@@ -79,9 +79,12 @@ export function SignUpForm({
   const destination = parseDestination(rawReturnTo)
   const continuesTo = destination?.kind === 'app' ? destination.app : null
 
+  // Posture is a rendering hint; a null result (endpoint missing, network
+  // failure) renders the default open-registration posture — the backend
+  // enforces regardless.
   useEffect(() => {
     let cancelled = false
-    fetchAuthProviders(apiUrl).then((posture) => {
+    authClientRef.current.getAuthProviders().then((posture) => {
       if (!cancelled) {
         setProviders(posture)
       }
@@ -89,7 +92,7 @@ export function SignUpForm({
     return () => {
       cancelled = true
     }
-  }, [apiUrl])
+  }, [])
 
   // Resolve the invitation before the form is usable. A token that no longer
   // resolves (revoked, expired, already accepted) degrades to ordinary
