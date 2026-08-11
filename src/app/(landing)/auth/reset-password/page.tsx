@@ -1,5 +1,6 @@
 'use client'
 
+import { loginPathWith } from '@/components/auth/return-to'
 import { useAuth } from '@robosystems/core/auth-components/AuthProvider'
 import { AnimatedLogo, Spinner } from '@robosystems/core/ui-components'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -22,6 +23,9 @@ function ResetPasswordContent() {
   const validateAttempted = useRef(false)
 
   const token = searchParams.get('token')
+  // Email links carry the app the user came from (backend appends it when
+  // the login-home email flag is on); post-reset routing bridges onward.
+  const rawReturnTo = searchParams.get('return_to')
 
   useEffect(() => {
     if (validateAttempted.current) return
@@ -81,7 +85,9 @@ function ResetPasswordContent() {
         setStatus('success')
         setMessage('Password reset successfully!')
         setTimeout(() => {
-          router.push('/home')
+          // A reset signs the user in; /login finishes the routing for a
+          // pending return_to (silent bridge to the originating app).
+          router.push(rawReturnTo ? loginPathWith(rawReturnTo) : '/home')
         }, 2000)
       } else {
         setStatus('error')
@@ -120,7 +126,11 @@ function ResetPasswordContent() {
             {message || 'This password reset link is invalid or has expired.'}
           </p>
           <a
-            href="/auth/forgot-password"
+            href={
+              rawReturnTo
+                ? `/auth/forgot-password?return_to=${encodeURIComponent(rawReturnTo)}`
+                : '/auth/forgot-password'
+            }
             className="inline-block rounded-md bg-white px-4 py-3 text-sm font-semibold text-black hover:bg-gray-100"
           >
             Request new reset link
@@ -218,7 +228,7 @@ function ResetPasswordContent() {
 
           <div className="text-center">
             <a
-              href="/login"
+              href={loginPathWith(rawReturnTo)}
               className="text-sm font-medium text-gray-300 hover:text-white"
             >
               Back to sign in

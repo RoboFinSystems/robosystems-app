@@ -1,5 +1,6 @@
 'use client'
 
+import { loginPathWith } from '@/components/auth/return-to'
 import { useAuth } from '@robosystems/core/auth-components/AuthProvider'
 import { Spinner } from 'flowbite-react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -24,6 +25,10 @@ function VerifyEmailContent() {
 
     const verifyEmailToken = async () => {
       const token = searchParams.get('token')
+      // Email links carry the app the user came from (backend appends it
+      // when the login-home email flag is on); post-verify routing bridges
+      // onward via /login.
+      const rawReturnTo = searchParams.get('return_to')
 
       if (!token) {
         setStatus('error')
@@ -38,9 +43,9 @@ function VerifyEmailContent() {
           setStatus('success')
           setMessage(result.message || 'Email verified successfully!')
 
-          // Redirect to home after 3 seconds
+          // Redirect after 3 seconds
           timeoutId = setTimeout(() => {
-            router.push('/home')
+            router.push(rawReturnTo ? loginPathWith(rawReturnTo) : '/home')
           }, 3000)
         } else {
           setStatus('error')
@@ -100,7 +105,9 @@ function VerifyEmailContent() {
               <p className="mt-2 text-gray-600 dark:text-gray-400">{message}</p>
               <div className="mt-6">
                 <button
-                  onClick={() => router.push('/login')}
+                  onClick={() =>
+                    router.push(loginPathWith(searchParams.get('return_to')))
+                  }
                   className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
                 >
                   Go to Login

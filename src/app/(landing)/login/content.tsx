@@ -1,6 +1,6 @@
 'use client'
 
-import { CURRENT_APP, SignInForm } from '@robosystems/core'
+import { SignInForm } from '@/components/auth/SignInForm'
 
 export default function LoginContent() {
   return (
@@ -8,13 +8,7 @@ export default function LoginContent() {
       apiUrl={
         process.env.NEXT_PUBLIC_ROBOSYSTEMS_API_URL || 'http://localhost:8000'
       }
-      enableSSO={true}
-      currentApp={CURRENT_APP}
       redirectTo="/home"
-      onSuccess={() => {}}
-      onRedirect={(url) => {
-        window.location.href = url || '/home'
-      }}
     />
   )
 }
