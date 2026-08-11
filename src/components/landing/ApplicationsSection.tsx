@@ -2,13 +2,9 @@
 
 import { LogoBadge } from '@robosystems/core/ui-components/Logo'
 import Link from 'next/link'
-import { useState } from 'react'
-import ContactModal from './ContactModal'
 import FloatingElementsVariant from './FloatingElementsVariant'
 
 export default function ApplicationsSection() {
-  const [showContact, setShowContact] = useState(false)
-
   return (
     <section
       id="applications"
@@ -65,13 +61,12 @@ export default function ApplicationsSection() {
                 </div>
               </div>
               <p className="mt-6 text-center text-sm text-gray-400">
-                RoboLedger syncs QuickBooks and SEC EDGAR data into the
-                RoboLedger schema for full ledger management, period close,
-                AI-native financial reporting, and forward planning.
-                RoboInvestor manages investment portfolios and provides access
-                to the SEC Shared Repository for securities research. Both
-                leverage MCP and Claude AI for natural language queries against
-                the knowledge graph.
+                RoboLedger syncs QuickBooks into the RoboLedger schema for full
+                ledger management, period close, AI-native financial reporting,
+                and forward planning. RoboInvestor manages investment portfolios
+                and provides access to the SEC Shared Repository for securities
+                research. Both leverage MCP and Claude AI for natural language
+                queries against the knowledge graph.
               </p>
             </div>
           </div>
@@ -110,14 +105,12 @@ export default function ApplicationsSection() {
               <div className="mb-8 space-y-4">
                 <div>
                   <h4 className="text-secondary-300 mb-3 font-semibold">
-                    QuickBooks Integration
+                    Connections
                   </h4>
                   <ul className="space-y-2 text-sm text-gray-300">
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
-                      <span>
-                        OAuth2 secure connection to sync accounting data
-                      </span>
+                      <span>QuickBooks over OAuth2 with on-demand sync</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
@@ -140,36 +133,35 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Event-driven inbox — Claude pre-classifies every
-                        transaction; preview the exact entries before they post
+                        Event-driven inbox — Claude pre-classifies, you approve
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        AI auto-maps chart of accounts to US-GAAP taxonomy with
+                        AI auto-maps chart of accounts to US-GAAP with
                         confidence scores
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Live Balance Sheet, Income Statement, and Cash Flow
-                        straight from the ledger — no close required
+                        Live Balance Sheet, Income Statement, and Cash Flow — no
+                        close required
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
                         Guided period close — fiscal calendar, depreciation and
-                        prepaid schedules, rule-engine gating before you lock
+                        prepaid schedules, rule-engine gating
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Report Creator — XBRL 2.1 and JSON-LD export, with
-                        publish lists for stakeholders
+                        Report Creator — XBRL 2.1 and JSON-LD export with
+                        publish lists
                       </span>
                     </li>
                   </ul>
@@ -183,22 +175,42 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Plan — monthly statements and a scenario&apos;s
-                        assumptions in one grid across the actuals/forecast seam
+                        Plan — actuals and forecast in one monthly grid
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Block Explorer — open any statement, schedule, or metric
-                        down to the facts and rules behind it
+                        Block Explorer — any number down to the facts and rules
+                        behind it
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-secondary-300 mb-3 font-semibold">
+                    Agents &amp; MCP
+                  </h4>
+                  <ul className="space-y-2 text-sm text-gray-300">
+                    <li className="flex items-start">
+                      <span className="text-secondary-400 mr-2">•</span>
+                      <span>
+                        AI Console — ask Claude about your books in plain
+                        English
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        AI Console — ask Claude anything about your books in
-                        natural language, grounded in your actual ledger
+                        Claude drives the close over MCP — author scenarios,
+                        define metrics, write handler rules
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-secondary-400 mr-2">•</span>
+                      <span>
+                        Push approved entries back to the source system
                       </span>
                     </li>
                   </ul>
@@ -232,9 +244,9 @@ export default function ApplicationsSection() {
               </Link>
 
               <p className="mb-6 text-gray-300">
-                Track investment portfolios and research public company filings
-                through AI-powered natural language queries against the SEC
-                knowledge graph.
+                Track public and private positions in one book, research any
+                public company against the SEC knowledge graph, and read equity
+                research generated from the filings.
               </p>
 
               <div className="mb-8 space-y-4">
@@ -246,21 +258,22 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        Track PE &amp; VC positions: SAFEs, convertible notes,
-                        LLC units, LP interests, warrants, options, and RSUs
+                        PE &amp; VC positions with full terms: SAFEs, notes, LLC
+                        units, LP interests, warrants, options, and RSUs
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        Portfolios with cost basis, holdings, and valuations
+                        Cost basis, valuations, and holdings rolled up per
+                        issuer
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        Receive financial reports shared by your portfolio
-                        companies on RoboLedger
+                        Cross-graph linking — a holding connects to its
+                        issuer&apos;s own graph
                       </span>
                     </li>
                   </ul>
@@ -281,15 +294,51 @@ export default function ApplicationsSection() {
                       <span className="mr-2 text-green-400">•</span>
                       <span>
                         Claude-powered deep research — plain-English questions
-                        become graph queries, answered with narrative financial
-                        analysis
+                        become graph queries
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        MCP integration for Claude, Claude Code, and Cursor —
-                        every portfolio operation is an agent-callable tool
+                        Statements rendered from the XBRL, not PDF scans
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-2 text-green-400">•</span>
+                      <span>
+                        Full-text and semantic search across filings and your
+                        own documents
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-2 text-green-400">•</span>
+                      <span>MCP tools for Claude, Claude Code, and Cursor</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="mb-3 font-semibold text-green-300">
+                    Equity Research
+                  </h4>
+                  <ul className="space-y-2 text-sm text-gray-300">
+                    <li className="flex items-start">
+                      <span className="mr-2 text-green-400">•</span>
+                      <span>
+                        One company per report, every figure traceable to its
+                        filing
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-2 text-green-400">•</span>
+                      <span>
+                        Narrated video brief alongside the written report
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-2 text-green-400">•</span>
+                      <span>
+                        Quarterly continuing coverage with full report history
                       </span>
                     </li>
                   </ul>
@@ -298,211 +347,7 @@ export default function ApplicationsSection() {
             </div>
           </div>
         </div>
-
-        {/* How Apps Work with RoboSystems */}
-        <div className="mt-12 rounded-2xl bg-linear-to-r from-zinc-800 to-zinc-900 p-4 sm:mt-16 sm:p-6 md:p-8">
-          <h3 className="font-heading mb-4 text-center text-xl font-semibold text-white sm:mb-6 sm:text-2xl">
-            Build on the RoboSystems Platform
-          </h3>
-          {/* SDK Section */}
-          <div className="mb-16">
-            <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
-              {/* MCP Client */}
-              <div className="rounded-lg border border-gray-800 bg-linear-to-br from-gray-900/50 to-gray-800/20 p-4 hover:bg-gray-900/20 sm:p-6">
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="bg-accent-600 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <span className="text-xl font-bold text-white">AI</span>
-                  </div>
-                  <h4 className="font-semibold text-white">MCP Endpoint</h4>
-                </div>
-                <p className="mb-4 text-sm text-gray-400">
-                  Every graph is a remote MCP server — one URL, one header, no
-                  install
-                </p>
-                <code className="block rounded-sm bg-zinc-800 p-2 text-xs break-all text-gray-300">
-                  https://api.robosystems.ai/v1/graphs/sec/mcp
-                </code>
-                <div className="mt-4 flex gap-3">
-                  <Link
-                    href="https://github.com/RoboFinSystems/robosystems-mcp-client"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-secondary-400 hover:text-secondary-300 text-sm"
-                  >
-                    Legacy stdio bridge →
-                  </Link>
-                </div>
-              </div>
-              {/* Typescript Client */}
-              <div className="rounded-lg border border-gray-800 bg-linear-to-br from-gray-900/50 to-gray-800/20 p-4 hover:bg-gray-900/20 sm:p-6">
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="bg-primary-600 flex h-10 w-10 items-center justify-center rounded-lg">
-                    <span className="text-xl font-bold text-white">TS</span>
-                  </div>
-                  <h4 className="font-semibold text-white">
-                    TypeScript Client
-                  </h4>
-                </div>
-                <p className="mb-4 text-sm text-gray-400">
-                  Full-featured Client for JavaScript and TypeScript
-                  applications
-                </p>
-                <code className="block rounded-sm bg-zinc-800 p-2 text-xs text-gray-300">
-                  npm install @robosystems/client
-                </code>
-                <div className="mt-4 flex gap-3">
-                  <Link
-                    href="https://www.npmjs.com/package/@robosystems/client"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-secondary-400 hover:text-secondary-300 text-sm"
-                  >
-                    npm →
-                  </Link>
-                  <Link
-                    href="https://github.com/RoboFinSystems/robosystems-typescript-client"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-secondary-400 hover:text-secondary-300 text-sm"
-                  >
-                    GitHub →
-                  </Link>
-                </div>
-              </div>
-
-              {/* Python Client */}
-              <div className="rounded-lg border border-gray-800 bg-linear-to-br from-gray-900/50 to-gray-800/20 p-4 hover:bg-gray-900/20 sm:p-6">
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-600">
-                    <span className="text-xl font-bold text-white">PY</span>
-                  </div>
-                  <h4 className="font-semibold text-white">Python Client</h4>
-                </div>
-                <p className="mb-4 text-sm text-gray-400">
-                  Python Client for backend applications and data science use
-                  cases
-                </p>
-                <code className="block rounded-sm bg-zinc-800 p-2 text-xs text-gray-300">
-                  pip install robosystems-client
-                </code>
-                <div className="mt-4 flex gap-3">
-                  <Link
-                    href="https://pypi.org/project/robosystems-client/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-secondary-400 hover:text-secondary-300 text-sm"
-                  >
-                    PyPI →
-                  </Link>
-                  <Link
-                    href="https://github.com/RoboFinSystems/robosystems-python-client"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-secondary-400 hover:text-secondary-300 text-sm"
-                  >
-                    GitHub →
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="mx-auto max-w-3xl space-y-4 text-gray-300">
-            <p className="text-center">
-              RoboLedger and RoboInvestor demonstrate the power of building
-              specialized applications on the RoboSystems
-              platform&mdash;combining knowledge graph, document search, and AI
-              in one stack.
-            </p>
-            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-              <div className="rounded-lg p-3 text-center sm:p-4">
-                <div className="mb-2 flex justify-center">
-                  <svg
-                    className="text-secondary-400 h-8 w-8"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                    />
-                  </svg>
-                </div>
-                <h4 className="mb-1 font-semibold text-white">
-                  Specialized Schemas
-                </h4>
-                <p className="text-sm">
-                  RoboLedger for accounting data, SEC XBRL for securities
-                  research
-                </p>
-              </div>
-              <div className="rounded-lg p-3 text-center sm:p-4">
-                <div className="mb-2 flex justify-center">
-                  <svg
-                    className="text-primary-400 h-8 w-8"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                    />
-                  </svg>
-                </div>
-                <h4 className="mb-1 font-semibold text-white">
-                  Data Integration
-                </h4>
-                <p className="text-sm">
-                  QuickBooks sync, SEC filings, and shared repository access
-                </p>
-              </div>
-              <div className="rounded-lg p-3 text-center sm:p-4">
-                <div className="mb-2 flex justify-center">
-                  <svg
-                    className="text-accent-400 h-8 w-8"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                    />
-                  </svg>
-                </div>
-                <h4 className="mb-1 font-semibold text-white">
-                  MCP Agent Access
-                </h4>
-                <p className="text-sm">
-                  Natural language queries via Claude AI and the MCP protocol
-                </p>
-              </div>
-            </div>
-            <p className="mt-6 text-center text-sm text-gray-400">
-              Want to build your own application on RoboSystems?
-              <button
-                onClick={() => setShowContact(true)}
-                className="text-secondary-400 ml-1 hover:underline"
-              >
-                Contact our developer team
-              </button>
-            </p>
-          </div>
-        </div>
       </div>
-
-      {/* Contact Modal */}
-      <ContactModal
-        isOpen={showContact}
-        onClose={() => setShowContact(false)}
-      />
     </section>
   )
 }

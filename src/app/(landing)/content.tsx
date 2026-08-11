@@ -1,12 +1,12 @@
 'use client'
 
 import ApplicationsSection from '@/components/landing/ApplicationsSection'
+import BuildSection from '@/components/landing/BuildSection'
 import FeaturesGrid from '@/components/landing/FeaturesGrid'
 import FinalCTA from '@/components/landing/FinalCTA'
 import Footer from '@/components/landing/Footer'
 import Header from '@/components/landing/Header'
 import HeroSection from '@/components/landing/HeroSection'
-import IntegrationsSection from '@/components/landing/IntegrationsSection'
 import OpenSourceSection from '@/components/landing/OpenSourceSection'
 import ProductOverview from '@/components/landing/ProductOverview'
 import SECRepositorySection from '@/components/landing/SECRepositorySection'
@@ -21,8 +21,8 @@ export default function LandingPageContent() {
         <ProductOverview />
         <SECRepositorySection />
         <FeaturesGrid />
-        <IntegrationsSection />
         <ApplicationsSection />
+        <BuildSection />
         <OpenSourceSection />
         <FinalCTA />
       </main>
