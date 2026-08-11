@@ -1,5 +1,6 @@
 import {
   generateSsoToken,
+  getAuthProviders,
   getCurrentAuthUser,
   loginUser,
   ssoTokenExchange,
@@ -12,6 +13,7 @@ const mockedGetCurrentAuthUser = vi.mocked(getCurrentAuthUser)
 const mockedLoginUser = vi.mocked(loginUser)
 const mockedGenerateSsoToken = vi.mocked(generateSsoToken)
 const mockedSsoTokenExchange = vi.mocked(ssoTokenExchange)
+const mockedGetAuthProviders = vi.mocked(getAuthProviders)
 
 const mockUser = {
   id: 'user-1',
@@ -46,10 +48,8 @@ describe('SignInForm (login home fork)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     sessionStorage.clear()
-    // Providers posture fetch: unreachable → default posture
-    ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockRejectedValue(
-      new Error('no network')
-    )
+    // Providers posture: unreachable → default posture (core client fails open)
+    mockedGetAuthProviders.mockRejectedValue(new Error('no network'))
   })
 
   afterEach(() => {
@@ -186,15 +186,14 @@ describe('SignInForm (login home fork)', () => {
   it('hides the sign-up toggle when registration is disabled', async () => {
     fakeLocation('')
     mockedGetCurrentAuthUser.mockRejectedValue(new Error('unauthorized'))
-    ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-      ok: true,
-      json: async () => ({
+    mockedGetAuthProviders.mockResolvedValue({
+      data: {
         password_auth: true,
         oidc: { enabled: false },
         registration: false,
         passkeys: false,
-      }),
-    })
+      },
+    } as never)
 
     render(<SignInForm apiUrl="http://localhost:8000" />)
 
@@ -210,15 +209,14 @@ describe('SignInForm (login home fork)', () => {
   it('replaces the form with a posture notice when password auth is disabled', async () => {
     fakeLocation('')
     mockedGetCurrentAuthUser.mockRejectedValue(new Error('unauthorized'))
-    ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-      ok: true,
-      json: async () => ({
+    mockedGetAuthProviders.mockResolvedValue({
+      data: {
         password_auth: false,
         oidc: { enabled: true, provider_label: 'Okta' },
         registration: false,
         passkeys: false,
-      }),
-    })
+      },
+    } as never)
 
     render(<SignInForm apiUrl="http://localhost:8000" />)
 

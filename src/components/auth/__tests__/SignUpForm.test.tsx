@@ -1,9 +1,10 @@
-import { registerUser } from '@robosystems/client'
+import { getAuthProviders, registerUser } from '@robosystems/client'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { SignUpForm } from '../SignUpForm'
 
 const mockedRegisterUser = vi.mocked(registerUser)
+const mockedGetAuthProviders = vi.mocked(getAuthProviders)
 
 const mockUser = {
   id: 'user-1',
@@ -45,9 +46,8 @@ describe('SignUpForm (login home fork)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     sessionStorage.clear()
-    ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockRejectedValue(
-      new Error('no network')
-    )
+    // Providers posture: unreachable → default posture (core client fails open)
+    mockedGetAuthProviders.mockRejectedValue(new Error('no network'))
   })
 
   afterEach(() => {
@@ -121,15 +121,14 @@ describe('SignUpForm (login home fork)', () => {
 
   it('renders the invitation-only notice when registration is closed', async () => {
     fakeLocation('')
-    ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-      ok: true,
-      json: async () => ({
+    mockedGetAuthProviders.mockResolvedValue({
+      data: {
         password_auth: true,
         oidc: { enabled: false },
         registration: false,
         passkeys: false,
-      }),
-    })
+      },
+    } as never)
 
     render(<SignUpForm apiUrl="http://localhost:8000" />)
 
