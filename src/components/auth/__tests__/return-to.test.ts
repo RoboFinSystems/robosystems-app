@@ -52,6 +52,13 @@ describe('parseDestination', () => {
     })
   })
 
+  it.each(['robosystems://evil.com', 'robosystems:/\\evil.com'])(
+    'degrades an unsafe self-app path to no destination (%j)',
+    (raw) => {
+      expect(parseDestination(raw)).toBeNull()
+    }
+  )
+
   it('treats a self-app default landing as no destination', () => {
     expect(parseDestination('robosystems')).toBeNull()
   })

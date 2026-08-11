@@ -39,10 +39,14 @@ export function parseDestination(
   if (!parsed) {
     return null
   }
+  // parseReturnTo already degrades unsafe paths to null; re-validate here so
+  // the guarantee at this redirect sink doesn't rest on package internals.
+  const path =
+    parsed.path && isSafeRelativePath(parsed.path) ? parsed.path : null
   if (parsed.app === CURRENT_APP) {
-    return parsed.path ? { kind: 'local', path: parsed.path } : null
+    return path ? { kind: 'local', path } : null
   }
-  return { kind: 'app', app: parsed.app, path: parsed.path }
+  return { kind: 'app', app: parsed.app, path }
 }
 
 const BRIDGE_MARKER_PREFIX = 'bridge_attempt:'
