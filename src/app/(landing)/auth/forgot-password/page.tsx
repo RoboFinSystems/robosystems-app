@@ -1,5 +1,10 @@
 'use client'
 
+import {
+  parseDestination,
+  useCarriedAuthParams,
+  useReturnTo,
+} from '@/components/auth/return-to'
 import { useAuth } from '@robosystems/core/auth-components/AuthProvider'
 import { AnimatedLogo, Spinner } from '@robosystems/core/ui-components'
 import { useState } from 'react'
@@ -11,6 +16,13 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
+  const rawReturnTo = useReturnTo()
+  const withAuthParams = useCarriedAuthParams()
+
+  // Arriving from a product app, the reset email brands for that app and
+  // its link carries the destination onward.
+  const destination = parseDestination(rawReturnTo)
+  const appSource = destination?.kind === 'app' ? destination.app : undefined
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,7 +37,10 @@ export default function ForgotPasswordPage() {
     setStatus('idle')
 
     try {
-      const result = await forgotPassword(email)
+      const result = await forgotPassword(
+        email,
+        appSource ? { appSource } : undefined
+      )
 
       if (result.success) {
         setStatus('success')
@@ -67,7 +82,7 @@ export default function ForgotPasswordPage() {
             <HiCheckCircle className="mx-auto h-16 w-16 text-green-500" />
             <p className="text-sm text-gray-300">{message}</p>
             <a
-              href="/login"
+              href={withAuthParams('/login')}
               className="text-sm font-medium text-gray-300 hover:text-white"
             >
               Back to sign in
@@ -114,7 +129,7 @@ export default function ForgotPasswordPage() {
 
             <div className="text-center">
               <a
-                href="/login"
+                href={withAuthParams('/login')}
                 className="text-sm font-medium text-gray-300 hover:text-white"
               >
                 Back to sign in

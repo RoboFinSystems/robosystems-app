@@ -1,11 +1,10 @@
 'use client'
 
-import { CURRENT_APP, SignUpForm } from '@robosystems/core'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { SignUpForm } from '@/components/auth/SignUpForm'
+import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
 function RegisterForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
 
   // Organization invitations link here as /register?invite=<token>. The form
@@ -18,20 +17,10 @@ function RegisterForm() {
       apiUrl={
         process.env.NEXT_PUBLIC_ROBOSYSTEMS_API_URL || 'http://localhost:8000'
       }
-      currentApp={CURRENT_APP}
       showConfirmPassword={true}
       showTermsAcceptance={true}
       redirectTo="/login"
       inviteToken={inviteToken}
-      onSuccess={() => {}}
-      onRedirect={(url) => {
-        // For better integration with Next.js navigation
-        if (url === '/login') {
-          router.push('/login')
-        } else {
-          window.location.href = url || '/login'
-        }
-      }}
       turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
     />
   )
