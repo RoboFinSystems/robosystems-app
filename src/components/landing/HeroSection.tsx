@@ -142,8 +142,9 @@ export default function HeroSection() {
                   Connect Everything
                 </h3>
                 <p className="text-center text-sm text-gray-400">
-                  SEC filings, QuickBooks, Google Drive, banking data, and
-                  custom sources. One platform, one query, one answer.
+                  SEC filings, QuickBooks, your own documents, and any source
+                  you connect through the public API. One platform, one query,
+                  one answer.
                 </p>
               </div>
             </div>
