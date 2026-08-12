@@ -156,8 +156,8 @@ export default function ProductOverview() {
                   Semantic Memory
                 </h3>
                 <p className="text-center text-sm text-gray-400">
-                  Vector embeddings and AI memory that persists across
-                  sessions&mdash;context that compounds over time
+                  Decisions and conventions from past work, recorded and
+                  recalled by agents via LanceDB
                 </p>
               </div>
             </div>
@@ -256,13 +256,13 @@ export default function ProductOverview() {
                 Institutional Memory
               </h4>
               <p className="mb-4 text-sm text-gray-400">
-                Every transaction, decision, and relationship is preserved in
-                the graph. AI agents build persistent memory — concepts,
-                observations, and context — that compounds across sessions.
+                The bridge between the two: the graph holds what happened,
+                documents what was disclosed, memory how your team handled it.
               </p>
               <div className="rounded-lg bg-black/30 p-3">
                 <p className="text-xs text-gray-500 italic">
-                  "What patterns did we find in last quarter's analysis?"
+                  &ldquo;How did we classify this vendor last quarter, and
+                  why?&rdquo;
                 </p>
               </div>
             </div>

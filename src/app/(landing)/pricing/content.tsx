@@ -65,17 +65,18 @@ export default function PricingContent() {
                   </h4>
                   <p className="text-gray-400">
                     Credits power AI agent calls — powered by Claude (Anthropic)
-                    via AWS Bedrock — on your graph data. Today, the primary AI
-                    feature is{' '}
-                    <span className="text-gray-300">Text-to-Cypher</span> — ask
-                    questions in plain English and our AI converts them into
-                    optimized Cypher queries, executes them against your graph,
-                    and returns formatted results. Credits are calculated based
-                    on actual token usage per call. All other operations — MCP
-                    tool access, database queries, file uploads, graph
-                    materialization, backups, and downloads — are included in
-                    your plan at no additional credit cost (subject to rate
-                    limits by tier).
+                    via AWS Bedrock — on your graph data. Two agents ship today:{' '}
+                    <span className="text-gray-300">Text-to-Cypher</span>, which
+                    turns a plain-English question into a Cypher query, runs it,
+                    and answers with the query behind it; and{' '}
+                    <span className="text-gray-300">account mapping</span>,
+                    which maps your chart of accounts to the US-GAAP taxonomy
+                    with confidence scores. Credits are calculated from actual
+                    token usage per call. Everything else — MCP tool access,
+                    database queries, document search, semantic memory, file
+                    uploads, graph materialization, backups, and downloads — is
+                    included in your plan at no additional credit cost (subject
+                    to rate limits by tier).
                   </p>
                 </div>
                 <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700">
@@ -83,13 +84,14 @@ export default function PricingContent() {
                     What AI capabilities are coming next?
                   </h4>
                   <p className="text-gray-400">
-                    Text-to-Cypher and hybrid document search are the foundation
-                    of our AI agent system. We&apos;re actively building
-                    additional agents for deeper entity analysis and automated
-                    insight generation across your financial data. As new
-                    capabilities launch, they&apos;ll use the same credit system
-                    — more complex agents may consume more credits per call, but
-                    you&apos;ll always have clear visibility into usage.
+                    Those two agents, hybrid document search, and semantic
+                    memory are the foundation of our AI agent system. We&apos;re
+                    actively building additional agents for deeper entity
+                    analysis and automated insight generation across your
+                    financial data. As new capabilities launch, they&apos;ll use
+                    the same credit system — more complex agents may consume
+                    more credits per call, but you&apos;ll always have clear
+                    visibility into usage.
                   </p>
                 </div>
                 <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700">

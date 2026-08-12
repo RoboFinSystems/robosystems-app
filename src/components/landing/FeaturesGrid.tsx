@@ -222,11 +222,11 @@ export default function FeaturesGrid() {
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="mr-2 text-indigo-400">•</span>
-                  Works with Claude, Cursor, Windsurf
+                  Works with Claude, Claude Code, and Cursor
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-indigo-400">•</span>
-                  Semantic element and structure resolution
+                  Schema introspection and typed GraphQL reads
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-indigo-400">•</span>

@@ -69,11 +69,11 @@ export default function AiIntegrationMcp() {
               Connect with one URL and one header — no install
             </h4>
             <p className="mb-3 text-xs text-gray-400">
-              The URL picks the graph: <code>sec</code> for the public SEC
-              repository, your graph id for a private ledger.
+              The URL picks the graph: your own graph id for a private ledger,
+              or <code>sec</code> for the public SEC repository.
             </p>
             <pre className="overflow-x-auto text-sm text-gray-300">
-              <code>{`URL:    https://api.robosystems.ai/v1/graphs/sec/mcp
+              <code>{`URL:    https://api.robosystems.ai/v1/graphs/{GRAPH_ID}/mcp
 Header: X-API-Key: rfs*`}</code>
             </pre>
           </div>
@@ -82,8 +82,8 @@ Header: X-API-Key: rfs*`}</code>
               Claude Code (one command):
             </h4>
             <pre className="overflow-x-auto text-sm text-gray-300">
-              <code>{`claude mcp add --transport http robosystems-sec \\
-  https://api.robosystems.ai/v1/graphs/sec/mcp \\
+              <code>{`claude mcp add --transport http robosystems \\
+  https://api.robosystems.ai/v1/graphs/{GRAPH_ID}/mcp \\
   --header "X-API-Key: rfs*"`}</code>
             </pre>
           </div>
