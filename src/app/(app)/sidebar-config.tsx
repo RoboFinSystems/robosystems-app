@@ -108,21 +108,27 @@ export const getNavigationItems = (
       ]
     : []
 
-  // Always show these items
   // Billing lives on the Organization page instead — it is org-scoped, unlike
   // the user- and graph-scoped items here, and the org page already gates its
   // tabs to owner/admin. /billing itself redirects to /organization?tab=billing
   // so Stripe's portal return and checkout cancel URLs keep working.
-  const alwaysVisibleItems: SidebarItemData[] = [
-    // Follows the selected graph (one graph is one connector); listed above
-    // Repositories so the AI-connection path is easy to find. Labeled "MCP"
-    // to avoid the stem collision with roboledger's "Connections" (data
-    // sources); the route stays /connect.
-    {
-      icon: HiPuzzle,
-      label: 'MCP',
-      href: '/connect',
-    },
+  const tailItems: SidebarItemData[] = [
+    // Follows the selected graph (one graph is one connector), so it only
+    // exists once there is something to connect — a user graph or a subscribed
+    // repository. With no graph the page can only say "create one first", which
+    // Home and Repositories already cover. Listed above Repositories so the
+    // AI-connection path is easy to find. Labeled "MCP" to avoid the stem
+    // collision with roboledger's "Connections" (data sources); the route
+    // stays /connect.
+    ...(hasSelectedGraph
+      ? [
+          {
+            icon: HiPuzzle,
+            label: 'MCP',
+            href: '/connect',
+          },
+        ]
+      : []),
     {
       icon: HiGlobeAlt,
       label: 'Repositories',
@@ -130,7 +136,7 @@ export const getNavigationItems = (
     },
   ]
 
-  return [...baseItems, ...graphDependentItems, ...alwaysVisibleItems]
+  return [...baseItems, ...graphDependentItems, ...tailItems]
 }
 
 // Default export for backward compatibility
