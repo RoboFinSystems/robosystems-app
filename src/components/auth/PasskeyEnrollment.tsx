@@ -45,7 +45,9 @@ export function PasskeyEnrollment({
     setBusy(true)
     setError('')
     try {
-      const options = await authClient.getPasskeyRegistrationOptions(mfaToken)
+      const options = await authClient.getPasskeyRegistrationOptions({
+        mfaToken,
+      })
       const credential = await startRegistration({
         // Opaque JSON from the backend RP library; the browser validates it.
         optionsJSON: options as never,

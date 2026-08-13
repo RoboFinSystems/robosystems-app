@@ -11,8 +11,9 @@ import { HiKey } from 'react-icons/hi'
 
 // App-local settings card (the passkey UI deliberately lives in the login
 // home, never in @robosystems/core): list/enroll/remove passkeys and manage
-// recovery codes. Removal and code regeneration re-authenticate with the
-// current password — the hijacked-session defense.
+// recovery codes. Enrollment, removal, and code regeneration all
+// re-authenticate with the current password — the hijacked-session defense;
+// the backend refuses a settings-lane ceremony on a session alone.
 
 interface PasskeyRow {
   id: string
@@ -46,9 +47,12 @@ export const PasskeysCard: FC<PasskeysCardProps> = ({ onSuccess, onError }) => {
   const [busy, setBusy] = useState(false)
   const [newName, setNewName] = useState('')
   const [freshCodes, setFreshCodes] = useState<string[] | null>(null)
-  // Pending destructive action awaiting password re-auth.
+  // Pending credential-surface action awaiting password re-auth.
   const [pending, setPending] = useState<
-    { kind: 'delete'; passkey: PasskeyRow } | { kind: 'regenerate' } | null
+    | { kind: 'add' }
+    | { kind: 'delete'; passkey: PasskeyRow }
+    | { kind: 'regenerate' }
+    | null
   >(null)
   const [password, setPassword] = useState('')
 
@@ -71,37 +75,33 @@ export const PasskeysCard: FC<PasskeysCardProps> = ({ onSuccess, onError }) => {
     void refresh()
   }, [refresh])
 
-  const handleEnroll = async () => {
-    setBusy(true)
-    try {
-      const options = await authClient.getPasskeyRegistrationOptions()
-      const credential = await startRegistration({
-        optionsJSON: options as never,
-      })
-      const result = await authClient.completePasskeyEnrollment(
-        credential as unknown as Record<string, unknown>,
-        { name: newName.trim() || undefined }
-      )
-      setNewName('')
-      if (result.recoveryCodes) {
-        setFreshCodes(result.recoveryCodes)
-      }
-      onSuccess?.('Passkey added')
-      await refresh()
-    } catch (err: unknown) {
-      if (!isWebAuthnCancel(err)) {
-        onError?.('Passkey setup failed')
-      }
-    } finally {
-      setBusy(false)
+  const handleEnroll = async (currentPassword: string) => {
+    // The password is consumed at options time — the ceremony that follows
+    // is bound to the challenge that proof unlocked.
+    const options = await authClient.getPasskeyRegistrationOptions({
+      password: currentPassword,
+    })
+    const credential = await startRegistration({
+      optionsJSON: options as never,
+    })
+    const result = await authClient.completePasskeyEnrollment(
+      credential as unknown as Record<string, unknown>,
+      { name: newName.trim() || undefined }
+    )
+    setNewName('')
+    if (result.recoveryCodes) {
+      setFreshCodes(result.recoveryCodes)
     }
+    onSuccess?.('Passkey added')
   }
 
   const handleConfirmPending = async () => {
     if (!pending) return
     setBusy(true)
     try {
-      if (pending.kind === 'delete') {
+      if (pending.kind === 'add') {
+        await handleEnroll(password)
+      } else if (pending.kind === 'delete') {
         await authClient.deletePasskey(pending.passkey.id, { password })
         onSuccess?.('Passkey removed')
       } else {
@@ -113,13 +113,27 @@ export const PasskeysCard: FC<PasskeysCardProps> = ({ onSuccess, onError }) => {
       setPassword('')
       await refresh()
     } catch (err: unknown) {
-      const status = err as { status?: number; response?: { status?: number } }
-      const code = status?.status ?? status?.response?.status
-      onError?.(
-        code === 409
-          ? 'Your role requires MFA — add another passkey before removing this one.'
-          : 'Re-authentication failed'
-      )
+      if (pending.kind === 'add' && isWebAuthnCancel(err)) {
+        // Backing out of the browser prompt is not an error; the modal
+        // closes and nothing changed.
+        setPending(null)
+        setPassword('')
+      } else {
+        const status = err as {
+          status?: number
+          response?: { status?: number }
+        }
+        const code = status?.status ?? status?.response?.status
+        onError?.(
+          pending.kind === 'add'
+            ? code === 401
+              ? 'Re-authentication failed'
+              : 'Passkey setup failed'
+            : code === 409
+              ? 'Your role requires MFA — add another passkey before removing this one.'
+              : 'Re-authentication failed'
+        )
+      }
     } finally {
       setBusy(false)
     }
@@ -182,7 +196,11 @@ export const PasskeysCard: FC<PasskeysCardProps> = ({ onSuccess, onError }) => {
             className="focus:ring-primary-500 block w-full rounded-md border-0 bg-white px-3 py-2 text-sm text-zinc-900 ring-1 ring-zinc-300 ring-inset placeholder:text-zinc-400 focus:ring-2 focus:ring-inset dark:bg-zinc-800 dark:text-white dark:ring-zinc-600"
             disabled={busy}
           />
-          <Button size="sm" disabled={busy} onClick={() => void handleEnroll()}>
+          <Button
+            size="sm"
+            disabled={busy}
+            onClick={() => setPending({ kind: 'add' })}
+          >
             Add passkey
           </Button>
         </div>
@@ -240,17 +258,27 @@ export const PasskeysCard: FC<PasskeysCardProps> = ({ onSuccess, onError }) => {
         }}
         onConfirm={() => void handleConfirmPending()}
         title={
-          pending?.kind === 'regenerate'
-            ? 'Regenerate recovery codes'
-            : 'Remove passkey'
+          pending?.kind === 'add'
+            ? 'Add a passkey'
+            : pending?.kind === 'regenerate'
+              ? 'Regenerate recovery codes'
+              : 'Remove passkey'
         }
-        confirmLabel={pending?.kind === 'regenerate' ? 'Regenerate' : 'Remove'}
+        confirmLabel={
+          pending?.kind === 'add'
+            ? 'Continue'
+            : pending?.kind === 'regenerate'
+              ? 'Regenerate'
+              : 'Remove'
+        }
       >
         <div className="space-y-3">
           <p className="text-sm text-zinc-600 dark:text-zinc-300">
-            {pending?.kind === 'regenerate'
-              ? 'Your current recovery codes will stop working. Confirm your password to continue.'
-              : `"${pending?.kind === 'delete' ? pending.passkey.name : ''}" will no longer be able to sign in to your account. Confirm your password to continue.`}
+            {pending?.kind === 'add'
+              ? 'Confirm your password to add a new sign-in credential, then follow your browser’s passkey prompt.'
+              : pending?.kind === 'regenerate'
+                ? 'Your current recovery codes will stop working. Confirm your password to continue.'
+                : `"${pending?.kind === 'delete' ? pending.passkey.name : ''}" will no longer be able to sign in to your account. Confirm your password to continue.`}
           </p>
           <input
             type="password"
