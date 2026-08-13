@@ -6,7 +6,10 @@ import { RoboSystemsAuthClient } from '@robosystems/core/auth-core/client'
 import { getAppConfig } from '@robosystems/core/auth-core/config'
 import { useSSO } from '@robosystems/core/auth-core/sso'
 import { LogoBadge, Spinner } from '@robosystems/core/ui-components'
+import { startAuthentication } from '@simplewebauthn/browser'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { MfaChallenge } from './MfaChallenge'
+import { PasskeyEnrollment } from './PasskeyEnrollment'
 import { PlatformIdentityHeader } from './PlatformIdentityHeader'
 import {
   markBridgeAttempt,
@@ -76,6 +79,13 @@ interface BridgeInterstitial {
   returnTo: string
 }
 
+/** The password step passed but a passkey step must finish before a
+ * session exists — which step depends on the login's status discriminator. */
+interface MfaStep {
+  kind: 'mfa' | 'enroll'
+  token: string
+}
+
 export function SignInForm({
   apiUrl,
   redirectTo = '/home',
@@ -95,6 +105,7 @@ export function SignInForm({
   const [interstitial, setInterstitial] = useState<BridgeInterstitial | null>(
     null
   )
+  const [mfaStep, setMfaStep] = useState<MfaStep | null>(null)
   const startedRef = useRef(false)
   const auth = useOptionalAuth()
   const withAuthParams = useCarriedAuthParams()
@@ -233,7 +244,21 @@ export function SignInForm({
     setError('')
 
     try {
-      await authClient.login(formData.email, formData.password)
+      const result = await authClient.login(formData.email, formData.password)
+      // Password correct but no session yet: the backend wants a passkey
+      // step first (second factor, or forced first enrollment for
+      // MFA-required roles). Interpose here; the step's completion resumes
+      // into the same routeAfterAuth.
+      if (result.status === 'mfa_required' && result.mfaToken) {
+        setMfaStep({ kind: 'mfa', token: result.mfaToken })
+        setLoading(false)
+        return
+      }
+      if (result.status === 'mfa_enrollment_required' && result.mfaToken) {
+        setMfaStep({ kind: 'enroll', token: result.mfaToken })
+        setLoading(false)
+        return
+      }
       const rawReturnTo = new URLSearchParams(window.location.search).get(
         'return_to'
       )
@@ -242,6 +267,40 @@ export function SignInForm({
       setError(loginErrorMessage(error))
       setLoading(false)
     }
+  }
+
+  /** Resume normal post-auth routing after an MFA/enrollment step. */
+  const handleMfaComplete = async () => {
+    const rawReturnTo = new URLSearchParams(window.location.search).get(
+      'return_to'
+    )
+    await routeAfterAuth(rawReturnTo)
+  }
+
+  /** Passwordless login: one user-verified assertion is the whole login. */
+  const handlePasskeyLogin = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const options = await authClient.getPasskeyLoginOptions()
+      const assertion = await startAuthentication({
+        optionsJSON: options as never,
+      })
+      await authClient.completePasskeyLogin(
+        assertion as unknown as Record<string, unknown>
+      )
+      const rawReturnTo = new URLSearchParams(window.location.search).get(
+        'return_to'
+      )
+      await routeAfterAuth(rawReturnTo)
+      return
+    } catch (err: unknown) {
+      // A cancelled browser prompt is a non-event, not a failure.
+      if (!(err instanceof Error && err.name === 'NotAllowedError')) {
+        setError('Passkey sign-in failed. Try again or use your password.')
+      }
+    }
+    setLoading(false)
   }
 
   const handleContinueBridge = async () => {
@@ -262,6 +321,7 @@ export function SignInForm({
 
   const passwordAuthEnabled = providers ? providers.password_auth : true
   const registrationEnabled = providers ? providers.registration : true
+  const passkeysEnabled = providers ? providers.passkeys : false
 
   if (ssoChecking || redirecting) {
     return (
@@ -309,6 +369,36 @@ export function SignInForm({
               Sign out
             </button>
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (mfaStep) {
+    return (
+      <div className="via-primary-950 flex min-h-screen items-center justify-center bg-linear-to-br from-black to-zinc-900 px-4 py-12 sm:px-6 lg:px-8">
+        <div className="w-full max-w-lg space-y-8">
+          <PlatformIdentityHeader
+            title={
+              mfaStep.kind === 'mfa' ? 'Verify it’s you' : 'Set up your passkey'
+            }
+            continuesTo={continuesTo}
+          />
+          {mfaStep.kind === 'mfa' ? (
+            <MfaChallenge
+              authClient={authClient}
+              mfaToken={mfaStep.token}
+              onSuccess={handleMfaComplete}
+              onRestart={() => setMfaStep(null)}
+            />
+          ) : (
+            <PasskeyEnrollment
+              authClient={authClient}
+              mfaToken={mfaStep.token}
+              onComplete={handleMfaComplete}
+              onCancel={() => setMfaStep(null)}
+            />
+          )}
         </div>
       </div>
     )
@@ -401,6 +491,17 @@ export function SignInForm({
                     : 'Sign in'}
               </button>
             </div>
+
+            {passkeysEnabled && (
+              <button
+                type="button"
+                onClick={() => void handlePasskeyLogin()}
+                disabled={loading || redirecting}
+                className="focus-visible:outline-primary-500 relative flex w-full justify-center rounded-md bg-gray-800 px-4 py-3 text-sm font-semibold text-white ring-1 ring-gray-600 ring-inset hover:bg-gray-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-solid disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Sign in with a passkey
+              </button>
+            )}
 
             <div className="flex flex-col items-center gap-2">
               <a
