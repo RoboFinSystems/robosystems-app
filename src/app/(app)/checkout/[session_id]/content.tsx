@@ -2,7 +2,6 @@
 
 import * as SDK from '@robosystems/client'
 import {
-  isUUID,
   PageLayout,
   useApiError,
   useGraphContext,
@@ -29,6 +28,14 @@ type CheckoutStatus =
   | 'failed'
   | 'canceled'
   | 'unknown'
+
+// Graph and subgraph resource ids are `kg`-prefixed (e.g. `kg19ffe6c…`); shared
+// repositories are short lowercase names (e.g. `sec`). The prior `!isUUID()`
+// heuristic misread every `kg…` graph as a repository — graph ids were never
+// UUIDs — and sent a paying owner to the shared-repo getting-started page
+// instead of their own dashboard (F9).
+export const isRepositoryResource = (id: string | null): boolean =>
+  !!id && !/^kg[0-9a-f]/i.test(id)
 
 export function CheckoutContent({ sessionId }: CheckoutContentProps) {
   const router = useRouter()
@@ -81,10 +88,9 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
           stopPolling()
 
           if (checkoutStatus === 'active') {
-            // Determine redirect based on resource type
-            // Repository IDs are typically lowercase names (e.g., 'sec', 'industry')
-            // Graph IDs are UUIDs
-            const isRepository = currentResourceId && !isUUID(currentResourceId)
+            // Repositories (short lowercase names) get the getting-started
+            // page; owned graphs (`kg…`) get the dashboard.
+            const isRepository = isRepositoryResource(currentResourceId)
 
             // For repositories, refresh graphs and redirect (no select call needed)
             if (isRepository && currentResourceId) {
@@ -197,7 +203,7 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
 
   const handleCancel = () => {
     // Determine redirect based on resource type
-    const isRepository = resourceId && !isUUID(resourceId)
+    const isRepository = isRepositoryResource(resourceId)
     window.location.href = isRepository ? '/console' : '/dashboard'
   }
 
@@ -261,7 +267,9 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
                   Resource
                 </p>
                 <p className="font-mono text-sm text-gray-900 dark:text-white">
-                  {isUUID(resourceId) ? resourceId : resourceId.toUpperCase()}
+                  {isRepositoryResource(resourceId)
+                    ? resourceId.toUpperCase()
+                    : resourceId}
                 </p>
               </div>
             )}
@@ -270,14 +278,14 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
               <Button
                 color="blue"
                 onClick={() => {
-                  const isRepository = resourceId && !isUUID(resourceId)
+                  const isRepository = isRepositoryResource(resourceId)
                   window.location.href = isRepository
                     ? `/repositories/${resourceId}/getting-started`
                     : '/dashboard'
                 }}
                 className="w-full"
               >
-                {resourceId && !isUUID(resourceId)
+                {isRepositoryResource(resourceId)
                   ? 'Get Started'
                   : 'Go to Dashboard'}
               </Button>
