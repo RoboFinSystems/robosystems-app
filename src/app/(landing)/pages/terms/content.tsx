@@ -16,7 +16,7 @@ export default function TermsOfService() {
           </h1>
 
           <p className="mb-12 text-gray-600 dark:text-gray-400">
-            Last Revision: July 17, 2026
+            Last Revision: August 13, 2026
           </p>
 
           <p className="mt-8 text-2xl font-semibold">
@@ -382,10 +382,20 @@ export default function TermsOfService() {
           </ul>
 
           <p>
+            <strong>Security Incident Notification:</strong> We will notify You
+            without undue delay, and in any event within seventy-two (72) hours,
+            after confirming a security incident involving unauthorized access
+            to Your Data, and will provide information reasonably required for
+            your own notification obligations.
+          </p>
+
+          <p>
             <strong>Data Portability:</strong> You may export Your Data from
             your graph database at any time using our export tools and APIs.
-            Upon termination of your subscription, You will have 30 days to
-            export Your Data before it is permanently deleted.
+            Upon termination of your subscription, You will have 60 days to
+            export Your Data before it is deleted from active systems, with
+            residual copies in encrypted backups expiring on our backup
+            retention schedule.
           </p>
 
           <p>
@@ -749,11 +759,15 @@ export default function TermsOfService() {
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
             <li>
-              Your graph database remains accessible for 30 days after
+              Your graph database remains accessible for 60 days after
               cancellation
             </li>
             <li>You may export Your Data during this grace period</li>
-            <li>After 30 days, Your Data will be permanently deleted</li>
+            <li>
+              After 60 days, Your Data will be deleted from active systems per
+              our Data Management Policy, with residual copies in encrypted
+              backups expiring on the backup retention schedule
+            </li>
             <li>
               We may retain anonymized, aggregated metrics for service
               improvement
@@ -801,7 +815,48 @@ export default function TermsOfService() {
           </p>
 
           <p>
-            <strong>21. Contact Us</strong>
+            <strong>21. Relationship to Other Agreements</strong>
+          </p>
+
+          <p>
+            If your organization has entered into a separate written agreement
+            with RFS LLC governing the Services — such as our{' '}
+            <strong>
+              <a href="/pages/msa">Master Service Agreement</a>
+            </strong>{' '}
+            incorporated by a mutually executed Order Form, or another master
+            agreement signed by both parties — that agreement governs your
+            organization&apos;s use of the Services and controls in the event of
+            any conflict with these Terms, including with respect to
+            modifications, fees, refunds, data retention, liability, and
+            termination. These Terms continue to apply only to the extent that
+            agreement is silent. Customer-dedicated deployment accounts are
+            provided exclusively under such a written agreement, not under these
+            Terms.
+          </p>
+
+          <p>
+            Professional services relating to the Platform — including
+            integration development, forward-deployed engineering, and advisory
+            services — are offered by our affiliate Harbinger Consultants LLC
+            (doing business as Harbinger FinLab) under its own agreements, and
+            are not governed by these Terms.
+          </p>
+
+          <p>
+            <strong>22. Governing Law and Venue</strong>
+          </p>
+
+          <p>
+            These Terms are governed by the laws of the State of Wyoming,
+            excluding its conflict-of-law rules. Exclusive venue for any dispute
+            arising out of these Terms or your use of the Platform lies in the
+            state or federal courts located in Laramie County, Wyoming, and each
+            party consents to personal jurisdiction and venue there.
+          </p>
+
+          <p>
+            <strong>23. Contact Us</strong>
           </p>
 
           <p>
