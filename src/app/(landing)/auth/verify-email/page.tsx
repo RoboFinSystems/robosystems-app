@@ -15,13 +15,15 @@ function VerifyEmailContent() {
     'loading'
   )
   const [message, setMessage] = useState<string>('')
+  const [redirectTo, setRedirectTo] = useState<string>('/home')
   const verifyAttempted = useRef(false)
 
+  // Verify the token exactly once. Re-runs (a dependency identity change, or a
+  // Strict Mode remount) are guarded so we never double-verify. Deliberately
+  // does NOT schedule the redirect — that lives in the separate effect below.
   useEffect(() => {
     if (verifyAttempted.current) return
     verifyAttempted.current = true
-
-    let timeoutId: NodeJS.Timeout | null = null
 
     const verifyEmailToken = async () => {
       const token = searchParams.get('token')
@@ -40,13 +42,9 @@ function VerifyEmailContent() {
         const result = await verifyEmail(token)
 
         if (result.success) {
-          setStatus('success')
+          setRedirectTo(rawReturnTo ? loginPathWith(rawReturnTo) : '/home')
           setMessage(result.message || 'Email verified successfully!')
-
-          // Redirect after 3 seconds
-          timeoutId = setTimeout(() => {
-            router.push(rawReturnTo ? loginPathWith(rawReturnTo) : '/home')
-          }, 3000)
+          setStatus('success')
         } else {
           setStatus('error')
           setMessage(result.message || 'Failed to verify email')
@@ -58,14 +56,25 @@ function VerifyEmailContent() {
     }
 
     verifyEmailToken()
+  }, [searchParams, verifyEmail])
 
-    // Cleanup function to clear timeout
-    return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId)
-      }
-    }
-  }, [searchParams, verifyEmail, router])
+  // Redirect after a successful verification, in its own effect keyed on
+  // `status`. Keeping this out of the verification effect is the fix for a
+  // stranded-on-success bug: when the redirect timeout lived in the verify
+  // effect, an unrelated re-render (e.g. the auth context updating `verifyEmail`
+  // right after verification) re-ran that effect, whose cleanup cleared the
+  // pending timeout while the ref-guard skipped rescheduling it — so the
+  // redirect never fired. Here the timeout is only ever cleared alongside a
+  // re-schedule (or on unmount), so a successful verify always redirects.
+  useEffect(() => {
+    if (status !== 'success') return
+
+    const timeoutId = setTimeout(() => {
+      router.push(redirectTo)
+    }, 3000)
+
+    return () => clearTimeout(timeoutId)
+  }, [status, redirectTo, router])
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
