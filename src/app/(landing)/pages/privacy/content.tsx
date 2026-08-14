@@ -16,7 +16,7 @@ export default function PrivacyPolicy() {
           </h1>
 
           <p className="mb-12 text-gray-600 dark:text-gray-400">
-            Last Revision: July 17, 2026
+            Last Revision: August 13, 2026
           </p>
 
           <p className="mt-8 text-2xl font-semibold">
@@ -205,7 +205,11 @@ export default function PrivacyPolicy() {
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
             <li>Encryption of data at rest and in transit</li>
-            <li>Isolated database instances for each organization</li>
+            <li>
+              Dedicated graph database instances for your organization&apos;s
+              data, with logically isolated schemas for accounting and
+              investment records
+            </li>
             <li>Regular security audits and vulnerability assessments</li>
             <li>Access controls and authentication mechanisms</li>
             <li>
