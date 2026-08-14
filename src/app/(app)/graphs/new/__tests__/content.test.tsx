@@ -359,4 +359,27 @@ describe('NewGraphContent role restriction', () => {
       screen.getByText(/Graph Creation Limit Reached/i)
     ).toBeInTheDocument()
   })
+
+  test('shows a spinner, not the member dead-end, while org context loads (F8)', () => {
+    // An owner whose org context has not resolved yet has currentOrg=null, so
+    // isOrgAdmin is false. Gating only on useUserLimits.isLoading let the page
+    // fall through to the member "Graph Creation Is Restricted" dead-end before
+    // the role arrived — an owner briefly told they are a member.
+    mockUseOrg.mockReturnValue({
+      currentOrg: null,
+      loading: true,
+    } as never)
+    mockUseUserLimits.mockReturnValue({
+      canCreateGraph: false,
+      isLoading: false,
+      limits: { max_graphs: 10 },
+    } as never)
+
+    render(<NewGraphContent />)
+
+    expect(screen.getByRole('status')).toBeInTheDocument()
+    expect(
+      screen.queryByText(/Graph Creation Is Restricted/i)
+    ).not.toBeInTheDocument()
+  })
 })

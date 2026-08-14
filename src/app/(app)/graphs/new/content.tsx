@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react'
 export function NewGraphContent() {
   const router = useRouter()
   const { user } = useUser()
-  const { currentOrg } = useOrg()
+  const { currentOrg, loading: orgLoading } = useOrg()
   const { setCurrentGraph, refreshGraphs } = useGraphContext()
   const { canCreateGraph, isLoading, limits } = useUserLimits()
   const [showContactModal, setShowContactModal] = useState(false)
@@ -25,11 +25,13 @@ export function NewGraphContent() {
   // Check limits when component mounts or when loading completes. Members are
   // handled by their own branch below, so don't auto-open the limit form for
   // them — it asks RoboSystems to raise a quota that is not what blocked them.
+  // Wait for org context too, or `isOrgAdmin` is false mid-load and an owner
+  // is briefly treated as a member.
   useEffect(() => {
-    if (!isLoading && !canCreateGraph && isOrgAdmin) {
+    if (!isLoading && !orgLoading && !canCreateGraph && isOrgAdmin) {
       setShowContactModal(true)
     }
-  }, [isLoading, canCreateGraph, isOrgAdmin])
+  }, [isLoading, orgLoading, canCreateGraph, isOrgAdmin])
 
   const handleSuccess = async (graphId: string) => {
     try {
@@ -63,8 +65,11 @@ export function NewGraphContent() {
     router.push('/dashboard')
   }
 
-  // Show loading while checking limits
-  if (isLoading) {
+  // Show loading while checking limits AND while org context is still resolving.
+  // `isOrgAdmin` derives from `currentOrg`, which loads asynchronously — gating
+  // only on `isLoading` here let an owner momentarily fall through to the
+  // member dead-end below before their role arrived (F8).
+  if (isLoading || orgLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Spinner size="xl" />
