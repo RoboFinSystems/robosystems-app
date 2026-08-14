@@ -1,7 +1,7 @@
 export default function MasterServiceAgreement() {
   return (
     <section>
-      <div className="terms-content mx-auto max-w-(--breakpoint-md) px-4 py-8 text-left lg:px-12 lg:py-16 dark:text-white [&>h1]:mb-8 [&>h1]:text-3xl [&>h1]:font-bold [&>p]:mb-6 [&>p>strong:only-child]:mt-8 [&>p>strong:only-child]:mb-4 [&>p>strong:only-child]:block [&>p>strong:only-child]:text-xl [&>p>strong:only-child]:font-bold [&>ul]:mb-6 [&>ul]:ml-6 [&>ul>li]:mb-2">
+      <div className="terms-content mx-auto max-w-(--breakpoint-md) px-4 py-8 text-left lg:px-12 lg:py-16 dark:text-white [&>h1]:mb-8 [&>h1]:text-3xl [&>h1]:font-bold [&>p]:mb-6 [&>ul]:mb-6 [&>ul]:ml-6 [&>ul>li]:mb-2">
         <h1>
           <strong>MASTER SERVICE AGREEMENT</strong>
         </h1>
@@ -13,7 +13,7 @@ export default function MasterServiceAgreement() {
         <p>
           This Master Service Agreement (&quot;Agreement&quot;) is entered into
           between <strong>RFS LLC</strong>, a Wyoming limited liability company
-          doing business as <strong>RoboSystems</strong> (&quot;Provider&quot;),
+          doing business as <strong>RoboSystems </strong>(&quot;Provider&quot;),
           and the customer identified on an Order Form that incorporates this
           Agreement (&quot;Customer&quot;), and is effective as of the Effective
           Date of that Order Form. If Customer and Provider have executed a
@@ -29,9 +29,9 @@ export default function MasterServiceAgreement() {
           available Terms of Service, not by this Agreement.
         </p>
 
-        <p>
-          <strong>1. Services and Structure</strong>
-        </p>
+        <h2 className="mt-8 mb-4 text-xl font-bold">
+          1. Services and Structure
+        </h2>
 
         <p>
           1.1 Provider will make available the RoboSystems platform services
@@ -55,7 +55,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          1.4 <strong>Affiliate professional services.</strong> Provider&apos;s
+          1.4 <strong>Affiliate professional services. </strong>Provider&apos;s
           affiliate, Harbinger Consultants LLC (doing business as Harbinger
           FinLab), separately offers professional services — including
           integration development, forward-deployed engineering, and advisory
@@ -68,9 +68,7 @@ export default function MasterServiceAgreement() {
           Provider performs its own obligations through affiliates.
         </p>
 
-        <p>
-          <strong>2. Access and Use</strong>
-        </p>
+        <h2 className="mt-8 mb-4 text-xl font-bold">2. Access and Use</h2>
 
         <p>
           Customer may access and use the Services during the subscription term
@@ -87,9 +85,7 @@ export default function MasterServiceAgreement() {
           tenant&apos;s data.
         </p>
 
-        <p>
-          <strong>3. Fees and Payment</strong>
-        </p>
+        <h2 className="mt-8 mb-4 text-xl font-bold">3. Fees and Payment</h2>
 
         <p>
           Customer will pay the fees stated in the Order Form. Fees are invoiced
@@ -105,9 +101,7 @@ export default function MasterServiceAgreement() {
           supporting detail available on request.
         </p>
 
-        <p>
-          <strong>4. Term and Termination</strong>
-        </p>
+        <h2 className="mt-8 mb-4 text-xl font-bold">4. Term and Termination</h2>
 
         <p>
           This Agreement runs from the Effective Date until all Order Forms
@@ -120,9 +114,7 @@ export default function MasterServiceAgreement() {
           Provider refunds prepaid fees for the unused portion of the term.
         </p>
 
-        <p>
-          <strong>5. Customer Data</strong>
-        </p>
+        <h2 className="mt-8 mb-4 text-xl font-bold">5. Customer Data</h2>
 
         <p>
           Customer retains all right, title, and interest in data submitted to
@@ -140,7 +132,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          5.1 <strong>Export completeness.</strong> Provider maintains
+          5.1 <strong>Export completeness. </strong>Provider maintains
           programmatic read access to Customer Data through its published APIs
           sufficient for Customer to extract its own records without Provider
           assistance. Credentials that Provider holds in encrypted form for
@@ -149,9 +141,7 @@ export default function MasterServiceAgreement() {
           responsibility on any migration.
         </p>
 
-        <p>
-          <strong>6. Confidentiality</strong>
-        </p>
+        <h2 className="mt-8 mb-4 text-xl font-bold">6. Confidentiality</h2>
 
         <p>
           Each party will protect the other&apos;s Confidential Information with
@@ -165,12 +155,12 @@ export default function MasterServiceAgreement() {
           indefinitely for trade secrets.
         </p>
 
-        <p>
-          <strong>7. Security and Compliance</strong>
-        </p>
+        <h2 className="mt-8 mb-4 text-xl font-bold">
+          7. Security and Compliance
+        </h2>
 
         <p>
-          7.1 <strong>Security program.</strong> Provider will maintain a
+          7.1 <strong>Security program. </strong>Provider will maintain a
           written information security program with administrative, technical,
           and physical safeguards appropriate to the nature of Customer Data,
           including encryption of data in transit and at rest, least-privilege
@@ -180,7 +170,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          7.2 <strong>Incident notification.</strong> Provider will notify
+          7.2 <strong>Incident notification. </strong>Provider will notify
           Customer without undue delay, and in any event within seventy-two (72)
           hours, after confirming a security incident involving unauthorized
           access to Customer Data, and will provide information reasonably
@@ -190,7 +180,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          7.3 <strong>Attestation scope.</strong> Provider maintains a SOC 2
+          7.3 <strong>Attestation scope. </strong>Provider maintains a SOC 2
           Type II examination covering the environments Provider operates, and
           will make the report available to Customer under confidentiality
           obligations, no more than once annually and upon reasonable request.
@@ -204,7 +194,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          7.4 <strong>Complementary customer controls.</strong> Provider&apos;s
+          7.4 <strong>Complementary customer controls. </strong>Provider&apos;s
           attestation assumes Customer performs the controls set out in Exhibit
           1, which correspond to the complementary user entity controls stated
           in Provider&apos;s system description. Customer&apos;s failure to
@@ -213,7 +203,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          7.5 <strong>Security releases.</strong> Provider may apply
+          7.5 <strong>Security releases. </strong>Provider may apply
           security-related updates to environments it operates at any time,
           without prior notice where delay would increase risk, and will notify
           Customer promptly thereafter. Where a Service Schedule provides for
@@ -221,9 +211,9 @@ export default function MasterServiceAgreement() {
           releases.
         </p>
 
-        <p>
-          <strong>8. Warranties and Disclaimers</strong>
-        </p>
+        <h2 className="mt-8 mb-4 text-xl font-bold">
+          8. Warranties and Disclaimers
+        </h2>
 
         <p>
           Each party warrants it has authority to enter this Agreement. Provider
@@ -237,9 +227,7 @@ export default function MasterServiceAgreement() {
           JUDGMENT REMAINS THE RESPONSIBILITY OF CUSTOMER AND ITS ADVISORS.
         </p>
 
-        <p>
-          <strong>9. Indemnification</strong>
-        </p>
+        <h2 className="mt-8 mb-4 text-xl font-bold">9. Indemnification</h2>
 
         <p>
           Provider will defend Customer against third-party claims that the
@@ -253,9 +241,9 @@ export default function MasterServiceAgreement() {
           violation of this Agreement or law, on the same conditions.
         </p>
 
-        <p>
-          <strong>10. Limitation of Liability</strong>
-        </p>
+        <h2 className="mt-8 mb-4 text-xl font-bold">
+          10. Limitation of Liability
+        </h2>
 
         <p>
           EXCEPT FOR BREACH OF SECTION 6, INDEMNIFICATION OBLIGATIONS, OR A
@@ -267,9 +255,7 @@ export default function MasterServiceAgreement() {
           TO LIABILITY.
         </p>
 
-        <p>
-          <strong>11. Publicity</strong>
-        </p>
+        <h2 className="mt-8 mb-4 text-xl font-bold">11. Publicity</h2>
 
         <p>
           Neither party will use the other&apos;s name or marks in publicity
@@ -280,9 +266,9 @@ export default function MasterServiceAgreement() {
           scope.
         </p>
 
-        <p>
-          <strong>12. Open-Source Software</strong>
-        </p>
+        <h2 className="mt-8 mb-4 text-xl font-bold">
+          12. Open-Source Software
+        </h2>
 
         <p>
           Provider publishes core platform software under the Apache License
@@ -298,9 +284,7 @@ export default function MasterServiceAgreement() {
           agreement per Section 1.4.
         </p>
 
-        <p>
-          <strong>13. General</strong>
-        </p>
+        <h2 className="mt-8 mb-4 text-xl font-bold">13. General</h2>
 
         <p>
           Neither party may assign this Agreement without the other&apos;s
@@ -318,17 +302,17 @@ export default function MasterServiceAgreement() {
           by both parties.
         </p>
 
-        <p className="mt-8 text-2xl font-semibold">
-          <strong>Schedule A — Managed Platform</strong>
-        </p>
+        <h2 className="mt-8 text-2xl font-semibold">
+          Schedule A — Managed Platform
+        </h2>
 
         <p>
           Applies where the Order Form designates the{' '}
-          <strong>Managed Platform</strong> delivery mode.
+          <strong>Managed Platform </strong>delivery mode.
         </p>
 
         <p>
-          A.1 <strong>Description.</strong> Provider operates the platform as a
+          A.1 <strong>Description. </strong>Provider operates the platform as a
           multi-tenant service in Provider&apos;s production environment.
           Customer accesses it over HTTPS and holds no infrastructure
           credentials. Customer Data is logically isolated from other
@@ -337,12 +321,12 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          A.2 <strong>Fees.</strong> Subscription fees per the Order Form, based
+          A.2 <strong>Fees. </strong>Subscription fees per the Order Form, based
           on the plan, tier, and usage parameters stated there.
         </p>
 
         <p>
-          A.3 <strong>Availability and support.</strong> Support channels,
+          A.3 <strong>Availability and support. </strong>Support channels,
           coverage hours, and target response times are stated in the Order
           Form. Provider provides the Services with commercially reasonable
           efforts toward continuous availability; a quantified availability
@@ -351,28 +335,28 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          A.4 <strong>Changes.</strong> Provider may update the Services, and
+          A.4 <strong>Changes. </strong>Provider may update the Services, and
           will not materially reduce core functionality during a paid term
           without notice. Provider notifies Customer of critical system changes
           that may affect Customer&apos;s processing.
         </p>
 
         <p>
-          A.5 <strong>Attestation.</strong> The Managed Platform is within the
+          A.5 <strong>Attestation. </strong>The Managed Platform is within the
           scope of Provider&apos;s SOC 2 examination. Section 7.3 governs.
         </p>
 
-        <p className="mt-8 text-2xl font-semibold">
-          <strong>Schedule B — Customer-Dedicated Deployment Account</strong>
-        </p>
+        <h2 className="mt-8 text-2xl font-semibold">
+          Schedule B — Customer-Dedicated Deployment Account
+        </h2>
 
         <p>
           Applies where the Order Form designates the{' '}
-          <strong>Customer-Dedicated Deployment Account</strong> delivery mode.
+          <strong>Customer-Dedicated Deployment Account </strong>delivery mode.
         </p>
 
         <p>
-          B.1 <strong>Description.</strong> Provider provisions and operates a
+          B.1 <strong>Description. </strong>Provider provisions and operates a
           cloud account dedicated to Customer within Provider&apos;s cloud
           organization (&quot;Deployment Account&quot;), reachable at a
           Provider-managed subdomain or through private access as stated in the
@@ -382,7 +366,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          B.2 <strong>Ownership and operation.</strong> Provider owns and
+          B.2 <strong>Ownership and operation. </strong>Provider owns and
           operates the Deployment Account during the term. Customer does not
           hold root credentials, administrative credentials, or any write or
           execute access to the Deployment Account. This allocation is a
@@ -392,7 +376,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          B.3 <strong>Customer visibility.</strong> Provider will grant Customer
+          B.3 <strong>Customer visibility. </strong>Provider will grant Customer
           read-only access as stated in the Order Form, which may include a
           scoped read-only cross-account role, monitoring and log access, and
           Customer&apos;s own cost and usage data. Access is federated from
@@ -403,7 +387,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          B.4 <strong>Fees.</strong> (a) Cloud infrastructure costs, passed
+          B.4 <strong>Fees. </strong>(a) Cloud infrastructure costs, passed
           through at Provider&apos;s actual cost per Section 3; (b) a support
           and operations fee as stated in the Order Form; (c) an annual platform
           fee as stated in the Order Form; and (d) any separately quoted
@@ -413,7 +397,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          B.5 <strong>Releases and upgrades.</strong> Provider deploys pinned
+          B.5 <strong>Releases and upgrades. </strong>Provider deploys pinned
           platform releases to the Deployment Account on a schedule agreed with
           Customer. Security releases are exempt from that schedule and are
           applied by Provider across all deployment accounts within thirty (30)
@@ -423,7 +407,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          B.6 <strong>Change management.</strong> All changes to the Deployment
+          B.6 <strong>Change management. </strong>All changes to the Deployment
           Account are made through Provider&apos;s controlled pipeline. Customer
           will not deploy, modify, or operate infrastructure in the Deployment
           Account outside that pipeline. Customer-specific integrations are
@@ -433,7 +417,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          B.7 <strong>Attestation.</strong> The Deployment Account is within the
+          B.7 <strong>Attestation. </strong>The Deployment Account is within the
           scope of Provider&apos;s SOC 2 examination for so long as Provider
           operates it and it remains within Provider&apos;s cloud organization.
           Sections 7.3 and 7.4 govern; Exhibit 1 Section 2 applies in addition
@@ -441,20 +425,20 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          B.8 <strong>Account Transfer.</strong> Customer may request transfer
+          B.8 <strong>Account Transfer. </strong>Customer may request transfer
           of the Deployment Account to Customer&apos;s ownership at any time on
           written notice.
         </p>
 
         <p>
-          (a) <strong>Notice.</strong> Customer will give thirty (30) days&apos;
+          (a) <strong>Notice. </strong>Customer will give thirty (30) days&apos;
           written notice of a transfer request. Service continues and is
           invoiced normally throughout the notice period, during which the
           parties execute the transfer.
         </p>
 
         <p>
-          (b) <strong>Engagement fee.</strong> Provider will execute the
+          (b) <strong>Engagement fee. </strong>Provider will execute the
           transfer as a fixed-price service engagement at a fee equal to one (1)
           month of the support and operations fee then in effect, invoiced on
           initiation and in addition to fees for the notice-period month of
@@ -466,7 +450,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          (c) <strong>Timing.</strong> Provider will initiate the transfer
+          (c) <strong>Timing. </strong>Provider will initiate the transfer
           within five (5) business days of notice and complete it within fifteen
           (15) business days of Customer satisfying the prerequisites in (d)
           below. Where Customer supplies the prerequisites promptly, the
@@ -475,7 +459,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          (d) <strong>Customer prerequisites.</strong> Customer will provide a
+          (d) <strong>Customer prerequisites. </strong>Customer will provide a
           root email address it controls, a payment method and cloud support
           plan election, a source repository under Customer&apos;s control, a
           target domain with DNS control, and its own developer account for any
@@ -483,7 +467,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          (e) <strong>Included scope.</strong> Provider&apos;s fee covers: final
+          (e) <strong>Included scope. </strong>Provider&apos;s fee covers: final
           backups and snapshots; re-pointing deployment identity to
           Customer&apos;s repository; domain migration; revocation of all
           Provider access paths including rotation of all secrets in the
@@ -493,7 +477,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          (f) <strong>Excluded scope.</strong> Customer-side work, including
+          (f) <strong>Excluded scope. </strong>Customer-side work, including
           configuration of Customer&apos;s own source control and DNS, and
           re-authorization of end-client connections to third-party accounting
           systems (necessary because connection credentials are non-extractable
@@ -502,7 +486,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          (g) <strong>Effect.</strong> On the transfer date: Provider&apos;s
+          (g) <strong>Effect. </strong>On the transfer date: Provider&apos;s
           attestation coverage of the account ends; Provider ceases all
           operation, monitoring, backup, and security responsibility for the
           account; and Customer assumes all such responsibility. Provider will
@@ -512,7 +496,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          (h) <strong>Cloud-provider cooperation.</strong> Transfer of the
+          (h) <strong>Cloud-provider cooperation. </strong>Transfer of the
           Deployment Account is subject to the cloud provider&apos;s customer
           agreement and the account-transfer mechanisms it permits. The parties
           will cooperate in good faith to complete the transfer through those
@@ -520,9 +504,9 @@ export default function MasterServiceAgreement() {
           billing, and support arrangements.
         </p>
 
-        <p className="mt-8 text-2xl font-semibold">
-          <strong>Exhibit 1 — Complementary Customer Controls</strong>
-        </p>
+        <h2 className="mt-8 text-2xl font-semibold">
+          Exhibit 1 — Complementary Customer Controls
+        </h2>
 
         <p>
           These correspond to the complementary user entity controls in
@@ -530,7 +514,7 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          1. <strong>All customers.</strong> Customer will: (a) safeguard
+          1. <strong>All customers. </strong>Customer will: (a) safeguard
           account credentials and API keys and rotate them promptly on suspected
           compromise; (b) authorize and periodically review users it invites to
           its organization and graphs; (c) ensure the accuracy and lawful
