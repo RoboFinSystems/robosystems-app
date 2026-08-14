@@ -35,7 +35,7 @@ export default function TermsOfService() {
               &quot;we,&quot; &quot;us,&quot; &quot;our&quot;). RoboSystems
               provides a managed graph database platform, data integration
               services, and access to shared data repositories through the{' '}
-              <Link href="/">RoboSystems.ai</Link> website, APIs, and related
+              <Link href="/">RoboSystems.ai </Link>website, APIs, and related
               applications including RoboLedger and RoboInvestor (collectively,
               the &quot;Platform&quot; or &quot;Services&quot;){' '}
             </strong>
@@ -84,7 +84,7 @@ export default function TermsOfService() {
           <p className="mb-6">Our Services include:</p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
             <li>
-              <strong>Graph Database Subscriptions:</strong> Managed graph
+              <strong>Graph Database Subscriptions: </strong>Managed graph
               database instances on dedicated infrastructure for storing and
               analyzing your company's financial and operational data. All
               database operations are included - AI credits are consumed only by
@@ -93,13 +93,13 @@ export default function TermsOfService() {
               subgraphs varying by tier.
             </li>
             <li>
-              <strong>Platform Access:</strong> When you purchase a graph
+              <strong>Platform Access: </strong>When you purchase a graph
               database, you receive access to use your graph and all its
               subgraphs on the RoboLedger and RoboInvestor applications, as well
               as through our APIs and Model Context Protocol (MCP) tools.
             </li>
             <li>
-              <strong>Subgraph Management:</strong> Graph database subscriptions
+              <strong>Subgraph Management: </strong>Graph database subscriptions
               include the ability to create subgraphs - isolated database
               environments that share the parent graph's infrastructure and
               credit pool. The number of subgraphs available varies by
@@ -108,13 +108,13 @@ export default function TermsOfService() {
               layers, or version-controlled snapshots of your data.
             </li>
             <li>
-              <strong>Shared Data Repository Subscriptions:</strong> Access to
+              <strong>Shared Data Repository Subscriptions: </strong>Access to
               curated data products including the SEC XBRL filing repository,
               which provides semantically rich financial data for public
               companies for benchmarking and analysis.
             </li>
             <li>
-              <strong>Integration Services:</strong> Connectors for QuickBooks
+              <strong>Integration Services: </strong>Connectors for QuickBooks
               and other financial systems to automatically sync data into your
               graph database.
             </li>
@@ -125,7 +125,7 @@ export default function TermsOfService() {
           </p>
 
           <p>
-            <strong>Platform Content:</strong> All Platform infrastructure,
+            <strong>Platform Content: </strong>All Platform infrastructure,
             software, documentation, APIs, and general content provided by
             RoboSystems (excluding Your Data as defined below) is the
             proprietary information of the Company, with all rights reserved.
@@ -134,7 +134,7 @@ export default function TermsOfService() {
           </p>
 
           <p>
-            <strong>Your Graph Database:</strong> When You subscribe to a graph
+            <strong>Your Graph Database: </strong>When You subscribe to a graph
             database:
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
@@ -159,7 +159,7 @@ export default function TermsOfService() {
           </ul>
 
           <p>
-            <strong>Shared Data Repositories:</strong> Content in shared data
+            <strong>Shared Data Repositories: </strong>Content in shared data
             repositories (such as the SEC XBRL repository) is either:
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
@@ -179,7 +179,7 @@ export default function TermsOfService() {
           </p>
 
           <p>
-            <strong>API and Usage Limits:</strong> Your use of our Platform's AI
+            <strong>API and Usage Limits: </strong>Your use of our Platform's AI
             features is subject to the AI credit limits of your subscription
             tier. Database operations, queries, imports, and exports do not
             consume credits. You agree not to:
@@ -203,21 +203,21 @@ export default function TermsOfService() {
           </p>
 
           <p>
-            <strong>Service Availability:</strong> We strive to maintain high
+            <strong>Service Availability: </strong>We strive to maintain high
             availability of our Platform, with different service levels and
             support options based on your subscription tier. Higher tiers
             receive priority support and enhanced infrastructure isolation.
           </p>
 
           <p>
-            <strong>Data Backup and Recovery:</strong> We maintain regular
+            <strong>Data Backup and Recovery: </strong>We maintain regular
             backups of your graph database with retention periods varying by
             subscription tier. However, You are responsible for maintaining your
             own backups of critical data.
           </p>
 
           <p>
-            <strong>Limitations:</strong> While we make commercially reasonable
+            <strong>Limitations: </strong>While we make commercially reasonable
             efforts to provide reliable Services, we cannot guarantee that the
             Platform will be uninterrupted, error-free, or meet all your
             requirements. Shared data repositories are updated on a best-effort
@@ -244,10 +244,13 @@ export default function TermsOfService() {
 
           <p>
             Your use of our site is subject to our{' '}
-            <strong>
-              <a href="/privacy">Privacy Policy</a>.{' '}
-            </strong>
-            You have read that privacy policy and it is reasonable and
+            <a
+              href="/privacy"
+              className="text-cyan-500 underline hover:text-cyan-400"
+            >
+              Privacy Policy
+            </a>
+            . You have read that privacy policy and it is reasonable and
             acceptable to You. Your acceptance of these Terms is also Your
             consent to the information practices in our privacy policy.
           </p>
@@ -345,14 +348,14 @@ export default function TermsOfService() {
           </p>
 
           <p>
-            <strong>Data Ownership:</strong> You retain all rights, title, and
+            <strong>Data Ownership: </strong>You retain all rights, title, and
             interest in and to Your Data that You upload, import, or create
             within your graph database. RoboSystems does not claim ownership of
             Your Data.
           </p>
 
           <p>
-            <strong>Data Processing:</strong> By using our Services, You grant
+            <strong>Data Processing: </strong>By using our Services, You grant
             RoboSystems a limited, non-exclusive license to:
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
@@ -371,7 +374,7 @@ export default function TermsOfService() {
           </ul>
 
           <p>
-            <strong>Data Security and Privacy:</strong> We implement
+            <strong>Data Security and Privacy: </strong>We implement
             industry-standard security measures to protect Your Data, including:
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
@@ -382,7 +385,7 @@ export default function TermsOfService() {
           </ul>
 
           <p>
-            <strong>Security Incident Notification:</strong> We will notify You
+            <strong>Security Incident Notification: </strong>We will notify You
             without undue delay, and in any event within seventy-two (72) hours,
             after confirming a security incident involving unauthorized access
             to Your Data, and will provide information reasonably required for
@@ -390,7 +393,7 @@ export default function TermsOfService() {
           </p>
 
           <p>
-            <strong>Data Portability:</strong> You may export Your Data from
+            <strong>Data Portability: </strong>You may export Your Data from
             your graph database at any time using our export tools and APIs.
             Upon termination of your subscription, You will have 60 days to
             export Your Data before it is deleted from active systems, with
@@ -399,7 +402,7 @@ export default function TermsOfService() {
           </p>
 
           <p>
-            <strong>Compliance:</strong> You represent and warrant that:
+            <strong>Compliance: </strong>You represent and warrant that:
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
             <li>
@@ -423,7 +426,7 @@ export default function TermsOfService() {
           </p>
 
           <p>
-            <strong>Graph Database Access:</strong> Your graph database
+            <strong>Graph Database Access: </strong>Your graph database
             subscription allows multiple users from your organization to access
             the same graph database and its subgraphs. You are responsible for:
           </p>
@@ -441,7 +444,7 @@ export default function TermsOfService() {
           </ul>
 
           <p>
-            <strong>Subgraph Access Control:</strong> You can create subgraphs
+            <strong>Subgraph Access Control: </strong>You can create subgraphs
             with granular access permissions, up to the limit included with your
             subscription tier:
           </p>
@@ -465,7 +468,7 @@ export default function TermsOfService() {
           </ul>
 
           <p>
-            <strong>Shared Repository Access:</strong> Subscriptions to shared
+            <strong>Shared Repository Access: </strong>Subscriptions to shared
             data repositories (like SEC data) are purchased at the organization
             level, and all members of your organization share access under your
             subscription. Access may not be shared with, or provided to, anyone
@@ -552,7 +555,7 @@ export default function TermsOfService() {
           </p>
 
           <p>
-            <strong>Account Registration:</strong> To use our Services, You must
+            <strong>Account Registration: </strong>To use our Services, You must
             create an account with accurate and complete information. You are
             responsible for:
           </p>
@@ -566,7 +569,7 @@ export default function TermsOfService() {
           </ul>
 
           <p>
-            <strong>Organization Accounts:</strong> If You are creating an
+            <strong>Organization Accounts: </strong>If You are creating an
             account for an organization:
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
@@ -581,7 +584,7 @@ export default function TermsOfService() {
           </ul>
 
           <p>
-            <strong>Graph Database Provisioning:</strong> Upon subscription to a
+            <strong>Graph Database Provisioning: </strong>Upon subscription to a
             graph database:
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
@@ -618,7 +621,7 @@ export default function TermsOfService() {
           </p>
 
           <p>
-            <strong>Subscription Tiers:</strong> We offer multiple subscription
+            <strong>Subscription Tiers: </strong>We offer multiple subscription
             tiers with varying dedicated infrastructure capacity, AI credit
             allocations, and support levels. Current pricing and tier details
             are available on our pricing page and may be updated from time to
@@ -630,7 +633,7 @@ export default function TermsOfService() {
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
             <li>
-              <strong>Graph Database Subscriptions:</strong> Monthly
+              <strong>Graph Database Subscriptions: </strong>Monthly
               subscriptions for managed graph database instances with
               credit-based usage pricing
             </li>
@@ -640,7 +643,7 @@ export default function TermsOfService() {
               data repositories, shared by all members of your organization
             </li>
             <li>
-              <strong>AI Credit System:</strong> Only AI operations (agent
+              <strong>AI Credit System: </strong>Only AI operations (agent
               calls, natural language analysis, AI-powered features) consume
               credits. All database operations, queries, imports, and exports
               are free and unlimited within your storage allocation.
@@ -648,7 +651,7 @@ export default function TermsOfService() {
           </ul>
 
           <p>
-            <strong>Payment Processing:</strong> We use Stripe as our payment
+            <strong>Payment Processing: </strong>We use Stripe as our payment
             processor. By subscribing, You agree to:
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
@@ -659,14 +662,14 @@ export default function TermsOfService() {
           </ul>
 
           <p>
-            <strong>Billing Cycle:</strong> Subscriptions are billed monthly in
+            <strong>Billing Cycle: </strong>Subscriptions are billed monthly in
             advance. AI credits are allocated at the beginning of each billing
             cycle and do not roll over. Database operations remain included
             throughout your subscription.
           </p>
 
           <p>
-            <strong>Credit Exhaustion:</strong> If You exhaust your monthly AI
+            <strong>Credit Exhaustion: </strong>If You exhaust your monthly AI
             credit allocation, AI-powered features will be unavailable until
             your next billing cycle begins or You upgrade your subscription
             tier. Database operations continue to work even if AI credits are
@@ -679,7 +682,7 @@ export default function TermsOfService() {
           </p>
 
           <p>
-            <strong>Subscription Requirements:</strong> Access to RoboSystems
+            <strong>Subscription Requirements: </strong>Access to RoboSystems
             Services requires an active subscription. Subscriptions include:
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
@@ -697,14 +700,14 @@ export default function TermsOfService() {
           </ul>
 
           <p>
-            <strong>Auto-Renewal:</strong> All subscriptions automatically renew
+            <strong>Auto-Renewal: </strong>All subscriptions automatically renew
             monthly unless cancelled before the renewal date. You may cancel
             auto-renewal at any time through your account settings. Cancellation
             takes effect at the end of the current billing period.
           </p>
 
           <p>
-            <strong>Subscription Changes:</strong> You may:
+            <strong>Subscription Changes: </strong>You may:
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
             <li>
@@ -716,7 +719,7 @@ export default function TermsOfService() {
           </ul>
 
           <p>
-            <strong>Multiple Subscriptions:</strong> Organizations may maintain
+            <strong>Multiple Subscriptions: </strong>Organizations may maintain
             multiple graph database subscriptions for different departments or
             use cases. Each graph database is billed separately with its own
             credit allocation.
@@ -744,7 +747,7 @@ export default function TermsOfService() {
           </ul>
 
           <p>
-            <strong>Refund Policy:</strong> All sales are final. We do not offer
+            <strong>Refund Policy: </strong>All sales are final. We do not offer
             refunds for:
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
@@ -775,7 +778,7 @@ export default function TermsOfService() {
           </ul>
 
           <p>
-            <strong>Suspension and Termination:</strong> We may suspend or
+            <strong>Suspension and Termination: </strong>We may suspend or
             terminate your account for:
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
@@ -821,9 +824,12 @@ export default function TermsOfService() {
           <p>
             If your organization has entered into a separate written agreement
             with RFS LLC governing the Services — such as our{' '}
-            <strong>
-              <a href="/pages/msa">Master Service Agreement</a>
-            </strong>{' '}
+            <a
+              href="/pages/msa"
+              className="text-cyan-500 underline hover:text-cyan-400"
+            >
+              Master Service Agreement
+            </a>{' '}
             incorporated by a mutually executed Order Form, or another master
             agreement signed by both parties — that agreement governs your
             organization&apos;s use of the Services and controls in the event of
