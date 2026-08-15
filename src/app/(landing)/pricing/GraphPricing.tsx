@@ -45,7 +45,7 @@ const FALLBACK_TIERS: Tier[] = [
   {
     id: 'ladybug-standard',
     name: 'Standard',
-    description: 'Dedicated infrastructure for a single set of books',
+    description: 'Its own graph instance for a single set of books',
     monthlyPrice: 99,
     monthlyCredits: 8000,
     maxSubgraphs: 3,
@@ -178,15 +178,19 @@ export default function GraphPricing({
     // supplies its own padding. RepositoryPricing below carries the gap.
     <div>
       <div className="mb-10 text-center">
+        {/* "Managed Platform", not "Dedicated Graphs": the word dedicated now
+            names the Dedicated Deployment (a customer's own AWS account, MSA
+            Schedule B). The per-graph isolation claim lives in each tier's
+            description instead. */}
         <div className="mb-4 inline-block rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 text-sm font-medium text-cyan-400">
-          Dedicated Graphs
+          Managed Platform
         </div>
         <h2 className="mb-3 text-3xl font-bold text-white">
-          Dedicated Graph Infrastructure
+          Graph Subscriptions
         </h2>
         <p className="mx-auto max-w-2xl text-gray-400">
-          Your own knowledge graph with an AI controller layer over your books.
-          Priced per graph — create as many as you need.
+          Your own isolated knowledge graph with an AI controller layer over
+          your books, on our managed platform. Priced per graph.
         </p>
       </div>
       <div className="mx-auto grid max-w-5xl gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">

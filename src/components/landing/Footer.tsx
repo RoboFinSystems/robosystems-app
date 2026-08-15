@@ -9,6 +9,7 @@ export default function Footer() {
       tagline="Open-source knowledge graph platform for financial and operational intelligence. Transform your data into a semantic layer that AI agents can understand and reason over."
       productLinks={[
         { label: 'Platform', href: '/platform' },
+        { label: 'Enterprise', href: '/enterprise' },
         { label: 'Applications', href: '/#applications' },
         { label: 'Open Source', href: '/open-source' },
         { label: 'Pricing', href: '/pricing' },

@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import FloatingElementsVariant from './FloatingElementsVariant'
 
 export default function FeaturesGrid() {
@@ -310,25 +311,45 @@ export default function FeaturesGrid() {
                 Security & Isolation
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Dedicated graphs per organization with enterprise-grade security
-                for your most sensitive financial data.
+                Your own graph database per subscription on the managed
+                platform, or your own AWS account on a Dedicated
+                Deployment&mdash;one security program either way.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="mr-2 text-red-400">•</span>
-                  Dedicated graph and workspace isolation
+                  Isolation tested by an authenticated cross-tenant harness
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-red-400">•</span>
-                  Encryption at rest and in transit
+                  Encryption at rest and in transit; per-graph roles and
+                  graph-scoped API keys
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-red-400">•</span>
-                  Role-based access control
+                  Passkeys as a second factor; SSO and SCIM on Dedicated
+                  Deployments
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-red-400">•</span>
-                  Audit logging and compliance
+                  <span>
+                    SOC 2 Type II compliance in progress &middot;{' '}
+                    <Link
+                      href="/enterprise"
+                      className="text-gray-300 underline decoration-gray-600 underline-offset-2 hover:text-white"
+                    >
+                      Deployment options
+                    </Link>{' '}
+                    &middot;{' '}
+                    <a
+                      href="https://trust.robosystems.ai"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-300 underline decoration-gray-600 underline-offset-2 hover:text-white"
+                    >
+                      Trust Center
+                    </a>
+                  </span>
                 </li>
               </ul>
             </div>

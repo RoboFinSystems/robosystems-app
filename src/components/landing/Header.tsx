@@ -55,12 +55,22 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden space-x-6 lg:flex">
+          {/* Tighter spacing at lg so the row survives the extra Enterprise
+              item without an item wrapping onto two lines (measured: 724px
+              available at 1024px, ~680px needed at space-x-1); back to
+              space-x-6 from xl. */}
+          <nav className="hidden whitespace-nowrap lg:flex lg:space-x-1 xl:space-x-6">
             <Link
               href="/platform"
               className="hover:text-secondary-400 px-3 py-2 text-sm font-medium text-gray-300 transition-colors"
             >
               Platform
+            </Link>
+            <Link
+              href="/enterprise"
+              className="hover:text-secondary-400 px-3 py-2 text-sm font-medium text-gray-300 transition-colors"
+            >
+              Enterprise
             </Link>
             <Link
               href="/open-source"
@@ -158,6 +168,13 @@ export default function Header() {
                 className="hover:text-secondary-400 px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800"
               >
                 Platform
+              </Link>
+              <Link
+                href="/enterprise"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="hover:text-secondary-400 px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800"
+              >
+                Enterprise
               </Link>
               <Link
                 href="/open-source"
