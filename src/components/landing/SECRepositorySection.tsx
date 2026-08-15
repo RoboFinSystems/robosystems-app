@@ -158,8 +158,8 @@ export default function SECRepositorySection() {
         {/* Stats Row */}
         <div className="mb-16 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {[
-            { value: '10,000+', label: 'Public Companies' },
-            { value: '115K+', label: 'XBRL Filings' },
+            { value: '8,000+', label: 'Public Companies' },
+            { value: '75K+', label: 'XBRL Filings' },
             { value: '40+', label: 'Canonical Concepts' },
             { value: 'Daily', label: 'Updates' },
           ].map((stat) => (

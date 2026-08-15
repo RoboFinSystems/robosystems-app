@@ -140,7 +140,7 @@ export default function PricingContent() {
             <p className="mb-8 text-lg text-gray-400">
               {isAuthenticated
                 ? 'Manage your graphs and subscriptions from your dashboard'
-                : 'Create a free account and start building your knowledge graph today'}
+                : 'Create a free account to start with the SEC repository, or talk to us about a dedicated graph'}
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
