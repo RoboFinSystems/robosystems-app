@@ -53,6 +53,16 @@ describe('EnterpriseContent', () => {
     expect(screen.queryByText(/SAML/)).not.toBeInTheDocument()
   })
 
+  it('states SOC 2 Type II as in progress, never as completed or certified', () => {
+    render(<EnterpriseContent />)
+
+    expect(
+      screen.getAllByText(/SOC 2 Type II compliance (is )?in progress/i).length
+    ).toBeGreaterThan(0)
+    expect(screen.queryByText(/SOC 2 certified/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/completed audit/i)).not.toBeInTheDocument()
+  })
+
   it('never calls the transfer an exit fee', () => {
     render(<EnterpriseContent />)
 

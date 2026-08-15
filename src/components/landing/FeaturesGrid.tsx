@@ -333,6 +333,7 @@ export default function FeaturesGrid() {
                 <li className="flex items-start">
                   <span className="mr-2 text-red-400">•</span>
                   <span>
+                    SOC 2 Type II compliance in progress &middot;{' '}
                     <Link
                       href="/enterprise"
                       className="text-gray-300 underline decoration-gray-600 underline-offset-2 hover:text-white"

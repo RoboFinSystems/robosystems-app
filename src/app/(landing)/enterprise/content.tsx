@@ -11,10 +11,11 @@ import { useState } from 'react'
  * Deployment options — the three delivery modes side by side.
  *
  * Copy discipline (engagement model §9): SSO/SCIM are claimed as verified
- * against Okta and scoped to Dedicated Deployments; attestation is described
- * by scope and linked to the MSA and Trust Center rather than restated; the
- * no-lock-in claim rests on backups, the public API and Account Transfer —
- * not on "everything is readable over GraphQL", which awaits its audit.
+ * against Okta and scoped to Dedicated Deployments; SOC 2 Type II is stated
+ * as *in progress* — never as a completed audit or "certified" — with scope
+ * described and linked to the MSA and Trust Center; the no-lock-in claim
+ * rests on backups, the public API and Account Transfer — not on
+ * "everything is readable over GraphQL", which awaits its audit.
  */
 
 const CHECK = (
@@ -130,7 +131,7 @@ const COMPARISON: Array<{ row: string; m: string; d: string; s: string }> = [
   },
   {
     row: 'Attestation',
-    m: 'Inside the scope of our security program and attestation',
+    m: 'SOC 2 Type II compliance in progress; the managed platform is inside the scope of the examination',
     d: 'Inside that scope for as long as we operate it',
     s: 'Your audit. You inherit the control design in the code and infrastructure — not our report',
   },
@@ -170,7 +171,7 @@ const SECURITY: string[] = [
   'Tenant isolation is tested, not asserted: an authenticated harness provisions two tenants against a live deployment and fires a cross-tenant and privilege-escalation matrix at it — REST, Cypher, GraphQL, MCP, both extension surfaces, both directions.',
   'A pinned supply chain: every CI action pinned to a commit, release deployments dispatch-only, provenance certified per pull request. Dedicated Deployments run a byte-identical, tag-pinned mirror of the public repository.',
   'Security incidents affecting your data: notice within 72 hours. Security releases: applied fleet-wide.',
-  'Attestation scope is stated in the MSA, not in marketing copy: it covers the environments we operate — a Dedicated Deployment for as long as we operate it — and never a self-hosted one.',
+  'SOC 2 Type II compliance is in progress with an independent CPA firm; the report will be available to customers under NDA once the audit is complete. Its scope is the environments we operate — the managed platform, and a Dedicated Deployment for as long as we operate it — never a self-hosted one.',
 ]
 
 const BUYING: Array<{ title: string; body: string }> = [
@@ -424,7 +425,8 @@ export default function EnterpriseContent() {
                   The managed platform and every Dedicated Deployment come off
                   the same assembly line and run the same controls. What we
                   claim about them is stated in the contract you sign and on the
-                  Trust Center&mdash;not only here.
+                  Trust Center&mdash;not only here&mdash;and we say &ldquo;in
+                  progress&rdquo; until the auditor says otherwise.
                 </p>
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col">
                   <a

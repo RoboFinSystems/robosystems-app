@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     'passkeys',
     'self-hosted financial platform',
     'financial knowledge graph enterprise',
+    'SOC 2 Type II',
   ],
   alternates: { canonical: 'https://robosystems.ai/enterprise' },
   openGraph: {
