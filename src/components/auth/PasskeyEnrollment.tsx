@@ -8,6 +8,7 @@ import type {
 import { Spinner } from '@robosystems/core/ui-components'
 import { startRegistration } from '@simplewebauthn/browser'
 import React, { useState } from 'react'
+import { browserPlatformHints, describePasskey } from './passkey-label'
 
 // Passkey enrollment ceremony, used in two lanes:
 // - forced (login returned mfa_enrollment_required): `mfaToken` is set and
@@ -16,6 +17,8 @@ import React, { useState } from 'react'
 // - settings (authenticated): no token; the caller just refreshes its list.
 // The first passkey returns recovery codes exactly once; the user must
 // acknowledge saving them before continuing.
+// No name field: the browser runs the whole ceremony, and the label is
+// derived from it (see passkey-label.ts).
 
 export interface PasskeyEnrollmentProps {
   authClient: RoboSystemsAuthClient
@@ -34,7 +37,6 @@ export function PasskeyEnrollment({
   onComplete,
   onCancel,
 }: PasskeyEnrollmentProps) {
-  const [name, setName] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [result, setResult] = useState<PasskeyEnrollmentResult | null>(null)
@@ -54,7 +56,10 @@ export function PasskeyEnrollment({
       })
       const enrollment = await authClient.completePasskeyEnrollment(
         credential as unknown as Record<string, unknown>,
-        { name: name.trim() || undefined, mfaToken }
+        {
+          name: describePasskey(credential, browserPlatformHints()),
+          mfaToken,
+        }
       )
       setResult(enrollment)
       if (!enrollment.recoveryCodes) {
@@ -141,22 +146,10 @@ export function PasskeyEnrollment({
         </div>
       )}
 
-      <div>
-        <label htmlFor="passkey-name" className="sr-only">
-          Passkey name
-        </label>
-        <input
-          id="passkey-name"
-          name="passkey-name"
-          type="text"
-          maxLength={100}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="focus:ring-primary-500 relative block w-full rounded-md border-0 bg-gray-800 px-5 py-4 text-base leading-7 text-white ring-1 ring-gray-600 ring-inset placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset"
-          placeholder="Passkey name (optional, e.g. MacBook Touch ID)"
-          disabled={busy}
-        />
-      </div>
+      <p className="text-sm text-gray-400">
+        Your browser will prompt for Touch ID, Face ID, Windows Hello, or a
+        security key. There is nothing else to fill in.
+      </p>
 
       <button
         type="submit"

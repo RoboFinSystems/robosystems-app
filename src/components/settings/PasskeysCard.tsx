@@ -1,6 +1,10 @@
 'use client'
 
-import { SettingsCard } from '@robosystems/core'
+import {
+  browserPlatformHints,
+  describePasskey,
+} from '@/components/auth/passkey-label'
+import { EmptyState, SettingsCard } from '@robosystems/core'
 import { RoboSystemsAuthClient } from '@robosystems/core/auth-core/client'
 import { ConfirmModal } from '@robosystems/core/ui-components'
 import { startRegistration } from '@simplewebauthn/browser'
@@ -14,6 +18,10 @@ import { HiKey } from 'react-icons/hi'
 // recovery codes. Enrollment, removal, and code regeneration all
 // re-authenticate with the current password — the hijacked-session defense;
 // the backend refuses a settings-lane ceremony on a session alone.
+//
+// There is no "name your passkey" input: WebAuthn never asks for one, and
+// neither does any browser or password manager. The label is derived from the
+// ceremony (device / security key) so the list stays distinguishable.
 
 interface PasskeyRow {
   id: string
@@ -45,7 +53,6 @@ export const PasskeysCard: FC<PasskeysCardProps> = ({ onSuccess, onError }) => {
   const [codesRemaining, setCodesRemaining] = useState<number | null>(null)
   const [available, setAvailable] = useState(true)
   const [busy, setBusy] = useState(false)
-  const [newName, setNewName] = useState('')
   const [freshCodes, setFreshCodes] = useState<string[] | null>(null)
   // Pending credential-surface action awaiting password re-auth.
   const [pending, setPending] = useState<
@@ -86,9 +93,8 @@ export const PasskeysCard: FC<PasskeysCardProps> = ({ onSuccess, onError }) => {
     })
     const result = await authClient.completePasskeyEnrollment(
       credential as unknown as Record<string, unknown>,
-      { name: newName.trim() || undefined }
+      { name: describePasskey(credential, browserPlatformHints()) }
     )
-    setNewName('')
     if (result.recoveryCodes) {
       setFreshCodes(result.recoveryCodes)
     }
@@ -150,7 +156,24 @@ export const PasskeysCard: FC<PasskeysCardProps> = ({ onSuccess, onError }) => {
       icon={HiKey}
     >
       <div className="space-y-4">
-        {passkeys.length > 0 && (
+        {passkeys.length === 0 ? (
+          <EmptyState
+            icon={HiKey}
+            headingLevel={4}
+            className="py-8"
+            title="No passkeys yet"
+            description="Add one and you can sign in with Touch ID, Face ID, Windows Hello, or a security key — no password to type or phish."
+            action={
+              <Button
+                size="sm"
+                disabled={busy}
+                onClick={() => setPending({ kind: 'add' })}
+              >
+                Create a passkey
+              </Button>
+            }
+          />
+        ) : (
           <ul className="divide-y divide-zinc-200 dark:divide-zinc-700">
             {passkeys.map((pk) => (
               <li
@@ -186,39 +209,29 @@ export const PasskeysCard: FC<PasskeysCardProps> = ({ onSuccess, onError }) => {
           </ul>
         )}
 
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            maxLength={100}
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            placeholder="Passkey name (optional)"
-            className="focus:ring-primary-500 block w-full rounded-md border-0 bg-white px-3 py-2 text-sm text-zinc-900 ring-1 ring-zinc-300 ring-inset placeholder:text-zinc-400 focus:ring-2 focus:ring-inset dark:bg-zinc-800 dark:text-white dark:ring-zinc-600"
-            disabled={busy}
-          />
-          <Button
-            size="sm"
-            disabled={busy}
-            onClick={() => setPending({ kind: 'add' })}
-          >
-            Add passkey
-          </Button>
-        </div>
-
         {passkeys.length > 0 && (
-          <div className="flex items-center justify-between border-t border-zinc-200 pt-3 dark:border-zinc-700">
+          <div className="flex flex-col gap-3 border-t border-zinc-200 pt-3 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-700">
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
               Recovery codes remaining:{' '}
               <span className="font-medium">{codesRemaining ?? '—'}</span>
             </p>
-            <Button
-              size="xs"
-              color="light"
-              disabled={busy}
-              onClick={() => setPending({ kind: 'regenerate' })}
-            >
-              Regenerate codes
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                size="xs"
+                color="light"
+                disabled={busy}
+                onClick={() => setPending({ kind: 'regenerate' })}
+              >
+                Regenerate codes
+              </Button>
+              <Button
+                size="xs"
+                disabled={busy}
+                onClick={() => setPending({ kind: 'add' })}
+              >
+                Add another passkey
+              </Button>
+            </div>
           </div>
         )}
 
@@ -275,7 +288,7 @@ export const PasskeysCard: FC<PasskeysCardProps> = ({ onSuccess, onError }) => {
         <div className="space-y-3">
           <p className="text-sm text-zinc-600 dark:text-zinc-300">
             {pending?.kind === 'add'
-              ? 'Confirm your password to add a new sign-in credential, then follow your browser’s passkey prompt.'
+              ? 'Confirm your password, then follow your browser’s prompt — Touch ID, Face ID, Windows Hello, or a security key. Nothing else to fill in.'
               : pending?.kind === 'regenerate'
                 ? 'Your current recovery codes will stop working. Confirm your password to continue.'
                 : `"${pending?.kind === 'delete' ? pending.passkey.name : ''}" will no longer be able to sign in to your account. Confirm your password to continue.`}
