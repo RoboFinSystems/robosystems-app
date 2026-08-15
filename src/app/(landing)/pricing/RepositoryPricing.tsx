@@ -31,9 +31,9 @@ export default function RepositoryPricing({
         SEC Shared Repository
       </h2>
       <p className="mx-auto mb-10 max-w-2xl text-center text-gray-400">
-        Access 115,000+ SEC filings from 10,000+ public companies through an
-        intelligent AI agent that understands financial relationships and can
-        answer complex queries in natural language.
+        Access 75,000+ SEC filings from 8,000+ public companies, 2024 onward,
+        through an intelligent AI agent that understands financial relationships
+        and can answer complex queries in natural language.
       </p>
       <div className="mx-auto grid max-w-3xl gap-6 sm:gap-8 md:grid-cols-2">
         {/* Starter */}
@@ -49,7 +49,7 @@ export default function RepositoryPricing({
                 <span className="text-gray-400">/month</span>
               </div>
               <p className="text-gray-400">
-                Full SEC data access for individuals
+                SEC repository access for individuals
               </p>
             </div>
             <ul className="mb-8 space-y-4">
@@ -59,7 +59,7 @@ export default function RepositoryPricing({
               </li>
               <li className="flex items-start text-gray-300">
                 {CHECK_ICON}
-                Full SEC data (all companies, all history)
+                All companies, all filings from 2024 onward
               </li>
               <li className="flex items-start text-gray-300">
                 {CHECK_ICON}
@@ -91,7 +91,9 @@ export default function RepositoryPricing({
           </div>
         </div>
 
-        {/* Pro */}
+        {/* Advanced — name must match the manifest plan name the app and
+            Stripe use ("Advanced"); it read "Pro" here until 2026-08-15, so a
+            buyer evaluated one tier name and purchased a differently-named one. */}
         <div className="group relative flex flex-col overflow-hidden rounded-2xl border-2 border-green-500 bg-linear-to-br from-green-900/50 to-green-900/20 p-4 transition-all duration-300 hover:border-green-400 sm:p-6 md:p-8">
           <div className="absolute inset-0 bg-linear-to-br from-green-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
           <div className="absolute -top-1 -right-1 z-10">
@@ -102,7 +104,7 @@ export default function RepositoryPricing({
           <div className="relative flex flex-1 flex-col">
             <div className="mb-8">
               <h3 className="font-heading mb-2 text-2xl font-bold text-white">
-                Pro
+                Advanced
               </h3>
               <div className="mb-4">
                 <span className="text-4xl font-bold text-white">$99</span>

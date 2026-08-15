@@ -19,7 +19,7 @@ export default function FinancialServices() {
       icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
       gradient: 'from-cyan-500 to-blue-500',
       description:
-        'Claude-powered deep research against 115,000+ XBRL filings from 10,000+ public companies — plain-English questions answered with narrative analysis.',
+        'Claude-powered deep research against 75,000+ XBRL filings from 8,000+ public companies — plain-English questions answered with narrative analysis.',
       currentFeatures: [
         '10-K and 10-Q financial statements and fundamentals',
         'Answers backed by the data and the generated Cypher',
@@ -163,7 +163,7 @@ export default function FinancialServices() {
               <h4 className="mb-2 font-semibold text-white">Research via AI</h4>
               <p className="text-sm text-gray-400">
                 Ask questions in plain English — AI generates Cypher queries
-                against 10,000+ public company SEC filings
+                against 8,000+ public company SEC filings
               </p>
             </div>
 

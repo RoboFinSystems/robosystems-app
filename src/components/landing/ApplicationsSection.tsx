@@ -287,7 +287,7 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        115,000+ XBRL filings across 10,000+ public companies
+                        75,000+ XBRL filings across 8,000+ public companies
                       </span>
                     </li>
                     <li className="flex items-start">
