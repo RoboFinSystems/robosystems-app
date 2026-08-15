@@ -28,9 +28,13 @@ export const softwareJsonLd = {
   name: 'RoboSystems',
   applicationCategory: 'FinanceApplication',
   operatingSystem: 'Web',
+  // The software itself is free (Apache 2.0, self-hostable); the managed
+  // plans on /pricing run $29–$599/month. A bare price of 0 read as "the
+  // service is free", so state the range.
   offers: {
-    '@type': 'Offer',
-    price: '0',
+    '@type': 'AggregateOffer',
+    lowPrice: '0',
+    highPrice: '599',
     priceCurrency: 'USD',
   },
   description:

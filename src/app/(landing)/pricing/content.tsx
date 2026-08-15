@@ -1,12 +1,13 @@
 'use client'
 
-import ContactModal from '@/components/landing/ContactModal'
 import FloatingElementsVariant from '@/components/landing/FloatingElementsVariant'
 import Footer from '@/components/landing/Footer'
 import Header from '@/components/landing/Header'
+import SalesContactModal from '@/components/landing/SalesContactModal'
 import { useUser } from '@robosystems/core/hooks'
 import Link from 'next/link'
 import { useState } from 'react'
+import DedicatedDeployment from './DedicatedDeployment'
 import GraphPricing from './GraphPricing'
 import RepositoryPricing from './RepositoryPricing'
 
@@ -47,7 +48,7 @@ export default function PricingContent() {
               isAuthenticated={isAuthenticated}
               onContactSales={() => setShowContact(true)}
             />
-
+            <DedicatedDeployment onContactSales={() => setShowContact(true)} />
             <RepositoryPricing
               isAuthenticated={isAuthenticated}
               onContactSales={() => setShowContact(true)}
@@ -126,6 +127,42 @@ export default function PricingContent() {
                     tier and migrate your data.
                   </p>
                 </div>
+                <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700">
+                  <h4 className="mb-2 font-semibold text-white">
+                    What&apos;s the difference between a graph subscription and
+                    a Dedicated Deployment?
+                  </h4>
+                  <p className="text-gray-400">
+                    A graph subscription is one isolated graph database on our
+                    managed, multi-tenant platform &mdash; self-serve, priced
+                    per graph. A Dedicated Deployment is the whole platform
+                    provisioned into an AWS account dedicated to your
+                    organization, which we operate for you: account-level
+                    isolation, sign-in and user provisioning from your identity
+                    provider, and the option to transfer the account to your own
+                    ownership later. Most customers start with a subscription;
+                    firms running many entities, or with procurement, identity
+                    or isolation requirements, move to a Dedicated Deployment.{' '}
+                    <Link
+                      href="/enterprise"
+                      className="text-cyan-400 hover:text-cyan-300"
+                    >
+                      Compare deployment options &rarr;
+                    </Link>
+                  </p>
+                </div>
+                <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700">
+                  <h4 className="mb-2 font-semibold text-white">
+                    Do you support SSO?
+                  </h4>
+                  <p className="text-gray-400">
+                    On Dedicated Deployments, yes &mdash; OIDC single sign-on
+                    and SCIM 2.0 user provisioning from your identity provider,
+                    verified against Okta and configured during onboarding. On
+                    the managed platform, sign-in is email and password with
+                    passkeys as a second factor.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -140,7 +177,7 @@ export default function PricingContent() {
             <p className="mb-8 text-lg text-gray-400">
               {isAuthenticated
                 ? 'Manage your graphs and subscriptions from your dashboard'
-                : 'Create a free account to start with the SEC repository, or talk to us about a dedicated graph'}
+                : 'Create a free account to start with the SEC repository, or talk to us about a Dedicated Deployment'}
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
@@ -164,10 +201,12 @@ export default function PricingContent() {
 
       <Footer />
 
-      {/* Contact Modal */}
-      <ContactModal
+      {/* Contact Modal — the sales variant, so "Contact Sales" asks about the
+          buyer's organization rather than their integration needs. */}
+      <SalesContactModal
         isOpen={showContact}
         onClose={() => setShowContact(false)}
+        variant="sales"
       />
     </div>
   )

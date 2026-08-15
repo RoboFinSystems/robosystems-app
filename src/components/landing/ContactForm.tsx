@@ -13,6 +13,49 @@ interface ContactFormProps {
   formType?: string
 }
 
+interface FormCopy {
+  messageLabel: string
+  placeholder: string
+  success: string
+}
+
+/**
+ * Field and confirmation copy by intent. The default is the developer /
+ * integration ask the modal was built for; `sales` covers every "Contact
+ * Sales" and Dedicated Deployment entry point, so a buyer is asked about
+ * their organization rather than which systems they need to integrate.
+ */
+const FORM_COPY: Record<'default' | 'inquiry' | 'sales', FormCopy> = {
+  default: {
+    messageLabel: 'Tell us about your integration needs',
+    placeholder:
+      'What systems do you need to integrate? What data needs to flow between them?',
+    success: 'Our integration team will get back to you within 24 hours.',
+  },
+  inquiry: {
+    messageLabel: 'Your Message',
+    placeholder: 'Please describe your question or concern...',
+    success:
+      "We'll review your message and get back to you as soon as possible.",
+  },
+  sales: {
+    messageLabel: 'Tell us about your organization',
+    placeholder:
+      'How many entities or clients? Which identity provider? Any residency, procurement, or isolation requirements?',
+    success: "Thanks — we'll get back to you within one business day.",
+  },
+}
+
+export function copyForFormType(formType: string): FormCopy {
+  if (formType === 'terms-inquiry' || formType === 'privacy-inquiry') {
+    return FORM_COPY.inquiry
+  }
+  if (formType === 'sales' || formType === 'dedicated_deployment') {
+    return FORM_COPY.sales
+  }
+  return FORM_COPY.default
+}
+
 export default function ContactForm({
   onClose,
   formType = 'general',
@@ -29,6 +72,7 @@ export default function ContactForm({
   >('idle')
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const turnstileRef = useRef<TurnstileWidgetRef>(null)
+  const copy = copyForFormType(formType)
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -111,11 +155,7 @@ export default function ContactForm({
           </svg>
         </div>
         <h3 className="mb-2 text-2xl font-bold text-white">Message Sent!</h3>
-        <p className="text-gray-300">
-          {formType === 'terms-inquiry' || formType === 'privacy-inquiry'
-            ? "We'll review your message and get back to you as soon as possible."
-            : 'Our integration team will get back to you within 24 hours.'}
-        </p>
+        <p className="text-gray-300">{copy.success}</p>
       </div>
     )
   }
@@ -170,20 +210,14 @@ export default function ContactForm({
 
       <div>
         <Label htmlFor="message" className="mb-2 block text-white">
-          {formType === 'terms-inquiry' || formType === 'privacy-inquiry'
-            ? 'Your Message'
-            : 'Tell us about your integration needs'}
+          {copy.messageLabel}
         </Label>
         <Textarea
           id="message"
           name="message"
           rows={4}
           required
-          placeholder={
-            formType === 'terms-inquiry' || formType === 'privacy-inquiry'
-              ? 'Please describe your question or concern...'
-              : 'What systems do you need to integrate? What data needs to flow between them?'
-          }
+          placeholder={copy.placeholder}
           value={formData.message}
           onChange={handleInputChange}
           className="border-gray-700 bg-zinc-800 text-white"
