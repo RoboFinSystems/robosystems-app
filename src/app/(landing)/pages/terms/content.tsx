@@ -16,7 +16,7 @@ export default function TermsOfService() {
           </h1>
 
           <p className="mb-12 text-gray-600 dark:text-gray-400">
-            Last Revision: August 13, 2026
+            Last Revision: August 17, 2026
           </p>
 
           <p className="mt-8 text-2xl font-semibold">
@@ -320,13 +320,17 @@ export default function TermsOfService() {
 
           <p>
             <strong>
-              &quot;RoboSystems&quot; is a federally registered trademark of RFS
-              LLC. &quot;
+              &quot;ROBOSYSTEMS&quot; and &quot;ROBOLEDGER&quot; are trademarks
+              of Harbinger Consultants LLC, used by RFS LLC under license. The
+              &quot;
               <Link href="/">robosystems.ai</Link>
-              &quot;, the RoboSystems logos and any other product or service
-              name or slogan contained in the Site are marks of RFS LLC. These
-              marks may not be copied, imitated or used, in whole or in part,
-              without the prior written permission of RoboSystems.{' '}
+              &quot;, &quot;roboledger.ai&quot; and &quot;roboinvestor.ai&quot;
+              domains are registered to Harbinger Consultants LLC and licensed
+              to RFS LLC. The RoboSystems logos and any other product or service
+              name or slogan contained in the Site are marks of RFS LLC or its
+              licensor. These marks may not be copied, imitated or used, in
+              whole or in part, without the prior written permission of the
+              owner.{' '}
             </strong>
             You may not use any metatags or any other &quot;hidden text&quot;
             utilizing &quot;RoboSystems&quot; or any other name, trademark or
@@ -394,9 +398,11 @@ export default function TermsOfService() {
 
           <p>
             <strong>Data Portability: </strong>You may export Your Data from
-            your graph database at any time using our export tools and APIs.
-            Upon termination of your subscription, You will have 60 days to
-            export Your Data before it is deleted from active systems, with
+            your graph database at any time while your subscription is active,
+            using our export tools and APIs. Upon termination we capture a final
+            backup of your graph database and make it available for download by
+            your organization&apos;s owners and administrators for 90 days; Your
+            Data is deleted from active systems at decommissioning, with
             residual copies in encrypted backups expiring on our backup
             retention schedule.
           </p>
@@ -762,14 +768,21 @@ export default function TermsOfService() {
           </p>
           <ul className="mb-6 list-disc space-y-3 pl-6">
             <li>
-              Your graph database remains accessible for 60 days after
-              cancellation
+              Your graph database remains available through the end of your paid
+              term; if you request immediate deletion, it is decommissioned
+              promptly
             </li>
-            <li>You may export Your Data during this grace period</li>
             <li>
-              After 60 days, Your Data will be deleted from active systems per
-              our Data Management Policy, with residual copies in encrypted
-              backups expiring on the backup retention schedule
+              We capture a final backup at decommissioning and make it available
+              for download by your organization&apos;s owners and administrators
+              for 90 days
+            </li>
+            <li>
+              Your Data is deleted from active systems at decommissioning, and
+              in any event within 60 days of termination, per our Data
+              Management Policy; the final backup and any residual copies in
+              encrypted backups expire automatically on the backup retention
+              schedule, which does not exceed 90 days
             </li>
             <li>
               We may retain anonymized, aggregated metrics for service

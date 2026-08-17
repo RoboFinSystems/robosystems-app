@@ -7,7 +7,7 @@ export default function MasterServiceAgreement() {
         </h1>
 
         <p className="mb-12 text-gray-600 dark:text-gray-400">
-          Version 2.1 · Last Revision: August 13, 2026
+          Version 2.1 · Last Revision: August 17, 2026
         </p>
 
         <p>
@@ -123,22 +123,25 @@ export default function MasterServiceAgreement() {
           display Customer Data solely to provide and support the Services.
           Provider will not sell Customer Data or use it for purposes other than
           providing the Services, improving the Services in
-          aggregate/de-identified form, and complying with law. Upon written
-          request within sixty (60) days after termination, Provider will make
-          Customer Data available for export in a standard format; thereafter
-          Provider will delete Customer Data from active systems within sixty
-          (60) days per its Data Management Policy, with residual copies in
-          encrypted backups expiring on the backup retention schedule.
+          aggregate/de-identified form, and complying with law. Upon termination
+          Provider will capture a final export of Customer Data in a standard
+          format and make it available for Customer to retrieve for ninety (90)
+          days. Provider will delete Customer Data from active systems within
+          sixty (60) days after termination per its Data Management Policy,
+          running concurrently with that retrieval period; residual copies in
+          encrypted backups expire on the backup retention schedule, not to
+          exceed ninety (90) days.
         </p>
 
         <p>
-          5.1 <strong>Export completeness. </strong>Provider maintains
-          programmatic read access to Customer Data through its published APIs
-          sufficient for Customer to extract its own records without Provider
-          assistance. Credentials that Provider holds in encrypted form for
-          Customer&apos;s connected third-party systems are not extractable by
-          design; re-authorization of those connections is Customer&apos;s
-          responsibility on any migration.
+          5.1 <strong>Export completeness. </strong>During the term, Provider
+          maintains programmatic read access to Customer Data through its
+          published APIs sufficient for Customer to extract its own records
+          without Provider assistance. After termination, retrieval is by the
+          final export described in Section 5. Credentials that Provider holds
+          in encrypted form for Customer&apos;s connected third-party systems
+          are not extractable by design; re-authorization of those connections
+          is Customer&apos;s responsibility on any migration.
         </p>
 
         <h2 className="mt-8 mb-4 text-xl font-bold">6. Confidentiality</h2>
@@ -180,17 +183,18 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          7.3 <strong>Attestation scope. </strong>Provider maintains a SOC 2
-          Type II examination covering the environments Provider operates, and
-          will make the report available to Customer under confidentiality
-          obligations, no more than once annually and upon reasonable request.
-          The report covers only environments operated by Provider. It does not
-          cover, and Customer may not represent that it covers, any environment
-          operated by Customer or a third party, including any deployment of
-          Provider&apos;s open-source software in infrastructure Customer
-          controls. Where an environment is transferred to Customer under a
-          Service Schedule, Provider&apos;s attestation coverage of that
-          environment ends on the transfer date.
+          7.3 <strong>Attestation scope. </strong>Provider has engaged an
+          independent CPA firm to perform a SOC 2 Type II examination covering
+          the environments Provider operates, and on issuance will make the
+          report available to Customer under confidentiality obligations, no
+          more than once annually and upon reasonable request. The report covers
+          only environments operated by Provider. It does not cover, and
+          Customer may not represent that it covers, any environment operated by
+          Customer or a third party, including any deployment of Provider&apos;s
+          open-source software in infrastructure Customer controls. Where an
+          environment is transferred to Customer under a Service Schedule,
+          Provider&apos;s attestation coverage of that environment ends on the
+          transfer date.
         </p>
 
         <p>
