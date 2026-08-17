@@ -320,13 +320,17 @@ export default function TermsOfService() {
 
           <p>
             <strong>
-              &quot;RoboSystems&quot; is a federally registered trademark of RFS
-              LLC. &quot;
+              &quot;ROBOSYSTEMS&quot; and &quot;ROBOLEDGER&quot; are trademarks
+              of Harbinger Consultants LLC, used by RFS LLC under licence. The
+              &quot;
               <Link href="/">robosystems.ai</Link>
-              &quot;, the RoboSystems logos and any other product or service
-              name or slogan contained in the Site are marks of RFS LLC. These
-              marks may not be copied, imitated or used, in whole or in part,
-              without the prior written permission of RoboSystems.{' '}
+              &quot;, &quot;roboledger.ai&quot; and &quot;roboinvestor.ai&quot;
+              domains are registered to Harbinger Consultants LLC and licensed
+              to RFS LLC. The RoboSystems logos and any other product or service
+              name or slogan contained in the Site are marks of RFS LLC or its
+              licensor. These marks may not be copied, imitated or used, in
+              whole or in part, without the prior written permission of the
+              owner.{' '}
             </strong>
             You may not use any metatags or any other &quot;hidden text&quot;
             utilizing &quot;RoboSystems&quot; or any other name, trademark or
