@@ -16,7 +16,7 @@ export default function PrivacyPolicy() {
           </h1>
 
           <p className="mb-12 text-gray-600 dark:text-gray-400">
-            Last Revision: August 13, 2026
+            Last Revision: August 17, 2026
           </p>
 
           <p className="mt-8 text-2xl font-semibold">
@@ -219,9 +219,12 @@ export default function PrivacyPolicy() {
 
           <p>
             We retain your information for as long as necessary to provide our
-            Services and comply with legal obligations. When you cancel your
-            subscription, we provide a 30-day grace period for data export
-            before permanent deletion.
+            Services and comply with legal obligations. When your subscription
+            ends, we capture a final backup of your graph database and make it
+            available for your organization&apos;s owners and administrators to
+            download for 90 days. Your data is removed from our active systems
+            at that point, and the final backup is deleted automatically when
+            the 90 days expire.
           </p>
 
           <p>
