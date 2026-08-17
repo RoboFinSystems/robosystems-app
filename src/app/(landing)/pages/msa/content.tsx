@@ -183,17 +183,18 @@ export default function MasterServiceAgreement() {
         </p>
 
         <p>
-          7.3 <strong>Attestation scope. </strong>Provider maintains a SOC 2
-          Type II examination covering the environments Provider operates, and
-          will make the report available to Customer under confidentiality
-          obligations, no more than once annually and upon reasonable request.
-          The report covers only environments operated by Provider. It does not
-          cover, and Customer may not represent that it covers, any environment
-          operated by Customer or a third party, including any deployment of
-          Provider&apos;s open-source software in infrastructure Customer
-          controls. Where an environment is transferred to Customer under a
-          Service Schedule, Provider&apos;s attestation coverage of that
-          environment ends on the transfer date.
+          7.3 <strong>Attestation scope. </strong>Provider has engaged an
+          independent CPA firm to perform a SOC 2 Type II examination covering
+          the environments Provider operates, and on issuance will make the
+          report available to Customer under confidentiality obligations, no
+          more than once annually and upon reasonable request. The report covers
+          only environments operated by Provider. It does not cover, and
+          Customer may not represent that it covers, any environment operated by
+          Customer or a third party, including any deployment of Provider&apos;s
+          open-source software in infrastructure Customer controls. Where an
+          environment is transferred to Customer under a Service Schedule,
+          Provider&apos;s attestation coverage of that environment ends on the
+          transfer date.
         </p>
 
         <p>
