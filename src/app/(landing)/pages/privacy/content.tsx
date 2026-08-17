@@ -220,11 +220,12 @@ export default function PrivacyPolicy() {
           <p>
             We retain your information for as long as necessary to provide our
             Services and comply with legal obligations. When your subscription
-            ends, we capture a final backup of your graph database and make it
-            available for your organization&apos;s owners and administrators to
-            download for 90 days. Your data is removed from our active systems
-            at that point, and the final backup is deleted automatically when
-            the 90 days expire.
+            ends, your graph database is decommissioned; we capture a final
+            backup at that time and make it available for your
+            organization&apos;s owners and administrators to download for 90
+            days. Your data is removed from our active systems at
+            decommissioning, and in any event within 60 days of termination, and
+            the final backup is deleted automatically when the 90 days expire.
           </p>
 
           <p>

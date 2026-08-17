@@ -321,7 +321,7 @@ export default function TermsOfService() {
           <p>
             <strong>
               &quot;ROBOSYSTEMS&quot; and &quot;ROBOLEDGER&quot; are trademarks
-              of Harbinger Consultants LLC, used by RFS LLC under licence. The
+              of Harbinger Consultants LLC, used by RFS LLC under license. The
               &quot;
               <Link href="/">robosystems.ai</Link>
               &quot;, &quot;roboledger.ai&quot; and &quot;roboinvestor.ai&quot;

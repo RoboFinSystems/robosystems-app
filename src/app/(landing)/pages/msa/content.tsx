@@ -138,10 +138,10 @@ export default function MasterServiceAgreement() {
           maintains programmatic read access to Customer Data through its
           published APIs sufficient for Customer to extract its own records
           without Provider assistance. After termination, retrieval is by the
-          final export described in §5. Credentials that Provider holds in
-          encrypted form for Customer&apos;s connected third-party systems are
-          not extractable by design; re-authorization of those connections is
-          Customer&apos;s responsibility on any migration.
+          final export described in Section 5. Credentials that Provider holds
+          in encrypted form for Customer&apos;s connected third-party systems
+          are not extractable by design; re-authorization of those connections
+          is Customer&apos;s responsibility on any migration.
         </p>
 
         <h2 className="mt-8 mb-4 text-xl font-bold">6. Confidentiality</h2>
