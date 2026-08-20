@@ -101,11 +101,13 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
 
                   // Small delay to ensure state updates
                   setTimeout(() => {
+                    // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload is intentional: entitlements changed server-side, so client caches must not survive this navigation
                     window.location.href = `/repositories/${currentResourceId}/getting-started`
                   }, 500)
                 } catch (err) {
                   console.error('Failed to set up repository context:', err)
                   // Fallback to getting started page anyway
+                  // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload is intentional: entitlements changed server-side, so client caches must not survive this navigation
                   window.location.href = `/repositories/${currentResourceId}/getting-started`
                 }
               }
@@ -118,6 +120,7 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
               // Graph subscription - redirect to dashboard
               showSuccess('Payment successful! Redirecting to dashboard...')
               setTimeout(() => {
+                // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload is intentional: entitlements changed server-side, so client caches must not survive this navigation
                 window.location.href = '/dashboard'
               }, 2000)
             }
