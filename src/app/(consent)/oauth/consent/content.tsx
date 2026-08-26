@@ -9,6 +9,7 @@ import {
 } from '@/lib/oauth-consent'
 import { useGraphContext } from '@robosystems/core'
 import { Alert, Button, Card, Label, Radio, Spinner } from 'flowbite-react'
+import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { HiExclamation, HiLockClosed, HiShieldCheck } from 'react-icons/hi'
@@ -147,6 +148,18 @@ export function ConsentContent() {
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
               {failure.message}
             </p>
+            {failure.kind === 'unauthenticated' &&
+              isValidRequestId(requestId) && (
+                <Link
+                  href={`/login?return_to=${encodeURIComponent(
+                    `/oauth/consent?request_id=${requestId}`
+                  )}`}
+                  className="inline-block text-sm font-medium underline underline-offset-4"
+                  data-testid="sign-in-again"
+                >
+                  Sign in to continue
+                </Link>
+              )}
           </div>
         ) : !pending ? (
           <div
@@ -214,6 +227,14 @@ export function ConsentContent() {
                   <Spinner size="sm" aria-label="Loading graphs" /> Loading your
                   graphs…
                 </div>
+              ) : graphState.error ? (
+                <p
+                  className="text-sm text-zinc-600 dark:text-zinc-400"
+                  data-testid="graphs-error"
+                >
+                  Your graphs couldn&apos;t be loaded. Reload the page to try
+                  again.
+                </p>
               ) : graphState.graphs.length === 0 ? (
                 <p
                   className="text-sm text-zinc-600 dark:text-zinc-400"

@@ -13,6 +13,14 @@ vi.mock('next/navigation', () => ({
   useSearchParams: () => mockSearchParams,
 }))
 
+vi.mock('next/link', () => ({
+  default: ({ children, href, ...rest }: any) => (
+    <a href={href} data-testid={rest['data-testid']}>
+      {children}
+    </a>
+  ),
+}))
+
 vi.mock('react-icons/hi', () => ({
   HiExclamation: () => <span>Icon</span>,
   HiLockClosed: () => <span>Icon</span>,
@@ -91,6 +99,9 @@ describe('ConsentContent', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    // clearAllMocks keeps mockResolvedValueOnce queues; a response left
+    // unconsumed by one test must not answer the next test's fetch.
+    fetchMock.mockReset()
     mockSearchParams.set('request_id', REQUEST_ID)
     global.fetch = fetchMock as any
     Object.defineProperty(window, 'location', {
@@ -209,6 +220,7 @@ describe('ConsentContent', () => {
     expect(screen.getByTestId('fixed-graph')).toHaveTextContent('Beta Books')
     expect(screen.getByText('claude.ai')).toBeInTheDocument()
 
+    await waitFor(() => expect(screen.getByTestId('approve')).toBeEnabled())
     fireEvent.click(screen.getByTestId('approve'))
     await waitFor(() =>
       expect(window.location.href).toBe('https://claude.ai/cb?code=1')
@@ -232,6 +244,53 @@ describe('ConsentContent', () => {
     render(<ConsentContent />)
     expect(await screen.findByTestId('consent-failure')).toBeInTheDocument()
     expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  test('a lost session explains itself and offers to sign in again', async () => {
+    fetchMock.mockResolvedValueOnce(jsonResponse(401, { detail: 'nope' }))
+    render(<ConsentContent />)
+    expect(await screen.findByTestId('consent-failure')).toHaveTextContent(
+      /session ended/
+    )
+    const link = screen.getByTestId('sign-in-again')
+    expect(link).toHaveAttribute(
+      'href',
+      `/login?return_to=${encodeURIComponent(
+        `/oauth/consent?request_id=${REQUEST_ID}`
+      )}`
+    )
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
+  test('a denied graph on approval shows the access message', async () => {
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse(200, PENDING))
+      .mockResolvedValueOnce(jsonResponse(403, { detail: 'no access' }))
+    render(<ConsentContent />)
+    await screen.findByText('Visual Studio Code')
+    await waitFor(() => expect(screen.getByTestId('approve')).toBeEnabled())
+    fireEvent.click(screen.getByTestId('approve'))
+    expect(await screen.findByTestId('consent-failure')).toHaveTextContent(
+      /don't have access/
+    )
+    expect(window.location.href).toBe('')
+  })
+
+  test('a failed graph load is not mistaken for an empty account', async () => {
+    mockUseGraphContext.mockReturnValue({
+      state: {
+        graphs: [],
+        currentGraphId: null,
+        isLoading: false,
+        error: 'boom',
+      },
+    } as any)
+    fetchMock.mockResolvedValueOnce(jsonResponse(200, PENDING))
+    render(<ConsentContent />)
+    await screen.findByText('Visual Studio Code')
+    expect(screen.getByTestId('graphs-error')).toBeInTheDocument()
+    expect(screen.queryByTestId('no-graphs')).not.toBeInTheDocument()
+    expect(screen.getByTestId('approve')).toBeDisabled()
   })
 
   test('with no graphs the approve button is disabled', async () => {
