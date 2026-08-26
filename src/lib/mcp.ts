@@ -12,7 +12,18 @@ export const MCP_API_URL = (
   process.env.NEXT_PUBLIC_ROBOSYSTEMS_API_URL || 'https://api.robosystems.ai'
 ).replace(/\/$/, '')
 
-/** Bare MCP endpoint for a workspace — no credential. */
+/**
+ * Graph-agnostic OAuth endpoint. The graph is chosen on the consent screen
+ * instead of in the URL, so one address serves every workspace — at the cost
+ * of one authorization per workspace, since a grant still names one graph.
+ */
+export const MCP_OAUTH_URL = `${MCP_API_URL}/v1/mcp`
+
+/**
+ * Per-workspace MCP endpoint — no credential. Accepts OAuth (the consent
+ * screen shows this workspace locked in) as well as an `X-API-Key` header or
+ * a graph-scoped `?token=`.
+ */
 export const mcpEndpointFor = (workspaceId: string) =>
   `${MCP_API_URL}/v1/graphs/${workspaceId}/mcp`
 

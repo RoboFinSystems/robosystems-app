@@ -4,6 +4,7 @@ import { CopyableId, CopyButton } from '@/components/CopyableId'
 import {
   connectorNameFor,
   MCP_API_URL,
+  MCP_OAUTH_URL,
   mcpEndpointFor,
   parentGraphIdOf,
 } from '@/lib/mcp'
@@ -192,7 +193,7 @@ function ConnectWorkspace() {
       <PageHeader
         icon={HiPuzzle}
         title="MCP"
-        subtitle="Add a graph or subgraph to Claude, Claude Code, Cursor, or any MCP client — pick the workspace, generate a key, and every snippet below is ready to paste."
+        subtitle="Add a graph or subgraph to Claude, Claude Code, Cursor, or any MCP client — pick the workspace, paste one URL, and sign in when the client asks."
       />
 
       {isLoading ? (
@@ -215,115 +216,188 @@ function ConnectWorkspace() {
         />
       ) : (
         <Card>
-          <div className="space-y-4">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="min-w-0">
-                <h3 className="font-heading text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                  {workspace.label}
-                </h3>
-                <CopyableId
-                  value={workspace.id}
-                  label={workspace.isSubgraph ? 'subgraph id' : 'graph id'}
-                />
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="font-heading text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                    {workspace.label}
+                  </h3>
+                  <CopyableId
+                    value={workspace.id}
+                    label={workspace.isSubgraph ? 'subgraph id' : 'graph id'}
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  {currentGraph.isRepository && (
+                    <Badge color="purple">Repository</Badge>
+                  )}
+                  {workspace.isSubgraph && (
+                    <Badge color="indigo">Subgraph</Badge>
+                  )}
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                {currentGraph.isRepository && (
-                  <Badge color="purple">Repository</Badge>
-                )}
-                {workspace.isSubgraph && <Badge color="indigo">Subgraph</Badge>}
-                {!activeConnector && (
-                  <button
-                    type="button"
-                    onClick={generate}
-                    disabled={isGenerating}
-                    className="bg-primary-600 hover:bg-primary-700 inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
+
+              {workspaces.length > 1 && (
+                <div className="space-y-1.5">
+                  <Label
+                    htmlFor="mcp-workspace"
+                    className="text-sm font-medium"
                   >
-                    <HiSparkles className="h-4 w-4" />
-                    {isGenerating ? 'Generating…' : 'Generate connector key'}
-                  </button>
-                )}
-              </div>
+                    Workspace
+                  </Label>
+                  <Select
+                    id="mcp-workspace"
+                    value={workspace.id}
+                    onChange={(e) => setWorkspaceId(e.target.value)}
+                  >
+                    {workspaces.map((w) => (
+                      <option key={w.id} value={w.id}>
+                        {w.isSubgraph
+                          ? `${w.label} — subgraph`
+                          : `${w.label} — parent graph`}
+                      </option>
+                    ))}
+                  </Select>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                    One workspace is one connection. Every snippet below
+                    re-addresses itself to the selection.
+                  </p>
+                </div>
+              )}
             </div>
 
-            {workspaces.length > 1 && (
-              <div className="space-y-1.5">
-                <Label htmlFor="mcp-workspace" className="text-sm font-medium">
-                  Workspace
-                </Label>
-                <Select
-                  id="mcp-workspace"
-                  value={workspace.id}
-                  onChange={(e) => setWorkspaceId(e.target.value)}
-                >
-                  {workspaces.map((w) => (
-                    <option key={w.id} value={w.id}>
-                      {w.isSubgraph
-                        ? `${w.label} — subgraph`
-                        : `${w.label} — parent graph`}
-                    </option>
-                  ))}
-                </Select>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
-                  One workspace is one connector. Every snippet below
-                  re-addresses itself to the selection.
+            <section className="space-y-4" data-testid="oauth-section">
+              <div className="space-y-1">
+                <h4 className="font-heading text-base font-semibold text-zinc-900 dark:text-zinc-100">
+                  Sign in to connect
+                </h4>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  Paste the URL and the client sends you to RoboSystems to sign
+                  in. The consent screen shows this workspace already selected,
+                  access follows the role you already have, and each connection
+                  is one grant — nothing to copy, store, or rotate.
                 </p>
               </div>
-            )}
 
-            {!activeConnector && (
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Generate a key scoped to this workspace and every snippet below
-                is filled in, ready to copy. The key works only here and is
-                revocable anytime in{' '}
-                <Link href="/settings" className="underline">
-                  Settings → API Keys
-                </Link>
-                .
-              </p>
-            )}
-            {workspace.isSubgraph && !activeConnector && (
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Already have a connector for{' '}
-                <span className="font-medium">{currentGraph.graphName}</span>?
-                Its key covers this subgraph too — paste that same token into
-                the snippets below instead of generating a second key.
-              </p>
-            )}
-            {error && (
-              <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
-            )}
+              <Snippet
+                heading="Claude (claude.ai / Desktop) — Settings → Connectors → Add custom connector"
+                copyLabel="Connector URL"
+                code={url}
+                note="Claude detects the sign-in on its own. Leave the OAuth client fields blank."
+              />
 
-            <Snippet
-              heading="Claude (claude.ai / Desktop) — Settings → Connectors → Add custom connector"
-              copyLabel="Connector URL"
-              code={
-                activeConnector
-                  ? activeConnector.url
-                  : `${url}?token=<generate a key first>`
-              }
-              note={
-                activeConnector
-                  ? 'Paste the whole URL — the key rides inside it, no header needed. Treat it like a password.'
-                  : "Claude's connectors can't send headers, so the URL carries the key itself."
-              }
-            />
+              <Snippet
+                heading="Claude Code"
+                copyLabel="Claude Code command"
+                code={`claude mcp add --transport http ${name} ${url}`}
+                note={
+                  <>
+                    Then run <code>/mcp</code>, pick{' '}
+                    <code className="break-all">{name}</code>, and sign in.
+                  </>
+                }
+              />
 
-            <Snippet
-              heading="Claude Code"
-              copyLabel="Claude Code command"
-              code={`claude mcp add --transport http ${name} \\
+              <Snippet
+                heading="Cursor / VS Code (mcp.json)"
+                copyLabel="mcp.json entry"
+                code={`"${name}": { "url": "${url}" }`}
+                note="The editor opens the sign-in the first time it connects."
+              />
+
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-200 px-4 py-3 dark:border-zinc-800">
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  Any workspace from one address:{' '}
+                  <code className="break-all text-zinc-900 dark:text-zinc-100">
+                    {MCP_OAUTH_URL}
+                  </code>{' '}
+                  asks which graph to connect at sign-in.
+                </p>
+                <CopyButton value={MCP_OAUTH_URL} label="Universal URL" />
+              </div>
+            </section>
+
+            <details
+              className="group rounded-lg border border-zinc-200 dark:border-zinc-800"
+              data-testid="api-key-section"
+            >
+              <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-zinc-900 select-none dark:text-zinc-100">
+                Use an API key instead — scripts, CI, and clients that
+                can&apos;t sign in
+              </summary>
+              <div className="space-y-4 border-t border-zinc-200 px-4 py-4 dark:border-zinc-800">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    Generate a key scoped to this workspace and every snippet
+                    below is filled in, ready to copy. The key works only here
+                    and is revocable anytime in{' '}
+                    <Link href="/settings" className="underline">
+                      Settings → API Keys
+                    </Link>
+                    .
+                  </p>
+                  {!activeConnector && (
+                    <button
+                      type="button"
+                      onClick={generate}
+                      disabled={isGenerating}
+                      className="bg-primary-600 hover:bg-primary-700 inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
+                    >
+                      <HiSparkles className="h-4 w-4" />
+                      {isGenerating ? 'Generating…' : 'Generate connector key'}
+                    </button>
+                  )}
+                </div>
+                {workspace.isSubgraph && !activeConnector && (
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    Already have a key for{' '}
+                    <span className="font-medium">
+                      {currentGraph.graphName}
+                    </span>
+                    ? It covers this subgraph too — paste that same token into
+                    the snippets below instead of generating a second key.
+                  </p>
+                )}
+                {error && (
+                  <p className="text-xs text-red-600 dark:text-red-400">
+                    {error}
+                  </p>
+                )}
+
+                <Snippet
+                  heading="Claude (claude.ai / Desktop) — connector URL"
+                  copyLabel="Connector URL"
+                  code={
+                    activeConnector
+                      ? activeConnector.url
+                      : `${url}?token=<generate a key first>`
+                  }
+                  note={
+                    activeConnector
+                      ? 'The key rides inside the URL — treat it like a password.'
+                      : "For a client that can't sign in or send headers — the key rides inside the URL."
+                  }
+                />
+
+                <Snippet
+                  heading="Claude Code"
+                  copyLabel="Claude Code command"
+                  code={`claude mcp add --transport http ${name} \\
   ${url} \\
   --header "X-API-Key: ${keyValue}"`}
-            />
+                />
 
-            <Snippet
-              heading="Cursor / VS Code (mcp.json)"
-              copyLabel="mcp.json entry"
-              code={`"${name}": {
+                <Snippet
+                  heading="Cursor / VS Code (mcp.json)"
+                  copyLabel="mcp.json entry"
+                  code={`"${name}": {
   "url": "${url}",
   "headers": { "X-API-Key": "${keyValue}" }
 }`}
-            />
+                />
+              </div>
+            </details>
           </div>
         </Card>
       )}
@@ -335,14 +409,20 @@ function ConnectWorkspace() {
           </h3>
           <ul className="space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
             <li>
-              One workspace is one connector. The id is part of the URL, so a
-              connector can only ever reach the graph or subgraph you pointed it
-              at — to connect another, change the selection and generate again.
+              One workspace is one connection. The id is part of the URL, so a
+              connection can only ever reach the graph or subgraph you pointed
+              it at — to connect another, change the selection and connect
+              again.
             </li>
             <li>
-              A key scoped to a parent graph also covers that graph's subgraphs,
-              so one token can serve every connector in a graph family. A key
-              scoped to a subgraph reaches only that subgraph.
+              A sign-in grant is bound to the URL it was issued for and to the
+              client that asked. Disconnect in the client to end it; changing
+              your password ends every grant at once.
+            </li>
+            <li>
+              A key scoped to a parent graph also covers that graph&apos;s
+              subgraphs, so one token can serve every connection in a graph
+              family. A key scoped to a subgraph reaches only that subgraph.
             </li>
             <li>
               Generated keys are graph-scoped: rejected on every account-level

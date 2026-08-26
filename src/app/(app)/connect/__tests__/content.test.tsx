@@ -296,6 +296,53 @@ describe('ConnectContent', () => {
     expect(screen.queryByLabelText('Workspace')).not.toBeInTheDocument()
   })
 
+  test('leads with the OAuth URL and no credential', () => {
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
+
+    render(<ConnectContent />)
+
+    const body = document.body.textContent ?? ''
+    // The one-line OAuth recipe: same name, same URL, no header.
+    expect(body).toContain(
+      'claude mcp add --transport http robosystems-kg1a2b3c https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp'
+    )
+    expect(body).toContain(
+      '"robosystems-kg1a2b3c": { "url": "https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp" }'
+    )
+    // The graph-agnostic address is offered alongside, for any workspace.
+    expect(body).toContain('https://api.robosystems.ai/v1/mcp')
+
+    // OAuth sits above the key path, and the key path starts closed.
+    const oauth = screen.getByTestId('oauth-section')
+    const apiKey = screen.getByTestId('api-key-section') as HTMLDetailsElement
+    expect(
+      oauth.compareDocumentPosition(apiKey) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
+    expect(apiKey.open).toBe(false)
+    expect(apiKey.textContent).toContain('Generate connector key')
+  })
+
+  test('keeps the OAuth snippets credential-free after a key is generated', async () => {
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
+    mockCreateMcpConnectorUrl.mockResolvedValue({
+      url: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp?token=rfsc_test',
+      endpoint: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp',
+      apiKey: 'rfsc_test',
+      keyName: 'Claude connector - Acme Ledger',
+      graphId: 'kg1a2b3c',
+    })
+
+    render(<ConnectContent />)
+    fireEvent.click(screen.getByText('Generate connector key'))
+
+    await waitFor(() => {
+      expect(document.body.textContent).toContain('rfsc_test')
+    })
+    expect(screen.getByTestId('oauth-section').textContent).not.toContain(
+      'rfsc_test'
+    )
+  })
+
   test('no longer tells the user to hand-edit the id into the URL', () => {
     setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
 
