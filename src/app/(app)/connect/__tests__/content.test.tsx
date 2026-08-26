@@ -102,17 +102,16 @@ describe('ConnectContent', () => {
     fireEvent.click(screen.getByText('Generate connector key'))
 
     await waitFor(() => {
-      expect(document.body.textContent).toContain(
-        'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp?token=rfsc_test'
-      )
+      expect(document.body.textContent).toContain('X-API-Key: rfsc_test')
     })
 
-    // The same key lands in the header-based snippets too, so every copy
-    // button yields a working artifact — no <your key> placeholders left.
+    // The key lands in every header-based snippet, so every copy button
+    // yields a working artifact — and never in a URL: the ?token= carriage
+    // was retired once OAuth covered header-less clients.
     const body = document.body.textContent ?? ''
-    expect(body).toContain('X-API-Key: rfsc_test')
     expect(body).toContain('"X-API-Key": "rfsc_test"')
     expect(body).not.toContain('<your key>')
+    expect(body).not.toContain('?token=')
 
     expect(mockCreateMcpConnectorUrl).toHaveBeenCalledWith(
       'kg1a2b3c',
