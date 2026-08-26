@@ -330,8 +330,9 @@ function ConnectWorkspace() {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <p className="text-sm text-zinc-600 dark:text-zinc-400">
                     Generate a key scoped to this workspace and every snippet
-                    below is filled in, ready to copy. The key works only here
-                    and is revocable anytime in{' '}
+                    below is filled in, ready to copy. The key goes in the{' '}
+                    <code>X-API-Key</code> header — never in the URL — works
+                    only here, and is revocable anytime in{' '}
                     <Link href="/settings" className="underline">
                       Settings → API Keys
                     </Link>
@@ -364,21 +365,6 @@ function ConnectWorkspace() {
                     {error}
                   </p>
                 )}
-
-                <Snippet
-                  heading="Claude (claude.ai / Desktop) — connector URL"
-                  copyLabel="Connector URL"
-                  code={
-                    activeConnector
-                      ? activeConnector.url
-                      : `${url}?token=<generate a key first>`
-                  }
-                  note={
-                    activeConnector
-                      ? 'The key rides inside the URL — treat it like a password.'
-                      : "For a client that can't sign in or send headers — the key rides inside the URL."
-                  }
-                />
 
                 <Snippet
                   heading="Claude Code"
