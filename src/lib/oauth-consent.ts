@@ -39,6 +39,32 @@ export interface ConsentDecision {
 export type ConsentErrorKind =
   'expired' | 'forbidden' | 'unauthenticated' | 'unknown'
 
+// Display names an untrusted DCR client can spoof. Keep in sync with
+// operations/oauth_server/cimd.py:CIMD_TRUSTED_HOSTS (plus Cursor, which
+// registers via DCR). Longest phrase first so "visual studio code" wins
+// over a later "code" we must never add.
+const LOOKALIKE_PHRASES: readonly [phrase: string, brand: string][] = [
+  ['visual studio code', 'Visual Studio Code'],
+  ['vs code', 'Visual Studio Code'],
+  ['vscode', 'Visual Studio Code'],
+  ['chat gpt', 'ChatGPT'],
+  ['chatgpt', 'ChatGPT'],
+  ['openai', 'ChatGPT'],
+  ['anthropic', 'Claude'],
+  ['claude', 'Claude'],
+  ['cursor', 'Cursor'],
+]
+
+/** Matched brand label, or null. Only meaningful when the client is untrusted. */
+export function lookalikeBrand(clientName: string): string | null {
+  const collapsed = clientName.trim().toLowerCase().replace(/\s+/g, ' ')
+  if (!collapsed) return null
+  for (const [phrase, brand] of LOOKALIKE_PHRASES) {
+    if (collapsed.includes(phrase)) return brand
+  }
+  return null
+}
+
 export class ConsentError extends Error {
   kind: ConsentErrorKind
 

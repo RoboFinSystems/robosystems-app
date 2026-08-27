@@ -4,6 +4,7 @@ import {
   ConsentError,
   fetchPendingAuthorization,
   isValidRequestId,
+  lookalikeBrand,
   submitConsentDecision,
   type PendingAuthorization,
 } from '@/lib/oauth-consent'
@@ -33,6 +34,26 @@ function toFailure(error: unknown): ConsentFailure {
     return { kind: error.kind, message: FAILURE_COPY[error.kind] }
   }
   return { kind: 'unknown', message: FAILURE_COPY.unknown }
+}
+
+function UnverifiedAlert({ pending }: { pending: PendingAuthorization }) {
+  const brand = lookalikeBrand(pending.client_name)
+  return (
+    <Alert color="warning" icon={HiExclamation}>
+      <span className="font-medium">
+        This app isn&apos;t verified by RoboSystems.
+      </span>{' '}
+      {brand ? (
+        <>
+          Its name looks like {brand}, but approval sends you to{' '}
+          <span className="font-medium">{pending.redirect_host}</span>. Only
+          continue if you started this connection yourself.
+        </>
+      ) : (
+        <>Only continue if you started this connection yourself.</>
+      )}
+    </Alert>
+  )
 }
 
 /**
@@ -192,18 +213,18 @@ export function ConsentContent() {
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
                 It will be able to use the MCP tools on one graph, with the
                 access your role already gives you. You can revoke this at any
-                time.
+                time from{' '}
+                <Link
+                  href="/settings"
+                  className="font-medium underline underline-offset-4"
+                >
+                  Settings → Connected apps
+                </Link>
+                .
               </p>
             </header>
 
-            {!pending.is_trusted && (
-              <Alert color="warning" icon={HiExclamation}>
-                <span className="font-medium">
-                  This app isn&apos;t verified by RoboSystems.
-                </span>{' '}
-                Only continue if you started this connection yourself.
-              </Alert>
-            )}
+            {!pending.is_trusted && <UnverifiedAlert pending={pending} />}
 
             <section className="space-y-3">
               <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">

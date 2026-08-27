@@ -127,6 +127,9 @@ describe('ConsentContent', () => {
     expect(await screen.findByText('Visual Studio Code')).toBeInTheDocument()
     expect(screen.getByRole('alert')).toHaveTextContent("isn't verified")
     expect(
+      screen.getByRole('link', { name: /Settings → Connected apps/ })
+    ).toHaveAttribute('href', '/settings')
+    expect(
       screen.getByText(/an app running on this computer/)
     ).toBeInTheDocument()
     expect(
@@ -195,6 +198,69 @@ describe('ConsentContent', () => {
       approved: false,
       graph_id: null,
     })
+  })
+
+  test('an untrusted lookalike name names the brand and the redirect host', async () => {
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse(200, {
+        ...PENDING,
+        client_name: 'Claude',
+        client_uri: null,
+        is_trusted: false,
+        is_loopback_redirect: false,
+        redirect_host: 'attacker.evil-test.example',
+      })
+    )
+    render(<ConsentContent />)
+    expect(
+      await screen.findByRole('heading', { name: /Claude/ })
+    ).toBeInTheDocument()
+    const alert = screen.getByRole('alert')
+    expect(alert).toHaveTextContent("isn't verified")
+    expect(alert).toHaveTextContent('looks like Claude')
+    expect(alert).toHaveTextContent('attacker.evil-test.example')
+  })
+
+  test('an untrusted name that is not a lookalike keeps the generic warning', async () => {
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse(200, {
+        ...PENDING,
+        client_name: 'research-test',
+        client_uri: null,
+        is_trusted: false,
+        is_loopback_redirect: false,
+        redirect_host: 'attacker.evil-test.example',
+      })
+    )
+    render(<ConsentContent />)
+    expect(
+      await screen.findByRole('heading', { name: /research-test/ })
+    ).toBeInTheDocument()
+    const alert = screen.getByRole('alert')
+    expect(alert).toHaveTextContent("isn't verified")
+    expect(alert).not.toHaveTextContent('looks like')
+    expect(alert).toHaveTextContent(
+      'Only continue if you started this connection yourself'
+    )
+  })
+
+  test('a trusted client named like a brand shows neither the banner nor the lookalike sentence', async () => {
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse(200, {
+        ...PENDING,
+        client_name: 'Claude',
+        client_uri: 'https://claude.ai',
+        is_trusted: true,
+        is_loopback_redirect: false,
+        redirect_host: 'claude.ai',
+      })
+    )
+    render(<ConsentContent />)
+    expect(
+      await screen.findByRole('heading', { name: /Claude/ })
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(screen.queryByText(/looks like/)).not.toBeInTheDocument()
   })
 
   test('a per-graph request shows the fixed graph and no picker', async () => {

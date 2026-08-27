@@ -1,5 +1,6 @@
 'use client'
 
+import { ConnectedAppsCard } from '@/components/settings/ConnectedAppsCard'
 import { PasskeysCard } from '@/components/settings/PasskeysCard'
 import type { User } from '@robosystems/core'
 import {
@@ -115,6 +116,7 @@ const UserSettingsPageContent: FC<UserProps> = function ({ user, onRefresh }) {
         />
         <PasskeysCard onSuccess={showSuccess} onError={showError} />
         <ApiKeysCard theme={customTheme} connectHref="/connect" />
+        <ConnectedAppsCard onSuccess={showSuccess} onError={showError} />
       </div>
     </PageLayout>
   )
