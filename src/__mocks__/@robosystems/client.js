@@ -53,6 +53,8 @@ export const updateUserApiKey = vi.fn()
 export const getCurrentUser = vi.fn()
 export const updateUser = vi.fn()
 export const updateUserPassword = vi.fn()
+export const listUserOAuthGrants = vi.fn()
+export const revokeUserOAuthGrant = vi.fn()
 
 // Graph functions
 export const getGraphs = vi.fn()
