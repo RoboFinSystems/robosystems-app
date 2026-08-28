@@ -1,5 +1,12 @@
 'use client'
 
+import { McpSignInSnippets, McpSnippet } from '@/components/mcp/McpSnippets'
+import {
+  connectorNameFor,
+  MCP_CONNECTOR_NAME,
+  MCP_OAUTH_URL,
+  mcpEndpointFor,
+} from '@/lib/mcp'
 import { createUserApiKey } from '@robosystems/client/sdk'
 import {
   PageHeader,
@@ -106,8 +113,8 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
     setIsCreatingKey(true)
     try {
       // Scoped to this repository: the key works only here (least privilege),
-      // which is also what makes the pasteable Claude connector URL below
-      // acceptable — account-wide keys are rejected in URLs server-side.
+      // and only on the repository's own MCP URL — the universal URL takes a
+      // sign-in, never a key.
       const response = await createUserApiKey({
         body: {
           name: `Repository Access - ${repository.toUpperCase()} - ${new Date().toLocaleDateString()}`,
@@ -145,9 +152,12 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
 
   const displayApiKey = apiKey || 'YOUR_API_KEY_HERE'
 
-  // The graph id lives in the URL path and never becomes a tool argument, so a
-  // connector is anchored to exactly one repository.
-  const mcpUrl = `${process.env.NEXT_PUBLIC_ROBOSYSTEMS_API_URL || 'https://api.robosystems.ai'}/v1/graphs/${repository}/mcp`
+  // The repository id lives in the URL path and never becomes a tool
+  // argument, so a connection on this URL is anchored to exactly this
+  // repository — which is what lets a key ride along in a header.
+  const mcpUrl = mcpEndpointFor(repository)
+  const mcpName = connectorNameFor(repository)
+  const repoLabel = repoOffering?.name || repository.toUpperCase()
 
   return (
     <PageLayout>
@@ -393,7 +403,8 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
             <ul className="space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
               <li className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-zinc-400"></span>
-                Connect Claude, Claude Code, Cursor, or any MCP client
+                Pin an MCP connection to this repository from scripts, CI, or
+                clients that can&apos;t sign in
               </li>
               <li className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-zinc-400"></span>
@@ -407,56 +418,55 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
           </div>
 
           {/* MCP Connection */}
-          <div className="space-y-3 border-t border-zinc-200 pt-4 dark:border-zinc-700">
-            <h4 className="font-heading font-medium text-zinc-900 dark:text-zinc-100">
-              Connect via MCP
-            </h4>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              No install required. The URL picks the repository, so add one
-              connection per graph you want to reach — sign in with OAuth, or
-              put the key in a header. Credentials never travel in the URL.
-            </p>
-
-            <div className="space-y-2">
-              <p className="text-xs font-medium tracking-wide text-zinc-500 uppercase dark:text-zinc-500">
-                Claude (claude.ai / Desktop) — Settings → Connectors → Add
-                custom connector
-              </p>
-              <pre className="overflow-x-auto rounded-lg bg-zinc-100 p-4 text-sm text-zinc-900 dark:bg-zinc-900 dark:text-zinc-300">
-                <code>{mcpUrl}</code>
-              </pre>
-              <p className="text-xs text-zinc-500 dark:text-zinc-500">
-                Paste the URL and Claude sends you to RoboSystems to sign in —
-                this repository is already selected on the consent screen. No
-                key needed.
+          <div className="space-y-4 border-t border-zinc-200 pt-4 dark:border-zinc-700">
+            <div className="space-y-1">
+              <h4 className="font-heading font-medium text-zinc-900 dark:text-zinc-100">
+                Connect via MCP
+              </h4>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                No install required. Paste one URL, sign in, and choose{' '}
+                {repoLabel} on the consent screen — no key involved. Or pin the
+                connection to this repository with the URL that names it and put
+                your key in a header. Credentials never travel in the URL.
               </p>
             </div>
 
-            <div className="space-y-2">
-              <p className="text-xs font-medium tracking-wide text-zinc-500 uppercase dark:text-zinc-500">
-                Claude Code
+            <div className="space-y-4" data-testid="mcp-sign-in">
+              <McpSignInSnippets
+                url={MCP_OAUTH_URL}
+                name={MCP_CONNECTOR_NAME}
+              />
+            </div>
+
+            <div
+              className="space-y-4 border-t border-zinc-200 pt-4 dark:border-zinc-700"
+              data-testid="mcp-api-key"
+            >
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                  With your key
+                </span>{' '}
+                — for scripts, CI, and clients that can&apos;t sign in. The URL
+                pins the connection to {repoLabel}; the key goes in the{' '}
+                <code>X-API-Key</code> header.
               </p>
-              <pre className="overflow-x-auto rounded-lg bg-zinc-100 p-4 text-sm text-zinc-900 dark:bg-zinc-900 dark:text-zinc-300">
-                <code>
-                  {`claude mcp add --transport http robosystems-${repository} \\
+
+              <McpSnippet
+                heading="Claude Code"
+                copyLabel="Claude Code command"
+                code={`claude mcp add --transport http ${mcpName} \\
   ${mcpUrl} \\
   --header "X-API-Key: ${displayApiKey}"`}
-                </code>
-              </pre>
-            </div>
+              />
 
-            <div className="space-y-2">
-              <p className="text-xs font-medium tracking-wide text-zinc-500 uppercase dark:text-zinc-500">
-                Cursor / VS Code (mcp.json)
-              </p>
-              <pre className="overflow-x-auto rounded-lg bg-zinc-100 p-4 text-sm text-zinc-900 dark:bg-zinc-900 dark:text-zinc-300">
-                <code>
-                  {`"robosystems-${repository}": {
+              <McpSnippet
+                heading="Cursor / VS Code (mcp.json)"
+                copyLabel="mcp.json entry"
+                code={`"${mcpName}": {
   "url": "${mcpUrl}",
   "headers": { "X-API-Key": "${displayApiKey}" }
 }`}
-                </code>
-              </pre>
+              />
             </div>
 
             <p className="text-xs text-zinc-500 dark:text-zinc-500">

@@ -20,9 +20,16 @@ export const MCP_API_URL = (
 export const MCP_OAUTH_URL = `${MCP_API_URL}/v1/mcp`
 
 /**
- * Per-workspace MCP endpoint — no credential. Accepts OAuth (the consent
- * screen shows this workspace locked in) as well as an `X-API-Key` header or
- * a graph-scoped `?token=`.
+ * Connector name for the graph-agnostic address — the same name the public
+ * listings use (MCP registry, Claude directory). A per-workspace connector
+ * always carries its id as a suffix, so the two can coexist in one client.
+ */
+export const MCP_CONNECTOR_NAME = 'robosystems'
+
+/**
+ * Per-workspace MCP endpoint — no credential in the URL. Accepts OAuth (the
+ * consent screen shows this workspace locked in) as well as an `X-API-Key`
+ * header; the `?token=` carriage was retired once OAuth landed.
  */
 export const mcpEndpointFor = (workspaceId: string) =>
   `${MCP_API_URL}/v1/graphs/${workspaceId}/mcp`

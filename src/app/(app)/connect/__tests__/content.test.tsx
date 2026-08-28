@@ -139,6 +139,10 @@ describe('ConnectContent', () => {
     expect(screen.getByTestId('empty-state')).toHaveTextContent(
       'No graph selected'
     )
+    // The universal URL needs no selection — it stays connectable regardless.
+    expect(screen.getByTestId('universal-section').textContent).toContain(
+      'https://api.robosystems.ai/v1/mcp'
+    )
   })
 
   test('shows the empty state when the user has no graphs', () => {
@@ -295,30 +299,69 @@ describe('ConnectContent', () => {
     expect(screen.queryByLabelText('Workspace')).not.toBeInTheDocument()
   })
 
-  test('leads with the OAuth URL and no credential', () => {
+  test('leads with the universal URL, then the workspace sign-in, then the key path', () => {
     setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
 
     render(<ConnectContent />)
 
-    const body = document.body.textContent ?? ''
-    // The one-line OAuth recipe: same name, same URL, no header.
-    expect(body).toContain(
+    // The universal address gets the full recipe set under the listing name,
+    // not a one-line footnote — it is the URL every public listing carries.
+    const universal = screen.getByTestId('universal-section').textContent ?? ''
+    expect(universal).toContain(
+      'claude mcp add --transport http robosystems https://api.robosystems.ai/v1/mcp'
+    )
+    expect(universal).toContain(
+      '"robosystems": { "url": "https://api.robosystems.ai/v1/mcp" }'
+    )
+    expect(universal).not.toContain('/v1/graphs/')
+
+    // The workspace recipe: same name, same URL, no header.
+    const oauth = screen.getByTestId('oauth-section')
+    expect(oauth.textContent).toContain(
       'claude mcp add --transport http robosystems-kg1a2b3c https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp'
     )
-    expect(body).toContain(
+    expect(oauth.textContent).toContain(
       '"robosystems-kg1a2b3c": { "url": "https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp" }'
     )
-    // The graph-agnostic address is offered alongside, for any workspace.
-    expect(body).toContain('https://api.robosystems.ai/v1/mcp')
 
-    // OAuth sits above the key path, and the key path starts closed.
-    const oauth = screen.getByTestId('oauth-section')
+    // Universal above workspace sign-in above the key path, which starts closed.
+    const universalSection = screen.getByTestId('universal-section')
     const apiKey = screen.getByTestId('api-key-section') as HTMLDetailsElement
+    expect(
+      universalSection.compareDocumentPosition(oauth) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
     expect(
       oauth.compareDocumentPosition(apiKey) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy()
     expect(apiKey.open).toBe(false)
     expect(apiKey.textContent).toContain('Generate connector key')
+  })
+
+  test('never pairs the universal URL with an API key', async () => {
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
+    mockCreateMcpConnectorUrl.mockResolvedValue({
+      url: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp?token=rfsc_test',
+      endpoint: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp',
+      apiKey: 'rfsc_test',
+      keyName: 'Claude connector - Acme Ledger',
+      graphId: 'kg1a2b3c',
+    })
+
+    render(<ConnectContent />)
+    fireEvent.click(screen.getByText('Generate connector key'))
+    await waitFor(() => {
+      expect(document.body.textContent).toContain('rfsc_test')
+    })
+
+    // /v1/mcp is OAuth-only on the API, so the page must not suggest a
+    // header there, and the key snippets must address a workspace URL.
+    expect(screen.getByTestId('universal-section').textContent).not.toContain(
+      'X-API-Key'
+    )
+    expect(screen.getByTestId('api-key-section').textContent).not.toContain(
+      'api.robosystems.ai/v1/mcp'
+    )
   })
 
   test('keeps the OAuth snippets credential-free after a key is generated', async () => {
@@ -338,6 +381,9 @@ describe('ConnectContent', () => {
       expect(document.body.textContent).toContain('rfsc_test')
     })
     expect(screen.getByTestId('oauth-section').textContent).not.toContain(
+      'rfsc_test'
+    )
+    expect(screen.getByTestId('universal-section').textContent).not.toContain(
       'rfsc_test'
     )
   })
