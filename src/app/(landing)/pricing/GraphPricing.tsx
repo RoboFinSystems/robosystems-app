@@ -61,7 +61,6 @@ const FALLBACK_TIERS: Tier[] = [
     maxSubgraphs: 10,
     storageGb: 50,
     backupRetentionDays: 30,
-    featured: true,
   },
   {
     id: 'ladybug-xlarge',
