@@ -1,6 +1,7 @@
 'use client'
 
-import { CopyableId, CopyButton } from '@/components/CopyableId'
+import { CopyableId } from '@/components/CopyableId'
+import { McpSignInSnippets, McpSnippet } from '@/components/mcp/McpSnippets'
 import {
   connectorNameFor,
   MCP_API_URL,
@@ -35,72 +36,6 @@ interface Workspace {
   isSubgraph: boolean
 }
 
-function Snippet({
-  heading,
-  code,
-  copyLabel,
-  note,
-}: {
-  heading: string
-  code: string
-  copyLabel: string
-  note?: React.ReactNode
-}) {
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-xs font-medium tracking-wide text-zinc-500 uppercase dark:text-zinc-500">
-          {heading}
-        </p>
-        <CopyButton value={code} label={copyLabel} />
-      </div>
-      <pre className="overflow-x-auto rounded-lg bg-zinc-100 p-4 text-sm text-zinc-900 dark:bg-zinc-900 dark:text-zinc-300">
-        <code>{code}</code>
-      </pre>
-      {note && (
-        <p className="text-xs text-zinc-500 dark:text-zinc-500">{note}</p>
-      )}
-    </div>
-  )
-}
-
-/**
- * The three client recipes for one address. Both sections render the same
- * set so the universal URL and a workspace URL read as the same kind of
- * thing — only the address and the connector name differ.
- */
-function SignInSnippets({ url, name }: { url: string; name: string }) {
-  return (
-    <>
-      <Snippet
-        heading="Claude (claude.ai / Desktop) — Settings → Connectors → Add custom connector"
-        copyLabel="Connector URL"
-        code={url}
-        note="Claude detects the sign-in on its own. Leave the OAuth client fields blank."
-      />
-
-      <Snippet
-        heading="Claude Code"
-        copyLabel="Claude Code command"
-        code={`claude mcp add --transport http ${name} ${url}`}
-        note={
-          <>
-            Then run <code>/mcp</code>, pick{' '}
-            <code className="break-all">{name}</code>, and sign in.
-          </>
-        }
-      />
-
-      <Snippet
-        heading="Cursor / VS Code (mcp.json)"
-        copyLabel="mcp.json entry"
-        code={`"${name}": { "url": "${url}" }`}
-        note="The editor opens the sign-in the first time it connects."
-      />
-    </>
-  )
-}
-
 /**
  * The graph-agnostic address. It is the one every public listing carries
  * (MCP registry, Claude directory, the bridge README), so it leads here too.
@@ -124,7 +59,7 @@ function UniversalSection() {
           </p>
         </div>
 
-        <SignInSnippets url={MCP_OAUTH_URL} name={MCP_CONNECTOR_NAME} />
+        <McpSignInSnippets url={MCP_OAUTH_URL} name={MCP_CONNECTOR_NAME} />
 
         <p className="text-xs text-zinc-500 dark:text-zinc-500">
           A connection reaches one graph. To connect a subgraph, keep several
@@ -371,7 +306,7 @@ function ConnectWorkspace() {
                     </p>
                   </div>
 
-                  <SignInSnippets url={url} name={name} />
+                  <McpSignInSnippets url={url} name={name} />
                 </section>
 
                 <details
@@ -425,7 +360,7 @@ function ConnectWorkspace() {
                       </p>
                     )}
 
-                    <Snippet
+                    <McpSnippet
                       heading="Claude Code"
                       copyLabel="Claude Code command"
                       code={`claude mcp add --transport http ${name} \\
@@ -433,7 +368,7 @@ function ConnectWorkspace() {
   --header "X-API-Key: ${keyValue}"`}
                     />
 
-                    <Snippet
+                    <McpSnippet
                       heading="Cursor / VS Code (mcp.json)"
                       copyLabel="mcp.json entry"
                       code={`"${name}": {
