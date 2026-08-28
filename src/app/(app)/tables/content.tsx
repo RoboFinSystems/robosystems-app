@@ -442,10 +442,14 @@ export function TablesContent() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 
-  // Sample queries
+  // Sample queries. The SQL surface accepts SELECT/WITH statements only, so
+  // DuckDB's SHOW and DESCRIBE forms run as subqueries. Aggregates stay
+  // wrapped in SELECT * as well: the edge SQLi filter passes that shape and
+  // rejects the bare projection.
+  const listTablesSql = 'SELECT * FROM (SHOW ALL TABLES)'
   const sampleQueries = isEntityGraph
     ? [
-        { label: 'List all tables', sql: 'SHOW ALL TABLES' },
+        { label: 'List all tables', sql: listTablesSql },
         { label: 'Preview entity', sql: 'SELECT * FROM Entity LIMIT 10' },
         { label: 'Preview accounts', sql: 'SELECT * FROM Element LIMIT 10' },
         {
@@ -454,24 +458,24 @@ export function TablesContent() {
         },
       ]
     : [
-        { label: 'List all tables', sql: 'SHOW ALL TABLES' },
+        { label: 'List all tables', sql: listTablesSql },
         {
           label: 'Table info',
           sql: selectedTable
-            ? `DESCRIBE ${selectedTable.tableName}`
-            : 'SHOW ALL TABLES',
+            ? `SELECT * FROM (DESCRIBE ${selectedTable.tableName})`
+            : listTablesSql,
         },
         {
           label: 'Preview data',
           sql: selectedTable
             ? `SELECT * FROM ${selectedTable.tableName} LIMIT 10`
-            : 'SHOW ALL TABLES',
+            : listTablesSql,
         },
         {
           label: 'Row count',
           sql: selectedTable
-            ? `SELECT COUNT(*) as total FROM ${selectedTable.tableName}`
-            : 'SHOW ALL TABLES',
+            ? `SELECT * FROM (SELECT COUNT(*) AS total FROM ${selectedTable.tableName})`
+            : listTablesSql,
         },
       ]
 
