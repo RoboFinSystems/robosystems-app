@@ -4,6 +4,7 @@ import { CopyableId, CopyButton } from '@/components/CopyableId'
 import {
   connectorNameFor,
   MCP_API_URL,
+  MCP_CONNECTOR_NAME,
   MCP_OAUTH_URL,
   mcpEndpointFor,
   parentGraphIdOf,
@@ -25,8 +26,8 @@ import { HiLink, HiPuzzle, HiSparkles } from 'react-icons/hi'
 
 /**
  * A connector target. The parent graph and each of its subgraphs are equal
- * citizens here — the id is the address, and everything on the page (URL, key
- * scope, connector name) is derived from the selected one.
+ * citizens here — the id is the address, and everything in the workspace
+ * section (URL, key scope, connector name) is derived from the selected one.
  */
 interface Workspace {
   id: string
@@ -60,6 +61,78 @@ function Snippet({
         <p className="text-xs text-zinc-500 dark:text-zinc-500">{note}</p>
       )}
     </div>
+  )
+}
+
+/**
+ * The three client recipes for one address. Both sections render the same
+ * set so the universal URL and a workspace URL read as the same kind of
+ * thing — only the address and the connector name differ.
+ */
+function SignInSnippets({ url, name }: { url: string; name: string }) {
+  return (
+    <>
+      <Snippet
+        heading="Claude (claude.ai / Desktop) — Settings → Connectors → Add custom connector"
+        copyLabel="Connector URL"
+        code={url}
+        note="Claude detects the sign-in on its own. Leave the OAuth client fields blank."
+      />
+
+      <Snippet
+        heading="Claude Code"
+        copyLabel="Claude Code command"
+        code={`claude mcp add --transport http ${name} ${url}`}
+        note={
+          <>
+            Then run <code>/mcp</code>, pick{' '}
+            <code className="break-all">{name}</code>, and sign in.
+          </>
+        }
+      />
+
+      <Snippet
+        heading="Cursor / VS Code (mcp.json)"
+        copyLabel="mcp.json entry"
+        code={`"${name}": { "url": "${url}" }`}
+        note="The editor opens the sign-in the first time it connects."
+      />
+    </>
+  )
+}
+
+/**
+ * The graph-agnostic address. It is the one every public listing carries
+ * (MCP registry, Claude directory, the bridge README), so it leads here too.
+ * It takes only a sign-in — the consent screen is where the graph is chosen —
+ * and a grant names exactly one graph, the same as a workspace URL.
+ */
+function UniversalSection() {
+  return (
+    <Card>
+      <section className="space-y-4" data-testid="universal-section">
+        <div className="space-y-1">
+          <h3 className="font-heading text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+            Sign in and pick a graph
+          </h3>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            One address for every graph you can access. Paste it and the client
+            sends you to RoboSystems to sign in; the consent screen lists your
+            graphs and shared repositories, and you choose one. Access follows
+            the role you already have, and each connection is one grant —
+            nothing to copy, store, or rotate.
+          </p>
+        </div>
+
+        <SignInSnippets url={MCP_OAUTH_URL} name={MCP_CONNECTOR_NAME} />
+
+        <p className="text-xs text-zinc-500 dark:text-zinc-500">
+          A connection reaches one graph. To connect a subgraph, keep several
+          graphs connected in one client, or use an API key, pin the connection
+          to a workspace below.
+        </p>
+      </section>
+    </Card>
   )
 }
 
@@ -193,7 +266,7 @@ function ConnectWorkspace() {
       <PageHeader
         icon={HiPuzzle}
         title="MCP"
-        subtitle="Add a graph or subgraph to Claude, Claude Code, Cursor, or any MCP client — pick the workspace, paste one URL, and sign in when the client asks."
+        subtitle="Add RoboSystems to Claude, Claude Code, Cursor, or any MCP client — paste one URL and pick the graph when you sign in, or pin a connection to one graph or subgraph."
       />
 
       {isLoading ? (
@@ -208,184 +281,172 @@ function ConnectWorkspace() {
           title="No graphs yet"
           description="Create a graph or subscribe to a repository, then come back to connect it to your AI client."
         />
-      ) : !currentGraph || !workspace ? (
-        <EmptyState
-          icon={HiLink}
-          title="No graph selected"
-          description="Select a graph from the switcher above, then connect it here."
-        />
       ) : (
-        <Card>
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <h3 className="font-heading text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                    {workspace.label}
-                  </h3>
-                  <CopyableId
-                    value={workspace.id}
-                    label={workspace.isSubgraph ? 'subgraph id' : 'graph id'}
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  {currentGraph.isRepository && (
-                    <Badge color="purple">Repository</Badge>
-                  )}
-                  {workspace.isSubgraph && (
-                    <Badge color="indigo">Subgraph</Badge>
-                  )}
-                </div>
-              </div>
+        <>
+          <UniversalSection />
 
-              {workspaces.length > 1 && (
-                <div className="space-y-1.5">
-                  <Label
-                    htmlFor="mcp-workspace"
-                    className="text-sm font-medium"
-                  >
-                    Workspace
-                  </Label>
-                  <Select
-                    id="mcp-workspace"
-                    value={workspace.id}
-                    onChange={(e) => setWorkspaceId(e.target.value)}
-                  >
-                    {workspaces.map((w) => (
-                      <option key={w.id} value={w.id}>
-                        {w.isSubgraph
-                          ? `${w.label} — subgraph`
-                          : `${w.label} — parent graph`}
-                      </option>
-                    ))}
-                  </Select>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-500">
-                    One workspace is one connection. Every snippet below
-                    re-addresses itself to the selection.
-                  </p>
-                </div>
-              )}
-            </div>
+          {!currentGraph || !workspace ? (
+            <EmptyState
+              icon={HiLink}
+              title="No graph selected"
+              description="Select a graph from the switcher above to pin a connection to it or to one of its subgraphs."
+            />
+          ) : (
+            <Card>
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <h3 className="font-heading text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                      Pin a connection to one workspace
+                    </h3>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                      The graph or subgraph id is part of the URL, so this
+                      connection can only ever reach the workspace you point it
+                      at. It is how a subgraph is connected, how one client
+                      keeps several graphs connected at once, and the route that
+                      takes an API key.
+                    </p>
+                  </div>
 
-            <section className="space-y-4" data-testid="oauth-section">
-              <div className="space-y-1">
-                <h4 className="font-heading text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                  Sign in to connect
-                </h4>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Paste the URL and the client sends you to RoboSystems to sign
-                  in. The consent screen shows this workspace already selected,
-                  access follows the role you already have, and each connection
-                  is one grant — nothing to copy, store, or rotate.
-                </p>
-              </div>
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-medium text-zinc-900 dark:text-zinc-100">
+                        {workspace.label}
+                      </p>
+                      <CopyableId
+                        value={workspace.id}
+                        label={
+                          workspace.isSubgraph ? 'subgraph id' : 'graph id'
+                        }
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {currentGraph.isRepository && (
+                        <Badge color="purple">Repository</Badge>
+                      )}
+                      {workspace.isSubgraph && (
+                        <Badge color="indigo">Subgraph</Badge>
+                      )}
+                    </div>
+                  </div>
 
-              <Snippet
-                heading="Claude (claude.ai / Desktop) — Settings → Connectors → Add custom connector"
-                copyLabel="Connector URL"
-                code={url}
-                note="Claude detects the sign-in on its own. Leave the OAuth client fields blank."
-              />
-
-              <Snippet
-                heading="Claude Code"
-                copyLabel="Claude Code command"
-                code={`claude mcp add --transport http ${name} ${url}`}
-                note={
-                  <>
-                    Then run <code>/mcp</code>, pick{' '}
-                    <code className="break-all">{name}</code>, and sign in.
-                  </>
-                }
-              />
-
-              <Snippet
-                heading="Cursor / VS Code (mcp.json)"
-                copyLabel="mcp.json entry"
-                code={`"${name}": { "url": "${url}" }`}
-                note="The editor opens the sign-in the first time it connects."
-              />
-
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-200 px-4 py-3 dark:border-zinc-800">
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Any workspace from one address:{' '}
-                  <code className="break-all text-zinc-900 dark:text-zinc-100">
-                    {MCP_OAUTH_URL}
-                  </code>{' '}
-                  asks which graph to connect at sign-in.
-                </p>
-                <CopyButton value={MCP_OAUTH_URL} label="Universal URL" />
-              </div>
-            </section>
-
-            <details
-              className="group rounded-lg border border-zinc-200 dark:border-zinc-800"
-              data-testid="api-key-section"
-            >
-              <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-zinc-900 select-none dark:text-zinc-100">
-                Use an API key instead — scripts, CI, and clients that
-                can&apos;t sign in
-              </summary>
-              <div className="space-y-4 border-t border-zinc-200 px-4 py-4 dark:border-zinc-800">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                    Generate a key scoped to this workspace and every snippet
-                    below is filled in, ready to copy. The key goes in the{' '}
-                    <code>X-API-Key</code> header — never in the URL — works
-                    only here, and is revocable anytime in{' '}
-                    <Link href="/settings" className="underline">
-                      Settings → API Keys
-                    </Link>
-                    .
-                  </p>
-                  {!activeConnector && (
-                    <button
-                      type="button"
-                      onClick={generate}
-                      disabled={isGenerating}
-                      className="bg-primary-600 hover:bg-primary-700 inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
-                    >
-                      <HiSparkles className="h-4 w-4" />
-                      {isGenerating ? 'Generating…' : 'Generate connector key'}
-                    </button>
+                  {workspaces.length > 1 && (
+                    <div className="space-y-1.5">
+                      <Label
+                        htmlFor="mcp-workspace"
+                        className="text-sm font-medium"
+                      >
+                        Workspace
+                      </Label>
+                      <Select
+                        id="mcp-workspace"
+                        value={workspace.id}
+                        onChange={(e) => setWorkspaceId(e.target.value)}
+                      >
+                        {workspaces.map((w) => (
+                          <option key={w.id} value={w.id}>
+                            {w.isSubgraph
+                              ? `${w.label} — subgraph`
+                              : `${w.label} — parent graph`}
+                          </option>
+                        ))}
+                      </Select>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                        The parent graph and each of its subgraphs is its own
+                        connection. Every snippet below re-addresses itself to
+                        the selection.
+                      </p>
+                    </div>
                   )}
                 </div>
-                {workspace.isSubgraph && !activeConnector && (
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                    Already have a key for{' '}
-                    <span className="font-medium">
-                      {currentGraph.graphName}
-                    </span>
-                    ? It covers this subgraph too — paste that same token into
-                    the snippets below instead of generating a second key.
-                  </p>
-                )}
-                {error && (
-                  <p className="text-xs text-red-600 dark:text-red-400">
-                    {error}
-                  </p>
-                )}
 
-                <Snippet
-                  heading="Claude Code"
-                  copyLabel="Claude Code command"
-                  code={`claude mcp add --transport http ${name} \\
+                <section className="space-y-4" data-testid="oauth-section">
+                  <div className="space-y-1">
+                    <h4 className="font-heading text-base font-semibold text-zinc-900 dark:text-zinc-100">
+                      Sign in to connect
+                    </h4>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                      Same sign-in as above, with this workspace already
+                      selected on the consent screen.
+                    </p>
+                  </div>
+
+                  <SignInSnippets url={url} name={name} />
+                </section>
+
+                <details
+                  className="group rounded-lg border border-zinc-200 dark:border-zinc-800"
+                  data-testid="api-key-section"
+                >
+                  <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-zinc-900 select-none dark:text-zinc-100">
+                    Use an API key instead — scripts, CI, and clients that
+                    can&apos;t sign in
+                  </summary>
+                  <div className="space-y-4 border-t border-zinc-200 px-4 py-4 dark:border-zinc-800">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                        Generate a key scoped to this workspace and every
+                        snippet below is filled in, ready to copy. The key goes
+                        in the <code>X-API-Key</code> header — never in the URL
+                        — works only here, and is revocable anytime in{' '}
+                        <Link href="/settings" className="underline">
+                          Settings → API Keys
+                        </Link>
+                        .
+                      </p>
+                      {!activeConnector && (
+                        <button
+                          type="button"
+                          onClick={generate}
+                          disabled={isGenerating}
+                          className="bg-primary-600 hover:bg-primary-700 inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
+                        >
+                          <HiSparkles className="h-4 w-4" />
+                          {isGenerating
+                            ? 'Generating…'
+                            : 'Generate connector key'}
+                        </button>
+                      )}
+                    </div>
+                    {workspace.isSubgraph && !activeConnector && (
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                        Already have a key for{' '}
+                        <span className="font-medium">
+                          {currentGraph.graphName}
+                        </span>
+                        ? It covers this subgraph too — paste that same token
+                        into the snippets below instead of generating a second
+                        key.
+                      </p>
+                    )}
+                    {error && (
+                      <p className="text-xs text-red-600 dark:text-red-400">
+                        {error}
+                      </p>
+                    )}
+
+                    <Snippet
+                      heading="Claude Code"
+                      copyLabel="Claude Code command"
+                      code={`claude mcp add --transport http ${name} \\
   ${url} \\
   --header "X-API-Key: ${keyValue}"`}
-                />
+                    />
 
-                <Snippet
-                  heading="Cursor / VS Code (mcp.json)"
-                  copyLabel="mcp.json entry"
-                  code={`"${name}": {
+                    <Snippet
+                      heading="Cursor / VS Code (mcp.json)"
+                      copyLabel="mcp.json entry"
+                      code={`"${name}": {
   "url": "${url}",
   "headers": { "X-API-Key": "${keyValue}" }
 }`}
-                />
+                    />
+                  </div>
+                </details>
               </div>
-            </details>
-          </div>
-        </Card>
+            </Card>
+          )}
+        </>
       )}
 
       <Card>
@@ -395,10 +456,14 @@ function ConnectWorkspace() {
           </h3>
           <ul className="space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
             <li>
-              One workspace is one connection. The id is part of the URL, so a
-              connection can only ever reach the graph or subgraph you pointed
-              it at — to connect another, change the selection and connect
-              again.
+              A connection reaches one graph. On the universal URL the grant
+              names the graph you chose at sign-in — disconnect and sign in
+              again to switch. On a workspace URL the id is part of the address,
+              so one client can hold a connection per graph or subgraph.
+            </li>
+            <li>
+              The universal URL takes only a sign-in; an API key is rejected
+              there. Keys go with a workspace URL.
             </li>
             <li>
               A sign-in grant is bound to the URL it was issued for and to the
