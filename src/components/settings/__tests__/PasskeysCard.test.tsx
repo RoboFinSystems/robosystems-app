@@ -141,7 +141,7 @@ describe('PasskeysCard enrollment re-auth gate', () => {
     await waitFor(() => expect(screen.getByText('Mac')).toBeInTheDocument())
 
     expect(screen.queryByText('No passkeys yet')).not.toBeInTheDocument()
-    expect(screen.getByText('synced')).toBeInTheDocument()
+    expect(screen.getByText('Synced')).toBeInTheDocument()
     expect(
       screen.getByRole('button', { name: 'Add another passkey' })
     ).toBeInTheDocument()

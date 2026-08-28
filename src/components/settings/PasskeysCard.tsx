@@ -12,6 +12,7 @@ import { Button } from 'flowbite-react'
 import type { FC } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { HiKey } from 'react-icons/hi'
+import { formatDate } from './format-date'
 
 // App-local settings card (the passkey UI deliberately lives in the login
 // home, never in @robosystems/core): list/enroll/remove passkeys and manage
@@ -185,14 +186,14 @@ export const PasskeysCard: FC<PasskeysCardProps> = ({ onSuccess, onError }) => {
                     {pk.name}
                     {pk.backup_eligible && (
                       <span className="ml-2 rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
-                        synced
+                        Synced
                       </span>
                     )}
                   </p>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    Added {new Date(pk.created_at).toLocaleDateString()}
+                    Added {formatDate(pk.created_at)}
                     {pk.last_used_at
-                      ? ` · Last used ${new Date(pk.last_used_at).toLocaleDateString()}`
+                      ? ` · Last used ${formatDate(pk.last_used_at)}`
                       : ''}
                   </p>
                 </div>

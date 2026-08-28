@@ -11,14 +11,11 @@ import { Button, Spinner } from 'flowbite-react'
 import type { FC } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { HiPuzzle } from 'react-icons/hi'
+import { formatDate } from './format-date'
 
 interface ConnectedAppsCardProps {
   onSuccess?: (message: string) => void
   onError?: (message: string) => void
-}
-
-function formatDate(value: string): string {
-  return new Date(value).toLocaleDateString()
 }
 
 function isHttpsUri(uri: string | null | undefined): uri is string {
