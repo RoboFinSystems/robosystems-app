@@ -297,7 +297,7 @@ describe('TierSelectionStep', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByRole('button', { name: 'Request access' })
+          screen.getByRole('button', { name: /^Request access to/ })
         ).toBeInTheDocument()
       })
       expect(
@@ -331,7 +331,7 @@ describe('TierSelectionStep', () => {
         screen.queryByText('Provisioned on request')
       ).not.toBeInTheDocument()
       expect(
-        screen.queryByRole('button', { name: 'Request access' })
+        screen.queryByRole('button', { name: /^Request access to/ })
       ).not.toBeInTheDocument()
     })
   })
@@ -350,7 +350,9 @@ describe('TierSelectionStep', () => {
       })
       expect(screen.queryByTestId('tier-request-modal')).not.toBeInTheDocument()
 
-      fireEvent.click(screen.getByRole('button', { name: 'Request access' }))
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Request access to XLarge' })
+      )
 
       expect(screen.getByText('Request modal: XLarge')).toBeInTheDocument()
       expect(screen.getByText('Entry tier: no')).toBeInTheDocument()
@@ -374,11 +376,13 @@ describe('TierSelectionStep', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByRole('button', { name: 'Request access' })
+          screen.getByRole('button', { name: /^Request access to/ })
         ).toBeInTheDocument()
       })
 
-      fireEvent.click(screen.getByRole('button', { name: 'Request access' }))
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Request access to Standard' })
+      )
 
       expect(screen.getByText('Request modal: Standard')).toBeInTheDocument()
       expect(screen.getByText('Entry tier: yes')).toBeInTheDocument()

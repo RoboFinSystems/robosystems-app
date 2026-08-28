@@ -34,9 +34,13 @@ export function TierSelectionStep({
   )
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  // The target outlives the open flag so the modal stays mounted across a
+  // close and Flowbite drives the transition off `show`, the way
+  // GraphLimitModal does.
   const [requestTarget, setRequestTarget] = useState<TierRequestTarget | null>(
     null
   )
+  const [requestOpen, setRequestOpen] = useState(false)
 
   // Valid tier values from the form data type
   const VALID_TIERS = [
@@ -229,6 +233,7 @@ export function TierSelectionStep({
                       size="sm"
                       color={color}
                       className="mx-auto cursor-pointer"
+                      aria-label={`Request access to ${tier.display_name}`}
                       onClick={(e: React.MouseEvent) => {
                         e.stopPropagation()
                         setRequestTarget({
@@ -237,6 +242,7 @@ export function TierSelectionStep({
                           monthlyPrice: tier.monthly_price,
                           capacityStatus: capacity?.status,
                         })
+                        setRequestOpen(true)
                       }}
                     >
                       Request access
@@ -258,8 +264,8 @@ export function TierSelectionStep({
       </div>
 
       <TierRequestModal
-        isOpen={requestTarget !== null}
-        onClose={() => setRequestTarget(null)}
+        isOpen={requestOpen}
+        onClose={() => setRequestOpen(false)}
         target={requestTarget}
         isEntryTier={requestTarget?.tier === ENTRY_TIER}
       />
