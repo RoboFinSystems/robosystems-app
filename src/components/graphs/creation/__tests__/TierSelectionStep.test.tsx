@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { TierSelectionStep } from '../steps/TierSelectionStep'
 
@@ -8,6 +8,21 @@ vi.mock('@robosystems/core', () => ({
     alert: {},
     card: {},
   },
+}))
+
+// The request modal has its own tests; here it only needs to report what
+// the step handed it.
+vi.mock('../TierRequestModal', () => ({
+  __esModule: true,
+  default: vi.fn(({ isOpen, onClose, target, isEntryTier }) =>
+    isOpen && target ? (
+      <div data-testid="tier-request-modal">
+        <div>Request modal: {target.displayName}</div>
+        <div>Entry tier: {isEntryTier ? 'yes' : 'no'}</div>
+        <button onClick={onClose}>Close Request</button>
+      </div>
+    ) : null
+  ),
 }))
 
 const mockTiers = [
@@ -244,11 +259,35 @@ describe('TierSelectionStep', () => {
         expect(
           screen.getByText('Available — 3-5 min setup')
         ).toBeInTheDocument()
-        expect(screen.getByText('At Capacity')).toBeInTheDocument()
+        expect(screen.getByText('Provisioned on request')).toBeInTheDocument()
+        expect(screen.queryByText('At Capacity')).not.toBeInTheDocument()
       })
     })
 
-    it('should show contact message for at-capacity tiers', async () => {
+    it('should keep the At Capacity badge for the entry tier', async () => {
+      mockFetchGraphCapacity.mockResolvedValue({
+        tiers: [{ tier: 'ladybug-standard', status: 'at_capacity' }],
+      })
+
+      render(
+        <TierSelectionStep
+          selectedTier="ladybug-standard"
+          onTierChange={mockOnTierChange}
+        />
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('At Capacity')).toBeInTheDocument()
+      })
+      expect(
+        screen.getByText(/Currently full — request access/)
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByText('Provisioned on request')
+      ).not.toBeInTheDocument()
+    })
+
+    it('should offer a Request access button on at-capacity tiers', async () => {
       render(
         <TierSelectionStep
           selectedTier="ladybug-standard"
@@ -258,9 +297,15 @@ describe('TierSelectionStep', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText('Contact us for availability')
+          screen.getByRole('button', { name: /^Request access to/ })
         ).toBeInTheDocument()
       })
+      expect(
+        screen.getByText(/Set up on request for larger ledgers/)
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByText('Contact us for availability')
+      ).not.toBeInTheDocument()
     })
 
     it('should handle capacity fetch failure gracefully', async () => {
@@ -279,9 +324,68 @@ describe('TierSelectionStep', () => {
         expect(screen.getByText('Large')).toBeInTheDocument()
       })
 
-      // No capacity badges should be shown
+      // No capacity badges or request affordance should be shown
       expect(screen.queryByText('Available')).not.toBeInTheDocument()
       expect(screen.queryByText('At Capacity')).not.toBeInTheDocument()
+      expect(
+        screen.queryByText('Provisioned on request')
+      ).not.toBeInTheDocument()
+      expect(
+        screen.queryByRole('button', { name: /^Request access to/ })
+      ).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Request access', () => {
+    it('opens the request modal for that tier without selecting it', async () => {
+      render(
+        <TierSelectionStep
+          selectedTier="ladybug-standard"
+          onTierChange={mockOnTierChange}
+        />
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('XLarge')).toBeInTheDocument()
+      })
+      expect(screen.queryByTestId('tier-request-modal')).not.toBeInTheDocument()
+
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Request access to XLarge' })
+      )
+
+      expect(screen.getByText('Request modal: XLarge')).toBeInTheDocument()
+      expect(screen.getByText('Entry tier: no')).toBeInTheDocument()
+      expect(mockOnTierChange).not.toHaveBeenCalled()
+
+      fireEvent.click(screen.getByText('Close Request'))
+      expect(screen.queryByTestId('tier-request-modal')).not.toBeInTheDocument()
+    })
+
+    it('flags the entry tier when Standard itself is full', async () => {
+      mockFetchGraphCapacity.mockResolvedValue({
+        tiers: [{ tier: 'ladybug-standard', status: 'at_capacity' }],
+      })
+
+      render(
+        <TierSelectionStep
+          selectedTier="ladybug-standard"
+          onTierChange={mockOnTierChange}
+        />
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: /^Request access to/ })
+        ).toBeInTheDocument()
+      })
+
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Request access to Standard' })
+      )
+
+      expect(screen.getByText('Request modal: Standard')).toBeInTheDocument()
+      expect(screen.getByText('Entry tier: yes')).toBeInTheDocument()
     })
   })
 

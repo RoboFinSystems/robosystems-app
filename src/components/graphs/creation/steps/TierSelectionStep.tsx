@@ -7,15 +7,22 @@ import {
   type GraphTier,
   type TierCapacity,
 } from '@robosystems/core/lib/graph-tiers'
-import { Alert, Badge, Card, Spinner } from 'flowbite-react'
+import { Alert, Badge, Button, Card, Spinner } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import { HiCheckCircle, HiInformationCircle } from 'react-icons/hi'
+import type { TierRequestTarget } from '../TierRequestForm'
+import TierRequestModal from '../TierRequestModal'
 import type { GraphFormData } from '../types'
 
 interface TierSelectionStepProps {
   selectedTier?: GraphFormData['selectedTier']
   onTierChange: (tier: NonNullable<GraphFormData['selectedTier']>) => void
 }
+
+// Standard is the self-serve entry point. The larger tiers are provisioned
+// on request, so "no capacity" means something different on each side of
+// this line: the entry tier is full, the others are waiting for a request.
+const ENTRY_TIER = 'ladybug-standard'
 
 export function TierSelectionStep({
   selectedTier = 'ladybug-standard',
@@ -27,6 +34,13 @@ export function TierSelectionStep({
   )
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  // The target outlives the open flag so the modal stays mounted across a
+  // close and Flowbite drives the transition off `show`, the way
+  // GraphLimitModal does.
+  const [requestTarget, setRequestTarget] = useState<TierRequestTarget | null>(
+    null
+  )
+  const [requestOpen, setRequestOpen] = useState(false)
 
   // Valid tier values from the form data type
   const VALID_TIERS = [
@@ -136,8 +150,11 @@ export function TierSelectionStep({
           const color = getTierColor(tier, tiers)
           const capacity = capacityMap[tier.tier]
           const isAtCapacity = capacity?.status === 'at_capacity'
+          const isEntryTier = tier.tier === ENTRY_TIER
           const capacityBadge = capacity
-            ? getCapacityBadge(capacity.status)
+            ? isAtCapacity && !isEntryTier
+              ? { label: 'Provisioned on request', color: 'warning' as const }
+              : getCapacityBadge(capacity.status)
             : null
 
           return (
@@ -145,9 +162,7 @@ export function TierSelectionStep({
               key={tier.tier}
               theme={customTheme.card}
               className={`relative transition-all ${
-                isAtCapacity
-                  ? 'cursor-not-allowed opacity-60'
-                  : 'cursor-pointer'
+                isAtCapacity ? 'cursor-not-allowed' : 'cursor-pointer'
               } ${
                 isSelected && !isAtCapacity
                   ? color === 'info'
@@ -208,10 +223,30 @@ export function TierSelectionStep({
                 </ul>
 
                 {isAtCapacity ? (
-                  <div className="text-center">
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      Contact us for availability
+                  <div className="space-y-3 text-center">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {isEntryTier
+                        ? 'Currently full — request access and we will get you a slot.'
+                        : 'Set up on request for larger ledgers and heavier usage.'}
                     </p>
+                    <Button
+                      size="sm"
+                      color={color}
+                      className="mx-auto cursor-pointer"
+                      aria-label={`Request access to ${tier.display_name}`}
+                      onClick={(e: React.MouseEvent) => {
+                        e.stopPropagation()
+                        setRequestTarget({
+                          tier: tier.tier,
+                          displayName: tier.display_name,
+                          monthlyPrice: tier.monthly_price,
+                          capacityStatus: capacity?.status,
+                        })
+                        setRequestOpen(true)
+                      }}
+                    >
+                      Request access
+                    </Button>
                   </div>
                 ) : (
                   isSelected && (
@@ -227,6 +262,13 @@ export function TierSelectionStep({
           )
         })}
       </div>
+
+      <TierRequestModal
+        isOpen={requestOpen}
+        onClose={() => setRequestOpen(false)}
+        target={requestTarget}
+        isEntryTier={requestTarget?.tier === ENTRY_TIER}
+      />
     </div>
   )
 }
