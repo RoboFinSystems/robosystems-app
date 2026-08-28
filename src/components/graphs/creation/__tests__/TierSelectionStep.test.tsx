@@ -60,13 +60,6 @@ vi.mock('@robosystems/core/lib/graph-tiers', () => ({
     if (idx === sorted.length - 1) return 'success'
     return 'warning'
   },
-  getPopularTier: (tiers: any[]) => {
-    if (tiers.length === 0) return null
-    const sorted = [...tiers].sort(
-      (a, b) => (a.monthly_price ?? 0) - (b.monthly_price ?? 0)
-    )
-    return sorted[Math.floor(sorted.length / 2)].tier
-  },
   getCapacityBadge: (status: string) => {
     switch (status) {
       case 'ready':
@@ -220,19 +213,6 @@ describe('TierSelectionStep', () => {
 
       await waitFor(() => {
         expect(screen.getByText('AI Credits System')).toBeInTheDocument()
-      })
-    })
-
-    it('should show "Most Popular" badge on middle tier', async () => {
-      render(
-        <TierSelectionStep
-          selectedTier="ladybug-standard"
-          onTierChange={mockOnTierChange}
-        />
-      )
-
-      await waitFor(() => {
-        expect(screen.getByText('Most Popular')).toBeInTheDocument()
       })
     })
 

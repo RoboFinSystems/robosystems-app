@@ -3,7 +3,6 @@ import {
   fetchGraphCapacity,
   fetchGraphTiers,
   getCapacityBadge,
-  getPopularTier,
   getTierColor,
   type GraphTier,
   type TierCapacity,
@@ -134,7 +133,6 @@ export function TierSelectionStep({
       <div className="grid gap-6 lg:grid-cols-3">
         {tiers.map((tier) => {
           const isSelected = selectedTier === tier.tier
-          const isPopular = tier.tier === getPopularTier(tiers)
           const color = getTierColor(tier, tiers)
           const capacity = capacityMap[tier.tier]
           const isAtCapacity = capacity?.status === 'at_capacity'
@@ -165,14 +163,6 @@ export function TierSelectionStep({
                 if (!isAtCapacity) handleTierChange(tier.tier)
               }}
             >
-              {isPopular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <Badge color={color} size="sm">
-                    Most Popular
-                  </Badge>
-                </div>
-              )}
-
               <div className="space-y-4">
                 <div className="text-center">
                   <h3 className="font-heading text-xl font-bold tracking-tight text-gray-900 dark:text-white">
