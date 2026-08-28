@@ -31,6 +31,8 @@ interface Tier {
   storageGb: number
   backupRetentionDays: number
   featured?: boolean
+  /** Set up for the customer on request rather than self-served. */
+  provisionedOnRequest?: boolean
 }
 
 /**
@@ -54,6 +56,7 @@ const FALLBACK_TIERS: Tier[] = [
   },
   {
     id: 'ladybug-large',
+    provisionedOnRequest: true,
     name: 'Large',
     description: 'Enhanced performance and capacity for growing teams',
     monthlyPrice: 249,
@@ -64,6 +67,7 @@ const FALLBACK_TIERS: Tier[] = [
   },
   {
     id: 'ladybug-xlarge',
+    provisionedOnRequest: true,
     name: 'XLarge',
     description: 'Maximum performance and scale for data-intensive work',
     monthlyPrice: 599,
@@ -222,6 +226,11 @@ export default function GraphPricing({
                   <span className="text-gray-400">/month per graph</span>
                 </div>
                 <p className="text-gray-400">{tier.description}</p>
+                {tier.provisionedOnRequest && (
+                  <p className="mt-3 text-sm text-cyan-300/90">
+                    Provisioned on request — we set it up for you.
+                  </p>
+                )}
               </div>
               <ul className="mb-8 space-y-4">
                 {tierFeatures(tier).map((feature) => (

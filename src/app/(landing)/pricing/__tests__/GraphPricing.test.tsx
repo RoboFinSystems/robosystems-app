@@ -147,4 +147,17 @@ describe('GraphPricing', () => {
       '/graphs/new'
     )
   })
+
+  it('says the larger tiers are provisioned on request, and Standard is not', () => {
+    mockGetOfferings.mockReturnValue(offeringsWith([]))
+
+    render(<GraphPricing isAuthenticated={false} onContactSales={vi.fn()} />)
+
+    expect(
+      screen.getAllByText('Provisioned on request — we set it up for you.')
+    ).toHaveLength(2)
+    // Standard is the self-serve entry point; the note would be wrong there.
+    const standardCard = screen.getByText('Standard').closest('.group')
+    expect(standardCard?.textContent).not.toContain('Provisioned on request')
+  })
 })
