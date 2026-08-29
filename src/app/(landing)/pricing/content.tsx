@@ -67,10 +67,11 @@ export default function PricingContent() {
                   <p className="text-gray-400">
                     Credits power AI agent calls — powered by Claude (Anthropic)
                     via AWS Bedrock — on your graph data. Two agents ship today:{' '}
-                    <span className="text-gray-300">Text-to-Cypher</span>, which
-                    turns a plain-English question into a Cypher query, runs it,
-                    and answers with the query behind it; and{' '}
-                    <span className="text-gray-300">account mapping</span>,
+                    <span className="text-gray-300">the Analyst Operator</span>,
+                    which answers a plain-English question from your graph —
+                    live statements, documents, memory, and the Cypher it writes
+                    when nothing curated fits — and shows the query behind it;
+                    and <span className="text-gray-300">account mapping</span>,
                     which maps your chart of accounts to the US-GAAP taxonomy
                     with confidence scores. Credits are calculated from actual
                     token usage per call. Everything else — MCP tool access,
