@@ -162,8 +162,8 @@ export default function FinancialServices() {
               </div>
               <h4 className="mb-2 font-semibold text-white">Research via AI</h4>
               <p className="text-sm text-gray-400">
-                Ask questions in plain English — AI generates Cypher queries
-                against 8,000+ public company SEC filings
+                Ask questions in plain English — the Analyst Operator answers
+                from 8,000+ public company SEC filings
               </p>
             </div>
 
