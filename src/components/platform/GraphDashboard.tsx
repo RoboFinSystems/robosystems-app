@@ -5,7 +5,6 @@ import {
   HiChevronDown,
   HiChip,
   HiCode,
-  HiCreditCard,
   HiDatabase,
   HiDocumentText,
   HiGlobeAlt,
@@ -13,8 +12,10 @@ import {
   HiLightBulb,
   HiMenu,
   HiMoon,
+  HiOfficeBuilding,
   HiPlay,
   HiPlus,
+  HiPuzzle,
   HiSearch,
   HiTable,
   HiTerminal,
@@ -37,6 +38,11 @@ export default function GraphDashboard() {
       isRepository: false,
     },
     {
+      name: 'Harbinger FinLab',
+      id: 'kg7f2a1',
+      isRepository: false,
+    },
+    {
       name: 'SEC EDGAR Filings',
       id: 'sec',
       isRepository: true,
@@ -55,8 +61,8 @@ export default function GraphDashboard() {
     { icon: HiChip, label: 'Subgraphs' },
     { icon: HiDatabase, label: 'Backups' },
     { icon: HiChartBar, label: 'Usage' },
+    { icon: HiPuzzle, label: 'MCP' },
     { icon: HiGlobeAlt, label: 'Repositories' },
-    { icon: HiCreditCard, label: 'Billing' },
   ]
 
   return (
@@ -151,7 +157,7 @@ export default function GraphDashboard() {
           <div className="hidden border-r border-gray-800 bg-zinc-950 p-4 lg:block lg:w-52">
             <div className="mb-4 rounded-lg bg-zinc-900 px-3 py-2">
               <div className="flex items-center gap-2 text-sm text-gray-400">
-                <HiDatabase className="h-4 w-4" />
+                <HiOfficeBuilding className="h-4 w-4" />
                 <span>My Organization</span>
               </div>
             </div>
