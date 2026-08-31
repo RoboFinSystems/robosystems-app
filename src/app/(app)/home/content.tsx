@@ -32,6 +32,29 @@ import {
   HiTerminal,
 } from 'react-icons/hi'
 
+const SUSPENDED_HINT =
+  'Subscription ended — resubscribe from Organization → Billing to restore access.'
+
+// Only non-active statuses get a badge: labelling every live graph "Active"
+// adds a column of noise to say nothing. `suspended` is the one users actually
+// meet — `deprovisioned` is filtered out of the list server-side — but any
+// other lifecycle value the API grows is still surfaced rather than swallowed.
+function GraphStatusBadge({ graph }: { graph: GraphInfo }) {
+  if (!graph.status || graph.status === 'active') return null
+  if (graph.status === 'suspended') {
+    return (
+      <Badge color="warning" size="sm">
+        Suspended
+      </Badge>
+    )
+  }
+  return (
+    <Badge color="gray" size="sm" className="capitalize">
+      {graph.status}
+    </Badge>
+  )
+}
+
 export default function AllGraphsHomePage() {
   const router = useRouter()
   const { setCurrentGraph, state: graphState } = useGraphContext()
@@ -97,6 +120,14 @@ export default function AllGraphsHomePage() {
     return graphState.currentGraphId === graphId
   }
 
+  // The API lists suspended graphs on purpose — a canceled subscription
+  // suspends the graph and it stays recoverable through the retention window
+  // — but every request against one is refused with a 403, so opening it from
+  // here only produces an error page. Treat a missing status as active: an
+  // older API build omits the field entirely.
+  const isLive = (graph: GraphInfo) =>
+    !graph.status || graph.status === 'active'
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString()
   }
@@ -154,6 +185,7 @@ export default function AllGraphsHomePage() {
                 <TableBody className="divide-y divide-gray-200 dark:divide-gray-700">
                   {graphs.map((graph) => {
                     const isActive = isActiveGraph(graph.graphId)
+                    const live = isLive(graph)
                     return (
                       <TableRow
                         key={graph.graphId}
@@ -167,9 +199,11 @@ export default function AllGraphsHomePage() {
                           <div className="flex items-center gap-3">
                             <div
                               className={`shrink-0 rounded-lg p-2 ${
-                                graph.isRepository
-                                  ? 'bg-secondary-100 dark:bg-secondary-900'
-                                  : 'bg-primary-100 dark:bg-primary-900'
+                                !live
+                                  ? 'bg-gray-100 dark:bg-zinc-700'
+                                  : graph.isRepository
+                                    ? 'bg-secondary-100 dark:bg-secondary-900'
+                                    : 'bg-primary-100 dark:bg-primary-900'
                               }`}
                               title={
                                 graph.isRepository
@@ -179,17 +213,26 @@ export default function AllGraphsHomePage() {
                             >
                               <HiDatabase
                                 className={`h-4 w-4 ${
-                                  graph.isRepository
-                                    ? 'text-secondary-600 dark:text-secondary-400'
-                                    : 'text-primary-600 dark:text-primary-400'
+                                  !live
+                                    ? 'text-gray-400 dark:text-gray-500'
+                                    : graph.isRepository
+                                      ? 'text-secondary-600 dark:text-secondary-400'
+                                      : 'text-primary-600 dark:text-primary-400'
                                 }`}
                               />
                             </div>
                             <div className="min-w-0">
                               <div className="flex items-center gap-2">
-                                <span className="font-semibold">
+                                <span
+                                  className={`font-semibold ${
+                                    !live
+                                      ? 'text-gray-500 dark:text-gray-400'
+                                      : ''
+                                  }`}
+                                >
                                   {graph.graphName}
                                 </span>
+                                <GraphStatusBadge graph={graph} />
                               </div>
                               <div
                                 className="max-w-xs truncate font-mono text-xs text-gray-500 dark:text-gray-400"
@@ -228,6 +271,8 @@ export default function AllGraphsHomePage() {
                               size="sm"
                               onClick={() => handleOpenGraph(graph)}
                               className="min-w-fit"
+                              disabled={!live}
+                              title={live ? undefined : SUSPENDED_HINT}
                             >
                               <HiPlay className="h-3 w-3 lg:mr-1" />
                               <span className="hidden xl:inline">Open</span>
@@ -237,7 +282,8 @@ export default function AllGraphsHomePage() {
                               color="gray"
                               onClick={() => handleOpenConsole(graph)}
                               className="min-w-fit"
-                              title="Console"
+                              disabled={!live}
+                              title={live ? 'Console' : SUSPENDED_HINT}
                             >
                               <HiTerminal className="h-3 w-3 xl:mr-1" />
                               <span className="hidden xl:inline">Console</span>
@@ -247,7 +293,8 @@ export default function AllGraphsHomePage() {
                               color="gray"
                               onClick={() => handleOpenUsage(graph)}
                               className="hidden min-w-fit lg:flex"
-                              title="Usage"
+                              disabled={!live}
+                              title={live ? 'Usage' : SUSPENDED_HINT}
                             >
                               <HiChartBar className="h-3 w-3 xl:mr-1" />
                               <span className="hidden xl:inline">Usage</span>
@@ -266,6 +313,7 @@ export default function AllGraphsHomePage() {
           <div className="space-y-4 md:hidden">
             {graphs.map((graph) => {
               const isActive = isActiveGraph(graph.graphId)
+              const live = isLive(graph)
               return (
                 <Card
                   key={graph.graphId}
@@ -281,9 +329,11 @@ export default function AllGraphsHomePage() {
                       <div className="flex items-center gap-3">
                         <div
                           className={`rounded-lg p-2 ${
-                            graph.isRepository
-                              ? 'bg-secondary-100 dark:bg-secondary-900'
-                              : 'bg-primary-100 dark:bg-primary-900'
+                            !live
+                              ? 'bg-gray-100 dark:bg-zinc-700'
+                              : graph.isRepository
+                                ? 'bg-secondary-100 dark:bg-secondary-900'
+                                : 'bg-primary-100 dark:bg-primary-900'
                           }`}
                           title={
                             graph.isRepository
@@ -293,17 +343,26 @@ export default function AllGraphsHomePage() {
                         >
                           <HiDatabase
                             className={`h-5 w-5 ${
-                              graph.isRepository
-                                ? 'text-secondary-600 dark:text-secondary-400'
-                                : 'text-primary-600 dark:text-primary-400'
+                              !live
+                                ? 'text-gray-400 dark:text-gray-500'
+                                : graph.isRepository
+                                  ? 'text-secondary-600 dark:text-secondary-400'
+                                  : 'text-primary-600 dark:text-primary-400'
                             }`}
                           />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-semibold text-gray-900 dark:text-white">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3
+                              className={`font-semibold ${
+                                live
+                                  ? 'text-gray-900 dark:text-white'
+                                  : 'text-gray-500 dark:text-gray-400'
+                              }`}
+                            >
                               {graph.graphName}
                             </h3>
+                            <GraphStatusBadge graph={graph} />
                           </div>
                           <p className="mt-1 text-xs text-gray-500 capitalize dark:text-gray-400">
                             {graph.graphType ||
@@ -342,11 +401,17 @@ export default function AllGraphsHomePage() {
                     </div>
 
                     {/* Actions */}
+                    {!live && (
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {SUSPENDED_HINT}
+                      </p>
+                    )}
                     <div className="flex gap-2 pt-2">
                       <Button
                         size="sm"
                         className="flex-1"
                         onClick={() => handleOpenGraph(graph)}
+                        disabled={!live}
                       >
                         <HiPlay className="mr-1 h-4 w-4" />
                         Open
@@ -356,6 +421,7 @@ export default function AllGraphsHomePage() {
                         color="gray"
                         className="flex-1"
                         onClick={() => handleOpenConsole(graph)}
+                        disabled={!live}
                       >
                         <HiTerminal className="mr-1 h-4 w-4" />
                         Console
