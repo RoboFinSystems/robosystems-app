@@ -15,13 +15,24 @@ describe('CopyableId', () => {
     expect(screen.getByText(GRAPH_ID)).toBeInTheDocument()
   })
 
-  test('wraps a long id rather than clipping it to an ellipsis', () => {
+  test('shows the id whole — never clipped, split, or scrolled out of view', () => {
     const subgraphId = `${GRAPH_ID}_analytics_backtest`
-    render(<CopyableId value={subgraphId} label="subgraph id" />)
+    const { container } = render(
+      <CopyableId value={subgraphId} label="subgraph id" />
+    )
 
     const value = screen.getByText(subgraphId)
+    // Each of these has been tried and is wrong: `truncate` hides the tail,
+    // `break-all` splits the token mid-value, `overflow-x-auto` puts half of
+    // it behind a scroll. The id sets its own width instead.
     expect(value.className).not.toContain('truncate')
-    expect(value.className).toContain('break-all')
+    expect(value.className).not.toContain('break-all')
+    expect(value.className).not.toContain('overflow-x-auto')
+    expect(value.className).toContain('whitespace-nowrap')
+    // And nothing on the button caps that width.
+    expect(container.querySelector('button')?.className).not.toContain(
+      'max-w-full'
+    )
   })
 
   test('carries the full id into the copy affordance for screen readers', () => {

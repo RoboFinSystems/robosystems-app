@@ -60,8 +60,13 @@ export function CopyButton({
  * Graph and subgraph ids are addresses — they go into MCP connector URLs and
  * API calls — so they belong on screen rather than in a `title` tooltip, and
  * they are shown whole. An ellipsis would save a couple of characters on a
- * ~22-character id while making it unverifiable at a glance, so a long id
- * (a subgraph's, in a narrow column) wraps rather than truncating.
+ * ~22-character id while making it unverifiable at a glance.
+ *
+ * The whole id, on one line, always. No ellipsis, no wrap, no scroll: it is
+ * ~22 monospace characters and it fits at any real viewport width. Nothing
+ * here caps or shrinks it — the id sets its own width and the layout gives
+ * way, which is the opposite of every previous attempt (a `truncate` that
+ * hid the tail, a `break-all` that split the token mid-value).
  */
 export function CopyableId({
   value,
@@ -79,9 +84,9 @@ export function CopyableId({
       type="button"
       onClick={copy}
       aria-label={copied ? `${label} copied` : `Copy ${label}: ${value}`}
-      className={`group -mx-1.5 inline-flex max-w-full items-center gap-1.5 rounded-md px-1.5 py-0.5 font-mono text-xs text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 ${className}`}
+      className={`group -mx-1.5 inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 font-mono text-xs text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 ${className}`}
     >
-      <span className="break-all">{value}</span>
+      <span className="whitespace-nowrap">{value}</span>
       {copied ? (
         <HiCheck
           className="h-3.5 w-3.5 shrink-0 text-green-600 dark:text-green-400"
