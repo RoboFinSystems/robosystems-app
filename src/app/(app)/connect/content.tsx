@@ -37,6 +37,59 @@ interface Workspace {
 }
 
 /**
+ * What a connection can *do* follows the graph it reaches. Schema and query
+ * tools come with every graph; each schema extension installed on the graph
+ * adds its application's tools to that same connection — there is no second
+ * URL, key, or sign-in for RoboLedger or RoboInvestor. Names mirror the
+ * extension catalog the API serves (`getAvailableExtensions`); the MCP server
+ * gates the tools on the same `schemaExtensions` shown here.
+ */
+const EXTENSION_APPS: Record<string, { name: string; does: string }> = {
+  roboledger: {
+    name: 'RoboLedger',
+    does: 'journal entries, period close, and live financial statements',
+  },
+  roboinvestor: {
+    name: 'RoboInvestor',
+    does: 'portfolio positions and the securities registry',
+  },
+}
+
+/**
+ * One line naming what the selected graph's connection carries beyond the
+ * core tools. Silent on a graph with no application schema — there is nothing
+ * to add, and this page has enough prose without a sentence that says so.
+ * Shared repositories are read-only whatever they run, so they get the
+ * read-side phrasing rather than the write-side tool list.
+ */
+function ConnectionScope({
+  extensions,
+  isRepository,
+}: {
+  extensions: string[]
+  isRepository: boolean
+}) {
+  const apps = extensions
+    .map((extension) => EXTENSION_APPS[extension])
+    .filter((app): app is { name: string; does: string } => Boolean(app))
+
+  if (apps.length === 0) return null
+
+  const names = apps.map((app) => app.name).join(' and ')
+
+  return (
+    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+      Runs <span className="font-medium">{names}</span>
+      {isRepository
+        ? ' — a shared repository is read-only, so this connection carries its statement, analysis, and query tools without the write tools.'
+        : `, so this same connection also drives ${apps
+            .map((app) => app.does)
+            .join(', plus ')}.`}
+    </p>
+  )
+}
+
+/**
  * The graph-agnostic address. It is the one every public listing carries
  * (MCP registry, Claude directory, the bridge README), so it leads here too.
  * It takes only a sign-in — the consent screen is where the graph is chosen —
@@ -55,16 +108,20 @@ function UniversalSection() {
             sends you to RoboSystems to sign in; the consent screen lists your
             graphs and shared repositories, and you choose one. Access follows
             the role you already have, and each connection is one grant —
-            nothing to copy, store, or rotate.
+            nothing to copy, store, or rotate. A graph running RoboLedger or
+            RoboInvestor brings that application&apos;s tools along with it, on
+            the same connection.
           </p>
         </div>
 
         <McpSignInSnippets url={MCP_OAUTH_URL} name={MCP_CONNECTOR_NAME} />
 
         <p className="text-xs text-zinc-500 dark:text-zinc-500">
-          A connection reaches one graph. To connect a subgraph, keep several
-          graphs connected in one client, or use an API key, pin the connection
-          to a workspace below.
+          A connection reaches one graph — the one you pick at sign-in. To
+          switch, disconnect in your client and sign in again. This address
+          takes a sign-in only, so an API key is rejected here. To connect a
+          subgraph, to keep several graphs connected in one client, or to use an
+          API key, pin the connection to a workspace below.
         </p>
       </section>
     </Card>
@@ -265,6 +322,11 @@ function ConnectWorkspace() {
                     </div>
                   </div>
 
+                  <ConnectionScope
+                    extensions={currentGraph.schemaExtensions ?? []}
+                    isRepository={isRepository}
+                  />
+
                   {workspaces.length > 1 && (
                     <div className="space-y-1.5">
                       <Label
@@ -391,16 +453,6 @@ function ConnectWorkspace() {
           </h3>
           <ul className="space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
             <li>
-              A connection reaches one graph. On the universal URL the grant
-              names the graph you chose at sign-in — disconnect and sign in
-              again to switch. On a workspace URL the id is part of the address,
-              so one client can hold a connection per graph or subgraph.
-            </li>
-            <li>
-              The universal URL takes only a sign-in; an API key is rejected
-              there. Keys go with a workspace URL.
-            </li>
-            <li>
               A sign-in grant is bound to the URL it was issued for and to the
               client that asked. Disconnect in the client to end it; changing
               your password ends every grant at once.
@@ -409,10 +461,6 @@ function ConnectWorkspace() {
               A key scoped to a parent graph also covers that graph&apos;s
               subgraphs, so one token can serve every connection in a graph
               family. A key scoped to a subgraph reaches only that subgraph.
-            </li>
-            <li>
-              Generated keys are graph-scoped: rejected on every account-level
-              surface, and revocable in Settings → API Keys.
             </li>
             <li>
               Clients without HTTP transport support can use the{' '}

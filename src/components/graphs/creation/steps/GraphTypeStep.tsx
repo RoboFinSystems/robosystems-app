@@ -22,7 +22,7 @@ export function GraphTypeStep({
         }`}
         onClick={() => onTypeChange('entity')}
       >
-        <div className="text-center">
+        <div className="flex-1 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
             <HiOfficeBuilding className="h-8 w-8 text-blue-600 dark:text-blue-400" />
           </div>
@@ -45,7 +45,7 @@ export function GraphTypeStep({
         }`}
         onClick={() => onTypeChange('generic')}
       >
-        <div className="text-center">
+        <div className="flex-1 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30">
             <HiDatabase className="h-8 w-8 text-orange-600 dark:text-orange-400" />
           </div>

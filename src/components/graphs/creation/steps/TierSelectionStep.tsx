@@ -24,6 +24,16 @@ interface TierSelectionStepProps {
 // this line: the entry tier is full, the others are waiting for a request.
 const ENTRY_TIER = 'ladybug-standard'
 
+// `getTierColor` returns 'info' for the cheapest tier, but the shared button
+// theme has no `info` key (badges do, mapped to primary), so a `color="info"`
+// button renders with no background and inherited near-black text — invisible
+// on dark. Map tier colors onto keys the button theme actually defines.
+export const TIER_BUTTON_COLOR = {
+  info: 'primary',
+  warning: 'warning',
+  success: 'success',
+} as const
+
 export function TierSelectionStep({
   selectedTier = 'ladybug-standard',
   onTierChange,
@@ -178,7 +188,7 @@ export function TierSelectionStep({
                 if (!isAtCapacity) handleTierChange(tier.tier)
               }}
             >
-              <div className="space-y-4">
+              <div className="flex flex-1 flex-col gap-4">
                 <div className="text-center">
                   <h3 className="font-heading text-xl font-bold tracking-tight text-gray-900 dark:text-white">
                     {tier.display_name}
@@ -223,7 +233,7 @@ export function TierSelectionStep({
                 </ul>
 
                 {isAtCapacity ? (
-                  <div className="space-y-3 text-center">
+                  <div className="mt-auto space-y-3 text-center">
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       {isEntryTier
                         ? 'Currently full — request access and we will get you a slot.'
@@ -231,7 +241,7 @@ export function TierSelectionStep({
                     </p>
                     <Button
                       size="sm"
-                      color={color}
+                      color={TIER_BUTTON_COLOR[color]}
                       className="mx-auto cursor-pointer"
                       aria-label={`Request access to ${tier.display_name}`}
                       onClick={(e: React.MouseEvent) => {
@@ -250,7 +260,7 @@ export function TierSelectionStep({
                   </div>
                 ) : (
                   isSelected && (
-                    <div className="text-center">
+                    <div className="mt-auto text-center">
                       <Badge color={color} size="lg">
                         Selected
                       </Badge>
