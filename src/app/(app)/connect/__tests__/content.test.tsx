@@ -388,6 +388,79 @@ describe('ConnectContent', () => {
     )
   })
 
+  test('names the applications a graph brings to the connection', () => {
+    setGraphs(
+      [
+        {
+          graphId: 'kg1a2b3c',
+          graphName: 'Acme Ledger',
+          schemaExtensions: ['roboledger'],
+        },
+      ],
+      'kg1a2b3c'
+    )
+
+    render(<ConnectContent />)
+
+    const body = document.body.textContent ?? ''
+    expect(body).toContain('RoboLedger')
+    expect(body).toContain('period close')
+    // The universal section says it too, for a reader who never scrolls.
+    expect(screen.getByTestId('universal-section').textContent).toContain(
+      'RoboInvestor'
+    )
+  })
+
+  test('lists both applications when a graph runs both', () => {
+    setGraphs(
+      [
+        {
+          graphId: 'kg1a2b3c',
+          graphName: 'Acme Holdings',
+          schemaExtensions: ['roboledger', 'roboinvestor'],
+        },
+      ],
+      'kg1a2b3c'
+    )
+
+    render(<ConnectContent />)
+
+    const body = document.body.textContent ?? ''
+    expect(body).toContain('RoboLedger and RoboInvestor')
+    expect(body).toContain('securities registry')
+  })
+
+  test('claims no write tools on a shared repository', () => {
+    setGraphs(
+      [
+        {
+          graphId: 'sec',
+          graphName: 'SEC Repository',
+          isRepository: true,
+          schemaExtensions: ['roboledger'],
+        },
+      ],
+      'sec'
+    )
+
+    render(<ConnectContent />)
+
+    const body = document.body.textContent ?? ''
+    expect(body).toContain('read-only')
+    expect(body).not.toContain('journal entries')
+  })
+
+  test('stays silent on a graph with no application schema', () => {
+    setGraphs(
+      [{ graphId: 'kg1a2b3c', graphName: 'Acme Graph', schemaExtensions: [] }],
+      'kg1a2b3c'
+    )
+
+    render(<ConnectContent />)
+
+    expect(document.body.textContent).not.toContain('Runs ')
+  })
+
   test('no longer tells the user to hand-edit the id into the URL', () => {
     setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
 
