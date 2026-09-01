@@ -52,6 +52,13 @@ export function SchemaExtensionsStep({
     ? allExtensions.filter((ext) => allowedExtensions.includes(ext.name))
     : allExtensions
 
+  // `name` is the schema slug the create path takes ("roboledger"); the API
+  // also serves the label to show a user. Required extensions arrive as slugs
+  // from the caller, so they are looked up in the same catalog — and fall back
+  // to the slug against an API that predates the field.
+  const labelFor = (name: string) =>
+    allExtensions.find((ext) => ext.name === name)?.display_name || name
+
   const handleToggleExtension = (extensionName: string) => {
     // Don't allow deselecting required extensions
     if (requiredExtensions.includes(extensionName)) {
@@ -92,7 +99,7 @@ export function SchemaExtensionsStep({
         <Alert color="info" icon={HiCheckCircle}>
           <span className="font-medium">Required Extensions:</span> The
           following extensions are required for this application and cannot be
-          deselected: {requiredExtensions.join(', ')}
+          deselected: {requiredExtensions.map(labelFor).join(', ')}
         </Alert>
       )}
 
@@ -125,7 +132,7 @@ export function SchemaExtensionsStep({
                 <div className="ml-3 flex-1">
                   <div className="flex items-center gap-2">
                     <h4 className="font-semibold text-gray-900 dark:text-white">
-                      {extension.name}
+                      {extension.display_name || extension.name}
                     </h4>
                     {isRequired && (
                       <Badge color="info" size="xs">
