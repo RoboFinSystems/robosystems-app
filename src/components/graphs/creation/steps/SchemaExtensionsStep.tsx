@@ -114,7 +114,7 @@ export function SchemaExtensionsStep({
                 !isRequired && handleToggleExtension(extension.name)
               }
             >
-              <div className="flex items-start">
+              <div className="flex flex-1 items-start">
                 <Checkbox
                   theme={customTheme.checkbox}
                   checked={isSelected}
