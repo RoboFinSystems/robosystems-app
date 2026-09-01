@@ -15,13 +15,17 @@ describe('CopyableId', () => {
     expect(screen.getByText(GRAPH_ID)).toBeInTheDocument()
   })
 
-  test('wraps a long id rather than clipping it to an ellipsis', () => {
+  test('neither clips a long id nor splits it across lines', () => {
     const subgraphId = `${GRAPH_ID}_analytics_backtest`
     render(<CopyableId value={subgraphId} label="subgraph id" />)
 
     const value = screen.getByText(subgraphId)
+    // `truncate` hides the tail for good; `break-all` splits the token at an
+    // arbitrary character. A too-narrow container scrolls instead.
     expect(value.className).not.toContain('truncate')
-    expect(value.className).toContain('break-all')
+    expect(value.className).not.toContain('break-all')
+    expect(value.className).toContain('whitespace-nowrap')
+    expect(value.className).toContain('overflow-x-auto')
   })
 
   test('carries the full id into the copy affordance for screen readers', () => {
