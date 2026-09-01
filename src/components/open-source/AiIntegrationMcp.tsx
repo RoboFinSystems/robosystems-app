@@ -1,3 +1,5 @@
+import { MCP_API_URL, MCP_CONNECTOR_NAME, MCP_OAUTH_URL } from '@/lib/mcp'
+
 export default function AiIntegrationMcp() {
   return (
     <div className="overflow-hidden rounded-3xl border-2 border-purple-400/40 bg-gradient-to-br from-purple-950/60 via-purple-900/40 to-pink-950/60 shadow-2xl shadow-purple-500/20">
@@ -23,7 +25,7 @@ export default function AiIntegrationMcp() {
               AI Integration via MCP
             </h3>
             <p className="text-lg text-purple-200">
-              Connect Claude, Claude Code, Cursor, or any MCP client
+              Connect Claude, ChatGPT, Grok, Cursor, or any MCP client
             </p>
           </div>
         </div>
@@ -31,7 +33,7 @@ export default function AiIntegrationMcp() {
         <p className="mb-6 text-gray-300">
           Use the Model Context Protocol (MCP) to give AI assistants direct
           access to your financial data. Ask questions in natural language and
-          let Claude query your knowledge graph automatically.
+          let your assistant query the knowledge graph automatically.
         </p>
 
         <div className="mb-6 space-y-3">
@@ -60,21 +62,28 @@ export default function AiIntegrationMcp() {
                 Point your editor at the same URL and query inline
               </span>
             </li>
+            <li className="flex items-start">
+              <span className="mr-2 text-purple-400">✓</span>
+              <strong className="text-white">ChatGPT / Grok:</strong>
+              <span className="ml-1">
+                Add the same URL as a connector and sign in — no key to paste
+              </span>
+            </li>
           </ul>
         </div>
 
         <div className="mb-6 space-y-4 rounded-xl bg-black/50 p-4">
           <div>
             <h4 className="mb-1 text-sm font-semibold text-white">
-              Connect with one URL and one header — no install
+              Sign in with one URL — no key, no install
             </h4>
             <p className="mb-3 text-xs text-gray-400">
-              The URL picks the graph: your own graph id for a private ledger,
-              or <code>sec</code> for the public SEC repository.
+              One address for every graph you can reach. The client sends you to
+              RoboSystems to sign in, and you choose the graph on the consent
+              screen — nothing to copy, store, or rotate.
             </p>
             <pre className="overflow-x-auto text-sm text-gray-300">
-              <code>{`URL:    https://api.robosystems.ai/v1/graphs/{GRAPH_ID}/mcp
-Header: X-API-Key: rfs*`}</code>
+              <code>{`URL: ${MCP_OAUTH_URL}`}</code>
             </pre>
           </div>
           <div className="border-t border-purple-500/20 pt-4">
@@ -82,9 +91,23 @@ Header: X-API-Key: rfs*`}</code>
               Claude Code (one command):
             </h4>
             <pre className="overflow-x-auto text-sm text-gray-300">
-              <code>{`claude mcp add --transport http robosystems \\
-  https://api.robosystems.ai/v1/graphs/{GRAPH_ID}/mcp \\
-  --header "X-API-Key: rfs*"`}</code>
+              <code>{`claude mcp add --transport http ${MCP_CONNECTOR_NAME} \\
+  ${MCP_OAUTH_URL}`}</code>
+            </pre>
+          </div>
+          <div className="border-t border-purple-500/20 pt-4">
+            <h4 className="mb-1 text-sm font-semibold text-white">
+              Or pin one graph — scripts, CI, and clients that can&apos;t sign
+              in
+            </h4>
+            <p className="mb-3 text-xs text-gray-400">
+              The id in the path fixes the workspace: your own graph id for a
+              private ledger, or <code>sec</code> for the public SEC repository.
+              This route also takes an API key.
+            </p>
+            <pre className="overflow-x-auto text-sm text-gray-300">
+              <code>{`URL:    ${MCP_API_URL}/v1/graphs/{GRAPH_ID}/mcp
+Header: X-API-Key: rfs*`}</code>
             </pre>
           </div>
         </div>
@@ -92,7 +115,7 @@ Header: X-API-Key: rfs*`}</code>
         <div className="space-y-4 rounded-xl bg-black/50 p-4">
           <div>
             <h4 className="mb-3 text-sm font-semibold text-white">
-              Query Your Knowledge Graph:
+              Ask the public SEC repository:
             </h4>
             <ul className="space-y-2 text-sm text-gray-300">
               <li className="flex items-start">
@@ -106,6 +129,25 @@ Header: X-API-Key: rfs*`}</code>
               <li className="flex items-start">
                 <span className="mr-2 text-purple-400">•</span>
                 "Show me Tesla's total assets by quarter"
+              </li>
+            </ul>
+          </div>
+          <div className="border-t border-purple-500/20 pt-4">
+            <h4 className="mb-3 text-sm font-semibold text-white">
+              Ask your own graph:
+            </h4>
+            <ul className="space-y-2 text-sm text-gray-300">
+              <li className="flex items-start">
+                <span className="mr-2 text-purple-400">•</span>
+                "What's blocking the month-end close?"
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2 text-purple-400">•</span>
+                "Show me last quarter's income statement"
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2 text-purple-400">•</span>
+                "Which accounts are still unmapped?"
               </li>
             </ul>
           </div>
