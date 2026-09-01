@@ -1,4 +1,5 @@
 import FloatingElementsVariant from '@/components/landing/FloatingElementsVariant'
+import { MCP_OAUTH_URL } from '@/lib/mcp'
 
 export default function ClientLibraries() {
   return (
@@ -119,13 +120,13 @@ export default function ClientLibraries() {
               MCP Endpoint
             </h3>
             <p className="mb-4 text-sm text-gray-400">
-              Every graph is a remote MCP server. Add the URL with an{' '}
-              <code className="text-gray-300">X-API-Key</code> header — no
+              Every graph is a remote MCP server, and one address reaches them
+              all. Add the URL, sign in, and pick the graph — no key, no
               install.
             </p>
             <div className="rounded bg-black p-2">
               <code className="text-xs break-all text-gray-300">
-                https://api.robosystems.ai/v1/graphs/{'{GRAPH_ID}'}/mcp
+                {MCP_OAUTH_URL}
               </code>
             </div>
             <div className="mt-4 flex gap-3">
