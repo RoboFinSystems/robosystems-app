@@ -37,7 +37,7 @@
     "setup:bootstrap": "./bin/bootstrap.sh"
   },
   "dependencies": {
-    "@aws-sdk/client-sns": "^3.1059.0",
+    "@aws-sdk/client-sns": "^3.1121.0",
     "@monaco-editor/react": "^4.7.0",
     "@robosystems/client": "^1.13.2",
     "@robosystems/core": "^0.8.6",
