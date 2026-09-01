@@ -56,7 +56,7 @@
     "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3"
   },
-  "//overrides": "deepmerge-ts is forced to ^8 to clear GHSA-ggr8-5vv4-36mx. It reaches us only through flowbite-react, which pins 7.1.5 exactly; npm's only other remedy is downgrading flowbite-react. REMOVE once flowbite-react ships a release depending on deepmerge-ts 8.",
+  "//overrides": "Both entries are load-bearing; verify with npm audit before removing either. dompurify is forced to ^3.3.0 because monaco-editor depends on exactly 3.4.8, which carries GHSA-55q2-fjhq-7xh7 (XSS), GHSA-cmwh-pvxp-8882, GHSA-c2j3-45gr-mqc4 and GHSA-vxr8-fq34-vvx9; the override hoists it to 3.4.x latest. REMOVE once monaco-editor depends on dompurify > 3.4.12. deepmerge-ts is forced to ^8 to clear GHSA-ggr8-5vv4-36mx; it reaches us only through flowbite-react, which pins 7.1.5 exactly, and npm's only other remedy is downgrading flowbite-react. REMOVE once flowbite-react ships a release depending on deepmerge-ts 8.",
   "overrides": {
     "dompurify": "^3.3.0",
     "deepmerge-ts": "^8.0.1"
