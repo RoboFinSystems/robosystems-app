@@ -45,6 +45,66 @@ describe('SchemaExtensionsStep', () => {
     expect(screen.getByText('robohr')).toBeInTheDocument()
   })
 
+  it('heads each card with the display name the API serves', async () => {
+    vi.mocked(getAvailableExtensions).mockResolvedValue({
+      data: {
+        extensions: [
+          {
+            name: 'roboledger',
+            display_name: 'RoboLedger - Accounting & Financial Reporting',
+            description: 'Accounting schema',
+          },
+        ],
+      },
+    } as never)
+
+    renderStep()
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('RoboLedger - Accounting & Financial Reporting')
+      ).toBeInTheDocument()
+    })
+    // The slug is what the create path takes, not what a picker should show.
+    expect(screen.queryByText('roboledger')).not.toBeInTheDocument()
+  })
+
+  it('names required extensions rather than listing their slugs', async () => {
+    vi.mocked(getAvailableExtensions).mockResolvedValue({
+      data: {
+        extensions: [
+          {
+            name: 'roboledger',
+            display_name: 'RoboLedger - Accounting & Financial Reporting',
+            description: 'Accounting schema',
+          },
+        ],
+      },
+    } as never)
+
+    render(
+      <SchemaExtensionsStep
+        selectedExtensions={['roboledger']}
+        requiredExtensions={['roboledger']}
+        onExtensionsChange={vi.fn()}
+      />
+    )
+
+    await waitFor(() => {
+      expect(document.body.textContent).toContain(
+        'cannot be deselected: RoboLedger - Accounting & Financial Reporting'
+      )
+    })
+  })
+
+  it('falls back to the slug against an API without display names', async () => {
+    renderStep(['roboledger'])
+
+    await waitFor(() => {
+      expect(screen.getByText('roboledger')).toBeInTheDocument()
+    })
+  })
+
   it('narrows the list to the allowlist', async () => {
     renderStep(['roboledger', 'roboinvestor'])
     await waitFor(() => {
