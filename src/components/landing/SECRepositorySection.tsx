@@ -1,5 +1,6 @@
 'use client'
 
+import { mcpEndpointFor } from '@/lib/mcp'
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -279,11 +280,11 @@ export default function SECRepositorySection() {
                 <h4 className="font-semibold text-white">MCP Protocol</h4>
               </div>
               <p className="mb-2 text-sm text-gray-400">
-                Paste one URL, add one header.
+                Paste one URL and sign in.
               </p>
               <div className="rounded-lg bg-black/40 p-2.5">
                 <code className="text-xs break-all text-gray-300">
-                  https://api.robosystems.ai/v1/graphs/sec/mcp
+                  {mcpEndpointFor('sec')}
                 </code>
               </div>
             </div>

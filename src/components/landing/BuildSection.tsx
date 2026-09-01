@@ -1,5 +1,6 @@
 'use client'
 
+import { MCP_OAUTH_URL } from '@/lib/mcp'
 import Link from 'next/link'
 import { useState } from 'react'
 import ContactModal from './ContactModal'
@@ -374,11 +375,11 @@ export default function BuildSection() {
                 <h4 className="font-semibold text-white">MCP Endpoint</h4>
               </div>
               <p className="mb-4 text-sm text-gray-400">
-                Every graph is a remote MCP server &mdash; one URL, one header,
-                no install
+                Every graph is a remote MCP server &mdash; one URL, sign in, no
+                install
               </p>
               <code className="block rounded-sm bg-zinc-800 p-2 text-xs break-all text-gray-300">
-                https://api.robosystems.ai/v1/graphs/{'{GRAPH_ID}'}/mcp
+                {MCP_OAUTH_URL}
               </code>
               <div className="mt-4 flex gap-3">
                 <Link
