@@ -1,5 +1,11 @@
 import withFlowbiteReact from 'flowbite-react/plugin/nextjs'
 
+// Blog posts that moved to roboledger.ai (site-content-surfaces, decided 2026-09-02). The
+// content machine flags them `site: roboledger`, which drops them from this app's /blog list
+// and sitemap on the next reindex; the redirect keeps the old URL and its backlinks pointing
+// at the new home. Add a slug here whenever a post's site changes.
+const MOVED_TO_ROBOLEDGER = ['claude-ledger']
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -40,6 +46,13 @@ const nextConfig = {
         destination: '/organization?tab=billing',
         permanent: false,
       },
+      // permanent: true is a 308, which search engines treat as a 301: the old URL's
+      // signals move to roboledger.ai with the post.
+      ...MOVED_TO_ROBOLEDGER.map((slug) => ({
+        source: `/blog/${slug}`,
+        destination: `https://roboledger.ai/blog/${slug}`,
+        permanent: true,
+      })),
     ]
   },
 }
