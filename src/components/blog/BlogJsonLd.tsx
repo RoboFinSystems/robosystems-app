@@ -1,6 +1,5 @@
-// Schema.org JSON-LD for the blog. App-local (the blog is robosystems-app-only, not part
-// of the shared core subtree) but mirrors src/lib/core/research/ResearchJsonLd.tsx so the
-// two surfaces stay aligned: a per-post BlogPosting (+ AudioObject when a narration exists)
+// Schema.org JSON-LD for the blog. App-local, and mirrored in roboledger-app so the two
+// lanes stay aligned: a per-post BlogPosting (+ AudioObject when a narration exists)
 // with a BreadcrumbList, and an ItemList for the index hub. There is no per-post image in
 // the blog catalog yet, so the org logo stands in until the content pipeline emits one.
 
