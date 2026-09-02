@@ -7,8 +7,8 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       // Everything below is authenticated product surface (the (app) route
       // group) — no SEO value and login-gated, so keep crawlers off it. None of
-      // these appear in sitemap.ts, which lists only the marketing, blog and
-      // research pages. Add a route here whenever one is added to (app).
+      // these appear in sitemap.ts, which lists only the marketing and blog
+      // pages. Add a route here whenever one is added to (app).
       disallow: [
         '/api/',
         '/backups/',

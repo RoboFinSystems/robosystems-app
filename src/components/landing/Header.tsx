@@ -85,8 +85,8 @@ export default function Header() {
               Pricing
             </Link>
             {/* Research is omitted from the desktop top nav to keep the row from
-                crowding/wrapping on lg screens — it's SEO-primary and stays reachable
-                via the mobile menu, the footer, and the sitemap. */}
+                crowding/wrapping on lg screens. It lives on roboinvestor.ai since
+                2026-09-02 and stays reachable via the mobile menu. */}
             <Link
               href="/blog"
               className="hover:text-secondary-400 px-3 py-2 text-sm font-medium text-gray-300 transition-colors"
@@ -190,13 +190,13 @@ export default function Header() {
               >
                 Pricing
               </Link>
-              <Link
-                href="/research"
+              <a
+                href="https://roboinvestor.ai/research"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="hover:text-secondary-400 px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800"
               >
                 Research
-              </Link>
+              </a>
               <Link
                 href="/blog"
                 onClick={() => setIsMobileMenuOpen(false)}

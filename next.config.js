@@ -6,6 +6,10 @@ import withFlowbiteReact from 'flowbite-react/plugin/nextjs'
 // at the new home. Add a slug here whenever a post's site changes.
 const MOVED_TO_ROBOLEDGER = ['claude-ledger']
 
+// The research portal moved whole to roboinvestor.ai the same day: the index, every
+// /research/:ticker page and the YouTube first-comment links that point at them.
+const RESEARCH_ORIGIN = 'https://roboinvestor.ai'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -47,12 +51,22 @@ const nextConfig = {
         permanent: false,
       },
       // permanent: true is a 308, which search engines treat as a 301: the old URL's
-      // signals move to roboledger.ai with the post.
+      // signals move to the new site with the page.
       ...MOVED_TO_ROBOLEDGER.map((slug) => ({
         source: `/blog/${slug}`,
         destination: `https://roboledger.ai/blog/${slug}`,
         permanent: true,
       })),
+      {
+        source: '/research',
+        destination: `${RESEARCH_ORIGIN}/research`,
+        permanent: true,
+      },
+      {
+        source: '/research/:ticker',
+        destination: `${RESEARCH_ORIGIN}/research/:ticker`,
+        permanent: true,
+      },
     ]
   },
 }
