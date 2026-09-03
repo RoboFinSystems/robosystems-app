@@ -8,7 +8,7 @@ import type { BlogPost } from '@/lib/blog'
 const ORG = {
   name: 'RoboSystems',
   url: 'https://robosystems.ai',
-  logo: 'https://robosystems.ai/images/logo_black.png',
+  logo: 'https://robosystems.ai/images/logos/robosystems-icon.png',
 }
 
 /** One JSON-LD block. `</` is escaped so post text can never break out of the script. */

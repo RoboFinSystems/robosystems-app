@@ -12,10 +12,16 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: '#000000',
     icons: [
       {
-        src: '/images/logos/robosystems.png',
-        sizes: '1024x1024',
+        src: '/images/logos/robosystems-icon.png',
+        sizes: '512x512',
         type: 'image/png',
         purpose: 'any',
+      },
+      {
+        src: '/images/logos/robosystems-maskable.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
       },
     ],
   }
