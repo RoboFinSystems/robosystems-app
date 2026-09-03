@@ -209,6 +209,9 @@ config was stale. What it took, so the next one is cheaper:
   `CategoryInput`, `TagInput` (forms); `MarkdownProse` (ui-components); `CoverageBrowser`,
   `CoverageCard`, `CoverageGrid`, `CoverageHistory`, `ResearchArticle` (**new `research`
   group**).
+- **2026-09-03: the five `research` components left core** (the module moved into
+  roboinvestor-app, the only site rendering research), so their pins and their
+  `core-internal-entry.ts` re-exports are gone; the counts below predate that.
 - **8 of those are omitted from core's public barrel** and tripped
   `✗ [BUNDLE_EXPORT] not a component on window.RobosystemsCore` until they were added to
   `core-internal-entry.ts` (same seam as AnimatedLogo/LogoBadge/ProgressiveText):
