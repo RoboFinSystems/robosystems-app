@@ -7,7 +7,7 @@ export const organizationJsonLd = {
   '@type': 'Organization',
   name: 'RoboSystems',
   url: 'https://robosystems.ai',
-  logo: 'https://robosystems.ai/images/logo_black.png',
+  logo: 'https://robosystems.ai/images/logos/robosystems-icon.png',
   description:
     'Open-source financial intelligence platform powered by knowledge graphs and AI agents',
   sameAs: [
