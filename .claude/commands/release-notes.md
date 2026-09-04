@@ -37,7 +37,7 @@ Do not write notes from commit subjects alone. Read the PR bodies (`gh pr view <
 - **Backend dependency.** This app is a client of the RoboSystems API. If the release needs API behavior that only exists in a newer service version, the notes must say so — deploy order matters (API first, then app). Never describe a capability the deployed API doesn't yet serve.
 - **SDK bumps.** This repo consumes `@robosystems/client` at source level (not through a facade), so a client major lands as real code changes here. A bump worth a line is one that changed call sites, not a lockfile-only refresh.
 - **CloudFormation changes.** Edits to `cloudformation/template.yaml` or `cloudformation/s3.yaml` mean a stack update rides the deploy — note which stack.
-- **Config surface.** New GitHub Actions variables or environment variables need `npm run setup:gha` (or a bootstrap re-run) before the deploy, not after. Call that out.
+- **Config surface.** New GitHub Actions variables or environment variables need `npm run setup:gha` before the deploy, not after. Call that out.
 - **User-visible surface.** Routes, pages, and flows added, renamed, or removed. This is the part users actually read the notes for.
 
 ### 4. Security disclosure review
