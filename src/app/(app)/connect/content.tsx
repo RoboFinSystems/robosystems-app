@@ -91,7 +91,8 @@ function ConnectionScope({
 
 /**
  * The graph-agnostic address. It is the one every public listing carries
- * (MCP registry, Claude directory, the bridge README), so it leads here too.
+ * (MCP registry, Claude and ChatGPT directories, the bridge README), so it
+ * leads here too.
  * It takes only a sign-in — the consent screen is where the graph is chosen —
  * and a grant names exactly one graph, the same as a workspace URL.
  */
@@ -258,7 +259,7 @@ function ConnectWorkspace() {
       <PageHeader
         icon={HiPuzzle}
         title="MCP"
-        subtitle="Add RoboSystems to Claude, Claude Code, Cursor, or any MCP client — paste one URL and pick the graph when you sign in, or pin a connection to one graph or subgraph."
+        subtitle="Add RoboSystems to Claude, ChatGPT, Claude Code, Cursor, or any MCP client — paste one URL and pick the graph when you sign in, or pin a connection to one graph or subgraph."
       />
 
       {isLoading ? (

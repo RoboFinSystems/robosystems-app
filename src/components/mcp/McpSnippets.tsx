@@ -37,7 +37,7 @@ export function McpSnippet({
 }
 
 /**
- * The three sign-in recipes for one MCP address. Every page that offers an
+ * The sign-in recipes for one MCP address. Every page that offers an
  * address renders this same set, so the universal URL and a workspace URL
  * read as the same kind of thing — only the address and connector name
  * differ.
@@ -56,6 +56,28 @@ export function McpSignInSnippets({
         copyLabel="Connector URL"
         code={url}
         note="Claude detects the sign-in on its own. Leave the OAuth client fields blank."
+      />
+
+      <McpSnippet
+        heading="ChatGPT — Settings → Connectors → Create (developer mode)"
+        copyLabel="Connector URL"
+        code={url}
+        note={
+          <>
+            A custom connector serves every tool of the graph you pick,
+            RoboLedger included. Or install the{' '}
+            <a
+              href="https://chatgpt.com/plugins/plugin_asdk_app_6a8f6d7d50d081918787990d4cab45ca"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary-600 dark:text-primary-400 hover:underline"
+            >
+              RoboSystems plugin
+            </a>{' '}
+            from the ChatGPT plugin directory — no setup, the SEC filings read
+            surface.
+          </>
+        }
       />
 
       <McpSnippet
