@@ -1,6 +1,7 @@
 'use client'
 
 import { CopyableId } from '@/components/CopyableId'
+import { GuideLink } from '@/components/docs/GuideLink'
 import { McpSignInSnippets, McpSnippet } from '@/components/mcp/McpSnippets'
 import {
   connectorNameFor,
@@ -259,7 +260,14 @@ function ConnectWorkspace() {
       <PageHeader
         icon={HiPuzzle}
         title="MCP"
-        subtitle="Add RoboSystems to Claude, ChatGPT, Claude Code, Cursor, or any MCP client — paste one URL and pick the graph when you sign in, or pin a connection to one graph or subgraph."
+        subtitle={
+          <>
+            Add RoboSystems to Claude, ChatGPT, Claude Code, Cursor, or any MCP
+            client — paste one URL and pick the graph when you sign in, or pin a
+            connection to one graph or subgraph.{' '}
+            <GuideLink href="/docs/guides/connect-an-mcp-client" />
+          </>
+        }
       />
 
       {isLoading ? (

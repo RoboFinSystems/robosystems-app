@@ -78,6 +78,14 @@ describe('ApiKeysCard', () => {
     mockedRevoke.mockResolvedValue({ data: { success: true } } as never)
   })
 
+  it('links the authentication docs', async () => {
+    render(<ApiKeysCard />)
+
+    expect(
+      await screen.findByRole('link', { name: /Read the guide/ })
+    ).toHaveAttribute('href', '/docs/technical/authentication-and-api-keys')
+  })
+
   it('shows the empty state with a create action and no list chrome', async () => {
     render(<ApiKeysCard connectHref="/connect" />)
     expect(await screen.findByText('No API keys yet')).toBeInTheDocument()
@@ -92,6 +100,16 @@ describe('ApiKeysCard', () => {
     expect(screen.queryByTestId('api-keys-error')).not.toBeInTheDocument()
     expect(
       screen.queryByRole('button', { name: 'Revoke' })
+    ).not.toBeInTheDocument()
+  })
+
+  it('holds the guide line back until the keys have loaded', async () => {
+    mockedList.mockRejectedValue(new Error('nope'))
+    render(<ApiKeysCard />)
+
+    expect(await screen.findByTestId('api-keys-error')).toBeInTheDocument()
+    expect(
+      screen.queryByRole('link', { name: /Read the guide/ })
     ).not.toBeInTheDocument()
   })
 

@@ -1,5 +1,6 @@
 'use client'
 
+import { GuideLink } from '@/components/docs/GuideLink'
 import {
   createUserApiKey,
   listUserApiKeys,
@@ -251,6 +252,13 @@ export const ApiKeysCard: FC<ApiKeysCardProps> = ({
               </div>
             </div>
           </>
+        )}
+        {!loading && !loadError && (
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            Keys carry the access your role already gives you, and a key scoped
+            to one graph reaches only that graph.{' '}
+            <GuideLink href="/docs/technical/authentication-and-api-keys" />
+          </p>
         )}
       </div>
 
