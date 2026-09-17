@@ -4,8 +4,10 @@ import {
   tableOfContents,
   type DocsNav,
   type DocsPage,
+  type TocHeading,
 } from '@/lib/docs'
 import Link from 'next/link'
+import type { ReactNode } from 'react'
 import { DocsJsonLd, type Crumb } from './DocsJsonLd'
 import { DocsMarkdown } from './DocsMarkdown'
 
@@ -59,7 +61,9 @@ function SidebarLinks({ nav, current }: { nav: DocsNav; current: string }) {
 
 /**
  * One docs page: the collection's sidebar, the rendered body with its title, date and
- * source link, an on-this-page list, and previous/next links in sidebar order.
+ * source link, an on-this-page list, and previous/next links in sidebar order. A page can
+ * open with app-rendered `lead` content ahead of its markdown; `leadHeadings` puts that
+ * content's headings at the top of the on-this-page list.
  */
 export function DocsArticle({
   nav,
@@ -68,6 +72,8 @@ export function DocsArticle({
   crumbs,
   collectionTitle,
   baseUrl,
+  lead,
+  leadHeadings = [],
 }: {
   nav: DocsNav
   page: DocsPage
@@ -75,8 +81,10 @@ export function DocsArticle({
   crumbs: Crumb[]
   collectionTitle: string
   baseUrl?: string
+  lead?: ReactNode
+  leadHeadings?: TocHeading[]
 }) {
-  const headings = tableOfContents(body)
+  const headings = [...leadHeadings, ...tableOfContents(body)]
   const { previous, next } = docsNeighbors(nav, page.slug)
 
   return (
@@ -131,6 +139,7 @@ export function DocsArticle({
             </header>
 
             <div className={PROSE}>
+              {lead}
               <DocsMarkdown>{body}</DocsMarkdown>
             </div>
 

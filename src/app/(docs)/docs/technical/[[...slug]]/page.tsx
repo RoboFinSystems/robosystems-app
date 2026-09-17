@@ -1,5 +1,9 @@
 import { DocsArticle } from '@/components/docs/DocsArticle'
 import {
+  GET_STARTED_HEADINGS,
+  TechnicalGetStarted,
+} from '@/components/docs/TechnicalGetStarted'
+import {
   DOCS_SITE,
   findDocsPage,
   getDocsBody,
@@ -10,7 +14,8 @@ import { publicPageMetadata } from '@/lib/site'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
-// The wiki, rendered at robosystems.ai/docs/technical. The index page is the wiki's Home.
+// The wiki, rendered at robosystems.ai/docs/technical. The index page is the wiki's Home,
+// opened by the get-started section that replaced the /open-source page.
 
 export const revalidate = 300
 
@@ -49,10 +54,11 @@ export default async function TechnicalDocsPage({ params }: Props) {
   if (body === null) notFound()
 
   const { nav, page } = found
+  const isIndex = page.slug === 'index'
   const crumbs = [
     { name: 'Docs', path: '/docs' },
     { name: 'Technical docs', path: nav.collection.base_path },
-    ...(page.slug === 'index' ? [] : [{ name: page.title, path: page.path }]),
+    ...(isIndex ? [] : [{ name: page.title, path: page.path }]),
   ]
 
   return (
@@ -62,6 +68,8 @@ export default async function TechnicalDocsPage({ params }: Props) {
       body={body}
       crumbs={crumbs}
       collectionTitle="Technical docs"
+      lead={isIndex ? <TechnicalGetStarted /> : undefined}
+      leadHeadings={isIndex ? GET_STARTED_HEADINGS : undefined}
     />
   )
 }

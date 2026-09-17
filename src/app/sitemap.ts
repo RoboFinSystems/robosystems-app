@@ -45,7 +45,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // when. /register is noindex and left out.
   const newestPost = latestDate(posts.map((p) => p.date))
   const staticPages: MetadataRoute.Sitemap = [
-    { path: '/open-source', changeFrequency: 'monthly', priority: 0.8 },
     { path: '/platform', changeFrequency: 'monthly', priority: 0.8 },
     { path: '/enterprise', changeFrequency: 'monthly', priority: 0.8 },
     { path: '/pricing', changeFrequency: 'monthly', priority: 0.8 },

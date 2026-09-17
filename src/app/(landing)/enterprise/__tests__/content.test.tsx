@@ -88,8 +88,8 @@ describe('EnterpriseContent', () => {
   it('sends self-hosters to the bootstrap guide, not the marketing page', () => {
     render(<EnterpriseContent />)
 
-    // /open-source pitches self-hosting; the guide is what someone who has
-    // already chosen it needs.
+    // The Self-Hosted card is the positioning; the bootstrap guide in the
+    // technical docs is what someone who has already chosen it needs.
     expect(
       screen.getByRole('link', { name: 'Bootstrap guide' })
     ).toHaveAttribute('href', '/docs/technical/bootstrap-guide')
