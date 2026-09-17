@@ -1,9 +1,15 @@
+import {
+  OG_IMAGE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TITLE,
+  SITE_URL,
+} from '@/lib/site'
 import type { Metadata } from 'next'
 
 export const landingMetadata: Metadata = {
-  title: 'RoboSystems | Financial Intelligence Platform',
-  description:
-    'Transform your financial data into a powerful knowledge graph. Connect QuickBooks, analyze with AI agents using MCP tools, and discover insights hidden in the relationships between revenue, costs, and operations.',
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
   keywords: [
     'financial intelligence platform',
     'financial knowledge graph',
@@ -19,29 +25,20 @@ export const landingMetadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://robosystems.ai',
-    siteName: 'RoboSystems',
-    title: 'Financial Intelligence Platform | AI-Powered Business Intelligence',
-    description:
-      'Stop wrestling with disconnected spreadsheets. Build a financial knowledge graph that connects revenue to operations, costs to activities, and data to decisions.',
-    images: [
-      {
-        url: '/images/og-preview.png',
-        width: 1200,
-        height: 630,
-        alt: 'RoboSystems - Financial Intelligence Platform',
-      },
-    ],
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'RoboSystems | Financial Intelligence Platform',
-    description:
-      'The open-source platform for building financial knowledge graphs. Connect your data, deploy AI agents, discover hidden insights.',
-    images: ['/images/og-preview.png'],
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [OG_IMAGE.url],
     creator: '@robofinsystems',
   },
   alternates: {
-    canonical: 'https://robosystems.ai',
+    canonical: SITE_URL,
   },
 }

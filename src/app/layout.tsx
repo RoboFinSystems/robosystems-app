@@ -1,4 +1,5 @@
 import { CloudflareAnalytics } from '@/components/analytics/CloudflareAnalytics'
+import { OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE } from '@/lib/site'
 import { organizationJsonLd } from '@/lib/structured-data'
 import { AuthProvider, customTheme } from '@robosystems/core'
 import { SessionWarningDialog } from '@robosystems/core/auth-components/SessionWarningDialog'
@@ -15,9 +16,8 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://robosystems.ai'),
-  title: 'RoboSystems | Financial Intelligence Platform',
-  description:
-    'Unify structured data, document search, and AI memory in one platform. Query knowledge graphs, search SEC filings with hybrid full-text and semantic search, and analyze with AI agents via MCP.',
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
   keywords: [
     'financial intelligence platform',
     'financial knowledge graph',
@@ -34,29 +34,21 @@ export const metadata: Metadata = {
   authors: [{ name: 'Joey French' }],
   creator: 'RoboSystems',
   publisher: 'RoboSystems',
+  // No `url` here: every page without its own openGraph inherits this object, and a
+  // site-wide og:url told crawlers those pages were the homepage.
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://robosystems.ai',
-    siteName: 'RoboSystems',
-    title: 'RoboSystems | Financial Intelligence Platform',
-    description:
-      'Unify structured data, document search, and AI memory in one platform. Query knowledge graphs, search SEC filings with hybrid full-text and semantic search, and analyze with AI agents via MCP.',
-    images: [
-      {
-        url: '/images/og-preview.png',
-        width: 1200,
-        height: 630,
-        alt: 'RoboSystems - Financial Intelligence Platform',
-      },
-    ],
+    siteName: SITE_NAME,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'RoboSystems | Financial Intelligence Platform',
-    description:
-      'Unify structured data, document search, and AI memory in one platform. Hybrid full-text and semantic search across SEC filings, with AI-powered analysis via MCP.',
-    images: ['/images/og-preview.png'],
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [OG_IMAGE.url],
     site: '@robofinsystems',
     creator: '@robofinsystems',
   },

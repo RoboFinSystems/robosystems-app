@@ -245,7 +245,7 @@ export default function TermsOfService() {
           <p>
             Your use of our site is subject to our{' '}
             <a
-              href="/privacy"
+              href="/pages/privacy"
               className="text-cyan-500 underline hover:text-cyan-400"
             >
               Privacy Policy
