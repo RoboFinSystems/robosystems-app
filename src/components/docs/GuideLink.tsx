@@ -14,6 +14,6 @@ export const GuideLink: FC<{ href: string; label?: string }> = ({
     rel="noopener noreferrer"
     className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 whitespace-nowrap"
   >
-    {label} →
+    {label} →<span className="sr-only"> (opens in a new tab)</span>
   </a>
 )

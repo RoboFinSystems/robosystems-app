@@ -375,7 +375,10 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
                 >
                   View Full API Documentation →
                 </a>{' '}
-                <GuideLink href="/docs/guides/sec-filings" />
+                {/* One guide per repository; only sec exists today. */}
+                {repository === 'sec' && (
+                  <GuideLink href="/docs/guides/sec-filings" />
+                )}
               </p>
             </div>
           </div>

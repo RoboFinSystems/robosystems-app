@@ -10,6 +10,7 @@ describe('GuideLink', () => {
     expect(link.getAttribute('href')).toBe('/docs/guides/connect-an-mcp-client')
     expect(link.getAttribute('target')).toBe('_blank')
     expect(link.getAttribute('rel')).toBe('noopener noreferrer')
+    expect(link.textContent).toContain('(opens in a new tab)')
   })
 
   it('takes a label for pages that need different wording', () => {

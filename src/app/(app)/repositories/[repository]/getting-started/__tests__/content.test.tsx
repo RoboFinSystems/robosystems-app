@@ -59,6 +59,12 @@ describe('ApiKeysContent — MCP', () => {
     ).toHaveAttribute('href', '/docs/guides/sec-filings')
   })
 
+  test('keeps the SEC guide to the SEC repository', () => {
+    render(<ApiKeysContent repository="other" />)
+
+    expect(screen.queryByRole('link', { name: /Read the guide/ })).toBeNull()
+  })
+
   test('leads with the universal sign-in, then the repository-pinned key recipes', () => {
     render(<ApiKeysContent repository="sec" />)
 

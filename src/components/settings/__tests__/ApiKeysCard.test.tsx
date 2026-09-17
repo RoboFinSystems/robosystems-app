@@ -103,6 +103,16 @@ describe('ApiKeysCard', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('holds the guide line back until the keys have loaded', async () => {
+    mockedList.mockRejectedValue(new Error('nope'))
+    render(<ApiKeysCard />)
+
+    expect(await screen.findByTestId('api-keys-error')).toBeInTheDocument()
+    expect(
+      screen.queryByRole('link', { name: /Read the guide/ })
+    ).not.toBeInTheDocument()
+  })
+
   it('shows the error copy, not the empty state, when the list fails', async () => {
     mockedList.mockResolvedValue({ error: { detail: 'nope' } } as never)
     render(<ApiKeysCard />)
