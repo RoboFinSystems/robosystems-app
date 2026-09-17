@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import {
   API_BASE_PATH,
   API_REVALIDATE_SECONDS,
@@ -274,5 +274,52 @@ describe('route segment config', () => {
     expect(source).toContain(
       `export const revalidate = ${API_REVALIDATE_SECONDS}`
     )
+  })
+})
+
+describe('which API the reference documents', () => {
+  // Both are read at module load, so the module is re-imported per case. Assigning
+  // `undefined` into process.env stores the string "undefined", so an unset variable
+  // has to be deleted — otherwise the fallback under test never runs.
+  const reload = async (vars: Record<string, string | undefined>) => {
+    vi.resetModules()
+    const previous = { ...process.env }
+    for (const [key, value] of Object.entries(vars)) {
+      if (value === undefined) delete process.env[key]
+      else process.env[key] = value
+    }
+    try {
+      return await import('../openapi')
+    } finally {
+      process.env = previous
+    }
+  }
+
+  it('follows the same build-time variable the rest of the app uses', async () => {
+    const mod = await reload({
+      NEXT_PUBLIC_ROBOSYSTEMS_API_URL: 'https://staging.api.robosystems.ai',
+      NEXT_PUBLIC_OPENAPI_URL: undefined,
+    })
+    expect(mod.API_SERVER_URL).toBe('https://staging.api.robosystems.ai')
+    expect(mod.OPENAPI_URL).toBe(
+      'https://staging.api.robosystems.ai/openapi.json'
+    )
+  })
+
+  it('falls back to production when nothing is set', async () => {
+    const mod = await reload({
+      NEXT_PUBLIC_ROBOSYSTEMS_API_URL: undefined,
+      NEXT_PUBLIC_OPENAPI_URL: undefined,
+    })
+    expect(mod.OPENAPI_URL).toBe('https://api.robosystems.ai/openapi.json')
+  })
+
+  it('lets the spec URL be overridden on its own, for a local stack', async () => {
+    const mod = await reload({
+      NEXT_PUBLIC_ROBOSYSTEMS_API_URL: 'http://localhost:8000',
+      NEXT_PUBLIC_OPENAPI_URL: 'http://localhost:8000/openapi.json',
+    })
+    expect(mod.OPENAPI_URL).toBe('http://localhost:8000/openapi.json')
+    expect(mod.API_SERVER_URL).toBe('http://localhost:8000')
   })
 })

@@ -12,13 +12,17 @@
 
 import { cache } from 'react'
 
-export const OPENAPI_URL =
-  process.env.NEXT_PUBLIC_OPENAPI_URL ||
-  'https://api.robosystems.ai/openapi.json'
-
-/** The API host, for the example calls. Never used to fetch. */
+/**
+ * The API this deployment documents, from the same build-time variable every other page
+ * uses to reach it. Staging must render staging's spec and print staging's host in the
+ * example calls; reading a name nothing sets would have had it document production.
+ */
 export const API_SERVER_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://api.robosystems.ai'
+  process.env.NEXT_PUBLIC_ROBOSYSTEMS_API_URL || 'https://api.robosystems.ai'
+
+/** Overridable on its own so a local stack can be rendered without a rebuild. */
+export const OPENAPI_URL =
+  process.env.NEXT_PUBLIC_OPENAPI_URL || `${API_SERVER_URL}/openapi.json`
 
 export const API_REVALIDATE_SECONDS = 3600
 
