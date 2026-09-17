@@ -88,14 +88,11 @@ describe('EnterpriseContent', () => {
   it('sends self-hosters to the bootstrap guide, not the marketing page', () => {
     render(<EnterpriseContent />)
 
-    // /open-source pitches self-hosting; the wiki is what someone who has
+    // /open-source pitches self-hosting; the guide is what someone who has
     // already chosen it needs.
     expect(
       screen.getByRole('link', { name: 'Bootstrap guide' })
-    ).toHaveAttribute(
-      'href',
-      'https://github.com/RoboFinSystems/robosystems/wiki/Bootstrap-Guide'
-    )
+    ).toHaveAttribute('href', '/docs/technical/bootstrap-guide')
   })
 
   it('links procurement to the hosted MSA and the Trust Center', () => {

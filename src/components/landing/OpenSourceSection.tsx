@@ -295,10 +295,8 @@ export default function OpenSourceSection() {
                 GitHub Actions workflows included.
               </p>
 
-              <a
-                href="https://github.com/RoboFinSystems/robosystems/wiki/Bootstrap-Guide"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/docs/technical/bootstrap-guide"
                 className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
               >
                 <svg
@@ -315,7 +313,7 @@ export default function OpenSourceSection() {
                   />
                 </svg>
                 Bootstrap Guide
-              </a>
+              </Link>
             </div>
 
             {/* Download */}
@@ -423,12 +421,12 @@ just start
                   </pre>
                   <p className="mt-2 text-xs text-gray-500">
                     For production deployment, see the{' '}
-                    <a
-                      href="https://github.com/RoboFinSystems/robosystems/wiki/Bootstrap-Guide"
+                    <Link
+                      href="/docs/technical/bootstrap-guide"
                       className="text-primary-400 hover:text-primary-300"
                     >
                       Bootstrap Guide
-                    </a>
+                    </Link>
                     .
                   </p>
                 </div>

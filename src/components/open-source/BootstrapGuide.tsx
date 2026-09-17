@@ -1,4 +1,5 @@
 import FloatingElementsVariant from '@/components/landing/FloatingElementsVariant'
+import Link from 'next/link'
 
 export default function BootstrapGuide() {
   return (
@@ -315,8 +316,8 @@ export default function BootstrapGuide() {
 
         {/* CTA */}
         <div className="mt-12 text-center">
-          <a
-            href="https://github.com/RoboFinSystems/robosystems/wiki/Bootstrap-Guide"
+          <Link
+            href="/docs/technical/bootstrap-guide"
             className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 px-8 py-4 font-medium text-white transition-all hover:from-emerald-700 hover:to-teal-700 hover:shadow-lg hover:shadow-emerald-500/25"
           >
             <svg
@@ -332,8 +333,8 @@ export default function BootstrapGuide() {
                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
               />
             </svg>
-            Full Bootstrap Guide in Wiki
-          </a>
+            Full Bootstrap Guide
+          </Link>
         </div>
       </div>
     </section>

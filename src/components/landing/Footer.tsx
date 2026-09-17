@@ -13,6 +13,7 @@ export default function Footer() {
         { label: 'Applications', href: '/#applications' },
         { label: 'Open Source', href: '/open-source' },
         { label: 'Pricing', href: '/pricing' },
+        { label: 'Docs', href: '/docs' },
       ]}
       contactModal={ContactModal}
     />

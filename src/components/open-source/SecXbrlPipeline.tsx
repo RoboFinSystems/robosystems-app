@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function SecXbrlPipeline() {
   return (
     <div className="mb-12 overflow-hidden rounded-3xl border-2 border-cyan-400/40 bg-gradient-to-br from-cyan-950/60 via-cyan-900/40 to-blue-950/60 shadow-2xl shadow-cyan-500/20">
@@ -78,12 +80,12 @@ just graph-query sec "MATCH (e:Entity)-[:ENTITY_HAS_REPORT]->(r:Report) RETURN r
           </pre>
         </div>
 
-        <a
-          href="https://github.com/RoboFinSystems/robosystems/wiki/SEC-XBRL-Pipeline"
+        <Link
+          href="/docs/technical/sec-xbrl-pipeline"
           className="mt-4 inline-flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300"
         >
           View Full SEC Pipeline Documentation →
-        </a>
+        </Link>
       </div>
     </div>
   )
