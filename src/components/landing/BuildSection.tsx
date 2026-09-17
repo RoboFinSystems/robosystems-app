@@ -117,8 +117,9 @@ export default function BuildSection() {
                 </div>
               </div>
               <p className="text-sm text-gray-400">
-                A shared graph of XBRL facts from 10-K and 10-Q filings across
-                8,000+ public companies, updated daily. Query it read-only, with
+                XBRL facts from 8,000+ public companies in a shared graph,
+                full-text and semantic search across the filings, and the
+                Analyst Operator for plain-English questions. Updated daily,
                 nothing to import.
               </p>
               <Link
