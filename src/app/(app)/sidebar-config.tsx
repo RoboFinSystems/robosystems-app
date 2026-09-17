@@ -3,6 +3,7 @@
 import type { GraphInfo } from '@robosystems/client'
 import type { SidebarItemData } from '@robosystems/core'
 import {
+  HiBookOpen,
   HiChartBar,
   HiChip,
   HiCode,
@@ -11,6 +12,7 @@ import {
   HiGlobeAlt,
   HiHome,
   HiLightBulb,
+  HiNewspaper,
   HiPuzzle,
   HiSearch,
   HiTable,
@@ -133,6 +135,21 @@ export const getNavigationItems = (
       icon: HiGlobeAlt,
       label: 'Repositories',
       href: '/repositories',
+    },
+    // The docs and blog wear the public site's chrome, so they open in a new tab
+    // and the app keeps its place. A signed-in visitor to / is sent to /home and
+    // never sees the public header's links, so these are the way in from here.
+    {
+      icon: HiBookOpen,
+      label: 'Docs',
+      href: '/docs',
+      target: '_blank',
+    },
+    {
+      icon: HiNewspaper,
+      label: 'Blog',
+      href: '/blog',
+      target: '_blank',
     },
   ]
 
