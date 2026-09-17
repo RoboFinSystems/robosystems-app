@@ -64,6 +64,11 @@ RUN case "$TARGETARCH" in \
 FROM public.ecr.aws/docker/library/node:24.19.0-alpine3.24 AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+# The instance is 0.5 GB and V8 sizes its heap from what it believes the machine has, so
+# without a cap it defers collection past the container limit. Uncapped, a sequential crawl
+# of the API reference's 234 pages took RSS to 390 MB and still climbing; capped it settles
+# around 330 MB. Raise this alongside the App Runner Memory parameter, not on its own.
+ENV NODE_OPTIONS="--max-old-space-size=320"
 
 # Install git and upgrade system packages for security patches.
 # CACHE_DATE (set per-build in build.yml) busts this layer so the upgrade
