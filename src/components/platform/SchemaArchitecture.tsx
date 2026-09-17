@@ -1,3 +1,4 @@
+import { McpLogo } from '@/components/mcp/McpLogo'
 import { AnimatedLogo } from '@robosystems/core/ui-components/Logo'
 import Image from 'next/image'
 import { HiDocumentText } from 'react-icons/hi'
@@ -93,8 +94,8 @@ export default function SchemaArchitecture() {
     },
     {
       name: 'AI Agents',
-      description: 'Claude AI with MCP-powered analysis',
-      icon: '/images/claude.svg',
+      description: 'Claude, ChatGPT, Grok, or any MCP client',
+      icon: McpLogo,
     },
   ]
 
@@ -402,6 +403,7 @@ function DataSourceCard({ name, type, icon, useImage, features, color }: any) {
 }
 
 function ApplicationCard({ name, description, icon, app, index }: any) {
+  const Icon = icon
   // Different background gradients and hover colors for each app
   const bgGradients = [
     'from-zinc-900 to-cyan-950/20',
@@ -428,13 +430,7 @@ function ApplicationCard({ name, description, icon, app, index }: any) {
               className="h-8 w-8 text-white"
             />
           ) : (
-            <Image
-              src={icon}
-              alt={`${name} logo`}
-              width={32}
-              height={32}
-              className="rounded-lg"
-            />
+            <Icon className="h-7 w-7 text-white" />
           )}
         </div>
         <div>

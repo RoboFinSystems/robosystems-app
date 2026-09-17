@@ -43,30 +43,25 @@ export default function AiIntegrationMcp() {
           <ul className="space-y-2 text-gray-400">
             <li className="flex items-start">
               <span className="mr-2 text-purple-400">✓</span>
-              <strong className="text-white">Claude:</strong>
+              <strong className="text-white">Claude / ChatGPT / Grok:</strong>
               <span className="ml-1">
-                Add a custom connector for conversational financial analysis
+                Add the URL as a connector and sign in — no key to paste
               </span>
             </li>
             <li className="flex items-start">
               <span className="mr-2 text-purple-400">✓</span>
-              <strong className="text-white">Claude Code:</strong>
+              <strong className="text-white">
+                Claude Code / Cursor / VS Code:
+              </strong>
               <span className="ml-1">
-                Query financial data while coding and building applications
+                Point your coding tool at the same URL and query while you build
               </span>
             </li>
             <li className="flex items-start">
               <span className="mr-2 text-purple-400">✓</span>
-              <strong className="text-white">Cursor / VS Code:</strong>
+              <strong className="text-white">Any MCP client:</strong>
               <span className="ml-1">
-                Point your editor at the same URL and query inline
-              </span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2 text-purple-400">✓</span>
-              <strong className="text-white">ChatGPT / Grok:</strong>
-              <span className="ml-1">
-                Add the same URL as a connector and sign in — no key to paste
+                It&apos;s a standard remote MCP server — no install required
               </span>
             </li>
           </ul>

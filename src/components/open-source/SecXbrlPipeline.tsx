@@ -45,7 +45,7 @@ export default function SecXbrlPipeline() {
             </li>
             <li className="flex items-start">
               <span className="mr-2 text-cyan-400">✓</span>
-              Connect Claude, Claude Code, or Cursor over MCP
+              Connect Claude, ChatGPT, Grok, or any MCP client
             </li>
             <li className="flex items-start">
               <span className="mr-2 text-cyan-400">✓</span>

@@ -1,6 +1,6 @@
 'use client'
 
-import Image from 'next/image'
+import { McpLogo } from '@/components/mcp/McpLogo'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import ContactModal from './ContactModal'
@@ -176,14 +176,8 @@ export default function HeroSection() {
           {/* Trust Indicators */}
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500 sm:gap-6 sm:text-sm md:mt-12">
             <div className="flex items-center gap-2">
-              <Image
-                src="/images/claude.svg"
-                alt="Claude AI"
-                width={20}
-                height={20}
-                className="h-5 w-5"
-              />
-              <span>Claude AI</span>
+              <McpLogo className="h-5 w-5 text-gray-300" />
+              <span>MCP</span>
             </div>
             <div className="flex items-center gap-2">
               <svg
