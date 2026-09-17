@@ -1,4 +1,5 @@
 import { act, render, screen } from '@testing-library/react'
+import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mockUseAuth = vi.fn()
@@ -41,9 +42,31 @@ describe('LandingGate', () => {
     expect(
       screen.getByRole('heading', {
         name: 'Financial data, finally connected.',
+        hidden: true,
       })
     ).toBeInTheDocument()
     expect(screen.getByTestId('landing-gate-cover')).toBeInTheDocument()
+  })
+
+  it('sends crawlers the content in the server HTML, with nothing marking it hidden', () => {
+    mockUseAuth.mockReturnValue({ isAuthenticated: false, isLoading: true })
+    const html = renderToString(<LandingGate />)
+
+    expect(html).toContain('<h1>Financial data, finally connected.</h1>')
+    expect(html).not.toContain('aria-hidden')
+    expect(html).not.toContain('inert')
+  })
+
+  it('takes the covered page out of reach in the browser', () => {
+    mockUseAuth.mockReturnValue({ isAuthenticated: false, isLoading: true })
+    render(<LandingGate />)
+
+    const page = screen.getByRole('heading', {
+      name: 'Financial data, finally connected.',
+      hidden: true,
+    }).parentElement
+    expect(page).toHaveAttribute('inert')
+    expect(page).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('uncovers the content for a signed-out visitor', () => {
@@ -56,6 +79,11 @@ describe('LandingGate', () => {
       })
     ).toBeInTheDocument()
     expect(screen.queryByTestId('landing-gate-cover')).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', {
+        name: 'Financial data, finally connected.',
+      }).parentElement
+    ).not.toHaveAttribute('inert')
     expect(mockReplace).not.toHaveBeenCalled()
   })
 

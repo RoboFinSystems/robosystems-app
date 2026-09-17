@@ -6,7 +6,6 @@ import {
 import { getAllPosts } from '@/lib/blog'
 import { format } from 'date-fns'
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 
 // The hub's title says what the lane is about; "Blog | RoboSystems" told a searcher nothing.
@@ -52,22 +51,6 @@ export default async function BlogPage() {
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-          {/* Logo and Title */}
-          <div className="mb-6 flex items-center justify-center">
-            <Link href="/" className="flex items-center">
-              <Image
-                src="/images/logos/robosystems.png"
-                alt="RoboSystems Logo"
-                width={60}
-                height={60}
-                className="mr-3"
-              />
-              <span className="font-heading text-4xl font-bold whitespace-nowrap text-white">
-                RoboSystems
-              </span>
-            </Link>
-          </div>
-
           <h1 className="font-heading text-center text-5xl font-bold md:text-6xl">
             <span className="bg-linear-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
               Blog & Insights
