@@ -50,6 +50,22 @@ const nextConfig = {
         destination: '/organization?tab=billing',
         permanent: false,
       },
+      // /open-source was setup instructions dressed as a marketing page (local quick
+      // start, SEC pipeline, MCP setup, client libraries, AWS bootstrap), and most of its
+      // recent commits were fixes keeping those claims current. The technical docs are now
+      // the canonical home for that content, opened by a get-started section that carries
+      // what the page taught; the positioning half lives in the homepage's open-source
+      // section and the Self-Hosted card on /enterprise.
+      //
+      // permanent: true on purpose, the opposite of /billing's call. /open-source is an
+      // indexed public page with outside links, and the retirement is final: a 308 is
+      // what moves its search signals to /docs/technical and drops the old URL from the
+      // index. Should the docs ever move, the new home redirects in turn.
+      {
+        source: '/open-source',
+        destination: '/docs/technical',
+        permanent: true,
+      },
       // permanent: true is a 308, which search engines treat as a 301: the old URL's
       // signals move to the new site with the page.
       ...MOVED_TO_ROBOLEDGER.map((slug) => ({

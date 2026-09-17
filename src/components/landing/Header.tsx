@@ -73,12 +73,6 @@ export default function Header() {
               Enterprise
             </Link>
             <Link
-              href="/open-source"
-              className="hover:text-secondary-400 px-3 py-2 text-sm font-medium text-gray-300 transition-colors"
-            >
-              Open Source
-            </Link>
-            <Link
               href="/pricing"
               className="hover:text-secondary-400 px-3 py-2 text-sm font-medium text-gray-300 transition-colors"
             >
@@ -87,6 +81,12 @@ export default function Header() {
             {/* Research is omitted from the desktop top nav to keep the row from
                 crowding/wrapping on lg screens. It lives on roboinvestor.ai since
                 2026-09-02 and stays reachable via the mobile menu. */}
+            <Link
+              href="/docs"
+              className="hover:text-secondary-400 px-3 py-2 text-sm font-medium text-gray-300 transition-colors"
+            >
+              Docs
+            </Link>
             <Link
               href="/blog"
               className="hover:text-secondary-400 px-3 py-2 text-sm font-medium text-gray-300 transition-colors"
@@ -177,13 +177,6 @@ export default function Header() {
                 Enterprise
               </Link>
               <Link
-                href="/open-source"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="hover:text-secondary-400 px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800"
-              >
-                Open Source
-              </Link>
-              <Link
                 href="/pricing"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="hover:text-secondary-400 px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800"
@@ -197,6 +190,13 @@ export default function Header() {
               >
                 Research
               </a>
+              <Link
+                href="/docs"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="hover:text-secondary-400 px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800"
+              >
+                Docs
+              </Link>
               <Link
                 href="/blog"
                 onClick={() => setIsMobileMenuOpen(false)}

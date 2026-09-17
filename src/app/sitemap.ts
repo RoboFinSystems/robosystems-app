@@ -1,4 +1,5 @@
 import { getAllPosts } from '@/lib/blog'
+import { DOCS_SITE, getDocsCatalog, getDocsNav, latestUpdate } from '@/lib/docs'
 import type { MetadataRoute } from 'next'
 
 /**
@@ -26,13 +27,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
+  // Technical docs from the docs catalog; lastmod is each page's last commit in the wiki.
+  const catalog = await getDocsCatalog()
+  const technical = catalog && getDocsNav(catalog, DOCS_SITE, 'technical')
+  const docsPages: MetadataRoute.Sitemap = (technical?.ordered ?? []).map(
+    (page) => ({
+      url: `${baseUrl}${page.path}`,
+      lastModified: page.updated ? new Date(page.updated) : undefined,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })
+  )
+
   // The research portal lives on roboinvestor.ai (its sitemap lists it); /research and
   // /research/:ticker here are 308s in next.config.js and are deliberately not listed.
   // Static pages send no lastModified: they change on deploys, and nothing here knows
   // when. /register is noindex and left out.
   const newestPost = latestDate(posts.map((p) => p.date))
   const staticPages: MetadataRoute.Sitemap = [
-    { path: '/open-source', changeFrequency: 'monthly', priority: 0.8 },
     { path: '/platform', changeFrequency: 'monthly', priority: 0.8 },
     { path: '/enterprise', changeFrequency: 'monthly', priority: 0.8 },
     { path: '/pricing', changeFrequency: 'monthly', priority: 0.8 },
@@ -53,7 +65,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.9,
     },
+    {
+      url: `${baseUrl}/docs`,
+      lastModified: latestUpdate(technical?.ordered ?? []),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
     ...staticPages,
+    ...docsPages,
     ...blogPosts,
   ]
 }

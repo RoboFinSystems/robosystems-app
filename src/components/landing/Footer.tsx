@@ -11,8 +11,8 @@ export default function Footer() {
         { label: 'Platform', href: '/platform' },
         { label: 'Enterprise', href: '/enterprise' },
         { label: 'Applications', href: '/#applications' },
-        { label: 'Open Source', href: '/open-source' },
         { label: 'Pricing', href: '/pricing' },
+        { label: 'Docs', href: '/docs' },
       ]}
       contactModal={ContactModal}
     />

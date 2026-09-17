@@ -304,14 +304,12 @@ export default function EnterpriseContent() {
                       </button>
                     )}
                     {mode.name === 'Self-Hosted' && (
-                      <a
-                        href="https://github.com/RoboFinSystems/robosystems/wiki/Bootstrap-Guide"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <Link
+                        href="/docs/technical/bootstrap-guide"
                         className="block w-full rounded-lg border border-cyan-700 py-3 text-center font-medium text-gray-300 transition-all hover:bg-cyan-800/20 hover:text-white"
                       >
                         Bootstrap guide
-                      </a>
+                      </Link>
                     )}
                   </div>
                 </div>

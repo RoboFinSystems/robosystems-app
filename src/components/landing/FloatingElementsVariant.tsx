@@ -17,10 +17,6 @@ interface FloatingElementsVariantProps {
     | 'applications'
     | 'integrations'
     | 'opensource'
-    | 'os-getting-started'
-    | 'os-use-cases'
-    | 'os-client-libs'
-    | 'os-aws'
   intensity?: number
 }
 
@@ -165,40 +161,6 @@ export default function FloatingElementsVariant({
           <div className="animate-float-slow absolute -top-20 right-1/3 h-[600px] w-[600px] rounded-full bg-gradient-to-br from-teal-600/12 to-cyan-600/12 blur-3xl"></div>
           <div className="animate-float absolute bottom-0 left-0 h-[550px] w-[550px] rounded-full bg-gradient-to-br from-sky-600/10 to-blue-600/10 blur-3xl"></div>
           <div className="animate-float-slower absolute top-1/2 right-0 h-[500px] w-[500px] rounded-full bg-gradient-to-br from-emerald-600/8 to-green-600/8 blur-3xl"></div>
-        </div>
-      )
-
-    case 'os-getting-started':
-      return (
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="animate-float absolute top-1/4 -left-20 h-[550px] w-[550px] rounded-full bg-gradient-to-br from-green-600/12 to-emerald-600/12 blur-3xl"></div>
-          <div className="animate-float-slower absolute -right-32 bottom-1/3 h-[500px] w-[500px] rounded-full bg-gradient-to-br from-teal-600/10 to-cyan-600/10 blur-3xl"></div>
-        </div>
-      )
-
-    case 'os-use-cases':
-      return (
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="animate-float-slow absolute -top-32 left-1/3 h-[600px] w-[600px] rounded-full bg-gradient-to-br from-purple-600/12 to-violet-600/12 blur-3xl"></div>
-          <div className="animate-float absolute -right-20 bottom-0 h-[550px] w-[550px] rounded-full bg-gradient-to-br from-fuchsia-600/10 to-pink-600/10 blur-3xl"></div>
-          <div className="animate-float-slower absolute top-1/2 left-0 h-[450px] w-[450px] rounded-full bg-gradient-to-br from-indigo-600/8 to-blue-600/8 blur-3xl"></div>
-        </div>
-      )
-
-    case 'os-client-libs':
-      return (
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="animate-float absolute top-0 right-1/4 h-[580px] w-[580px] rounded-full bg-gradient-to-br from-blue-600/12 to-sky-600/12 blur-3xl"></div>
-          <div className="animate-float-slow absolute -bottom-20 left-1/4 h-[520px] w-[520px] rounded-full bg-gradient-to-br from-cyan-600/10 to-teal-600/10 blur-3xl"></div>
-        </div>
-      )
-
-    case 'os-aws':
-      return (
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="animate-float-slower absolute top-1/3 left-0 h-[600px] w-[600px] rounded-full bg-gradient-to-br from-orange-600/10 to-amber-600/10 blur-3xl"></div>
-          <div className="animate-float absolute -right-40 bottom-1/4 h-[550px] w-[550px] rounded-full bg-gradient-to-br from-yellow-600/12 to-orange-600/12 blur-3xl"></div>
-          <div className="animate-float-slow absolute top-0 left-1/2 h-[480px] w-[480px] rounded-full bg-gradient-to-br from-red-600/8 to-rose-600/8 blur-3xl"></div>
         </div>
       )
 

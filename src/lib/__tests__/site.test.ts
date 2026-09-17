@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { metadata as enterpriseMetadata } from '../../app/(landing)/enterprise/page'
 import { landingMetadata } from '../../app/(landing)/metadata'
-import { metadata as openSourceMetadata } from '../../app/(landing)/open-source/page'
 import { metadata as platformMetadata } from '../../app/(landing)/platform/page'
 import { metadata as pricingMetadata } from '../../app/(landing)/pricing/page'
 import {
@@ -27,11 +26,10 @@ describe('public page metadata', () => {
     })
   })
 
-  // These three had no canonical and inherited the homepage's og:url (2026-09-16).
+  // These had no canonical and inherited the homepage's og:url (2026-09-16).
   it.each([
     ['/platform', platformMetadata],
     ['/pricing', pricingMetadata],
-    ['/open-source', openSourceMetadata],
   ])('%s declares its own canonical and og:url', (path, m) => {
     const url = `https://robosystems.ai${path}`
     expect(m.alternates?.canonical).toBe(url)

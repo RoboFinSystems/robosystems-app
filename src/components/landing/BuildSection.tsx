@@ -348,9 +348,7 @@ export default function BuildSection() {
           </Link>
           , or read the{' '}
           <Link
-            href="https://github.com/RoboFinSystems/robosystems/wiki/Building-Custom-Integrations"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/docs/technical/building-custom-integrations"
             className="text-secondary-400 hover:text-secondary-300"
           >
             integration guide
