@@ -367,4 +367,102 @@ describe('ConsentContent', () => {
     expect(screen.getByTestId('no-graphs')).toBeInTheDocument()
     expect(screen.getByTestId('approve')).toBeDisabled()
   })
+
+  describe('a RoboLedger request', () => {
+    const ROBOLEDGER_PENDING = {
+      ...PENDING,
+      resource: 'http://localhost:8000/v1/mcp/roboledger',
+      product: 'roboledger',
+    }
+    const MIXED_GRAPHS = [
+      // The SEC repository declares the roboledger extension too.
+      {
+        graphId: 'sec',
+        graphName: 'SEC Repository',
+        isRepository: true,
+        schemaExtensions: ['roboledger'],
+      },
+      {
+        graphId: 'kg1a2b3c',
+        graphName: 'Acme Ledger',
+        isRepository: false,
+        schemaExtensions: ['roboledger'],
+      },
+      // Subgraphs inherit their parent's extensions.
+      {
+        graphId: 'kg1a2b3c_dev',
+        graphName: 'Acme Dev',
+        isRepository: false,
+        isSubgraph: true,
+        schemaExtensions: ['roboledger'],
+      },
+      {
+        graphId: 'kg9z8y7x',
+        graphName: 'Beta Portfolio',
+        isRepository: false,
+        schemaExtensions: ['roboinvestor'],
+      },
+    ]
+
+    test('offers only RoboLedger tenant graphs', async () => {
+      setGraphs(MIXED_GRAPHS, 'kg1a2b3c')
+      fetchMock.mockResolvedValueOnce(jsonResponse(200, ROBOLEDGER_PENDING))
+      render(<ConsentContent />)
+      await screen.findByText('Visual Studio Code')
+
+      expect(
+        screen.getByText('Choose the RoboLedger graph to connect')
+      ).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        'wants to use RoboLedger on your behalf'
+      )
+      await waitFor(() =>
+        expect(screen.getByLabelText(/Acme Ledger/)).toBeChecked()
+      )
+      expect(screen.queryByLabelText(/SEC Repository/)).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/Acme Dev/)).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/Beta Portfolio/)).not.toBeInTheDocument()
+      expect(screen.queryByText('Shared repositories')).not.toBeInTheDocument()
+    })
+
+    test('does not preselect a current graph it cannot grant', async () => {
+      setGraphs(MIXED_GRAPHS, 'sec')
+      fetchMock
+        .mockResolvedValueOnce(jsonResponse(200, ROBOLEDGER_PENDING))
+        .mockResolvedValueOnce(
+          jsonResponse(200, { redirect_to: 'https://chatgpt.com/cb?code=1' })
+        )
+      render(<ConsentContent />)
+      await screen.findByText('Visual Studio Code')
+
+      await waitFor(() =>
+        expect(screen.getByLabelText(/Acme Ledger/)).toBeChecked()
+      )
+      fireEvent.click(screen.getByTestId('approve'))
+      await waitFor(() =>
+        expect(window.location.href).toBe('https://chatgpt.com/cb?code=1')
+      )
+      expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toEqual({
+        approved: true,
+        graph_id: 'kg1a2b3c',
+      })
+    })
+
+    test('with no RoboLedger graph says so and cannot approve', async () => {
+      setGraphs(
+        MIXED_GRAPHS.filter((graph) => graph.graphId !== 'kg1a2b3c'),
+        'sec'
+      )
+      fetchMock.mockResolvedValueOnce(jsonResponse(200, ROBOLEDGER_PENDING))
+      render(<ConsentContent />)
+      await screen.findByText('Visual Studio Code')
+
+      expect(screen.getByTestId('no-product-graphs')).toHaveTextContent(
+        'This connection is for RoboLedger graphs'
+      )
+      expect(screen.queryByTestId('graph-picker')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('no-graphs')).not.toBeInTheDocument()
+      expect(screen.getByTestId('approve')).toBeDisabled()
+    })
+  })
 })

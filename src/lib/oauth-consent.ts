@@ -14,6 +14,7 @@
  * bearer rather than a generated client call.
  */
 
+import type { GraphInfo } from '@robosystems/client'
 import { getValidToken } from '@robosystems/core'
 import { MCP_API_URL } from './mcp'
 
@@ -28,7 +29,44 @@ export interface PendingAuthorization {
   resource: string
   /** Fixed by the resource URL on a per-graph route; null when the user picks. */
   graph_id: string | null
+  /**
+   * The product whose graphs the resource serves ('roboledger' on
+   * /v1/mcp/roboledger); only those graphs may be chosen. Null or absent on
+   * the general routes.
+   */
+  product?: string | null
   scope: string
+}
+
+const PRODUCT_LABELS: Record<string, string> = {
+  roboledger: 'RoboLedger',
+}
+
+/** Display name for a product resource, or null on the general routes. */
+export function productLabel(
+  product: string | null | undefined
+): string | null {
+  if (!product) return null
+  return PRODUCT_LABELS[product] ?? product
+}
+
+/**
+ * Whether a graph can be granted on a product resource. Mirrors the API's
+ * check: a tenant graph provisioned for the product — never a shared
+ * repository (the SEC repository declares product extensions too) and never
+ * a subgraph (subgraphs inherit their parent's extensions). The API refuses
+ * anything else; this keeps the picker from offering it.
+ */
+export function graphServesProduct(
+  graph: Pick<
+    GraphInfo,
+    'isRepository' | 'isSubgraph' | 'graphType' | 'schemaExtensions'
+  >,
+  product: string
+): boolean {
+  if (graph.isRepository || graph.isSubgraph) return false
+  if (graph.graphType === 'repository') return false
+  return (graph.schemaExtensions ?? []).includes(product)
 }
 
 export interface ConsentDecision {
