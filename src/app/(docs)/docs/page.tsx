@@ -3,20 +3,28 @@ import { publicPageMetadata } from '@/lib/site'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-// The docs landing: one door per kind of documentation, then every technical page by
-// section so the landing links the whole technical set in its server HTML.
+// The docs landing: one door per kind of documentation, then every guide and every
+// technical page by section, so the landing links both sets in its server HTML. The Guides
+// door appears only once the catalog carries the collection, so it never links a 404.
 
 export const revalidate = 300
 
 const TITLE = 'Documentation | RoboSystems'
 const DESCRIPTION =
-  'Technical documentation for the RoboSystems platform, the RoboLedger guides for using your books with Claude, and the REST API reference.'
+  'Guides to using RoboSystems through Claude, ChatGPT and other MCP clients, technical documentation for the platform, and the REST API reference.'
 
 export const metadata: Metadata = publicPageMetadata({
   path: '/docs',
   title: TITLE,
   description: DESCRIPTION,
 })
+
+const GUIDES_DOOR = {
+  title: 'Guides',
+  href: '/docs/guides',
+  body: 'Use the platform through Claude, ChatGPT or any MCP client: connect, choose a graph, analyze SEC filings.',
+  external: false,
+}
 
 const DOORS = [
   {
@@ -42,6 +50,8 @@ const DOORS = [
 export default async function DocsLandingPage() {
   const catalog = await getDocsCatalog()
   const technical = catalog && getDocsNav(catalog, DOCS_SITE, 'technical')
+  const guides = catalog && getDocsNav(catalog, DOCS_SITE, 'product')
+  const doors = guides ? [GUIDES_DOOR, ...DOORS] : DOORS
 
   return (
     <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 lg:px-8">
@@ -56,8 +66,10 @@ export default async function DocsLandingPage() {
         </p>
       </header>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        {DOORS.map((door) => {
+      <div
+        className={`grid gap-6 md:grid-cols-2 ${doors.length > 3 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}
+      >
+        {doors.map((door) => {
           const className =
             'group block rounded-xl border border-gray-800 bg-gray-900/50 p-6 transition-all hover:border-cyan-500/50 hover:bg-gray-900/70'
           const content = (
@@ -79,6 +91,26 @@ export default async function DocsLandingPage() {
           )
         })}
       </div>
+
+      {guides && guides.ordered.length > 0 && (
+        <section className="mt-16">
+          <h2 className="font-heading mb-8 text-2xl font-bold text-white">
+            Guides
+          </h2>
+          <ul className="grid gap-x-8 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
+            {guides.ordered.map((page) => (
+              <li key={page.slug}>
+                <Link
+                  href={page.path}
+                  className="text-gray-300 transition-colors hover:text-cyan-400"
+                >
+                  {page.slug === 'index' ? 'Overview' : page.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {technical && technical.sections.length > 0 && (
         <section className="mt-16">
