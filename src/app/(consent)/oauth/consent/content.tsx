@@ -3,8 +3,10 @@
 import {
   ConsentError,
   fetchPendingAuthorization,
+  graphServesProduct,
   isValidRequestId,
   lookalikeBrand,
+  productLabel,
   submitConsentDecision,
   type PendingAuthorization,
 } from '@/lib/oauth-consent'
@@ -113,17 +115,31 @@ export function ConsentContent() {
     }
   }, [requestId])
 
+  // A product resource (/v1/mcp/roboledger) serves that product's graphs
+  // only; the API refuses any other choice, so the picker never offers one.
+  const product = pending?.product ?? null
+  const label = productLabel(product)
+  const eligibleGraphs = useMemo(
+    () =>
+      product
+        ? graphState.graphs.filter((graph) =>
+            graphServesProduct(graph, product)
+          )
+        : graphState.graphs,
+    [graphState.graphs, product]
+  )
   const ownGraphs = useMemo(
-    () => graphState.graphs.filter((graph) => !graph.isRepository),
-    [graphState.graphs]
+    () => eligibleGraphs.filter((graph) => !graph.isRepository),
+    [eligibleGraphs]
   )
   const repositories = useMemo(
-    () => graphState.graphs.filter((graph) => graph.isRepository),
-    [graphState.graphs]
+    () => eligibleGraphs.filter((graph) => graph.isRepository),
+    [eligibleGraphs]
   )
 
   // Default selection: the graph fixed by a per-graph URL; otherwise the
-  // graph the user is already working in; otherwise their first own graph.
+  // graph the user is already working in, when it can be chosen; otherwise
+  // their first own graph.
   useEffect(() => {
     if (!pending || selectedGraphId) return
     if (pending.graph_id) {
@@ -131,12 +147,12 @@ export function ConsentContent() {
       return
     }
     if (graphState.isLoading) return
-    const current = graphState.graphs.find(
+    const current = eligibleGraphs.find(
       (graph) => graph.graphId === graphState.currentGraphId
     )
-    const first = ownGraphs[0] ?? graphState.graphs[0]
+    const first = ownGraphs[0] ?? eligibleGraphs[0]
     setSelectedGraphId(current?.graphId ?? first?.graphId ?? null)
-  }, [pending, selectedGraphId, graphState, ownGraphs])
+  }, [pending, selectedGraphId, graphState, eligibleGraphs, ownGraphs])
 
   const fixedGraph = pending?.graph_id
     ? (graphState.graphs.find((graph) => graph.graphId === pending.graph_id) ??
@@ -208,7 +224,7 @@ export function ConsentContent() {
                 ) : (
                   pending.client_name
                 )}{' '}
-                wants to use RoboSystems on your behalf
+                wants to use {label ?? 'RoboSystems'} on your behalf
               </h1>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
                 It will be able to use the MCP tools on one graph, with the
@@ -228,7 +244,11 @@ export function ConsentContent() {
 
             <section className="space-y-3">
               <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                {pending.graph_id ? 'Graph' : 'Choose the graph to connect'}
+                {pending.graph_id
+                  ? 'Graph'
+                  : label
+                    ? `Choose the ${label} graph to connect`
+                    : 'Choose the graph to connect'}
               </h2>
               {pending.graph_id ? (
                 <div
@@ -263,6 +283,14 @@ export function ConsentContent() {
                 >
                   You don&apos;t have any graphs yet. Create one first, then
                   connect again.
+                </p>
+              ) : eligibleGraphs.length === 0 ? (
+                <p
+                  className="text-sm text-zinc-600 dark:text-zinc-400"
+                  data-testid="no-product-graphs"
+                >
+                  This connection is for {label} graphs, and you don&apos;t have
+                  one yet. Create one first, then connect again.
                 </p>
               ) : (
                 <fieldset className="space-y-4" data-testid="graph-picker">
