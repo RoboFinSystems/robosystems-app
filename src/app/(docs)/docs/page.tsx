@@ -51,7 +51,8 @@ export default async function DocsLandingPage() {
   const catalog = await getDocsCatalog()
   const technical = catalog && getDocsNav(catalog, DOCS_SITE, 'technical')
   const guides = catalog && getDocsNav(catalog, DOCS_SITE, 'product')
-  const doors = guides ? [GUIDES_DOOR, ...DOORS] : DOORS
+  const hasGuides = !!guides && guides.ordered.length > 0
+  const doors = hasGuides ? [GUIDES_DOOR, ...DOORS] : DOORS
 
   return (
     <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 lg:px-8">
@@ -67,7 +68,7 @@ export default async function DocsLandingPage() {
       </header>
 
       <div
-        className={`grid gap-6 md:grid-cols-2 ${doors.length > 3 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}
+        className={`grid gap-6 ${hasGuides ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}
       >
         {doors.map((door) => {
           const className =
@@ -92,7 +93,7 @@ export default async function DocsLandingPage() {
         })}
       </div>
 
-      {guides && guides.ordered.length > 0 && (
+      {guides && hasGuides && (
         <section className="mt-16">
           <h2 className="font-heading mb-8 text-2xl font-bold text-white">
             Guides
