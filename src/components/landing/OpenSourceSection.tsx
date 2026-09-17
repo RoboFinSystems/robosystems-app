@@ -241,6 +241,13 @@ export default function OpenSourceSection() {
                     graph
                   </span>
                 </li>
+                <li className="flex items-start">
+                  <span className="text-accent-400 mr-2">•</span>
+                  <span>
+                    <strong className="text-white">Dedicated Deployment</strong>
+                    —your own AWS account, operated by us, with SSO and SCIM
+                  </span>
+                </li>
               </ul>
 
               <button

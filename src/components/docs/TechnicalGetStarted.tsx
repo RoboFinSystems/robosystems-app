@@ -92,7 +92,11 @@ just graph-query sec "MATCH (e:Entity)-[:ENTITY_HAS_REPORT]->(r:Report) RETURN r
       <pre>
         <code>{MCP_OAUTH_URL}</code>
       </pre>
-      <p>Claude Code, in one command:</p>
+      <p>
+        It&apos;s a standard remote MCP server, so there is nothing to install:
+        add the address as a connector in Claude, ChatGPT, Grok, Cursor, VS Code
+        or any other MCP client, and sign in. In Claude Code it is one command:
+      </p>
       <pre>
         <code>{`claude mcp add --transport http ${MCP_CONNECTOR_NAME} ${MCP_OAUTH_URL}`}</code>
       </pre>

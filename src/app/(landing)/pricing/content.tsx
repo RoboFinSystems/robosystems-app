@@ -65,8 +65,8 @@ export default function PricingContent() {
                     What are credits used for?
                   </h4>
                   <p className="text-gray-400">
-                    Credits power AI agent calls — powered by Claude (Anthropic)
-                    via AWS Bedrock — on your graph data. Two agents ship today:{' '}
+                    Credits power AI agent calls — run through AWS Bedrock — on
+                    your graph data. Two agents ship today:{' '}
                     <span className="text-gray-300">the Analyst Operator</span>,
                     which answers a plain-English question from your graph —
                     live statements, documents, memory, and the Cypher it writes

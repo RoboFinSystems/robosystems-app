@@ -159,7 +159,7 @@ export default function PlatformContent() {
                 <p className="text-sm text-gray-400">
                   Search your graph&apos;s document knowledge base and recall
                   semantic memories that persist across sessions&mdash;the same
-                  context available to Claude over MCP.
+                  context available to any AI assistant over MCP.
                 </p>
               </div>
             </div>

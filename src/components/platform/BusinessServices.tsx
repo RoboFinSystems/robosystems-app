@@ -35,9 +35,9 @@ export default function BusinessServices() {
       icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z',
       gradient: 'from-purple-600 to-pink-600',
       capabilities: [
-        'Ask Claude AI questions about your books',
+        'Ask questions about your books in plain English',
         'Narrative answers with the data and generated Cypher',
-        'MCP integration for Claude, Claude Code, and Cursor',
+        'MCP integration for Claude, ChatGPT, Grok, and any MCP client',
       ],
     },
   ]
@@ -56,7 +56,7 @@ export default function BusinessServices() {
     {
       title: 'Triage Inbox',
       description:
-        'Claude pre-classifies each transaction; preview what posts, then approve',
+        'AI pre-classifies each transaction; preview what posts, then approve',
       bg: 'to-violet-950/20',
       border: 'hover:border-violet-500/30',
       badge: 'bg-violet-500/20 text-violet-400',
@@ -86,7 +86,7 @@ export default function BusinessServices() {
     {
       title: 'Report & Plan',
       description:
-        'Report Creator, Claude AI Console, and forecast scenarios in the Plan grid',
+        'Report Creator, AI Console, and forecast scenarios in the Plan grid',
       bg: 'to-green-950/20',
       border: 'hover:border-green-500/30',
       badge: 'bg-green-500/20 text-green-400',

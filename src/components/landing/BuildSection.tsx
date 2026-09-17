@@ -117,8 +117,10 @@ export default function BuildSection() {
                 </div>
               </div>
               <p className="text-sm text-gray-400">
-                Import 10-K and 10-Q filings for any public company. Structured
-                XBRL facts become queryable graph nodes.
+                XBRL facts from 8,000+ public companies in a shared graph,
+                full-text and semantic search across the filings, and the
+                Analyst Operator for plain-English questions. Updated daily,
+                nothing to import.
               </p>
               <Link
                 href="#sec-repository"
@@ -128,13 +130,13 @@ export default function BuildSection() {
               </Link>
             </div>
 
-            {/* Google Drive */}
-            <div className="relative rounded-xl border border-gray-800 bg-zinc-900/50 p-6 opacity-75 transition-all duration-300 hover:border-yellow-500/50">
-              <span className="absolute top-4 right-4 rounded-full bg-yellow-500/20 px-2 py-1 text-xs font-medium text-yellow-400">
+            {/* Mercury */}
+            <div className="border-secondary-500/40 hover:border-secondary-500/70 shadow-secondary-500/10 relative rounded-xl border bg-zinc-900/50 p-6 shadow-lg transition-all duration-300">
+              <span className="bg-secondary-500/20 text-secondary-300 absolute top-4 right-4 rounded-full px-2 py-1 text-xs font-medium">
                 Coming Soon
               </span>
               <div className="mb-4 flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-yellow-600">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-600">
                   <svg
                     className="h-7 w-7 text-white"
                     fill="none"
@@ -145,24 +147,25 @@ export default function BuildSection() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                      d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"
                     />
                   </svg>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-white">Google Drive</h4>
-                  <p className="text-sm text-gray-400">Documents</p>
+                  <h4 className="font-semibold text-white">Mercury</h4>
+                  <p className="text-sm text-gray-400">Business Banking</p>
                 </div>
               </div>
               <p className="text-sm text-gray-400">
-                Sync documents from Google Drive into your searchable index.
-                Full-text and semantic search across all your connected content.
+                Connect your Mercury accounts with OAuth. Posted transactions
+                land in your ledger&apos;s inbox with a suggested category,
+                ready to review and post.
               </p>
             </div>
 
             {/* Plaid */}
-            <div className="hover:border-primary-500/50 relative rounded-xl border border-gray-800 bg-zinc-900/50 p-6 opacity-75 transition-all duration-300">
-              <span className="absolute top-4 right-4 rounded-full bg-yellow-500/20 px-2 py-1 text-xs font-medium text-yellow-400">
+            <div className="border-secondary-500/40 hover:border-secondary-500/70 shadow-secondary-500/10 relative rounded-xl border bg-zinc-900/50 p-6 shadow-lg transition-all duration-300">
+              <span className="bg-secondary-500/20 text-secondary-300 absolute top-4 right-4 rounded-full px-2 py-1 text-xs font-medium">
                 Coming Soon
               </span>
               <div className="mb-4 flex items-center gap-4">
@@ -183,12 +186,13 @@ export default function BuildSection() {
                 </div>
                 <div>
                   <h4 className="font-semibold text-white">Plaid</h4>
-                  <p className="text-sm text-gray-400">Banking</p>
+                  <p className="text-sm text-gray-400">Bank Feeds</p>
                 </div>
               </div>
               <p className="text-sm text-gray-400">
-                Connect bank accounts directly. Transaction feeds flow into your
-                knowledge graph with automatic categorization.
+                Link bank and card accounts at other institutions. Transactions
+                flow into the same inbox&mdash;nothing posts to the ledger until
+                you approve it.
               </p>
             </div>
           </div>
