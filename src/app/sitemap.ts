@@ -27,17 +27,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  // Technical docs from the docs catalog; lastmod is each page's last commit in the wiki.
+  // Guides and technical docs from the docs catalog; lastmod is each page's last commit
+  // in the robosystems repo (guides) or the wiki (technical).
   const catalog = await getDocsCatalog()
-  const technical = catalog && getDocsNav(catalog, DOCS_SITE, 'technical')
-  const docsPages: MetadataRoute.Sitemap = (technical?.ordered ?? []).map(
-    (page) => ({
-      url: `${baseUrl}${page.path}`,
-      lastModified: page.updated ? new Date(page.updated) : undefined,
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    })
+  const docsNavPages = (['product', 'technical'] as const).flatMap((layer) =>
+    catalog ? (getDocsNav(catalog, DOCS_SITE, layer)?.ordered ?? []) : []
   )
+  const docsPages: MetadataRoute.Sitemap = docsNavPages.map((page) => ({
+    url: `${baseUrl}${page.path}`,
+    lastModified: page.updated ? new Date(page.updated) : undefined,
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }))
 
   // The research portal lives on roboinvestor.ai (its sitemap lists it); /research and
   // /research/:ticker here are 308s in next.config.js and are deliberately not listed.
@@ -67,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${baseUrl}/docs`,
-      lastModified: latestUpdate(technical?.ordered ?? []),
+      lastModified: latestUpdate(docsNavPages),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
