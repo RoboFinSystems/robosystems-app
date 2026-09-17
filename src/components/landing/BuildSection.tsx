@@ -117,8 +117,9 @@ export default function BuildSection() {
                 </div>
               </div>
               <p className="text-sm text-gray-400">
-                Import 10-K and 10-Q filings for any public company. Structured
-                XBRL facts become queryable graph nodes.
+                A shared graph of XBRL facts from 10-K and 10-Q filings across
+                8,000+ public companies, updated daily. Query it read-only, with
+                nothing to import.
               </p>
               <Link
                 href="#sec-repository"
