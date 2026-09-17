@@ -1,5 +1,6 @@
 'use client'
 
+import { GuideLink } from '@/components/docs/GuideLink'
 import { McpSignInSnippets, McpSnippet } from '@/components/mcp/McpSnippets'
 import {
   connectorNameFor,
@@ -373,7 +374,8 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
                   className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                 >
                   View Full API Documentation →
-                </a>
+                </a>{' '}
+                <GuideLink href="/docs/guides/sec-filings" />
               </p>
             </div>
           </div>

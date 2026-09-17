@@ -8,7 +8,12 @@ vi.mock('@robosystems/core', () => ({
   useGraphContext: vi.fn(),
   createMcpConnectorUrl: vi.fn(),
   PageLayout: ({ children }: any) => <div>{children}</div>,
-  PageHeader: ({ title }: any) => <h1>{title}</h1>,
+  PageHeader: ({ title, subtitle }: any) => (
+    <>
+      <h1>{title}</h1>
+      <div>{subtitle}</div>
+    </>
+  ),
   EmptyState: ({ title }: any) => <div data-testid="empty-state">{title}</div>,
 }))
 
@@ -57,6 +62,15 @@ const setSubgraphs = (subgraphs: any[]) => {
 }
 
 describe('ConnectContent', () => {
+  it('sends someone who needs the detail to the connect guide', () => {
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
+
+    render(<ConnectContent />)
+
+    expect(
+      screen.getByRole('link', { name: /Read the guide/ })
+    ).toHaveAttribute('href', '/docs/guides/connect-an-mcp-client')
+  })
   beforeEach(() => {
     vi.clearAllMocks()
     mockSearchParams.delete('workspace')

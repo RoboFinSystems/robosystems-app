@@ -1,5 +1,6 @@
 'use client'
 
+import { GuideLink } from '@/components/docs/GuideLink'
 import type { GraphInfo } from '@robosystems/client'
 import {
   getCreditSummary,
@@ -547,7 +548,12 @@ export function UsageContent() {
       <PageHeader
         icon={HiChartBar}
         title="Usage & Credits"
-        subtitle="Monitor credit consumption and activity"
+        subtitle={
+          <>
+            Monitor credit consumption and activity.{' '}
+            <GuideLink href="/docs/guides/graphs-tiers-and-credits" />
+          </>
+        }
         actions={
           isRepository && (
             <div className="flex flex-wrap gap-2">

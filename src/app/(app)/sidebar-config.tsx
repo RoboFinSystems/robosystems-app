@@ -12,7 +12,6 @@ import {
   HiGlobeAlt,
   HiHome,
   HiLightBulb,
-  HiNewspaper,
   HiPuzzle,
   HiSearch,
   HiTable,
@@ -136,19 +135,14 @@ export const getNavigationItems = (
       label: 'Repositories',
       href: '/repositories',
     },
-    // The docs and blog wear the public site's chrome, so they open in a new tab
-    // and the app keeps its place. A signed-in visitor to / is sent to /home and
-    // never sees the public header's links, so these are the way in from here.
+    // The docs wear the public site's chrome, so they open in a new tab and the app
+    // keeps its place. A signed-in visitor to / is sent to /home and never sees the
+    // public header's links, so this is the way in from here. The blog is deliberately
+    // not here: nobody opens the app to read it, and the public header carries it.
     {
       icon: HiBookOpen,
       label: 'Docs',
       href: '/docs',
-      target: '_blank',
-    },
-    {
-      icon: HiNewspaper,
-      label: 'Blog',
-      href: '/blog',
       target: '_blank',
     },
   ]

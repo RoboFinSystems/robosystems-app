@@ -10,27 +10,30 @@ describe('getNavigationItems', () => {
     ['no graph', null],
     ['a user graph', userGraph],
     ['a repository', repository],
-  ])('ends with Docs and Blog in a new tab with %s selected', (_, graph) => {
+  ])('ends with Docs in a new tab with %s selected', (_, graph) => {
     const items = getNavigationItems(graph)
-    const [docs, blog] = items.slice(-2)
+    const docs = items[items.length - 1]
 
     expect(docs).toMatchObject({
       label: 'Docs',
       href: '/docs',
       target: '_blank',
     })
-    expect(blog).toMatchObject({
-      label: 'Blog',
-      href: '/blog',
-      target: '_blank',
-    })
     expect(docs.icon).toBeDefined()
-    expect(blog.icon).toBeDefined()
   })
 
-  it('keeps Repositories directly above the docs and blog links', () => {
+  it('keeps Repositories directly above the docs link', () => {
     const labels = getNavigationItems(userGraph).map((item) => item.label)
 
-    expect(labels.slice(-4)).toEqual(['MCP', 'Repositories', 'Docs', 'Blog'])
+    expect(labels.slice(-3)).toEqual(['MCP', 'Repositories', 'Docs'])
+  })
+
+  // The blog is read from the public site, not from inside a graph's workspace.
+  it('links nothing to the blog', () => {
+    for (const graph of [null, userGraph, repository]) {
+      const hrefs = getNavigationItems(graph).map((item) => item.href)
+
+      expect(hrefs).not.toContain('/blog')
+    }
   })
 })

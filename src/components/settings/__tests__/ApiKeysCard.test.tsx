@@ -78,6 +78,14 @@ describe('ApiKeysCard', () => {
     mockedRevoke.mockResolvedValue({ data: { success: true } } as never)
   })
 
+  it('links the authentication docs', async () => {
+    render(<ApiKeysCard />)
+
+    expect(
+      await screen.findByRole('link', { name: /Read the guide/ })
+    ).toHaveAttribute('href', '/docs/technical/authentication-and-api-keys')
+  })
+
   it('shows the empty state with a create action and no list chrome', async () => {
     render(<ApiKeysCard connectHref="/connect" />)
     expect(await screen.findByText('No API keys yet')).toBeInTheDocument()

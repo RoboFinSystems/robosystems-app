@@ -51,6 +51,14 @@ vi.mock('flowbite-react', () => ({
 }))
 
 describe('ApiKeysContent — MCP', () => {
+  test('links the SEC filings guide beside the API reference', () => {
+    render(<ApiKeysContent repository="sec" />)
+
+    expect(
+      screen.getByRole('link', { name: /Read the guide/ })
+    ).toHaveAttribute('href', '/docs/guides/sec-filings')
+  })
+
   test('leads with the universal sign-in, then the repository-pinned key recipes', () => {
     render(<ApiKeysContent repository="sec" />)
 
