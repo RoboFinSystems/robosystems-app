@@ -76,12 +76,27 @@ export interface ApiResponse {
 }
 
 export interface ApiSecurityScheme {
-  /** The header the caller sends, e.g. `X-API-Key` or `Authorization`. */
-  header: string
-  /** What to put in it, with a placeholder rather than a credential. */
-  value: string
+  /** The scheme's name in the spec, e.g. `APIKeyHeader`. */
+  name: string
+  /** How it reads on the page: "API key", "Bearer token". */
   label: string
+  /** Where the credential goes. `other` is a scheme this renderer cannot sample. */
+  location: 'header' | 'query' | 'cookie' | 'other'
+  /** The header, query or cookie name. Empty for `other`. */
+  parameter: string
+  /** What to put there, a placeholder rather than a credential. Empty for `other`. */
+  value: string
 }
+
+/**
+ * One way to authenticate a call: every scheme in it, together.
+ *
+ * A spec's `security` is a list of requirement objects. Schemes *within* one
+ * object are all required; separate objects are alternatives. Flattening the
+ * two would render "send any one of these" for a call that needs both, and a
+ * sample missing a required header — so the grouping is kept.
+ */
+export type ApiSecurityOption = ApiSecurityScheme[]
 
 export interface ApiOperation {
   id: string
@@ -98,7 +113,8 @@ export interface ApiOperation {
   parameters: ApiParameter[]
   body?: ApiBody
   responses: ApiResponse[]
-  security: ApiSecurityScheme[]
+  /** Alternative ways to authenticate; each is a set of schemes sent together. */
+  security: ApiSecurityOption[]
 }
 
 export interface ApiTag {
@@ -180,42 +196,59 @@ function contentTypeOf(content: unknown): string {
 }
 
 /**
- * What a caller has to send to authenticate, read from the spec's security schemes rather
- * than assumed: an `apiKey` scheme names its own header, and `http`/`bearer` is the
- * Authorization header. Values are placeholders — the reference never takes a credential.
+ * One scheme, read from its definition rather than assumed: an `apiKey` scheme names the
+ * parameter it uses and where it goes, and `http`/`bearer` is the Authorization header.
+ * Anything else is returned as `other` rather than dropped — a page that omitted a scheme
+ * it did not recognise would tell the reader the call needs no credential at all.
  */
+function describeScheme(
+  name: string,
+  scheme: Record<string, unknown>
+): ApiSecurityScheme {
+  if (scheme.type === 'apiKey') {
+    const parameter = asString(scheme.name) || 'X-API-Key'
+    const location =
+      scheme.in === 'query' || scheme.in === 'cookie' ? scheme.in : 'header'
+    return {
+      name,
+      label: 'API key',
+      location,
+      parameter,
+      value: '$ROBOSYSTEMS_API_KEY',
+    }
+  }
+  if (scheme.type === 'http' && scheme.scheme === 'bearer') {
+    return {
+      name,
+      label: 'Bearer token',
+      location: 'header',
+      parameter: 'Authorization',
+      value: 'Bearer $ACCESS_TOKEN',
+    }
+  }
+  return {
+    name,
+    label: asString(scheme.type) || name,
+    location: 'other',
+    parameter: '',
+    value: '',
+  }
+}
+
+/** The alternatives an operation accepts, each a set of schemes sent together. */
 function securityFor(
   operation: Record<string, unknown>,
   schemes: Record<string, Record<string, unknown>>
-): ApiSecurityScheme[] {
+): ApiSecurityOption[] {
   const requirements = operation.security
   if (!Array.isArray(requirements)) return []
-  const out: ApiSecurityScheme[] = []
-  for (const requirement of requirements) {
-    for (const name of Object.keys(
-      (requirement ?? {}) as Record<string, unknown>
-    )) {
-      const scheme = schemes[name]
-      if (!scheme) continue
-      if (scheme.type === 'apiKey' && scheme.in === 'header') {
-        const header = asString(scheme.name) || 'X-API-Key'
-        out.push({
-          header,
-          value: '$ROBOSYSTEMS_API_KEY',
-          label: 'API key',
-        })
-      } else if (scheme.type === 'http' && scheme.scheme === 'bearer') {
-        out.push({
-          header: 'Authorization',
-          value: 'Bearer $ACCESS_TOKEN',
-          label: 'Bearer token',
-        })
-      }
-    }
-  }
-  return out.filter(
-    (scheme, i) => out.findIndex((s) => s.header === scheme.header) === i
-  )
+  return requirements
+    .map((requirement) =>
+      Object.keys((requirement ?? {}) as Record<string, unknown>)
+        .filter((name) => schemes[name])
+        .map((name) => describeScheme(name, schemes[name]))
+    )
+    .filter((option) => option.length > 0)
 }
 
 /** The catalog a spec document produces. Exported so it can be tested without a fetch. */
@@ -403,4 +436,22 @@ export function summarize(markdown: string, max = 155): string {
   if (first.length <= max) return first
   const cut = first.lastIndexOf(' ', max - 1)
   return `${first.slice(0, cut > 0 ? cut : max - 1).trimEnd()}…`
+}
+
+/**
+ * The catalog, or an error.
+ *
+ * A page whose spec could not be fetched is not a missing page, and rendering it as one
+ * would have the 404 cached for the revalidation window and, at build time, ship a site
+ * with an empty reference and 234 URLs dropped from the sitemap. Failing is louder and
+ * recoverable: build again, or let the next request retry.
+ */
+export async function requireApiCatalog(): Promise<ApiCatalog> {
+  const catalog = await getApiCatalog()
+  if (!catalog) {
+    throw new Error(
+      `The OpenAPI specification could not be read from ${OPENAPI_URL}`
+    )
+  }
+  return catalog
 }

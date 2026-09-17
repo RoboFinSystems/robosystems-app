@@ -2,11 +2,10 @@ import { ApiShell } from '@/components/docs/api/ApiShell'
 import { MethodBadge } from '@/components/docs/api/MethodBadge'
 import { DocsMarkdown } from '@/components/docs/DocsMarkdown'
 import { PROSE } from '@/components/docs/prose'
-import { API_BASE_PATH, getApiCatalog } from '@/lib/openapi'
+import { API_BASE_PATH, requireApiCatalog } from '@/lib/openapi'
 import { publicPageMetadata } from '@/lib/site'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 
 // The reference's front door: how to call the API at all, then every tag with its
 // operations. The overview prose is the spec's own `info.description`, so it is the same
@@ -27,8 +26,7 @@ export const metadata: Metadata = publicPageMetadata({
 })
 
 export default async function ApiReferencePage() {
-  const catalog = await getApiCatalog()
-  if (!catalog) notFound()
+  const catalog = await requireApiCatalog()
 
   const crumbs = [
     { name: 'Docs', path: '/docs' },

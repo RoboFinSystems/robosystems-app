@@ -244,18 +244,28 @@ export function curlExample(
   catalog: ApiCatalog,
   operation: ApiOperation
 ): string {
-  const query = operation.parameters
-    .filter((p) => p.location === 'query' && p.required)
-    .map((p) => `${p.name}=<${p.name}>`)
-    .join('&')
+  // One way in, not all of them: the alternatives are a choice, and a sample carrying
+  // every scheme would read as though each were required. The first is the API key here.
+  const credentials = operation.security[0] ?? []
+
+  const query = [
+    ...operation.parameters
+      .filter((p) => p.location === 'query' && p.required)
+      .map((p) => `${p.name}=<${p.name}>`),
+    ...credentials
+      .filter((scheme) => scheme.location === 'query')
+      .map((scheme) => `${scheme.parameter}=${scheme.value}`),
+  ].join('&')
   const url = `${catalog.serverUrl}${operation.route}${query ? `?${query}` : ''}`
 
   const lines = [`curl -X ${operation.method.toUpperCase()} "${url}"`]
-  // A spec's `security` list is alternatives, not a set to send together: an operation that
-  // accepts an API key or a bearer token needs one header, and a sample carrying both would
-  // read as though both were required. The first scheme is the API key everywhere here.
-  const scheme = operation.security[0]
-  if (scheme) lines.push(`  -H "${scheme.header}: ${scheme.value}"`)
+  for (const scheme of credentials) {
+    if (scheme.location === 'header') {
+      lines.push(`  -H "${scheme.parameter}: ${scheme.value}"`)
+    } else if (scheme.location === 'cookie') {
+      lines.push(`  -H "Cookie: ${scheme.parameter}=${scheme.value}"`)
+    }
+  }
   for (const parameter of operation.parameters) {
     if (parameter.location !== 'header') continue
     lines.push(`  -H "${parameter.name}: <${parameter.name}>"`)

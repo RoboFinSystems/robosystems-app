@@ -124,11 +124,83 @@ describe('buildCatalog', () => {
 
   it('reads the auth header out of the security scheme rather than assuming it', () => {
     const listed = findApiOperation(catalog, 'graphs', 'list-graphs')
-    expect(listed?.security.map((s) => s.header)).toEqual([
+    // Two requirement objects: alternatives, each holding one scheme.
+    expect(listed?.security).toHaveLength(2)
+    expect(listed?.security.map((option) => option[0].parameter)).toEqual([
       'X-API-Key',
       'Authorization',
     ])
-    expect(listed?.security[0].value).toBe('$ROBOSYSTEMS_API_KEY')
+    expect(listed?.security[0][0].value).toBe('$ROBOSYSTEMS_API_KEY')
+    expect(listed?.security[0][0].location).toBe('header')
+  })
+
+  it('keeps schemes required together in one option, rather than as a choice', () => {
+    const anded = buildCatalog({
+      ...doc,
+      paths: {
+        '/v1/signed': {
+          post: {
+            tags: ['Graphs'],
+            summary: 'Signed',
+            operationId: 'postSigned',
+            security: [{ APIKeyHeader: [], SignatureHeader: [] }],
+            responses: {},
+          },
+        },
+      },
+      components: {
+        schemas: {},
+        securitySchemes: {
+          APIKeyHeader: { type: 'apiKey', in: 'header', name: 'X-API-Key' },
+          SignatureHeader: {
+            type: 'apiKey',
+            in: 'header',
+            name: 'X-Signature',
+          },
+        },
+      },
+    })
+    // One option carrying both: the page must not offer them as alternatives.
+    expect(anded.operations[0].security).toHaveLength(1)
+    expect(anded.operations[0].security[0].map((s) => s.parameter)).toEqual([
+      'X-API-Key',
+      'X-Signature',
+    ])
+  })
+
+  it('surfaces a scheme it cannot sample instead of dropping it', () => {
+    const exotic = buildCatalog({
+      ...doc,
+      paths: {
+        '/v1/oauth': {
+          get: {
+            tags: ['Graphs'],
+            summary: 'OAuth',
+            operationId: 'getOauth',
+            security: [{ Flow: [] }, { QueryKey: [] }],
+            responses: {},
+          },
+        },
+      },
+      components: {
+        schemas: {},
+        securitySchemes: {
+          Flow: { type: 'oauth2', flows: {} },
+          QueryKey: { type: 'apiKey', in: 'query', name: 'access_token' },
+        },
+      },
+    })
+    const [flow, query] = exotic.operations[0].security
+    // An unrecognised scheme would otherwise read as "needs no credential".
+    expect(flow[0]).toMatchObject({
+      name: 'Flow',
+      label: 'oauth2',
+      location: 'other',
+    })
+    expect(query[0]).toMatchObject({
+      location: 'query',
+      parameter: 'access_token',
+    })
   })
 
   it('leaves an operation with no security requirement unauthenticated', () => {

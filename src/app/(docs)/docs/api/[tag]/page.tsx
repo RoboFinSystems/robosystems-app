@@ -5,6 +5,7 @@ import {
   API_BASE_PATH,
   findApiTag,
   getApiCatalog,
+  requireApiCatalog,
   summarize,
 } from '@/lib/openapi'
 import { publicPageMetadata } from '@/lib/site'
@@ -42,9 +43,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ApiTagPage({ params }: Props) {
-  const catalog = await getApiCatalog()
-  const tag = catalog && findApiTag(catalog, (await params).tag)
-  if (!catalog || !tag) notFound()
+  const catalog = await requireApiCatalog()
+  const tag = findApiTag(catalog, (await params).tag)
+  if (!tag) notFound()
 
   const crumbs = [
     { name: 'Docs', path: '/docs' },

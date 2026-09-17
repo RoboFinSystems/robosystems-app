@@ -12,9 +12,11 @@ import {
   findApiOperation,
   findApiTag,
   getApiCatalog,
+  requireApiCatalog,
   summarize,
   type ApiCatalog,
   type ApiOperation,
+  type ApiSecurityOption,
 } from '@/lib/openapi'
 import {
   curlExample,
@@ -38,9 +40,9 @@ export const dynamicParams = true
 
 type Props = { params: Promise<{ tag: string; operation: string }> }
 
+/** The page's data, or null when the spec simply has no such operation. */
 async function load(tag: string, operation: string) {
-  const catalog = await getApiCatalog()
-  if (!catalog) return null
+  const catalog = await requireApiCatalog()
   const found = findApiOperation(catalog, tag, operation)
   const group = findApiTag(catalog, tag)
   return found && group ? { catalog, operation: found, tag: group } : null
@@ -70,6 +72,33 @@ function describe(operation: ApiOperation): string {
   const prose = summarize(operation.description)
   if (prose) return prose
   return `${operation.method.toUpperCase()} ${operation.route} — ${operation.summary} in the RoboSystems API.`
+}
+
+/** One way to authenticate: every scheme in it, sent together. */
+function SecurityOption({ option }: { option: ApiSecurityOption }) {
+  return (
+    <>
+      {option.map((scheme, i) => (
+        <span key={scheme.name}>
+          {i > 0 && ', and '}
+          {scheme.label}
+          {scheme.location === 'other' ? (
+            <> ({scheme.name})</>
+          ) : (
+            <>
+              {' '}
+              in the{' '}
+              <code className="font-mono text-cyan-300">
+                {scheme.parameter}
+              </code>{' '}
+              {scheme.location === 'header' ? 'header' : scheme.location}
+            </>
+          )}
+        </span>
+      ))}
+      .
+    </>
+  )
 }
 
 function Section({
@@ -231,17 +260,13 @@ export default async function ApiOperationPage({ params }: Props) {
             <>
               <p className="text-gray-300">
                 {operation.security.length > 1
-                  ? 'Send any one of these — not all of them:'
-                  : 'Send this header:'}
+                  ? 'Authenticate in any one of these ways — not all of them:'
+                  : 'Authenticate with:'}
               </p>
               <ul className="mt-3 space-y-2 text-gray-300">
-                {operation.security.map((scheme) => (
-                  <li key={scheme.header}>
-                    {scheme.label} in the{' '}
-                    <code className="font-mono text-cyan-300">
-                      {scheme.header}
-                    </code>{' '}
-                    header.
+                {operation.security.map((option) => (
+                  <li key={option.map((s) => s.name).join('+')}>
+                    <SecurityOption option={option} />
                   </li>
                 ))}
               </ul>

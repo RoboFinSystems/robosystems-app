@@ -235,6 +235,59 @@ describe('curlExample', () => {
     expect(curl).not.toContain('Authorization')
   })
 
+  it('sends every scheme of an option that requires them together', () => {
+    const anded = buildCatalog({
+      ...doc,
+      paths: {
+        '/v1/signed': {
+          post: {
+            tags: ['Billing'],
+            summary: 'Signed',
+            operationId: 'postSigned',
+            security: [{ APIKeyHeader: [], CookieAuth: [] }],
+            responses: {},
+          },
+        },
+      },
+      components: {
+        schemas: {},
+        securitySchemes: {
+          APIKeyHeader: { type: 'apiKey', in: 'header', name: 'X-API-Key' },
+          CookieAuth: { type: 'apiKey', in: 'cookie', name: 'session' },
+        },
+      },
+    })
+    const sample = curlExample(anded, anded.operations[0])
+    expect(sample).toContain('-H "X-API-Key: $ROBOSYSTEMS_API_KEY"')
+    expect(sample).toContain('-H "Cookie: session=$ROBOSYSTEMS_API_KEY"')
+  })
+
+  it('puts a query-parameter credential in the URL, not a header', () => {
+    const inQuery = buildCatalog({
+      ...doc,
+      paths: {
+        '/v1/open': {
+          get: {
+            tags: ['Billing'],
+            summary: 'Open',
+            operationId: 'getOpen',
+            security: [{ QueryKey: [] }],
+            responses: {},
+          },
+        },
+      },
+      components: {
+        schemas: {},
+        securitySchemes: {
+          QueryKey: { type: 'apiKey', in: 'query', name: 'access_token' },
+        },
+      },
+    })
+    const sample = curlExample(inQuery, inQuery.operations[0])
+    expect(sample).toContain('/v1/open?access_token=$ROBOSYSTEMS_API_KEY"')
+    expect(sample).not.toContain('-H "access_token')
+  })
+
   it('names header parameters', () => {
     expect(curl).toContain('-H "Idempotency-Key: <Idempotency-Key>"')
   })
