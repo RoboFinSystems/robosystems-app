@@ -1,10 +1,25 @@
 'use client'
 
+import { useOptionalAuth } from '@robosystems/core/auth-components'
 import { LogoBadge } from '@robosystems/core/ui-components/Logo'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
+
+const subscribeNever = () => () => {}
 
 export default function Header() {
+  // The session LandingGate reads: AuthProvider checks it once at the root, so reading it
+  // here costs no request. Optional so the header still renders with no provider around it.
+  const auth = useOptionalAuth()
+  // False on the server and through hydration. The server HTML is what crawlers and
+  // signed-out visitors get, and it always carries Login and Register; a signed-in
+  // visitor sees them swap for Open app once the page is live.
+  const hydrated = useSyncExternalStore(
+    subscribeNever,
+    () => true,
+    () => false
+  )
+  const isSignedIn = hydrated && !!auth?.isAuthenticated && !auth.isLoading
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -104,18 +119,29 @@ export default function Header() {
               </svg>
               GitHub
             </a>
-            <Link
-              href="/login"
-              className="px-3 py-2 text-sm font-medium text-gray-300 transition-colors hover:text-white"
-            >
-              Login
-            </Link>
-            <Link
-              href="/register"
-              className="from-secondary-500 to-primary-500 shadow-secondary-500/25 hover:shadow-secondary-500/40 rounded-lg bg-linear-to-r px-4 py-2 text-sm font-medium text-white shadow-lg transition-all"
-            >
-              Register
-            </Link>
+            {isSignedIn ? (
+              <Link
+                href="/home"
+                className="from-secondary-500 to-primary-500 shadow-secondary-500/25 hover:shadow-secondary-500/40 rounded-lg bg-linear-to-r px-4 py-2 text-sm font-medium text-white shadow-lg transition-all"
+              >
+                Open app
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="px-3 py-2 text-sm font-medium text-gray-300 transition-colors hover:text-white"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className="from-secondary-500 to-primary-500 shadow-secondary-500/25 hover:shadow-secondary-500/40 rounded-lg bg-linear-to-r px-4 py-2 text-sm font-medium text-white shadow-lg transition-all"
+                >
+                  Register
+                </Link>
+              </>
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -221,20 +247,32 @@ export default function Header() {
                 GitHub
               </a>
               <div className="border-t border-gray-800 pt-2">
-                <Link
-                  href="/login"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800 hover:text-white"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/register"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="from-secondary-500 to-primary-500 shadow-secondary-500/25 mx-4 mt-2 block rounded-lg bg-linear-to-r px-4 py-2 text-center text-sm font-medium text-white shadow-lg"
-                >
-                  Register
-                </Link>
+                {isSignedIn ? (
+                  <Link
+                    href="/home"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="from-secondary-500 to-primary-500 shadow-secondary-500/25 mx-4 mt-2 block rounded-lg bg-linear-to-r px-4 py-2 text-center text-sm font-medium text-white shadow-lg"
+                  >
+                    Open app
+                  </Link>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800 hover:text-white"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/register"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="from-secondary-500 to-primary-500 shadow-secondary-500/25 mx-4 mt-2 block rounded-lg bg-linear-to-r px-4 py-2 text-center text-sm font-medium text-white shadow-lg"
+                    >
+                      Register
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </nav>
