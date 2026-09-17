@@ -2,20 +2,27 @@ import type { TocHeading } from '@/lib/docs'
 import { MCP_API_URL, MCP_CONNECTOR_NAME, MCP_OAUTH_URL } from '@/lib/mcp'
 import Link from 'next/link'
 
-// The opening of /docs/technical, where the retired /open-source page now redirects. It
-// carries what that page taught (run the stack, load SEC filings, connect an MCP client,
-// the client libraries, deploy to AWS) in the shortest runnable form, and hands each topic
-// to the wiki page that owns the detail. It is app code rather than wiki text for one
-// reason: the MCP addresses come from @/lib/mcp, so a staging build shows staging URLs.
-// Everything else here is a command or a link, which keeps it from drifting the way the
-// old page's prose did. No real company is named; a ticker is a placeholder.
+// The opening of /docs/technical, where the retired /open-source page now redirects. The
+// technical docs are written for the hosted platform (docs-surfaces D8), so this leads the
+// same way: an account and key, a first request, an MCP client, the client libraries. The
+// self-hosting topics the old page taught (run the stack, load SEC filings, deploy to AWS)
+// follow, each in the shortest runnable form, and every topic hands off to the wiki page
+// that owns the detail. It is app code rather than wiki text for one reason: the API and
+// MCP addresses come from @/lib/mcp, so a staging build shows staging URLs. Everything
+// else here is a command or a link, which keeps it from drifting the way the old page's
+// prose did. No real company is named; a ticker is a placeholder.
 
 export const GET_STARTED_HEADINGS: TocHeading[] = [
   { depth: 2, text: 'Get started', id: 'get-started' },
-  { depth: 3, text: 'Run the stack locally', id: 'run-the-stack-locally' },
-  { depth: 3, text: 'Load SEC filings', id: 'load-sec-filings' },
+  {
+    depth: 3,
+    text: 'Create an account and API key',
+    id: 'create-an-account-and-api-key',
+  },
+  { depth: 3, text: 'Make your first request', id: 'make-your-first-request' },
   { depth: 3, text: 'Connect an MCP client', id: 'connect-an-mcp-client' },
   { depth: 3, text: 'Client libraries', id: 'client-libraries' },
+  { depth: 3, text: 'Run the stack locally', id: 'run-the-stack-locally' },
   {
     depth: 3,
     text: 'Deploy to your AWS account',
@@ -42,40 +49,52 @@ export function TechnicalGetStarted() {
     <section aria-labelledby="get-started">
       <h2 id="get-started">{heading('get-started')}</h2>
       <p>
-        RoboSystems is open source. Run it on your laptop, point an AI client at
-        a graph, or deploy your own copy to AWS. Each step links to the page
-        that covers it in full.
+        Every example here runs against the hosted API at{' '}
+        <code>{MCP_API_URL}</code>. RoboSystems is also open source, and the
+        last two steps run it on your own machine or in your own AWS account.
+        Each step links to the page that covers it in full.
       </p>
 
-      <h3 id="run-the-stack-locally">{heading('run-the-stack-locally')}</h3>
+      <h3 id="create-an-account-and-api-key">
+        {heading('create-an-account-and-api-key')}
+      </h3>
       <p>
-        You need Docker, uv and just. One command starts the API, the graph
-        database, PostgreSQL, Valkey and the orchestrator.
+        <Link href="/register">Sign up</Link>, then create a key under{' '}
+        <Link href="/settings">Settings → API keys</Link>. A key can reach all
+        your graphs or just one, and it is shown once, so put it in your
+        environment straight away.
       </p>
       <pre>
-        <code>{`git clone https://github.com/RoboFinSystems/robosystems.git
-cd robosystems
-brew install uv just
-just start       # the API answers at http://localhost:8000
-just demo-user   # a demo account and API key, written to .local/config.json`}</code>
+        <code>{`export ROBOSYSTEMS_API_KEY=rfs...`}</code>
       </pre>
       <p>
-        Full guide: <Link href="/docs/technical/quick-start">Quick Start</Link>.
+        Full guide:{' '}
+        <Link href="/docs/technical/authentication-and-api-keys">
+          Authentication &amp; API Keys
+        </Link>
+        .
       </p>
 
-      <h3 id="load-sec-filings">{heading('load-sec-filings')}</h3>
+      <h3 id="make-your-first-request">{heading('make-your-first-request')}</h3>
       <p>
-        Load a public company&apos;s 10-K and 10-Q filings by ticker into the
-        local SEC graph, then query them with Cypher.
+        Send the key in the <code>X-API-Key</code> header. List the graphs you
+        can reach, then query one with Cypher. A graph comes from{' '}
+        <strong>Create Graph</strong> in the app, from connecting QuickBooks in{' '}
+        <External href="https://roboledger.ai/docs">RoboLedger</External>, or
+        from a subscription to the SEC repository, whose graph id is{' '}
+        <code>sec</code>.
       </p>
       <pre>
-        <code>{`just demo-sec            # SEC access for the demo account, sample filings and queries
-just sec-load <TICKER>   # every available year for one company; add a year to load one
-just graph-query sec "MATCH (e:Entity)-[:ENTITY_HAS_REPORT]->(r:Report) RETURN r LIMIT 5"`}</code>
+        <code>{`curl -H "X-API-Key: $ROBOSYSTEMS_API_KEY" ${MCP_API_URL}/v1/graphs
+export GRAPH_ID=kg...   # a graphId from that list
+
+curl -X POST "${MCP_API_URL}/v1/graphs/$GRAPH_ID/query/cypher" \\
+  -H "X-API-Key: $ROBOSYSTEMS_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{"query": "MATCH (n) RETURN labels(n) AS label, count(*) AS count"}'`}</code>
       </pre>
       <p>
-        Full guides:{' '}
-        <Link href="/docs/technical/sec-xbrl-pipeline">SEC XBRL Pipeline</Link>{' '}
+        Full guides: <Link href="/docs/technical/quick-start">Quick Start</Link>{' '}
         and{' '}
         <Link href="/docs/technical/querying-the-analytical-graph">
           Querying the Analytical Graph
@@ -194,6 +213,29 @@ Header: X-API-Key: <your API key>`}</code>
           Building Custom Integrations
         </Link>
         .
+      </p>
+
+      <h3 id="run-the-stack-locally">{heading('run-the-stack-locally')}</h3>
+      <p>
+        You need Docker, uv and just. One command starts the API, the graph
+        database, PostgreSQL, Valkey and the orchestrator, and every example in
+        these docs then works against <code>http://localhost:8000</code> with
+        the demo account&apos;s key. SEC filings are free locally: load the
+        companies you want by ticker.
+      </p>
+      <pre>
+        <code>{`git clone https://github.com/RoboFinSystems/robosystems.git
+cd robosystems
+brew install uv just
+just start               # the API answers at http://localhost:8000
+just demo-user           # a demo account and API key, written to .local/config.json
+just sec-load <TICKER>   # every available year for one company; add a year to load one`}</code>
+      </pre>
+      <p>
+        Full guides:{' '}
+        <Link href="/docs/technical/local-development">Local Development</Link>{' '}
+        and{' '}
+        <Link href="/docs/technical/sec-xbrl-pipeline">SEC XBRL Pipeline</Link>.
       </p>
 
       <h3 id="deploy-to-your-aws-account">
