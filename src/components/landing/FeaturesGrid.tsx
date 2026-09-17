@@ -235,7 +235,7 @@ export default function FeaturesGrid() {
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-indigo-400">•</span>
-                  Secure API key authentication
+                  OAuth sign-in or API key authentication
                 </li>
               </ul>
             </div>
@@ -311,24 +311,21 @@ export default function FeaturesGrid() {
                 Security & Isolation
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Your own graph database per subscription on the managed
-                platform, or your own AWS account on a Dedicated
-                Deployment&mdash;one security program either way.
+                Your own graph database per subscription, or your own AWS
+                account on a Dedicated Deployment.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="mr-2 text-red-400">•</span>
-                  Isolation tested by an authenticated cross-tenant harness
+                  Tested cross-tenant isolation
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-red-400">•</span>
-                  Encryption at rest and in transit; per-graph roles and
-                  graph-scoped API keys
+                  Encryption at rest and in transit
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-red-400">•</span>
-                  Passkeys as a second factor; SSO and SCIM on Dedicated
-                  Deployments
+                  Passkeys, plus SSO and SCIM on Dedicated Deployments
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-red-400">•</span>
