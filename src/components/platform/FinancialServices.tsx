@@ -19,7 +19,7 @@ export default function FinancialServices() {
       icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
       gradient: 'from-cyan-500 to-blue-500',
       description:
-        'Claude-powered deep research against 75,000+ XBRL filings from 8,000+ public companies — plain-English questions answered with narrative analysis.',
+        'AI-powered deep research against 75,000+ XBRL filings from 8,000+ public companies — plain-English questions answered with narrative analysis.',
       currentFeatures: [
         '10-K and 10-Q financial statements and fundamentals',
         'Answers backed by the data and the generated Cypher',
@@ -31,7 +31,7 @@ export default function FinancialServices() {
       icon: 'M13 10V3L4 14h7v7l9-11h-7z',
       gradient: 'from-indigo-500 to-purple-500',
       description:
-        'Connect Claude, Cursor, and other AI tools to your investment graph over MCP — every portfolio operation is exposed as a tool, so agents read and write.',
+        'Connect Claude, ChatGPT, Grok, or any other AI assistant to your investment graph over MCP — every portfolio operation is exposed as a tool, so agents read and write.',
       currentFeatures: [
         'Remote MCP endpoint — one URL and an API key header, no install',
         'Portfolio, position, and security writes as agent-callable tools',
@@ -175,8 +175,8 @@ export default function FinancialServices() {
                 Connect AI Tools
               </h4>
               <p className="text-sm text-gray-400">
-                Paste your graph's MCP URL into Claude or Cursor — analyze it
-                and record positions without leaving the chat
+                Paste your graph's MCP URL into Claude, ChatGPT, or Grok —
+                analyze it and record positions without leaving the chat
               </p>
             </div>
           </div>

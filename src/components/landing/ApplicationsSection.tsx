@@ -65,8 +65,8 @@ export default function ApplicationsSection() {
                 ledger management, period close, AI-native financial reporting,
                 and forward planning. RoboInvestor manages investment portfolios
                 and provides access to the SEC Shared Repository for securities
-                research. Both leverage MCP and Claude AI for natural language
-                queries against the knowledge graph.
+                research. Both expose MCP tools, so any AI assistant can run
+                natural language queries against the knowledge graph.
               </p>
             </div>
           </div>
@@ -97,7 +97,7 @@ export default function ApplicationsSection() {
 
               <p className="mb-6 text-gray-300">
                 A complete accounting close platform — connect your data
-                sources, let Claude triage every transaction, close the books,
+                sources, let AI triage every transaction, close the books,
                 generate XBRL-compliant financial reports, and plan the months
                 ahead off the same ledger.
               </p>
@@ -133,7 +133,7 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Event-driven inbox — Claude pre-classifies, you approve
+                        Event-driven inbox — AI pre-classifies, you approve
                       </span>
                     </li>
                     <li className="flex items-start">
@@ -196,15 +196,14 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        AI Console — ask Claude about your books in plain
-                        English
+                        AI Console — ask about your books in plain English
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Claude drives the close over MCP — author scenarios,
-                        define metrics, write handler rules
+                        Your AI assistant drives the close over MCP — author
+                        scenarios, define metrics, write handler rules
                       </span>
                     </li>
                     <li className="flex items-start">
@@ -293,7 +292,7 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        Claude-powered deep research — plain-English questions
+                        AI-powered deep research — plain-English questions
                         become graph queries
                       </span>
                     </li>
@@ -312,7 +311,9 @@ export default function ApplicationsSection() {
                     </li>
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
-                      <span>MCP tools for Claude, Claude Code, and Cursor</span>
+                      <span>
+                        MCP tools for Claude, ChatGPT, Grok, and any MCP client
+                      </span>
                     </li>
                   </ul>
                 </div>

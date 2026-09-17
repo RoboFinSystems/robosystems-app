@@ -223,7 +223,7 @@ export default function FeaturesGrid() {
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="mr-2 text-indigo-400">•</span>
-                  Works with Claude, Claude Code, and Cursor
+                  Works with Claude, ChatGPT, Grok, and any MCP client
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-indigo-400">•</span>
