@@ -112,3 +112,12 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
     return null
   }
 }
+
+/**
+ * The markdown body without its own leading `# Title` line. The post page renders the
+ * title as the page's H1, so a body that opens with one showed two (three posts did,
+ * 2026-09-16). Only a first non-blank line at heading level 1 is removed.
+ */
+export function withoutLeadingTitle(markdown: string): string {
+  return markdown.replace(/^\s*#[ \t][^\n]*\n?/, '')
+}

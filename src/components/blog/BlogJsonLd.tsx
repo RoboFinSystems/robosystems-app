@@ -1,7 +1,9 @@
 // Schema.org JSON-LD for the blog. App-local, and mirrored in roboledger-app so the two
 // lanes stay aligned: a per-post BlogPosting (+ AudioObject when a narration exists)
-// with a BreadcrumbList, and an ItemList for the index hub. There is no per-post image in
-// the blog catalog yet, so the org logo stands in until the content pipeline emits one.
+// with a BreadcrumbList, and an ItemList for the index hub. The BlogPosting image is the
+// post's own 1200×630 card, served at a stable path (`/blog/{slug}/og.png`) because the
+// opengraph-image convention's URL carries a build-generated suffix that structured data
+// cannot name.
 
 import type { BlogPost } from '@/lib/blog'
 
@@ -10,6 +12,14 @@ const ORG = {
   url: 'https://robosystems.ai',
   logo: 'https://robosystems.ai/images/logos/robosystems-icon.png',
 }
+
+/** The RSS feed, advertised from the blog's pages with `<link rel="alternate">`. */
+export const BLOG_FEED = [
+  { url: `${ORG.url}/blog/feed.xml`, title: 'RoboSystems Blog' },
+]
+
+export const BLOG_DESCRIPTION =
+  'Insights on graph databases, AI-powered analytics, and the future of business intelligence'
 
 /** One JSON-LD block. `</` is escaped so post text can never break out of the script. */
 function JsonLd({ data }: { data: Record<string, unknown> }) {
@@ -51,7 +61,12 @@ export function BlogJsonLd({
       logo: { '@type': 'ImageObject', url: ORG.logo },
     },
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-    image: ORG.logo,
+    image: {
+      '@type': 'ImageObject',
+      url: `${url}/og.png`,
+      width: 1200,
+      height: 630,
+    },
     keywords: keywords || undefined,
     audio: post.narrationUrl
       ? {
@@ -97,8 +112,7 @@ export function BlogListJsonLd({
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'RoboSystems Blog',
-    description:
-      'Insights on graph databases, AI-powered analytics, and the future of business intelligence.',
+    description: BLOG_DESCRIPTION,
     itemListElement: posts.map((post, i) => ({
       '@type': 'ListItem',
       position: i + 1,

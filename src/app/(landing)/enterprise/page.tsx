@@ -1,3 +1,4 @@
+import { OG_IMAGE } from '@/lib/site'
 import type { Metadata } from 'next'
 import EnterpriseContent from './content'
 
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
     title: 'One platform. Three ways to run it. | RoboSystems',
     description:
       'Managed platform, a dedicated AWS account we operate for you, or self-hosted — the same open-source software and public API, and an exit that is a feature.',
+    images: [OG_IMAGE],
   },
 }
 

@@ -1,5 +1,10 @@
-import { BlogJsonLd } from '@/components/blog/BlogJsonLd'
-import { getAllPosts, getPostBySlug, getPostSlugs } from '@/lib/blog'
+import { BLOG_FEED, BlogJsonLd } from '@/components/blog/BlogJsonLd'
+import {
+  getAllPosts,
+  getPostBySlug,
+  getPostSlugs,
+  withoutLeadingTitle,
+} from '@/lib/blog'
 import { format } from 'date-fns'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -29,10 +34,13 @@ export async function generateMetadata({
 
   const url = `https://robosystems.ai/blog/${slug}`
   return {
-    title: `${post.title} | RoboSystems Blog`,
+    title: `${post.title} | RoboSystems`,
     description: post.metaDescription || post.excerpt,
     // Self-referencing canonical, unless the post declares an external one (syndication).
-    alternates: { canonical: post.canonicalUrl || url },
+    alternates: {
+      canonical: post.canonicalUrl || url,
+      types: { 'application/rss+xml': BLOG_FEED },
+    },
     openGraph: {
       title: post.title,
       description: post.metaDescription || post.excerpt,
@@ -175,7 +183,7 @@ export default async function BlogPostPage({
       <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="prose prose-lg prose-invert prose-headings:font-heading prose-headings:font-bold prose-headings:text-white prose-p:text-gray-300 prose-p:leading-relaxed prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:text-cyan-300 prose-strong:text-white prose-strong:font-semibold prose-code:text-cyan-400 prose-code:bg-gray-800 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-800 prose-blockquote:border-l-cyan-500 prose-blockquote:text-gray-400 prose-blockquote:italic prose-ul:text-gray-300 prose-ol:text-gray-300 prose-li:marker:text-cyan-500 prose-table:border-gray-700 prose-th:bg-gray-900 prose-th:text-white prose-td:text-gray-300 max-w-none">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {post.content || ''}
+            {withoutLeadingTitle(post.content || '')}
           </ReactMarkdown>
         </div>
       </div>

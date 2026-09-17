@@ -1,19 +1,26 @@
-import { BlogListJsonLd } from '@/components/blog/BlogJsonLd'
+import {
+  BLOG_DESCRIPTION,
+  BLOG_FEED,
+  BlogListJsonLd,
+} from '@/components/blog/BlogJsonLd'
 import { getAllPosts } from '@/lib/blog'
 import { format } from 'date-fns'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 
-const TITLE = 'Blog | RoboSystems'
-const DESCRIPTION =
-  'Insights on graph databases, AI-powered analytics, and the future of business intelligence'
+// The hub's title says what the lane is about; "Blog | RoboSystems" told a searcher nothing.
+const TITLE = 'Financial Knowledge Graphs, AI and MCP | RoboSystems Blog'
+const DESCRIPTION = BLOG_DESCRIPTION
 const URL = 'https://robosystems.ai/blog'
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: URL },
+  alternates: {
+    canonical: URL,
+    types: { 'application/rss+xml': BLOG_FEED },
+  },
   openGraph: {
     type: 'website',
     url: URL,

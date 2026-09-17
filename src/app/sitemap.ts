@@ -1,13 +1,17 @@
 import { getAllPosts } from '@/lib/blog'
 import type { MetadataRoute } from 'next'
 
-/** Newest valid date in a list, or `now` when none — keeps hub `lastmod` honest. */
-function latestDate(dates: (string | undefined)[]): Date {
+/**
+ * Newest valid date in a list, or none. A `lastmod` is a real date or absent: a date
+ * stamped at request time teaches Bing and Google to ignore the field on every entry,
+ * including the posts whose dates are true.
+ */
+function latestDate(dates: (string | undefined)[]): Date | undefined {
   const ts = dates
     .filter((d): d is string => !!d)
     .map((d) => new Date(d).getTime())
     .filter((n) => !Number.isNaN(n))
-  return ts.length ? new Date(Math.max(...ts)) : new Date()
+  return ts.length ? new Date(Math.max(...ts)) : undefined
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -24,67 +28,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // The research portal lives on roboinvestor.ai (its sitemap lists it); /research and
   // /research/:ticker here are 308s in next.config.js and are deliberately not listed.
+  // Static pages send no lastModified: they change on deploys, and nothing here knows
+  // when. /register is noindex and left out.
+  const newestPost = latestDate(posts.map((p) => p.date))
+  const staticPages: MetadataRoute.Sitemap = [
+    { path: '/open-source', changeFrequency: 'monthly', priority: 0.8 },
+    { path: '/platform', changeFrequency: 'monthly', priority: 0.8 },
+    { path: '/enterprise', changeFrequency: 'monthly', priority: 0.8 },
+    { path: '/pricing', changeFrequency: 'monthly', priority: 0.8 },
+    { path: '/pages/privacy', changeFrequency: 'yearly', priority: 0.3 },
+    { path: '/pages/terms', changeFrequency: 'yearly', priority: 0.3 },
+    { path: '/pages/msa', changeFrequency: 'yearly', priority: 0.3 },
+  ].map(({ path, changeFrequency, priority }) => ({
+    url: `${baseUrl}${path}`,
+    changeFrequency: changeFrequency as 'monthly' | 'yearly',
+    priority,
+  }))
+
   return [
-    {
-      url: baseUrl,
-      lastModified: latestDate(posts.map((p) => p.date)),
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
+    { url: baseUrl, changeFrequency: 'weekly', priority: 1 },
     {
       url: `${baseUrl}/blog`,
-      lastModified: latestDate(posts.map((p) => p.date)),
+      lastModified: newestPost,
       changeFrequency: 'weekly',
       priority: 0.9,
     },
-    {
-      url: `${baseUrl}/open-source`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/platform`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/enterprise`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/pricing`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/register`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/pages/privacy`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/pages/terms`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/pages/msa`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
+    ...staticPages,
     ...blogPosts,
   ]
 }

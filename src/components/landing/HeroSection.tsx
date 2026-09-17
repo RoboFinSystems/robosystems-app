@@ -2,25 +2,26 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import ContactModal from './ContactModal'
 import FloatingElementsVariant from './FloatingElementsVariant'
 
 export default function HeroSection() {
   const [showContactModal, setShowContactModal] = useState(false)
-  const searchParams = useSearchParams()
 
+  // Read on mount rather than with useSearchParams: the hero now renders on the server
+  // (see LandingGate), and useSearchParams there would push the whole homepage back to
+  // client-side rendering, which is what left crawlers an empty page.
   useEffect(() => {
     // Check if the openContact query parameter is present
-    if (searchParams.get('openContact') === 'true') {
+    const url = new URL(window.location.href)
+    if (url.searchParams.get('openContact') === 'true') {
       setShowContactModal(true)
       // Remove the query parameter from the URL without refreshing
-      const url = new URL(window.location.href)
       url.searchParams.delete('openContact')
       window.history.replaceState({}, '', url.pathname)
     }
-  }, [searchParams])
+  }, [])
 
   return (
     <section className="relative min-h-screen overflow-hidden bg-black">
