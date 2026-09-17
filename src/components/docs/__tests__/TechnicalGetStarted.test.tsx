@@ -28,6 +28,28 @@ describe('TechnicalGetStarted', () => {
     ).toBe(true)
   })
 
+  it('leads with the hosted API and keeps localhost to the self-hosting step', () => {
+    const { container } = render(<TechnicalGetStarted />)
+    const steps = Array.from(container.querySelectorAll('h3')).map((h) => h.id)
+    expect(steps.slice(0, 2)).toEqual([
+      'create-an-account-and-api-key',
+      'make-your-first-request',
+    ])
+    expect(steps.slice(-2)).toEqual([
+      'run-the-stack-locally',
+      'deploy-to-your-aws-account',
+    ])
+
+    const firstRequest = container.querySelector('#make-your-first-request')
+      ?.nextElementSibling?.nextElementSibling
+    expect(firstRequest?.textContent).toContain(`${MCP_API_URL}/v1/graphs`)
+
+    const html = container.innerHTML
+    expect(html.indexOf('localhost')).toBeGreaterThan(
+      html.indexOf('id="run-the-stack-locally"')
+    )
+  })
+
   it('loads SEC filings with a placeholder ticker, not a named company', () => {
     const { container } = render(<TechnicalGetStarted />)
     expect(container.textContent).toContain('just sec-load <TICKER>')
@@ -40,7 +62,12 @@ describe('TechnicalGetStarted', () => {
     )
     expect(hrefs).toEqual(
       expect.arrayContaining([
+        '/register',
+        '/settings',
+        '/docs/technical/authentication-and-api-keys',
         '/docs/technical/quick-start',
+        '/docs/technical/querying-the-analytical-graph',
+        '/docs/technical/local-development',
         '/docs/technical/sec-xbrl-pipeline',
         '/docs/technical/ai-operators-and-mcp',
         '/docs/technical/building-custom-integrations',
