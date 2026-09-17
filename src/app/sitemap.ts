@@ -1,5 +1,6 @@
 import { getAllPosts } from '@/lib/blog'
 import { DOCS_SITE, getDocsCatalog, getDocsNav, latestUpdate } from '@/lib/docs'
+import { API_BASE_PATH, getApiCatalog } from '@/lib/openapi'
 import type { MetadataRoute } from 'next'
 
 /**
@@ -40,6 +41,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
+  // The API reference, from the live OpenAPI spec: the overview, a page per tag and a page
+  // per operation. No lastModified anywhere in this block — the spec carries no per-
+  // operation history, so the only date available is the API's release date, and stamping
+  // it on all 200 pages would claim every operation changed on every release.
+  const api = await getApiCatalog()
+  const apiPages: MetadataRoute.Sitemap = api
+    ? [
+        { url: `${baseUrl}${API_BASE_PATH}`, priority: 0.8 },
+        ...api.tags.map((tag) => ({
+          url: `${baseUrl}${tag.path}`,
+          priority: 0.6,
+        })),
+        ...api.operations.map((operation) => ({
+          url: `${baseUrl}${operation.path}`,
+          priority: 0.5,
+        })),
+      ].map((entry) => ({ ...entry, changeFrequency: 'monthly' as const }))
+    : []
+
   // The research portal lives on roboinvestor.ai (its sitemap lists it); /research and
   // /research/:ticker here are 308s in next.config.js and are deliberately not listed.
   // Static pages send no lastModified: they change on deploys, and nothing here knows
@@ -74,6 +94,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...staticPages,
     ...docsPages,
+    ...apiPages,
     ...blogPosts,
   ]
 }

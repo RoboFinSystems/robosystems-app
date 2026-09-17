@@ -41,9 +41,9 @@ const DOORS = [
   },
   {
     title: 'API reference',
-    href: 'https://api.robosystems.ai/docs',
-    body: 'Every REST endpoint, with its request and response schemas.',
-    external: true,
+    href: '/docs/api',
+    body: 'Every REST endpoint, with its parameters, request and response schemas, and an example call.',
+    external: false,
   },
 ]
 

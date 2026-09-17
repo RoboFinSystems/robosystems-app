@@ -189,12 +189,12 @@ export default function PlatformContent() {
               >
                 Get Started
               </Link>
-              <a
-                href="https://api.robosystems.ai/docs"
+              <Link
+                href="/docs/api"
                 className="rounded-lg border border-gray-700 bg-zinc-800 px-8 py-3 font-medium text-white transition-all hover:bg-zinc-700"
               >
                 View API Docs
-              </a>
+              </Link>
             </div>
           </div>
         </section>

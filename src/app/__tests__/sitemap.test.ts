@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 const mockGetAllPosts = vi.fn()
 const mockGetDocsCatalog = vi.fn()
+const mockGetApiCatalog = vi.fn()
 
 vi.mock('@/lib/blog', () => ({
   getAllPosts: () => mockGetAllPosts(),
@@ -12,7 +13,13 @@ vi.mock('@/lib/docs', async (importOriginal) => ({
   getDocsCatalog: () => mockGetDocsCatalog(),
 }))
 
+vi.mock('@/lib/openapi', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  getApiCatalog: () => mockGetApiCatalog(),
+}))
+
 import type { DocsCatalog, DocsLayer, DocsPage } from '@/lib/docs'
+import { buildCatalog } from '@/lib/openapi'
 import sitemap from '../sitemap'
 
 const docsPage = (
@@ -82,6 +89,22 @@ const docsCatalog: DocsCatalog = {
     },
   ],
 }
+
+const apiCatalog = buildCatalog({
+  info: { title: 'RoboSystems API', version: '1.12.6' },
+  tags: [{ name: 'Graphs', description: 'Graphs' }],
+  paths: {
+    '/v1/graphs': {
+      get: {
+        tags: ['Graphs'],
+        summary: 'List Graphs',
+        operationId: 'listGraphs',
+        responses: {},
+      },
+    },
+  },
+  components: { schemas: {}, securitySchemes: {} },
+})
 
 const posts = [
   { slug: 'semantic-sovereignty', date: '2026-08-20' },
@@ -165,6 +188,30 @@ describe('sitemap', () => {
 
     expect(urls).toContain('https://robosystems.ai/docs')
     expect(urls.some((u) => u.includes('/docs/guides'))).toBe(false)
+  })
+
+  it('lists the API reference, undated: the spec has no per-operation history', async () => {
+    mockGetAllPosts.mockResolvedValue(posts)
+    mockGetApiCatalog.mockResolvedValue(apiCatalog)
+    const byUrl = new Map((await sitemap()).map((e) => [e.url, e]))
+
+    for (const url of [
+      'https://robosystems.ai/docs/api',
+      'https://robosystems.ai/docs/api/graphs',
+      'https://robosystems.ai/docs/api/graphs/list-graphs',
+    ]) {
+      expect(byUrl.get(url)).toBeDefined()
+      expect(byUrl.get(url)?.lastModified).toBeUndefined()
+    }
+  })
+
+  it('still lists the rest when the OpenAPI spec is unreachable', async () => {
+    mockGetAllPosts.mockResolvedValue(posts)
+    mockGetApiCatalog.mockResolvedValue(null)
+    const urls = (await sitemap()).map((e) => e.url)
+
+    expect(urls).toContain('https://robosystems.ai/docs')
+    expect(urls.some((u) => u.includes('/docs/api'))).toBe(false)
   })
 
   it('leaves out /register, which is noindex', async () => {

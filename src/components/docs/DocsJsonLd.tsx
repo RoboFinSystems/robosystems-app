@@ -14,6 +14,15 @@ export interface Crumb {
   path: string
 }
 
+/**
+ * What the markup needs from a page. The API reference has no catalog entry behind it, so
+ * this is the shape both it and a docs page satisfy rather than the catalog's own type.
+ */
+export type JsonLdArticle = Pick<
+  DocsPage,
+  'title' | 'description' | 'path' | 'updated'
+>
+
 /** One JSON-LD block. `</` is escaped so page text can never break out of the script. */
 function JsonLd({ data }: { data: Record<string, unknown> }) {
   return (
@@ -31,7 +40,7 @@ export function DocsJsonLd({
   crumbs,
   baseUrl = ORG.url,
 }: {
-  page: DocsPage
+  page: JsonLdArticle
   crumbs: Crumb[]
   baseUrl?: string
 }) {
