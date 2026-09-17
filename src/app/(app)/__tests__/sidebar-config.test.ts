@@ -6,34 +6,26 @@ const userGraph = { graphId: 'kg1', isRepository: false } as GraphInfo
 const repository = { graphId: 'sec', isRepository: true } as GraphInfo
 
 describe('getNavigationItems', () => {
+  it('ends with Repositories', () => {
+    const labels = getNavigationItems(userGraph).map((item) => item.label)
+
+    expect(labels.slice(-2)).toEqual(['MCP', 'Repositories'])
+  })
+
+  // The sidebar is the graph's workspace. The docs are reached from the user menu
+  // (core's CoreNavbar) and from the page that each guide explains; the blog is read
+  // on the public site.
   it.each([
     ['no graph', null],
     ['a user graph', userGraph],
     ['a repository', repository],
-  ])('ends with Docs in a new tab with %s selected', (_, graph) => {
-    const items = getNavigationItems(graph)
-    const docs = items[items.length - 1]
+  ])('links neither the docs nor the blog with %s selected', (_, graph) => {
+    const hrefs = getNavigationItems(graph).flatMap((item) => [
+      item.href,
+      ...(item.items ?? []).map((child) => child.href),
+    ])
 
-    expect(docs).toMatchObject({
-      label: 'Docs',
-      href: '/docs',
-      target: '_blank',
-    })
-    expect(docs.icon).toBeDefined()
-  })
-
-  it('keeps Repositories directly above the docs link', () => {
-    const labels = getNavigationItems(userGraph).map((item) => item.label)
-
-    expect(labels.slice(-3)).toEqual(['MCP', 'Repositories', 'Docs'])
-  })
-
-  // The blog is read from the public site, not from inside a graph's workspace.
-  it('links nothing to the blog', () => {
-    for (const graph of [null, userGraph, repository]) {
-      const hrefs = getNavigationItems(graph).map((item) => item.href)
-
-      expect(hrefs).not.toContain('/blog')
-    }
+    expect(hrefs).not.toContain('/docs')
+    expect(hrefs).not.toContain('/blog')
   })
 })

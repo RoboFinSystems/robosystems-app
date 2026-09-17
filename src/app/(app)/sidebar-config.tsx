@@ -3,7 +3,6 @@
 import type { GraphInfo } from '@robosystems/client'
 import type { SidebarItemData } from '@robosystems/core'
 import {
-  HiBookOpen,
   HiChartBar,
   HiChip,
   HiCode,
@@ -134,16 +133,6 @@ export const getNavigationItems = (
       icon: HiGlobeAlt,
       label: 'Repositories',
       href: '/repositories',
-    },
-    // The docs wear the public site's chrome, so they open in a new tab and the app
-    // keeps its place. A signed-in visitor to / is sent to /home and never sees the
-    // public header's links, so this is the way in from here. The blog is deliberately
-    // not here: nobody opens the app to read it, and the public header carries it.
-    {
-      icon: HiBookOpen,
-      label: 'Docs',
-      href: '/docs',
-      target: '_blank',
     },
   ]
 
