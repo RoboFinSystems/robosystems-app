@@ -10,6 +10,7 @@
 // at build time, `dynamicParams` renders one added later on first request, and the fetch
 // revalidates hourly. Nothing needs a cross-repo deploy trigger.
 
+import { connection } from 'next/server'
 import { cache } from 'react'
 
 /**
@@ -25,6 +26,34 @@ export const OPENAPI_URL =
   process.env.NEXT_PUBLIC_OPENAPI_URL || `${API_SERVER_URL}/openapi.json`
 
 export const API_REVALIDATE_SECONDS = 3600
+
+/**
+ * Whether the spec URL can actually be fetched by this build.
+ *
+ * The public Docker image is built with `NEXT_PUBLIC_ROBOSYSTEMS_API_URL` set to
+ * `__PLACEHOLDER_ROBOSYSTEMS_API_URL__` and substituted at container start, so at build time
+ * there is no API to read.
+ */
+export function specUrlIsResolvable(): boolean {
+  try {
+    const { protocol } = new URL(OPENAPI_URL)
+    return protocol === 'http:' || protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Stop prerendering when the spec URL is a placeholder, so the page renders on first request
+ * instead — by which time the entrypoint has substituted the real URL.
+ *
+ * This is correctness, not a workaround. That entrypoint rewrites `.js` and `.json` under
+ * `.next`, never prerendered `.html`, so a page built against the placeholder would ship a
+ * literal `__PLACEHOLDER_…__` in its example calls that no substitution can reach.
+ */
+export async function deferWhenSpecUrlIsAPlaceholder(): Promise<void> {
+  if (!specUrlIsResolvable()) await connection()
+}
 
 export const API_BASE_PATH = '/docs/api'
 
@@ -382,6 +411,9 @@ export function buildCatalog(doc: OpenApiDocument): ApiCatalog {
  * 404 long after the spec has it.
  */
 export const getApiCatalog = cache(async (): Promise<ApiCatalog | null> => {
+  // A placeholder URL is a known build mode, not a failure: say so quietly rather than
+  // logging a parse error for every page.
+  if (!specUrlIsResolvable()) return null
   try {
     const res = await fetch(OPENAPI_URL, {
       next: { revalidate: API_REVALIDATE_SECONDS },
@@ -453,6 +485,12 @@ export function summarize(markdown: string, max = 155): string {
 export async function requireApiCatalog(): Promise<ApiCatalog> {
   const catalog = await getApiCatalog()
   if (!catalog) {
+    if (!specUrlIsResolvable()) {
+      throw new Error(
+        `The OpenAPI spec URL is not resolvable (${OPENAPI_URL}). A page reached this ` +
+          'without calling deferWhenSpecUrlIsAPlaceholder() first.'
+      )
+    }
     throw new Error(
       `The OpenAPI specification could not be read from ${OPENAPI_URL}`
     )

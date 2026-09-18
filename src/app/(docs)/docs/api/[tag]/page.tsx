@@ -3,6 +3,7 @@ import { MethodBadge } from '@/components/docs/api/MethodBadge'
 import { DocsJsonLd } from '@/components/docs/DocsJsonLd'
 import {
   API_BASE_PATH,
+  deferWhenSpecUrlIsAPlaceholder,
   findApiTag,
   getApiCatalog,
   requireApiCatalog,
@@ -29,6 +30,9 @@ export async function generateStaticParams() {
   return (catalog?.tags ?? []).map((tag) => ({ tag: tag.slug }))
 }
 
+// With no reachable spec there is nothing to prerender, and generateStaticParams above
+// returns nothing — so this only guards a render that arrives another way.
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const catalog = await getApiCatalog()
   const tag = catalog && findApiTag(catalog, (await params).tag)
@@ -43,6 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ApiTagPage({ params }: Props) {
+  await deferWhenSpecUrlIsAPlaceholder()
   const catalog = await requireApiCatalog()
   const tag = findApiTag(catalog, (await params).tag)
   if (!tag) notFound()
