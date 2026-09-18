@@ -2,7 +2,11 @@ import { ApiShell } from '@/components/docs/api/ApiShell'
 import { MethodBadge } from '@/components/docs/api/MethodBadge'
 import { DocsMarkdown } from '@/components/docs/DocsMarkdown'
 import { PROSE } from '@/components/docs/prose'
-import { API_BASE_PATH, requireApiCatalog } from '@/lib/openapi'
+import {
+  API_BASE_PATH,
+  deferWhenSpecUrlIsAPlaceholder,
+  requireApiCatalog,
+} from '@/lib/openapi'
 import { publicPageMetadata } from '@/lib/site'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -26,6 +30,7 @@ export const metadata: Metadata = publicPageMetadata({
 })
 
 export default async function ApiReferencePage() {
+  await deferWhenSpecUrlIsAPlaceholder()
   const catalog = await requireApiCatalog()
 
   const crumbs = [

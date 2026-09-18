@@ -96,25 +96,53 @@ validate_env_vars() {
 inject_runtime_env() {
     echo "[entrypoint] Injecting runtime environment configuration..."
 
-    # Find all JS files in .next and replace placeholders
-    # Using find + sed for POSIX compatibility (Alpine doesn't have GNU tools by default)
-    if ! find /app/.next -type f \( -name "*.js" -o -name "*.json" \) -exec sed -i \
-        -e "s|__PLACEHOLDER_ROBOSYSTEMS_API_URL__|${NEXT_PUBLIC_ROBOSYSTEMS_API_URL}|g" \
-        -e "s|__PLACEHOLDER_ROBOSYSTEMS_APP_URL__|${NEXT_PUBLIC_ROBOSYSTEMS_APP_URL}|g" \
-        -e "s|__PLACEHOLDER_ROBOLEDGER_APP_URL__|${NEXT_PUBLIC_ROBOLEDGER_APP_URL}|g" \
-        -e "s|__PLACEHOLDER_ROBOINVESTOR_APP_URL__|${NEXT_PUBLIC_ROBOINVESTOR_APP_URL}|g" \
-        -e "s|__PLACEHOLDER_MAINTENANCE_MODE__|${NEXT_PUBLIC_MAINTENANCE_MODE:-false}|g" \
-        -e "s|__PLACEHOLDER_TURNSTILE_SITE_KEY__|${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}|g" \
-        -e "s|__PLACEHOLDER_CF_ANALYTICS_TOKEN__|${NEXT_PUBLIC_CF_ANALYTICS_TOKEN:-}|g" \
-        -e "s|__PLACEHOLDER_S3_ENDPOINT_URL__|${NEXT_PUBLIC_S3_ENDPOINT_URL:-}|g" \
-        {} \; ; then
-        echo "[entrypoint] Error: Failed to inject runtime configuration"
-        exit 1
+    # Substitute in every file that actually contains a placeholder, rather than in a list
+    # of extensions.
+    #
+    # The list used to be .js/.json, which missed the prerendered output: a static page bakes
+    # the value into its markup (.html), its flight payload (.rsc) and its segment shell
+    # (.sst), and none of those is re-rendered at runtime. The verification below greps the
+    # whole of .next, so those leftovers made it fail — **the published image could not
+    # start**, and the landing page's MCP address would have rendered as a literal
+    # `__PLACEHOLDER_ROBOSYSTEMS_API_URL__` if it had. Extending the list one extension at a
+    # time is how that happened; deriving it from the placeholder itself cannot drift, and it
+    # touches nothing that has no placeholder in it.
+    #
+    # .next/cache is excluded from both this and the check below. It is Turbopack's build
+    # cache — binary .sst blobs that are never served, that sed cannot reliably rewrite, and
+    # that carry a copy of every placeholder. They are what made the check unsatisfiable.
+    placeholder_files=$(grep -rl "__PLACEHOLDER_" /app/.next 2>/dev/null \
+        | grep -v "^/app/.next/cache/" || true)
+
+    # Read from a file, not a pipe: a piped `while` runs in a subshell, where `exit 1` would
+    # end the loop and let startup carry on.
+    if [ -n "$placeholder_files" ]; then
+        echo "$placeholder_files" > /tmp/placeholder-files.txt
+        while IFS= read -r file; do
+            [ -n "$file" ] || continue
+            if ! sed -i \
+                -e "s|__PLACEHOLDER_ROBOSYSTEMS_API_URL__|${NEXT_PUBLIC_ROBOSYSTEMS_API_URL}|g" \
+                -e "s|__PLACEHOLDER_ROBOSYSTEMS_APP_URL__|${NEXT_PUBLIC_ROBOSYSTEMS_APP_URL}|g" \
+                -e "s|__PLACEHOLDER_ROBOLEDGER_APP_URL__|${NEXT_PUBLIC_ROBOLEDGER_APP_URL}|g" \
+                -e "s|__PLACEHOLDER_ROBOINVESTOR_APP_URL__|${NEXT_PUBLIC_ROBOINVESTOR_APP_URL}|g" \
+                -e "s|__PLACEHOLDER_MAINTENANCE_MODE__|${NEXT_PUBLIC_MAINTENANCE_MODE:-false}|g" \
+                -e "s|__PLACEHOLDER_TURNSTILE_SITE_KEY__|${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}|g" \
+                -e "s|__PLACEHOLDER_CF_ANALYTICS_TOKEN__|${NEXT_PUBLIC_CF_ANALYTICS_TOKEN:-}|g" \
+                -e "s|__PLACEHOLDER_S3_ENDPOINT_URL__|${NEXT_PUBLIC_S3_ENDPOINT_URL:-}|g" \
+                "$file"; then
+                echo "[entrypoint] Error: Failed to inject runtime configuration into $file"
+                exit 1
+            fi
+        done < /tmp/placeholder-files.txt
+        rm -f /tmp/placeholder-files.txt
     fi
 
-    # Verify at least one placeholder was replaced (sanity check)
-    if grep -r "__PLACEHOLDER_ROBOSYSTEMS_API_URL__" /app/.next >/dev/null 2>&1; then
-        echo "[entrypoint] Error: Placeholder replacement failed - API URL placeholder still present"
+    # Verify nothing that gets served still carries the placeholder.
+    remaining=$(grep -rl "__PLACEHOLDER_ROBOSYSTEMS_API_URL__" /app/.next 2>/dev/null \
+        | grep -v "^/app/.next/cache/" || true)
+    if [ -n "$remaining" ]; then
+        echo "[entrypoint] Error: Placeholder replacement failed - API URL placeholder still present in:"
+        echo "$remaining" | head -5
         exit 1
     fi
 

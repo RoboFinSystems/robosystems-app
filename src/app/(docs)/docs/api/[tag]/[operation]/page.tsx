@@ -9,6 +9,7 @@ import { PROSE } from '@/components/docs/prose'
 import {
   API_BASE_PATH,
   apiNeighbors,
+  deferWhenSpecUrlIsAPlaceholder,
   findApiOperation,
   findApiTag,
   getApiCatalog,
@@ -184,6 +185,7 @@ function ResponseBody({
 }
 
 export default async function ApiOperationPage({ params }: Props) {
+  await deferWhenSpecUrlIsAPlaceholder()
   const { tag: tagSlug, operation: operationSlug } = await params
   const found = await load(tagSlug, operationSlug)
   if (!found) notFound()

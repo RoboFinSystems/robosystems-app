@@ -314,6 +314,34 @@ describe('which API the reference documents', () => {
     expect(mod.OPENAPI_URL).toBe('https://api.robosystems.ai/openapi.json')
   })
 
+  it('treats a build-time placeholder as unresolvable, not as a URL', async () => {
+    // The public Docker image builds with this and substitutes it at container start, so
+    // there is no API to read at build time. Pre-rendering against it would bake the
+    // literal into .html, which the entrypoint's substitution does not reach.
+    const mod = await reload({
+      NEXT_PUBLIC_ROBOSYSTEMS_API_URL: '__PLACEHOLDER_ROBOSYSTEMS_API_URL__',
+      NEXT_PUBLIC_OPENAPI_URL: undefined,
+    })
+    expect(mod.specUrlIsResolvable()).toBe(false)
+    expect(await mod.getApiCatalog()).toBeNull()
+  })
+
+  it('treats a real URL as resolvable', async () => {
+    const mod = await reload({
+      NEXT_PUBLIC_ROBOSYSTEMS_API_URL: 'https://api.robosystems.ai',
+      NEXT_PUBLIC_OPENAPI_URL: undefined,
+    })
+    expect(mod.specUrlIsResolvable()).toBe(true)
+  })
+
+  it('rejects a non-http scheme', async () => {
+    const mod = await reload({
+      NEXT_PUBLIC_ROBOSYSTEMS_API_URL: 'file:///etc',
+      NEXT_PUBLIC_OPENAPI_URL: undefined,
+    })
+    expect(mod.specUrlIsResolvable()).toBe(false)
+  })
+
   it('lets the spec URL be overridden on its own, for a local stack', async () => {
     const mod = await reload({
       NEXT_PUBLIC_ROBOSYSTEMS_API_URL: 'http://localhost:8000',
