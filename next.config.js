@@ -44,7 +44,7 @@ const nextConfig = {
       //
       // permanent: false on purpose — a 308 is cached by the browser
       // indefinitely and would outlive any future move. No SEO cost either:
-      // robots.ts already disallows /billing/.
+      // robots.ts disallows /billing.
       {
         source: '/billing',
         destination: '/organization?tab=billing',
