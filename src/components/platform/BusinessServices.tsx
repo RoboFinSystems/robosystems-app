@@ -42,7 +42,7 @@ export default function BusinessServices() {
     },
   ]
 
-  // Mirrors the seven-step arc on roboledger.ai, collapsed to six by pairing
+  // Mirrors the six-step arc on roboledger.ai, collapsed to five by pairing
   // reporting with planning. Tailwind classes are written out per step rather
   // than interpolated so the JIT compiler can see them.
   const workflowSteps = [
@@ -60,13 +60,6 @@ export default function BusinessServices() {
       bg: 'to-violet-950/20',
       border: 'hover:border-violet-500/30',
       badge: 'bg-violet-500/20 text-violet-400',
-    },
-    {
-      title: 'Map to GAAP',
-      description: 'AI auto-maps chart of accounts to US-GAAP taxonomy',
-      bg: 'to-purple-950/20',
-      border: 'hover:border-purple-500/30',
-      badge: 'bg-purple-500/20 text-purple-400',
     },
     {
       title: 'Review Ledger',
@@ -166,7 +159,7 @@ export default function BusinessServices() {
           <h3 className="mb-6 text-center text-xl font-bold text-white">
             How It Works
           </h3>
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
             {workflowSteps.map((step, idx) => (
               <div
                 key={step.title}
