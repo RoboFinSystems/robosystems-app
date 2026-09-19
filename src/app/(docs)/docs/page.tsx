@@ -27,11 +27,19 @@ const GUIDES_DOOR = {
   external: false,
 }
 
+// The platform's own documentation first — guides, technical docs, the API reference —
+// then the doors out to the products built on it.
 const DOORS = [
   {
     title: 'Technical docs',
     href: '/docs/technical',
     body: 'Build on, run and extend the platform: graphs, the MCP server, the operations and GraphQL surfaces, the SEC pipeline, and self-hosting.',
+    external: false,
+  },
+  {
+    title: 'API reference',
+    href: '/docs/api',
+    body: 'Every REST endpoint, with its parameters, request and response schemas, and an example call.',
     external: false,
   },
   {
@@ -46,12 +54,6 @@ const DOORS = [
     body: 'Private-company portfolios, reports shared from RoboLedger, and public-company research. RoboInvestor is in beta.',
     external: true,
     productSite: 'roboinvestor',
-  },
-  {
-    title: 'API reference',
-    href: '/docs/api',
-    body: 'Every REST endpoint, with its parameters, request and response schemas, and an example call.',
-    external: false,
   },
 ]
 
