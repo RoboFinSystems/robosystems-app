@@ -47,7 +47,7 @@ const FALLBACK_TIERS: Tier[] = [
   {
     id: 'ladybug-standard',
     name: 'Standard',
-    description: 'Its own graph instance for a single set of books',
+    description: 'Its own isolated graph instance for a single entity',
     monthlyPrice: 99,
     monthlyCredits: 8000,
     maxSubgraphs: 3,
@@ -192,8 +192,32 @@ export default function GraphPricing({
           Graph Subscriptions
         </h2>
         <p className="mx-auto max-w-2xl text-gray-400">
-          Your own isolated knowledge graph with an AI controller layer over
-          your books, on our managed platform. Priced per graph.
+          Your own isolated knowledge graph on our managed platform, priced per
+          graph. An entity graph runs{' '}
+          <a
+            href="https://roboledger.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-cyan-400 hover:text-cyan-300"
+          >
+            RoboLedger
+          </a>{' '}
+          for its books,{' '}
+          <a
+            href="https://roboinvestor.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-cyan-400 hover:text-cyan-300"
+          >
+            RoboInvestor
+          </a>{' '}
+          for its portfolio, or both; a custom graph runs a schema you define.{' '}
+          <Link
+            href="/docs/guides/graphs-tiers-and-credits"
+            className="text-cyan-400 hover:text-cyan-300"
+          >
+            How graphs work &rarr;
+          </Link>
         </p>
       </div>
       <div className="mx-auto grid max-w-5xl gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
