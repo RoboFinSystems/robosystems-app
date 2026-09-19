@@ -50,6 +50,19 @@ export default async function ApiReferencePage() {
           <code className="font-mono text-cyan-300">{catalog.serverUrl}</code>{' '}
           and authenticates with an API key from your account settings.
         </p>
+        {/* The API host serves Swagger UI at its root: the one place a call can be run
+            against the deployed API from a browser. It is a tool, not a document — these
+            pages are the reference — so it is mentioned, not linked as a sibling door. */}
+        <p className="mt-3 text-gray-400">
+          To run a call in the browser,{' '}
+          <a
+            href={catalog.serverUrl}
+            className="text-cyan-400 hover:text-cyan-300"
+          >
+            {catalog.serverUrl}
+          </a>{' '}
+          serves an interactive console over this same specification.
+        </p>
         {catalog.version && (
           <p className="mt-3 text-sm text-gray-500">
             Generated from the OpenAPI specification the API is serving, version{' '}

@@ -79,9 +79,9 @@ describe('DocsLandingPage', () => {
 
     expect(await doorTitles()).toEqual([
       'Technical docs',
+      'API reference',
       'RoboLedger',
       'RoboInvestor',
-      'API reference',
     ])
     expect(
       screen.getByRole('link', { name: /RoboInvestor/ }).getAttribute('href')
@@ -94,7 +94,7 @@ describe('DocsLandingPage', () => {
     )
 
     const titles = await doorTitles()
-    expect(titles).toEqual(['Technical docs', 'RoboLedger', 'API reference'])
+    expect(titles).toEqual(['Technical docs', 'API reference', 'RoboLedger'])
     expect(screen.queryByRole('link', { name: /RoboInvestor/ })).toBeNull()
   })
 
@@ -109,8 +109,8 @@ describe('DocsLandingPage', () => {
 
     expect(await doorTitles()).toEqual([
       'Technical docs',
-      'RoboLedger',
       'API reference',
+      'RoboLedger',
     ])
   })
 })
