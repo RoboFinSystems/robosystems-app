@@ -103,7 +103,7 @@ describe('ConnectContent', () => {
       url: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp?token=rfsc_test',
       endpoint: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp',
       apiKey: 'rfsc_test',
-      keyName: 'Claude connector - Acme Ledger',
+      keyName: 'MCP connector - Acme Ledger',
       graphId: 'kg1a2b3c',
     })
 
@@ -129,7 +129,7 @@ describe('ConnectContent', () => {
 
     expect(mockCreateMcpConnectorUrl).toHaveBeenCalledWith(
       'kg1a2b3c',
-      expect.objectContaining({ name: 'Claude connector - Acme Ledger' })
+      expect.objectContaining({ name: 'MCP connector - Acme Ledger' })
     )
   })
 
@@ -241,7 +241,7 @@ describe('ConnectContent', () => {
       url: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c_entities/mcp?token=rfsc_sub',
       endpoint: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c_entities/mcp',
       apiKey: 'rfsc_sub',
-      keyName: 'Claude connector - Acme Ledger / Related Entities',
+      keyName: 'MCP connector - Acme Ledger / Related Entities',
       graphId: 'kg1a2b3c_entities',
     })
 
@@ -259,7 +259,7 @@ describe('ConnectContent', () => {
       expect(mockCreateMcpConnectorUrl).toHaveBeenCalledWith(
         'kg1a2b3c_entities',
         expect.objectContaining({
-          name: 'Claude connector - Acme Ledger / Related Entities',
+          name: 'MCP connector - Acme Ledger / Related Entities',
         })
       )
     })
@@ -358,7 +358,7 @@ describe('ConnectContent', () => {
       url: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp?token=rfsc_test',
       endpoint: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp',
       apiKey: 'rfsc_test',
-      keyName: 'Claude connector - Acme Ledger',
+      keyName: 'MCP connector - Acme Ledger',
       graphId: 'kg1a2b3c',
     })
 
@@ -384,7 +384,7 @@ describe('ConnectContent', () => {
       url: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp?token=rfsc_test',
       endpoint: 'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp',
       apiKey: 'rfsc_test',
-      keyName: 'Claude connector - Acme Ledger',
+      keyName: 'MCP connector - Acme Ledger',
       graphId: 'kg1a2b3c',
     })
 

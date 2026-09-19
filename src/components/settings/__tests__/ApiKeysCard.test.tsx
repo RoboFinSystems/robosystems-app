@@ -23,7 +23,7 @@ const mockedCreate = vi.mocked(createUserApiKey)
 // Noon UTC keeps the rendered calendar day stable in any test-runner zone.
 const SCOPED: ApiKeyInfo = {
   id: 'uak_scoped',
-  name: 'Claude connector - SEC',
+  name: 'MCP connector - SEC',
   prefix: 'rfs_ab12',
   is_active: true,
   created_at: '2026-08-23T12:00:00Z',
@@ -126,9 +126,7 @@ describe('ApiKeysCard', () => {
   it('lists keys as rows: prefix, scope, dates — and no status column', async () => {
     listOk([SCOPED, ACCOUNT_WIDE])
     render(<ApiKeysCard connectHref="/connect" />)
-    expect(
-      await screen.findByText('Claude connector - SEC')
-    ).toBeInTheDocument()
+    expect(await screen.findByText('MCP connector - SEC')).toBeInTheDocument()
     expect(screen.getByText('CI runner')).toBeInTheDocument()
 
     const list = screen.getByTestId('api-keys-list')
@@ -153,9 +151,7 @@ describe('ApiKeysCard', () => {
   it('resolves a scoped key to its graph name when the graph context has it', async () => {
     listOk([SCOPED])
     render(withGraphs(<ApiKeysCard />))
-    expect(
-      await screen.findByText('Claude connector - SEC')
-    ).toBeInTheDocument()
+    expect(await screen.findByText('MCP connector - SEC')).toBeInTheDocument()
     expect(screen.getByTestId('api-keys-list')).toHaveTextContent(
       'SEC EDGAR Filings'
     )
@@ -184,7 +180,7 @@ describe('ApiKeysCard', () => {
       expect(onSuccess).toHaveBeenCalledWith('API key revoked')
     )
     expect(screen.queryByText('CI runner')).not.toBeInTheDocument()
-    expect(screen.getByText('Claude connector - SEC')).toBeInTheDocument()
+    expect(screen.getByText('MCP connector - SEC')).toBeInTheDocument()
   })
 
   it('keeps the row and reports an error when revoke fails', async () => {
