@@ -1,6 +1,7 @@
 'use client'
 
 import { CopyableId } from '@/components/CopyableId'
+import { GuideLink } from '@/components/docs/GuideLink'
 import type {
   ListSubgraphsResponse,
   SubgraphSummary,
@@ -241,6 +242,7 @@ export function SubgraphsContent() {
               {listResponse?.parent_graph_name || 'the selected graph'}
             </span>
             <CopyableId value={currentGraphId} label="parent graph id" />
+            <GuideLink href="/docs/guides/data-lake-and-subgraphs" />
           </span>
         }
         actions={

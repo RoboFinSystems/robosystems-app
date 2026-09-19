@@ -5,7 +5,8 @@ import Link from 'next/link'
 
 // The docs landing: one door per kind of documentation, then every guide and every
 // technical page by section, so the landing links both sets in its server HTML. The Guides
-// door appears only once the catalog carries the collection, so it never links a 404.
+// and RoboInvestor doors appear only once the catalog carries their collections, so
+// neither ever links a 404.
 
 export const revalidate = 300
 
@@ -40,6 +41,13 @@ const DOORS = [
     external: true,
   },
   {
+    title: 'RoboInvestor',
+    href: 'https://roboinvestor.ai/docs',
+    body: 'Private-company portfolios, reports shared from RoboLedger, and public-company research. RoboInvestor is in beta.',
+    external: true,
+    productSite: 'roboinvestor',
+  },
+  {
     title: 'API reference',
     href: '/docs/api',
     body: 'Every REST endpoint, with its parameters, request and response schemas, and an example call.',
@@ -52,7 +60,12 @@ export default async function DocsLandingPage() {
   const technical = catalog && getDocsNav(catalog, DOCS_SITE, 'technical')
   const guides = catalog && getDocsNav(catalog, DOCS_SITE, 'product')
   const hasGuides = !!guides && guides.ordered.length > 0
-  const doors = hasGuides ? [GUIDES_DOOR, ...DOORS] : DOORS
+  const hasProductDocs = (site: string) =>
+    !!catalog && !!getDocsNav(catalog, site, 'product')?.ordered.length
+  const available = DOORS.filter(
+    (door) => !door.productSite || hasProductDocs(door.productSite)
+  )
+  const doors = hasGuides ? [GUIDES_DOOR, ...available] : available
 
   return (
     <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 lg:px-8">
@@ -67,9 +80,7 @@ export default async function DocsLandingPage() {
         </p>
       </header>
 
-      <div
-        className={`grid gap-6 ${hasGuides ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}
-      >
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {doors.map((door) => {
           const className =
             'group block rounded-xl border border-gray-800 bg-gray-900/50 p-6 transition-all hover:border-cyan-500/50 hover:bg-gray-900/70'
