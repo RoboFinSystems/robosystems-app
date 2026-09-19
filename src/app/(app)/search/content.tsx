@@ -28,7 +28,7 @@ const USER_GRAPH_CONFIG: SearchConfig = {
 }
 
 export function SearchPageContent() {
-  const isRepository = useIsRepository()
+  const { isRepository } = useIsRepository()
   const config = useMemo(
     () => (isRepository ? REPO_CONFIG : USER_GRAPH_CONFIG),
     [isRepository]
