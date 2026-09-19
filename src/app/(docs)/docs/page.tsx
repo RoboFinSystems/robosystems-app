@@ -40,6 +40,12 @@ const DOORS = [
     external: true,
   },
   {
+    title: 'RoboInvestor',
+    href: 'https://roboinvestor.ai/docs',
+    body: 'Private-company portfolios, reports shared from RoboLedger, and public-company research. RoboInvestor is in beta.',
+    external: true,
+  },
+  {
     title: 'API reference',
     href: '/docs/api',
     body: 'Every REST endpoint, with its parameters, request and response schemas, and an example call.',
@@ -67,9 +73,7 @@ export default async function DocsLandingPage() {
         </p>
       </header>
 
-      <div
-        className={`grid gap-6 ${hasGuides ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}
-      >
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {doors.map((door) => {
           const className =
             'group block rounded-xl border border-gray-800 bg-gray-900/50 p-6 transition-all hover:border-cyan-500/50 hover:bg-gray-900/70'

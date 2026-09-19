@@ -1,5 +1,6 @@
 'use client'
 
+import { GuideLink } from '@/components/docs/GuideLink'
 import type { MemoryRecord } from '@robosystems/client'
 import { forget, remember, updateMemory } from '@robosystems/client'
 import {
@@ -237,7 +238,8 @@ export function MemoryPageContent() {
         title="Memory"
         subtitle={
           <>
-            {total} memor{total !== 1 ? 'ies' : 'y'} stored
+            {total} memor{total !== 1 ? 'ies' : 'y'} stored.{' '}
+            <GuideLink href="/docs/guides/documents-and-memory" />
           </>
         }
         actions={

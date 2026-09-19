@@ -1,5 +1,6 @@
 'use client'
 
+import { GuideLink } from '@/components/docs/GuideLink'
 import type {
   DocumentDetailResponse,
   DocumentListItem,
@@ -549,7 +550,8 @@ export function DocumentsPageContent() {
         title="Knowledge Base"
         subtitle={
           <>
-            {totalDocuments} document{totalDocuments !== 1 ? 's' : ''} indexed
+            {totalDocuments} document{totalDocuments !== 1 ? 's' : ''} indexed.{' '}
+            <GuideLink href="/docs/guides/documents-and-memory" />
           </>
         }
         actions={

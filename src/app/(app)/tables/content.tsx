@@ -1,5 +1,6 @@
 'use client'
 
+import { GuideLink } from '@/components/docs/GuideLink'
 import { normalizeLocalUrl } from '@/lib/utils'
 import Editor from '@monaco-editor/react'
 import * as SDK from '@robosystems/client'
@@ -497,7 +498,12 @@ export function TablesContent() {
         <PageHeader
           icon={HiTable}
           title="Data Lake"
-          subtitle="Query staging tables and sync extensions data"
+          subtitle={
+            <>
+              Query staging tables and sync extensions data.{' '}
+              <GuideLink href="/docs/guides/data-lake-and-subgraphs" />
+            </>
+          }
           actions={
             <Button color="green" onClick={() => setShowIngestModal(true)}>
               <HiChip className="mr-2 h-4 w-4" />
@@ -705,9 +711,12 @@ export function TablesContent() {
         icon={HiTable}
         title="Data Lake"
         subtitle={
-          isEntityGraph
-            ? 'View staging tables and sync extensions data'
-            : 'Manage staging tables and files'
+          <>
+            {isEntityGraph
+              ? 'View staging tables and sync extensions data. '
+              : 'Manage staging tables and files. '}
+            <GuideLink href="/docs/guides/data-lake-and-subgraphs" />
+          </>
         }
         actions={
           <Button
