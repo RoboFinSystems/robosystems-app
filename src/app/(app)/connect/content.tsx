@@ -240,8 +240,8 @@ function ConnectWorkspace() {
       const result = await createMcpConnectorUrl(workspace.id, {
         apiUrl: MCP_API_URL,
         name: workspace.isSubgraph
-          ? `Claude connector - ${currentGraph.graphName} / ${workspace.label}`
-          : `Claude connector - ${currentGraph.graphName}`,
+          ? `MCP connector - ${currentGraph.graphName} / ${workspace.label}`
+          : `MCP connector - ${currentGraph.graphName}`,
       })
       setConnector(result)
     } catch (e: any) {
