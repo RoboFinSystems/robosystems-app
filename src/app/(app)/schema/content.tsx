@@ -1,5 +1,6 @@
 'use client'
 
+import { GuideLink } from '@/components/docs/GuideLink'
 import Editor from '@monaco-editor/react'
 import * as SDK from '@robosystems/client'
 import {
@@ -238,7 +239,12 @@ export function SchemaEditorContent() {
       <PageHeader
         icon={HiCode}
         title="Schema Viewer"
-        subtitle="View and manage your graph schema"
+        subtitle={
+          <>
+            View and manage your graph schema.{' '}
+            <GuideLink href="/docs/guides/data-lake-and-subgraphs" />
+          </>
+        }
       />
 
       {error && (

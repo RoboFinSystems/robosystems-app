@@ -1,5 +1,6 @@
 'use client'
 
+import { GuideLink } from '@/components/docs/GuideLink'
 import type { BackupResponse, BackupStatsResponse } from '@robosystems/client'
 import {
   createBackup,
@@ -419,7 +420,12 @@ export default function BackupManagementContent() {
       <PageHeader
         icon={HiDatabase}
         title="Backups"
-        subtitle="Manage database backups"
+        subtitle={
+          <>
+            Manage database backups.{' '}
+            <GuideLink href="/docs/guides/data-lake-and-subgraphs" />
+          </>
+        }
         actions={
           <>
             <Button color="gray" onClick={fetchBackupData}>
