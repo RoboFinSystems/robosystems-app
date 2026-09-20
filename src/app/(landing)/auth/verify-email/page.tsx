@@ -49,7 +49,7 @@ function VerifyEmailContent() {
           setStatus('error')
           setMessage(result.message || 'Failed to verify email')
         }
-      } catch (error) {
+      } catch {
         setStatus('error')
         setMessage('An unexpected error occurred during verification')
       }

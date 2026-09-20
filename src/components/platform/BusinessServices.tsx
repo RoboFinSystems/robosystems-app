@@ -187,10 +187,8 @@ function PrimaryServiceCard({
   title,
   icon,
   color,
-  highlight,
   description,
   features,
-  currentCapabilities,
 }: any) {
   const colorClasses: Record<string, string> = {
     cyan: 'from-cyan-500/20 to-blue-500/20 border-cyan-500/30 hover:border-cyan-500/50',

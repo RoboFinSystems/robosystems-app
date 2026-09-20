@@ -6,6 +6,7 @@ import {
   EXTENSIONS_BASE_PATH,
   catalogForSurface,
   deferWhenSpecUrlIsAPlaceholder,
+  partitionExtensionTags,
   requireApiCatalog,
   summarize,
   type ApiTag,
@@ -34,10 +35,6 @@ export const metadata: Metadata = publicPageMetadata({
   description: DESCRIPTION,
 })
 
-/** Analytical views read the graph, not the OLTP database, so they are their own section. */
-const ANALYTICS = (tag: ApiTag) => tag.name.includes('Analytical Views')
-const GRAPHQL = (tag: ApiTag) => tag.slug === 'graphql'
-
 function TagCard({ tag }: { tag: ApiTag }) {
   return (
     <li>
@@ -65,9 +62,12 @@ export default async function ExtensionsHubPage() {
   const catalog = catalogForSurface(await requireApiCatalog(), 'extensions')
   const graphql = await getGraphqlCatalog()
 
-  const writes = catalog.tags.filter((t) => !GRAPHQL(t) && !ANALYTICS(t))
-  const analytics = catalog.tags.filter(ANALYTICS)
-  const graphqlTag = catalog.tags.find(GRAPHQL)
+  // The three sub-surfaces, split in the library so the rule is testable.
+  const {
+    graphql: graphqlTag,
+    writes,
+    analytics,
+  } = partitionExtensionTags(catalog)
   const writeOps = writes.reduce((n, t) => n + t.operations.length, 0)
 
   const crumbs = [

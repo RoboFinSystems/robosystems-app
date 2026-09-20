@@ -57,7 +57,7 @@ export function TablesContent() {
   const [queryResult, setQueryResult] = useState<QueryResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState(0)
+  const [, setActiveTab] = useState(0)
   const [tablePreview, setTablePreview] = useState<QueryResult | null>(null)
   const [loadingPreview, setLoadingPreview] = useState(false)
 
@@ -362,7 +362,6 @@ export function TablesContent() {
       })
 
       if (response.data) {
-        const data = response.data as any
         setShowIngestModal(false)
       } else if (response.error) {
         setError('Ingest failed: ' + JSON.stringify(response.error))

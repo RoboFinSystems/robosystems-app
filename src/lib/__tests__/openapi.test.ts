@@ -13,9 +13,11 @@ import {
   findApiOperation,
   findApiTag,
   operationSlug,
+  partitionExtensionTags,
   summarize,
   surfaceOf,
   tagSlug,
+  type ApiTag,
   type OpenApiDocument,
 } from '../openapi'
 
@@ -446,5 +448,74 @@ describe('which API the reference documents', () => {
     })
     expect(mod.OPENAPI_URL).toBe('http://localhost:8000/openapi.json')
     expect(mod.API_SERVER_URL).toBe('http://localhost:8000')
+  })
+})
+
+describe('partitionExtensionTags', () => {
+  // The extensions hub renders three sections and each carries its own promise. Writes are
+  // described as taking a typed request, returning an operation envelope and accepting an
+  // Idempotency-Key; analytics are described as read-only queries against the materialized
+  // graph. A tag in the wrong section is therefore not a layout slip, it is wrong copy
+  // about what a call does.
+  const tag = (name: string, slug: string): ApiTag => ({
+    name,
+    slug,
+    path: `/docs/extensions/${slug}`,
+    surface: 'extensions',
+    title: name,
+    description: '',
+    operations: [],
+  })
+
+  const catalog = (...tags: ApiTag[]) =>
+    ({ tags, operations: [], serverUrl: 'https://api.example.com' }) as never
+
+  it('splits the surface into GraphQL, writes and analytics', () => {
+    const out = partitionExtensionTags(
+      catalog(
+        tag('GraphQL', 'graphql'),
+        tag('RoboLedger: Fiscal Close', 'roboledger-fiscal-close'),
+        tag('RoboLedger: Analytical Views', 'roboledger-analytical-views')
+      )
+    )
+    expect(out.graphql?.slug).toBe('graphql')
+    expect(out.writes.map((t) => t.slug)).toEqual(['roboledger-fiscal-close'])
+    expect(out.analytics.map((t) => t.slug)).toEqual([
+      'roboledger-analytical-views',
+    ])
+  })
+
+  it('never files an analytical tag under writes', () => {
+    // The failure this guards is silent: an analytics tag that stops matching does not
+    // disappear, it lands in Writes beside a promise of an operation envelope.
+    const out = partitionExtensionTags(
+      catalog(
+        tag('RoboLedger: Analytical Views', 'roboledger-analytical-views'),
+        tag('RoboInvestor: Analytical Views', 'roboinvestor-analytical-views')
+      )
+    )
+    expect(out.writes).toEqual([])
+    expect(out.analytics).toHaveLength(2)
+  })
+
+  it('recognises analytics for any domain, not just RoboLedger', () => {
+    const out = partitionExtensionTags(
+      catalog(
+        tag('RoboInvestor: Analytical Views', 'roboinvestor-analytical-views')
+      )
+    )
+    expect(out.analytics.map((t) => t.slug)).toEqual([
+      'roboinvestor-analytical-views',
+    ])
+  })
+
+  it('puts an unrecognised tag in writes rather than dropping it', () => {
+    // Every tag has to land somewhere; a new domain must still be documented.
+    const out = partitionExtensionTags(
+      catalog(tag('RoboBizi: Setup', 'robobizi-setup'))
+    )
+    expect(out.writes.map((t) => t.slug)).toEqual(['robobizi-setup'])
+    expect(out.analytics).toEqual([])
+    expect(out.graphql).toBeUndefined()
   })
 })

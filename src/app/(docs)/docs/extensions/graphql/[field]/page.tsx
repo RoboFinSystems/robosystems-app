@@ -73,7 +73,6 @@ export default async function GraphqlFieldPage({ params }: Props) {
 
   const spec = catalogForSurface(await requireApiCatalog(), 'extensions')
   const returned = catalog.types[field.typeName]
-  const domain = catalog.domains.find((d) => d.slug === field.domainSlug)
 
   const crumbs = [
     { name: 'Docs', path: '/docs' },
