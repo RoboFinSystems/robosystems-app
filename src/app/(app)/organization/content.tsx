@@ -537,7 +537,7 @@ function OrganizationTabs() {
                       Last {usage.period_days} days
                     </span>
                   </h2>
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     <StatCard
                       label="Total Graphs"
                       value={usage.graph_details.length}
@@ -693,17 +693,17 @@ function OrganizationTabs() {
                     {usage.graph_details.map((graph: any) => (
                       <div
                         key={graph.graph_id}
-                        className="flex items-center justify-between py-3"
+                        className="flex items-center justify-between gap-3 py-3"
                       >
-                        <div>
-                          <span className="font-medium text-gray-900 dark:text-white">
+                        <div className="min-w-0">
+                          <span className="font-medium break-words text-gray-900 dark:text-white">
                             {graph.graph_name}
                           </span>
-                          <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+                          <p className="mt-0.5 text-sm break-all text-gray-500 dark:text-gray-400">
                             {graph.graph_id}
                           </p>
                         </div>
-                        <div className="text-right text-sm">
+                        <div className="shrink-0 text-right text-sm">
                           <div className="text-gray-500 dark:text-gray-400">
                             Credits Available
                           </div>
