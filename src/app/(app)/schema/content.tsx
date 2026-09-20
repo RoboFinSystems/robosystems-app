@@ -258,7 +258,7 @@ export function SchemaEditorContent() {
       )}
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4 md:gap-6">
+      <div className="grid grid-cols-3 gap-3 sm:gap-4 md:gap-6">
         <StatCard label="Node Labels" value={nodeLabels.length} />
 
         <StatCard label="Relationships" value={relationshipTypes.length} />
@@ -308,7 +308,7 @@ export function SchemaEditorContent() {
         >
           <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
             {/* Node Labels */}
-            <Card>
+            <Card className="min-w-0">
               <div className="mb-4">
                 <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
                   Node Labels
@@ -329,8 +329,8 @@ export function SchemaEditorContent() {
                       className="rounded-lg border border-gray-200 p-4 dark:border-gray-700"
                     >
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <h4 className="font-medium text-gray-900 dark:text-white">
+                        <div className="flex flex-wrap items-center gap-3">
+                          <h4 className="min-w-0 font-medium break-words text-gray-900 dark:text-white">
                             {node.name}
                           </h4>
                           {node.count !== undefined && (
@@ -350,7 +350,7 @@ export function SchemaEditorContent() {
                             {node.properties.map((prop) => (
                               <div
                                 key={prop.name}
-                                className="flex items-center gap-2 text-sm"
+                                className="flex flex-wrap items-center gap-2 text-sm"
                               >
                                 <span className="font-mono text-gray-900 dark:text-white">
                                   {prop.name}
@@ -388,7 +388,7 @@ export function SchemaEditorContent() {
             </Card>
 
             {/* Relationship Types */}
-            <Card>
+            <Card className="min-w-0">
               <div className="mb-4">
                 <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white">
                   Relationship Types
@@ -409,8 +409,8 @@ export function SchemaEditorContent() {
                       className="rounded-lg border border-gray-200 p-4 dark:border-gray-700"
                     >
                       <div className="mb-3">
-                        <div className="flex items-center gap-3">
-                          <h4 className="font-medium text-gray-900 dark:text-white">
+                        <div className="flex flex-wrap items-center gap-3">
+                          <h4 className="min-w-0 font-medium break-words text-gray-900 dark:text-white">
                             {rel.name}
                           </h4>
                           {rel.count !== undefined && (
@@ -421,7 +421,7 @@ export function SchemaEditorContent() {
                         </div>
 
                         {(rel.sourceLabels || rel.targetLabels) && (
-                          <div className="mt-2 flex items-center gap-2 text-sm">
+                          <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
                             {rel.sourceLabels &&
                               rel.sourceLabels.length > 0 && (
                                 <>
@@ -458,7 +458,7 @@ export function SchemaEditorContent() {
                             {rel.properties.map((prop) => (
                               <div
                                 key={prop.name}
-                                className="flex items-center gap-2 text-sm"
+                                className="flex flex-wrap items-center gap-2 text-sm"
                               >
                                 <span className="font-mono text-gray-900 dark:text-white">
                                   {prop.name}
