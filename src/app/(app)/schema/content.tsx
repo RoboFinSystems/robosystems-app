@@ -258,7 +258,7 @@ export function SchemaEditorContent() {
       )}
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:gap-6">
         <StatCard label="Node Labels" value={nodeLabels.length} />
 
         <StatCard label="Relationships" value={relationshipTypes.length} />
@@ -352,7 +352,7 @@ export function SchemaEditorContent() {
                                 key={prop.name}
                                 className="flex flex-wrap items-center gap-2 text-sm"
                               >
-                                <span className="font-mono text-gray-900 dark:text-white">
+                                <span className="font-mono break-all text-gray-900 dark:text-white">
                                   {prop.name}
                                 </span>
                                 <span className="text-gray-500 dark:text-gray-400">
@@ -460,7 +460,7 @@ export function SchemaEditorContent() {
                                 key={prop.name}
                                 className="flex flex-wrap items-center gap-2 text-sm"
                               >
-                                <span className="font-mono text-gray-900 dark:text-white">
+                                <span className="font-mono break-all text-gray-900 dark:text-white">
                                   {prop.name}
                                 </span>
                                 <span className="text-gray-500 dark:text-gray-400">
