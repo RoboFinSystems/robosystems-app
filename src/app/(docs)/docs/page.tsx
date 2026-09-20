@@ -20,33 +20,26 @@ export const metadata: Metadata = publicPageMetadata({
   description: DESCRIPTION,
 })
 
-const GUIDES_DOOR = {
-  title: 'Guides',
-  href: '/docs/guides',
-  body: 'Use the platform through Claude, ChatGPT or any MCP client: connect, choose a graph, analyze SEC filings.',
-  external: false,
+interface Door {
+  title: string
+  href: string
+  body: string
+  external: boolean
+  /** Only shown once that site's guides exist in the catalog, so no door is a 404. */
+  productSite?: string
 }
 
-// The platform's own documentation first — guides, technical docs, the API reference —
-// then the doors out to the products built on it.
-const DOORS = [
+// Two kinds of door, labelled as such. Guides teach the products; the reference
+// documents the surfaces. Before this they sat in one grid, where "Guides" (meaning
+// RoboSystems') stood beside RoboLedger and RoboInvestor, which are also guides, and
+// "API reference" stood beside Extensions, which is also an API reference.
+const GUIDE_DOORS: Door[] = [
   {
-    title: 'Technical docs',
-    href: '/docs/technical',
-    body: 'Build on, run and extend the platform: graphs, the MCP server, the operations and GraphQL surfaces, the SEC pipeline, and self-hosting.',
+    title: 'RoboSystems',
+    href: '/docs/guides',
+    body: 'Use the platform through Claude, ChatGPT or any MCP client: connect, choose a graph, analyze SEC filings.',
     external: false,
-  },
-  {
-    title: 'API reference',
-    href: '/docs/api',
-    body: "The platform API: graphs, billing, auth and connections, with every endpoint's parameters, schemas and an example call.",
-    external: false,
-  },
-  {
-    title: 'Extensions',
-    href: '/docs/extensions',
-    body: 'RoboLedger and RoboInvestor on one surface: read-only GraphQL queries, named command writes, and analytical view operations.',
-    external: false,
+    productSite: DOCS_SITE,
   },
   {
     title: 'RoboLedger',
@@ -63,6 +56,55 @@ const DOORS = [
   },
 ]
 
+const REFERENCE_DOORS: Door[] = [
+  {
+    title: 'Platform API',
+    href: '/docs/api',
+    body: "Graphs, billing, auth and connections, with every endpoint's parameters, schemas and an example call.",
+    external: false,
+  },
+  {
+    title: 'Extensions API',
+    href: '/docs/extensions',
+    body: 'RoboLedger and RoboInvestor on one surface: read-only GraphQL queries, named command writes, and analytical view operations.',
+    external: false,
+  },
+  {
+    title: 'Technical docs',
+    href: '/docs/technical',
+    body: 'Build on, run and extend the platform: graphs, the MCP server, the operations and GraphQL surfaces, the SEC pipeline, and self-hosting.',
+    external: false,
+  },
+]
+
+function DoorGrid({ doors }: { doors: Door[] }) {
+  const className =
+    'group block rounded-xl border border-gray-800 bg-gray-900/50 p-6 transition-all hover:border-cyan-500/50 hover:bg-gray-900/70'
+  return (
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {doors.map((door) => {
+        const content = (
+          <>
+            <h3 className="mb-2 text-xl font-bold text-white transition-colors group-hover:text-cyan-400">
+              {door.title}
+            </h3>
+            <p className="text-sm text-gray-400">{door.body}</p>
+          </>
+        )
+        return door.external ? (
+          <a key={door.title} href={door.href} className={className}>
+            {content}
+          </a>
+        ) : (
+          <Link key={door.title} href={door.href} className={className}>
+            {content}
+          </Link>
+        )
+      })}
+    </div>
+  )
+}
+
 export default async function DocsLandingPage() {
   const catalog = await getDocsCatalog()
   const technical = catalog && getDocsNav(catalog, DOCS_SITE, 'technical')
@@ -70,10 +112,9 @@ export default async function DocsLandingPage() {
   const hasGuides = !!guides && guides.ordered.length > 0
   const hasProductDocs = (site: string) =>
     !!catalog && !!getDocsNav(catalog, site, 'product')?.ordered.length
-  const available = DOORS.filter(
+  const guideDoors = GUIDE_DOORS.filter(
     (door) => !door.productSite || hasProductDocs(door.productSite)
   )
-  const doors = hasGuides ? [GUIDES_DOOR, ...available] : available
 
   return (
     <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 lg:px-8">
@@ -88,34 +129,26 @@ export default async function DocsLandingPage() {
         </p>
       </header>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {doors.map((door) => {
-          const className =
-            'group block rounded-xl border border-gray-800 bg-gray-900/50 p-6 transition-all hover:border-cyan-500/50 hover:bg-gray-900/70'
-          const content = (
-            <>
-              <h2 className="mb-2 text-xl font-bold text-white transition-colors group-hover:text-cyan-400">
-                {door.title}
-              </h2>
-              <p className="text-sm text-gray-400">{door.body}</p>
-            </>
-          )
-          return door.external ? (
-            <a key={door.title} href={door.href} className={className}>
-              {content}
-            </a>
-          ) : (
-            <Link key={door.title} href={door.href} className={className}>
-              {content}
-            </Link>
-          )
-        })}
-      </div>
+      {guideDoors.length > 0 && (
+        <section>
+          <h2 className="font-heading mb-6 text-2xl font-bold text-white">
+            Guides
+          </h2>
+          <DoorGrid doors={guideDoors} />
+        </section>
+      )}
+
+      <section className="mt-16">
+        <h2 className="font-heading mb-6 text-2xl font-bold text-white">
+          Reference
+        </h2>
+        <DoorGrid doors={REFERENCE_DOORS} />
+      </section>
 
       {guides && hasGuides && (
         <section className="mt-16">
           <h2 className="font-heading mb-8 text-2xl font-bold text-white">
-            Guides
+            RoboSystems guides
           </h2>
           <ul className="grid gap-x-8 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
             {guides.ordered.map((page) => (
