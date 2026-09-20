@@ -1,3 +1,4 @@
+import { ApiShell } from '@/components/docs/api/ApiShell'
 import { MethodBadge } from '@/components/docs/api/MethodBadge'
 import { PROSE } from '@/components/docs/prose'
 import { GRAPHQL_BASE_PATH, getGraphqlCatalog } from '@/lib/graphql'
@@ -69,16 +70,18 @@ export default async function ExtensionsHubPage() {
   const graphqlTag = catalog.tags.find(GRAPHQL)
   const writeOps = writes.reduce((n, t) => n + t.operations.length, 0)
 
-  return (
-    <div className="mx-auto max-w-5xl px-6 py-12">
-      <nav className="mb-8 text-sm text-gray-500">
-        <Link href="/docs" className="hover:text-cyan-400">
-          Docs
-        </Link>
-        <span className="px-2">/</span>
-        <span className="text-gray-300">Extensions</span>
-      </nav>
+  const crumbs = [
+    { name: 'Docs', path: '/docs' },
+    { name: 'Extensions', path: EXTENSIONS_BASE_PATH },
+  ]
 
+  return (
+    <ApiShell
+      catalog={catalog}
+      crumbs={crumbs}
+      basePath={EXTENSIONS_BASE_PATH}
+      overviewLabel="Extensions"
+    >
       <h1 className="font-heading text-4xl text-white">Extensions</h1>
       <div className={`${PROSE} mt-6`}>
         <p>
@@ -165,6 +168,6 @@ export default async function ExtensionsHubPage() {
           that give an agent the same surface.
         </p>
       )}
-    </div>
+    </ApiShell>
   )
 }

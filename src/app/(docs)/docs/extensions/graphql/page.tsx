@@ -1,3 +1,4 @@
+import { ApiShell } from '@/components/docs/api/ApiShell'
 import { CodeBlock } from '@/components/docs/api/CodeBlock'
 import { PROSE } from '@/components/docs/prose'
 import {
@@ -10,7 +11,9 @@ import {
 import {
   EXTENSIONS_BASE_PATH,
   catalogForSurface,
-  getApiCatalog,
+  deferWhenSpecUrlIsAPlaceholder,
+  requireApiCatalog,
+  type ApiCatalog,
   type ApiOperation,
 } from '@/lib/openapi'
 import { publicPageMetadata } from '@/lib/site'
@@ -35,30 +38,42 @@ export const metadata: Metadata = publicPageMetadata({
   description: DESCRIPTION,
 })
 
+/**
+ * The catalog the nav renders from, with GraphQL shown as a leaf.
+ *
+ * Its two HTTP operations are documented on this page rather than as pages of their
+ * own, so expanding them in the sidebar would offer links that resolve to nothing.
+ */
+function navCatalog(catalog: ApiCatalog): ApiCatalog {
+  return {
+    ...catalog,
+    tags: catalog.tags.map((tag) =>
+      tag.slug === 'graphql' ? { ...tag, operations: [] } : tag
+    ),
+  }
+}
+
 export default async function GraphqlReferencePage() {
   await deferWhenGraphqlUrlIsAPlaceholder()
+  await deferWhenSpecUrlIsAPlaceholder()
   const catalog = await requireGraphqlCatalog()
-  const spec = await getApiCatalog()
-  const endpoint = spec
-    ? catalogForSurface(spec, 'extensions').operations.filter(
-        (o) => o.tagSlug === 'graphql'
-      )
-    : []
+  const spec = catalogForSurface(await requireApiCatalog(), 'extensions')
+  const endpoint = spec.operations.filter((o) => o.tagSlug === 'graphql')
+
+  const crumbs = [
+    { name: 'Docs', path: '/docs' },
+    { name: 'Extensions', path: EXTENSIONS_BASE_PATH },
+    { name: 'GraphQL', path: GRAPHQL_BASE_PATH },
+  ]
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-12">
-      <nav className="mb-8 text-sm text-gray-500">
-        <Link href="/docs" className="hover:text-cyan-400">
-          Docs
-        </Link>
-        <span className="px-2">/</span>
-        <Link href={EXTENSIONS_BASE_PATH} className="hover:text-cyan-400">
-          Extensions
-        </Link>
-        <span className="px-2">/</span>
-        <span className="text-gray-300">GraphQL</span>
-      </nav>
-
+    <ApiShell
+      catalog={navCatalog(spec)}
+      crumbs={crumbs}
+      activeTag="graphql"
+      basePath={EXTENSIONS_BASE_PATH}
+      overviewLabel="Extensions"
+    >
       <h1 className="font-heading text-4xl text-white">
         GraphQL: the read surface
       </h1>
@@ -165,7 +180,7 @@ export default async function GraphqlReferencePage() {
           </section>
         ))}
       </div>
-    </div>
+    </ApiShell>
   )
 }
 
