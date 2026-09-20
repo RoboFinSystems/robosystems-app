@@ -40,17 +40,22 @@ function TagNav({
   activeTag,
   activeOperation,
   expand = false,
+  basePath = API_BASE_PATH,
+  overviewLabel = 'Overview',
 }: {
   catalog: ApiCatalog
   activeTag?: string
   activeOperation?: string
   /** Whether the active tag lists its operations. Off for the mobile disclosure. */
   expand?: boolean
+  /** The reference this nav belongs to: the platform API, or the extensions surface. */
+  basePath?: string
+  overviewLabel?: string
 }) {
   return (
     <div className="space-y-1 text-sm">
-      <TagLink href={API_BASE_PATH} active={!activeTag}>
-        Overview
+      <TagLink href={basePath} active={!activeTag}>
+        {overviewLabel}
       </TagLink>
       {catalog.tags.map((tag) => {
         const open = tag.slug === activeTag
@@ -92,12 +97,16 @@ export function ApiShell({
   crumbs,
   activeTag,
   activeOperation,
+  basePath = API_BASE_PATH,
+  overviewLabel = 'Overview',
   children,
 }: {
   catalog: ApiCatalog
   crumbs: Crumb[]
   activeTag?: string
   activeOperation?: string
+  basePath?: string
+  overviewLabel?: string
   children: ReactNode
 }) {
   return (
@@ -108,6 +117,8 @@ export function ApiShell({
           className="sticky top-28 hidden max-h-[calc(100vh-8rem)] w-64 shrink-0 self-start overflow-y-auto pb-8 lg:block"
         >
           <TagNav
+            basePath={basePath}
+            overviewLabel={overviewLabel}
             catalog={catalog}
             activeTag={activeTag}
             activeOperation={activeOperation}
@@ -138,7 +149,12 @@ export function ApiShell({
               Browse the API reference
             </summary>
             <div className="mt-4">
-              <TagNav catalog={catalog} activeTag={activeTag} />
+              <TagNav
+                basePath={basePath}
+                overviewLabel={overviewLabel}
+                catalog={catalog}
+                activeTag={activeTag}
+              />
             </div>
           </details>
 

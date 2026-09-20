@@ -24,7 +24,7 @@ type Props = { params: Promise<{ tag: string; operation: string }> }
 
 /** The page's data, or null when the spec simply has no such operation. */
 async function load(tag: string, operation: string) {
-  const catalog = catalogForSurface(await requireApiCatalog(), 'platform')
+  const catalog = catalogForSurface(await requireApiCatalog(), 'extensions')
   const found = findApiOperation(catalog, tag, operation)
   const group = findApiTag(catalog, tag)
   return found && group ? { catalog, operation: found, tag: group } : null
@@ -32,20 +32,22 @@ async function load(tag: string, operation: string) {
 
 export async function generateStaticParams() {
   const full = await getApiCatalog()
-  const catalog = full ? catalogForSurface(full, 'platform') : null
-  return (catalog?.operations ?? []).map((operation) => ({
-    tag: operation.tagSlug,
-    operation: operation.slug,
-  }))
+  const catalog = full ? catalogForSurface(full, 'extensions') : null
+  return (catalog?.operations ?? [])
+    .filter((operation) => operation.tagSlug !== 'graphql')
+    .map((operation) => ({
+      tag: operation.tagSlug,
+      operation: operation.slug,
+    }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { tag, operation } = await params
   const found = await load(tag, operation)
-  if (!found) return { title: 'Page Not Found | RoboSystems API' }
+  if (!found) return { title: 'Page Not Found | RoboSystems extensions' }
   return publicPageMetadata({
     path: found.operation.path,
-    title: `${found.operation.summary} | RoboSystems API`,
+    title: `${found.operation.summary} | RoboSystems extensions`,
     description: describe(found.operation),
   })
 }
@@ -54,14 +56,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 function describe(operation: ApiOperation): string {
   const prose = summarize(operation.description)
   if (prose) return prose
-  return `${operation.method.toUpperCase()} ${operation.route} — ${operation.summary} in the RoboSystems API.`
+  return `${operation.method.toUpperCase()} ${operation.route} — ${operation.summary} on the RoboSystems extensions surface.`
 }
 
-export default async function ApiOperationPage({ params }: Props) {
+export default async function ExtensionsOperationPage({ params }: Props) {
   const { tag, operation } = await params
   return (
     <OperationReference
-      surface="platform"
+      surface="extensions"
       tagSlug={tag}
       operationSlug={operation}
     />

@@ -80,12 +80,12 @@ describe('DocsLandingPage', () => {
     expect(await doorTitles()).toEqual([
       'Technical docs',
       'API reference',
-      'GraphQL reference',
+      'Extensions',
       'RoboLedger',
       'RoboInvestor',
     ])
     expect(
-      screen.getByRole('link', { name: /RoboInvestor/ }).getAttribute('href')
+      screen.getByRole('link', { name: /^RoboInvestor/ }).getAttribute('href')
     ).toBe('https://roboinvestor.ai/docs')
   })
 
@@ -98,10 +98,10 @@ describe('DocsLandingPage', () => {
     expect(titles).toEqual([
       'Technical docs',
       'API reference',
-      'GraphQL reference',
+      'Extensions',
       'RoboLedger',
     ])
-    expect(screen.queryByRole('link', { name: /RoboInvestor/ })).toBeNull()
+    expect(screen.queryByRole('link', { name: /^RoboInvestor/ })).toBeNull()
   })
 
   it('omits the RoboInvestor door when its collection has no pages', async () => {
@@ -116,7 +116,7 @@ describe('DocsLandingPage', () => {
     expect(await doorTitles()).toEqual([
       'Technical docs',
       'API reference',
-      'GraphQL reference',
+      'Extensions',
       'RoboLedger',
     ])
   })

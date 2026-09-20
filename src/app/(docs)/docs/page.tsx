@@ -39,13 +39,13 @@ const DOORS = [
   {
     title: 'API reference',
     href: '/docs/api',
-    body: 'Every REST endpoint, with its parameters, request and response schemas, and an example call.',
+    body: "The platform API: graphs, billing, auth and connections, with every endpoint's parameters, schemas and an example call.",
     external: false,
   },
   {
-    title: 'GraphQL reference',
-    href: '/docs/graphql',
-    body: 'The typed read surface for a graph: every ledger, investor, block and taxonomy-library query, with its arguments, return type and an example call.',
+    title: 'Extensions',
+    href: '/docs/extensions',
+    body: 'RoboLedger and RoboInvestor on one surface: read-only GraphQL queries, named command writes, and analytical view operations.',
     external: false,
   },
   {

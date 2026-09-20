@@ -7,6 +7,12 @@ import {
   requireGraphqlCatalog,
   typeLabel,
 } from '@/lib/graphql'
+import {
+  EXTENSIONS_BASE_PATH,
+  catalogForSurface,
+  getApiCatalog,
+  type ApiOperation,
+} from '@/lib/openapi'
 import { publicPageMetadata } from '@/lib/site'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -19,9 +25,9 @@ import Link from 'next/link'
 export const revalidate = 3600
 export const dynamicParams = true
 
-const TITLE = 'GraphQL reference | RoboSystems'
+const TITLE = 'GraphQL: the extensions read surface | RoboSystems'
 const DESCRIPTION =
-  'Every query the extensions GraphQL surface serves: ledger, investor, block and taxonomy-library reads, with arguments, return types and an example call.'
+  'The read-only half of the RoboSystems extensions surface: every ledger, investor, block and taxonomy-library query, with its arguments, return type and an example call.'
 
 export const metadata: Metadata = publicPageMetadata({
   path: GRAPHQL_BASE_PATH,
@@ -32,6 +38,12 @@ export const metadata: Metadata = publicPageMetadata({
 export default async function GraphqlReferencePage() {
   await deferWhenGraphqlUrlIsAPlaceholder()
   const catalog = await requireGraphqlCatalog()
+  const spec = await getApiCatalog()
+  const endpoint = spec
+    ? catalogForSurface(spec, 'extensions').operations.filter(
+        (o) => o.tagSlug === 'graphql'
+      )
+    : []
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
@@ -40,19 +52,24 @@ export default async function GraphqlReferencePage() {
           Docs
         </Link>
         <span className="px-2">/</span>
+        <Link href={EXTENSIONS_BASE_PATH} className="hover:text-cyan-400">
+          Extensions
+        </Link>
+        <span className="px-2">/</span>
         <span className="text-gray-300">GraphQL</span>
       </nav>
 
-      <h1 className="font-heading text-4xl text-white">GraphQL reference</h1>
+      <h1 className="font-heading text-4xl text-white">
+        GraphQL: the read surface
+      </h1>
       <div className={`${PROSE} mt-6`}>
         <p>
-          The typed read surface for a graph&apos;s extensions data — RoboLedger
-          and RoboInvestor records as they stand right now. Writes are not here:
-          those are the named operations under{' '}
-          <code>
-            /extensions/{'{domain}'}/{'{graph_id}'}/operations/
-          </code>
-          , in the <Link href="/docs/api">REST reference</Link>.
+          <strong>This surface is read-only.</strong> It answers questions about
+          a graph&apos;s extensions data — RoboLedger and RoboInvestor records
+          as they stand right now — and changes nothing. Every write is a{' '}
+          <Link href={EXTENSIONS_BASE_PATH}>named operation</Link> instead, so a
+          query can never have a side effect and an operation is never a
+          surprise.
         </p>
         <p>
           Every query goes to one endpoint, scoped by its URL.{' '}
@@ -85,10 +102,43 @@ export default async function GraphqlReferencePage() {
         </p>
       </div>
 
-      <div className="mt-10 space-y-10">
+      {endpoint.length > 0 && (
+        <section className="mt-12" id="endpoint">
+          <h2 className="font-heading text-2xl text-white">The endpoint</h2>
+          <p className="mt-2 text-gray-400">
+            Two HTTP operations serve this surface. Everything below them is a
+            query you send to the first one.
+          </p>
+          <ul className="mt-5 space-y-3">
+            {endpoint.map((operation: ApiOperation) => (
+              <li
+                key={operation.slug}
+                className="rounded-xl border border-gray-800 bg-gray-900/50 p-5"
+              >
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="font-mono text-xs tracking-wider text-cyan-400 uppercase">
+                    {operation.method}
+                  </span>
+                  <code className="font-mono text-sm break-all text-gray-300">
+                    {operation.route}
+                  </code>
+                </div>
+                <h3 className="mt-3 font-semibold text-white">
+                  {operation.summary}
+                </h3>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <div className="mt-12 space-y-10">
+        <h2 className="font-heading text-2xl text-white">
+          Queries ({catalog.fields.length})
+        </h2>
         {catalog.domains.map((domain) => (
           <section key={domain.slug} id={domain.slug}>
-            <h2 className="font-heading text-2xl text-white">{domain.title}</h2>
+            <h3 className="font-heading text-xl text-white">{domain.title}</h3>
             <p className="mt-2 text-gray-400">{domain.description}</p>
             <ul className="mt-5 divide-y divide-gray-800 border-t border-gray-800">
               {domain.fields.map((field) => (

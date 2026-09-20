@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 const mockGetAllPosts = vi.fn()
 const mockGetDocsCatalog = vi.fn()
 const mockGetApiCatalog = vi.fn()
+const mockGetGraphqlCatalog = vi.fn()
 
 vi.mock('@/lib/blog', () => ({
   getAllPosts: () => mockGetAllPosts(),
@@ -16,6 +17,14 @@ vi.mock('@/lib/docs', async (importOriginal) => ({
 vi.mock('@/lib/openapi', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
   getApiCatalog: () => mockGetApiCatalog(),
+}))
+
+// Unmocked, getGraphqlCatalog would reach api.robosystems.ai for the live schema.
+// It fails soft to null so nothing breaks, but a suite that touches the public
+// internet is nondeterminism waiting to happen.
+vi.mock('@/lib/graphql', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  getGraphqlCatalog: () => mockGetGraphqlCatalog(),
 }))
 
 import type { DocsCatalog, DocsLayer, DocsPage } from '@/lib/docs'
@@ -203,6 +212,39 @@ describe('sitemap', () => {
       expect(byUrl.get(url)).toBeDefined()
       expect(byUrl.get(url)?.lastModified).toBeUndefined()
     }
+  })
+
+  it('lists the GraphQL reference, undated: the schema has no per-field history', async () => {
+    mockGetAllPosts.mockResolvedValue(posts)
+    mockGetGraphqlCatalog.mockResolvedValue({
+      serverUrl: 'https://api.robosystems.ai',
+      endpointPath: '/extensions/{graph_id}/graphql',
+      fields: [
+        { slug: 'fiscal-calendar' },
+        { slug: 'open-receivables-by-agent' },
+      ],
+      domains: [],
+      types: {},
+    })
+    const byUrl = new Map((await sitemap()).map((e) => [e.url, e]))
+
+    for (const url of [
+      'https://robosystems.ai/docs/extensions/graphql',
+      'https://robosystems.ai/docs/extensions/graphql/fiscal-calendar',
+      'https://robosystems.ai/docs/extensions/graphql/open-receivables-by-agent',
+    ]) {
+      expect(byUrl.get(url)).toBeDefined()
+      expect(byUrl.get(url)?.lastModified).toBeUndefined()
+    }
+  })
+
+  it('still lists the rest when the GraphQL schema is unreachable', async () => {
+    mockGetAllPosts.mockResolvedValue(posts)
+    mockGetGraphqlCatalog.mockResolvedValue(null)
+    const urls = (await sitemap()).map((e) => e.url)
+
+    expect(urls).toContain('https://robosystems.ai/docs')
+    expect(urls.some((u) => u.includes('/docs/extensions/graphql'))).toBe(false)
   })
 
   it('still lists the rest when the OpenAPI spec is unreachable', async () => {

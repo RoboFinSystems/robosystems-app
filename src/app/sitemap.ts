@@ -1,7 +1,12 @@
 import { getAllPosts } from '@/lib/blog'
 import { DOCS_SITE, getDocsCatalog, getDocsNav, latestUpdate } from '@/lib/docs'
 import { GRAPHQL_BASE_PATH, getGraphqlCatalog } from '@/lib/graphql'
-import { API_BASE_PATH, getApiCatalog } from '@/lib/openapi'
+import {
+  API_BASE_PATH,
+  EXTENSIONS_BASE_PATH,
+  catalogForSurface,
+  getApiCatalog,
+} from '@/lib/openapi'
 import type { MetadataRoute } from 'next'
 
 /**
@@ -46,7 +51,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // per operation. No lastModified anywhere in this block — the spec carries no per-
   // operation history, so the only date available is the API's release date, and stamping
   // it on all 200 pages would claim every operation changed on every release.
-  const api = await getApiCatalog()
+  const spec = await getApiCatalog()
+  const api = spec ? catalogForSurface(spec, 'platform') : null
   const apiPages: MetadataRoute.Sitemap = api
     ? [
         { url: `${baseUrl}${API_BASE_PATH}`, priority: 0.8 },
@@ -58,6 +64,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           url: `${baseUrl}${operation.path}`,
           priority: 0.5,
         })),
+      ].map((entry) => ({ ...entry, changeFrequency: 'monthly' as const }))
+    : []
+
+  // The extensions surface: its hub, a page per write and analytics tag, and a page per
+  // operation. The GraphQL tag is left out on purpose — its two HTTP operations render on
+  // the GraphQL page itself rather than as pages of their own.
+  const extensions = spec ? catalogForSurface(spec, 'extensions') : null
+  const extensionsPages: MetadataRoute.Sitemap = extensions
+    ? [
+        { url: `${baseUrl}${EXTENSIONS_BASE_PATH}`, priority: 0.8 },
+        ...extensions.tags
+          .filter((tag) => tag.slug !== 'graphql')
+          .map((tag) => ({ url: `${baseUrl}${tag.path}`, priority: 0.6 })),
+        ...extensions.operations
+          .filter((operation) => operation.tagSlug !== 'graphql')
+          .map((operation) => ({
+            url: `${baseUrl}${operation.path}`,
+            priority: 0.5,
+          })),
       ].map((entry) => ({ ...entry, changeFrequency: 'monthly' as const }))
     : []
 
@@ -110,6 +135,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticPages,
     ...docsPages,
     ...apiPages,
+    ...extensionsPages,
     ...graphqlPages,
     ...blogPosts,
   ]

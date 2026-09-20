@@ -57,6 +57,32 @@ export async function deferWhenSpecUrlIsAPlaceholder(): Promise<void> {
 
 export const API_BASE_PATH = '/docs/api'
 
+/**
+ * The extensions surface is documented on its own, because it is its own product surface:
+ * typed reads over GraphQL, named command writes, and analytical view operations. Splitting
+ * it out leaves `/docs/api` the platform API and gives `/docs/extensions` one hub that
+ * states the read/write split once instead of each page re-explaining it.
+ */
+export const EXTENSIONS_BASE_PATH = '/docs/extensions'
+
+export type ApiSurface = 'platform' | 'extensions'
+
+/**
+ * Which surface an operation belongs to, read off its own route.
+ *
+ * Every extensions operation is mounted under `/extensions/...` and every platform one
+ * under `/v1/...`, so the spec already carries the answer. Deriving it beats a hardcoded
+ * tag list, which would put a newly added extensions tag on the wrong page until someone
+ * noticed.
+ */
+export function surfaceOf(route: string): ApiSurface {
+  return route.startsWith('/extensions') ? 'extensions' : 'platform'
+}
+
+export function basePathFor(surface: ApiSurface): string {
+  return surface === 'extensions' ? EXTENSIONS_BASE_PATH : API_BASE_PATH
+}
+
 export const HTTP_METHODS = ['get', 'post', 'put', 'patch', 'delete'] as const
 
 export type HttpMethod = (typeof HTTP_METHODS)[number]
@@ -135,6 +161,7 @@ export interface ApiOperation {
   id: string
   slug: string
   path: string
+  surface: ApiSurface
   method: HttpMethod
   route: string
   summary: string
@@ -154,6 +181,7 @@ export interface ApiTag {
   name: string
   slug: string
   path: string
+  surface: ApiSurface
   title: string
   description: string
   operations: ApiOperation[]
@@ -351,10 +379,13 @@ export function buildCatalog(doc: OpenApiDocument): ApiCatalog {
         }))
         .sort((a, b) => a.status.localeCompare(b.status))
 
+      const surface = surfaceOf(route)
+
       operations.push({
         id: operationId,
         slug,
-        path: `${API_BASE_PATH}/${tSlug}/${slug}`,
+        path: `${basePathFor(surface)}/${tSlug}/${slug}`,
+        surface,
         method,
         route,
         summary: asString(operation.summary) || operationId,
@@ -383,10 +414,14 @@ export function buildCatalog(doc: OpenApiDocument): ApiCatalog {
     const ops = operations.filter((o) => o.tagName === name)
     if (ops.length === 0) continue
     const slug = tagSlug(name)
+    // A tag's surface is its operations'. They never straddle the two in practice, and
+    // the first one deciding is better than a tag that renders on neither page.
+    const surface = ops[0]?.surface ?? 'platform'
     tags.push({
       name,
       slug,
-      path: `${API_BASE_PATH}/${slug}`,
+      path: `${basePathFor(surface)}/${slug}`,
+      surface,
       title: titles.get(name)?.title ?? name,
       description: titles.get(name)?.description ?? '',
       operations: ops,
@@ -425,6 +460,18 @@ export const getApiCatalog = cache(async (): Promise<ApiCatalog | null> => {
     return null
   }
 })
+
+/** The catalog narrowed to one surface, so a page renders only what belongs to it. */
+export function catalogForSurface(
+  catalog: ApiCatalog,
+  surface: ApiSurface
+): ApiCatalog {
+  return {
+    ...catalog,
+    tags: catalog.tags.filter((t) => t.surface === surface),
+    operations: catalog.operations.filter((o) => o.surface === surface),
+  }
+}
 
 export function findApiTag(
   catalog: ApiCatalog,

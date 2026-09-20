@@ -50,6 +50,44 @@ const nextConfig = {
         destination: '/organization?tab=billing',
         permanent: false,
       },
+      // The extensions surface moved out of the platform API reference into its own hub
+      // at /docs/extensions, so reads (GraphQL) and writes (named operations) are
+      // documented as one thing instead of as unrelated tags.
+      //
+      // permanent: true — these are the canonical homes now, and the wiki already
+      // publishes links to /docs/graphql. The GraphQL tag's two HTTP operations no
+      // longer have pages of their own: they render on the GraphQL page itself, which
+      // is where anyone following an old operation link wants to land anyway.
+      {
+        source: '/docs/graphql',
+        destination: '/docs/extensions/graphql',
+        permanent: true,
+      },
+      {
+        source: '/docs/graphql/:field',
+        destination: '/docs/extensions/graphql/:field',
+        permanent: true,
+      },
+      {
+        source: '/docs/api/graphql/:operation*',
+        destination: '/docs/extensions/graphql',
+        permanent: true,
+      },
+      {
+        source: '/docs/api/graphql',
+        destination: '/docs/extensions/graphql',
+        permanent: true,
+      },
+      {
+        source: '/docs/api/:tag(roboledger-.*|roboinvestor)/:operation*',
+        destination: '/docs/extensions/:tag/:operation*',
+        permanent: true,
+      },
+      {
+        source: '/docs/api/:tag(roboledger-.*|roboinvestor)',
+        destination: '/docs/extensions/:tag',
+        permanent: true,
+      },
       // /open-source was setup instructions dressed as a marketing page (local quick
       // start, SEC pipeline, MCP setup, client libraries, AWS bootstrap), and most of its
       // recent commits were fixes keeping those claims current. The technical docs are now

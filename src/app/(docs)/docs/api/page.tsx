@@ -4,6 +4,8 @@ import { DocsMarkdown } from '@/components/docs/DocsMarkdown'
 import { PROSE } from '@/components/docs/prose'
 import {
   API_BASE_PATH,
+  EXTENSIONS_BASE_PATH,
+  catalogForSurface,
   deferWhenSpecUrlIsAPlaceholder,
   requireApiCatalog,
 } from '@/lib/openapi'
@@ -21,7 +23,7 @@ export const revalidate = 3600
 
 const TITLE = 'REST API reference | RoboSystems'
 const DESCRIPTION =
-  'Every REST endpoint of the RoboSystems API, with its parameters, request and response schemas, and an example call: graphs, Cypher queries, SEC filings, accounting operations, billing and access.'
+  'Every platform REST endpoint of the RoboSystems API, with its parameters, request and response schemas, and an example call: graphs, Cypher queries, SEC filings, accounting operations, billing and access.'
 
 export const metadata: Metadata = publicPageMetadata({
   path: API_BASE_PATH,
@@ -31,7 +33,7 @@ export const metadata: Metadata = publicPageMetadata({
 
 export default async function ApiReferencePage() {
   await deferWhenSpecUrlIsAPlaceholder()
-  const catalog = await requireApiCatalog()
+  const catalog = catalogForSurface(await requireApiCatalog(), 'platform')
 
   const crumbs = [
     { name: 'Docs', path: '/docs' },
@@ -45,10 +47,24 @@ export default async function ApiReferencePage() {
           REST API reference
         </h1>
         <p className="mt-4 text-lg text-gray-400">
-          {catalog.operations.length} operations across {catalog.tags.length}{' '}
-          groups. Every call goes to{' '}
+          The platform API: {catalog.operations.length} operations across{' '}
+          {catalog.tags.length} groups — graphs, billing, auth, connections and
+          the rest. Every call goes to{' '}
           <code className="font-mono text-cyan-300">{catalog.serverUrl}</code>{' '}
           and authenticates with an API key from your account settings.
+        </p>
+        {/* RoboLedger and RoboInvestor are documented on their own, because their
+            reads are GraphQL rather than REST and only the hub can state that split
+            once. A reader who lands here looking for them needs the door. */}
+        <p className="mt-3 text-gray-400">
+          Looking for RoboLedger or RoboInvestor? Those live on the{' '}
+          <Link
+            href={EXTENSIONS_BASE_PATH}
+            className="text-cyan-400 hover:text-cyan-300"
+          >
+            extensions surface
+          </Link>
+          , where the reads are GraphQL and the writes are named operations.
         </p>
         {/* The API host serves Swagger UI at its root: the one place a call can be run
             against the deployed API from a browser. It is a tool, not a document — these
