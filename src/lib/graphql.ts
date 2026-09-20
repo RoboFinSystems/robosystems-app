@@ -113,6 +113,9 @@ interface DomainSpec {
   claims: (field: string, typeName: string) => boolean
 }
 
+// Ordered to match the write surface, where every RoboLedger group precedes
+// RoboInvestor. A reader moving between the two references should not have to
+// re-learn where a product sits.
 const DOMAIN_SPECS: DomainSpec[] = [
   {
     slug: 'ledger',
@@ -165,6 +168,21 @@ const DOMAIN_SPECS: DomainSpec[] = [
       ].includes(f),
   },
   {
+    slug: 'blocks',
+    title: 'Information & taxonomy blocks',
+    description:
+      'The block envelopes both products share: a rendered statement, schedule or rollforward, and the taxonomy blocks behind them. Always present, whichever extensions are enabled.',
+    claims: (f) =>
+      f.startsWith('informationBlock') || f.startsWith('taxonomyBlock'),
+  },
+  {
+    slug: 'library',
+    title: 'Taxonomy library',
+    description:
+      'The shared public taxonomy library — taxonomies, elements, arcs, structures and traits. Browse it with the `library` graph id, or from a tenant graph to see its own taxonomies with public fallback.',
+    claims: (f) => f.startsWith('library') || f === 'searchLibraryElements',
+  },
+  {
     slug: 'investor',
     title: 'Investor',
     description:
@@ -179,21 +197,6 @@ const DOMAIN_SPECS: DomainSpec[] = [
         'holdings',
         'portfolioBlock',
       ].includes(f),
-  },
-  {
-    slug: 'blocks',
-    title: 'Information & taxonomy blocks',
-    description:
-      'The block envelopes both products share: a rendered statement, schedule or rollforward, and the taxonomy blocks behind them. Always present, whichever extensions are enabled.',
-    claims: (f) =>
-      f.startsWith('informationBlock') || f.startsWith('taxonomyBlock'),
-  },
-  {
-    slug: 'library',
-    title: 'Taxonomy library',
-    description:
-      'The shared public taxonomy library — taxonomies, elements, arcs, structures and traits. Browse it with the `library` graph id, or from a tenant graph to see its own taxonomies with public fallback.',
-    claims: (f) => f.startsWith('library') || f === 'searchLibraryElements',
   },
   {
     slug: 'probe',

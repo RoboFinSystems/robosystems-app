@@ -13,6 +13,7 @@ import {
   catalogForSurface,
   deferWhenSpecUrlIsAPlaceholder,
   requireApiCatalog,
+  summarize,
   type ApiCatalog,
   type ApiOperation,
 } from '@/lib/openapi'
@@ -172,7 +173,7 @@ export default async function GraphqlReferencePage() {
                   </Link>
                   {field.description && (
                     <p className="mt-1 text-sm text-gray-400">
-                      {firstLine(field.description)}
+                      {summaryLine(field.description)}
                     </p>
                   )}
                 </li>
@@ -185,7 +186,13 @@ export default async function GraphqlReferencePage() {
   )
 }
 
-/** The summary line of a description; the field's own page carries the rest. */
-function firstLine(description: string): string {
-  return description.split('\n\n')[0]?.replace(/\s+/g, ' ').trim() ?? ''
+/**
+ * The one-line summary beside a field name; the field's own page carries the rest.
+ *
+ * Takes the first sentence rather than the first paragraph, and caps it, so a field
+ * whose opening paragraph runs long cannot turn a list of one-liners into a wall of
+ * text. Inline code markers are dropped because this line renders as plain text.
+ */
+function summaryLine(description: string): string {
+  return summarize(description.replace(/`+/g, ''), 150)
 }
