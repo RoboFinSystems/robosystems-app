@@ -2,7 +2,7 @@ import { ApiShell } from '@/components/docs/api/ApiShell'
 import { MethodBadge } from '@/components/docs/api/MethodBadge'
 import { DocsJsonLd } from '@/components/docs/DocsJsonLd'
 import {
-  API_BASE_PATH,
+  EXTENSIONS_BASE_PATH,
   catalogForSurface,
   deferWhenSpecUrlIsAPlaceholder,
   findApiTag,
@@ -28,8 +28,10 @@ type Props = { params: Promise<{ tag: string }> }
 
 export async function generateStaticParams() {
   const full = await getApiCatalog()
-  const catalog = full ? catalogForSurface(full, 'platform') : null
-  return (catalog?.tags ?? []).map((tag) => ({ tag: tag.slug }))
+  const catalog = full ? catalogForSurface(full, 'extensions') : null
+  return (catalog?.tags ?? [])
+    .filter((tag) => tag.slug !== 'graphql')
+    .map((tag) => ({ tag: tag.slug }))
 }
 
 // With no reachable spec there is nothing to prerender, and generateStaticParams above
@@ -37,7 +39,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const full = await getApiCatalog()
-  const catalog = full ? catalogForSurface(full, 'platform') : null
+  const catalog = full ? catalogForSurface(full, 'extensions') : null
   const tag = catalog && findApiTag(catalog, (await params).tag)
   if (!tag) return { title: 'Page Not Found | RoboSystems API' }
   return publicPageMetadata({
@@ -49,23 +51,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   })
 }
 
-export default async function ApiTagPage({ params }: Props) {
+export default async function ExtensionsTagPage({ params }: Props) {
   await deferWhenSpecUrlIsAPlaceholder()
-  const catalog = catalogForSurface(await requireApiCatalog(), 'platform')
+  const catalog = catalogForSurface(await requireApiCatalog(), 'extensions')
   const tag = findApiTag(catalog, (await params).tag)
   if (!tag) notFound()
 
   const crumbs = [
     { name: 'Docs', path: '/docs' },
-    { name: 'API reference', path: API_BASE_PATH },
+    { name: 'Extensions', path: EXTENSIONS_BASE_PATH },
     { name: tag.title, path: tag.path },
   ]
 
   return (
-    <ApiShell catalog={catalog} crumbs={crumbs} activeTag={tag.slug}>
+    <ApiShell
+      catalog={catalog}
+      crumbs={crumbs}
+      activeTag={tag.slug}
+      basePath={EXTENSIONS_BASE_PATH}
+      overviewLabel="Extensions"
+      navLabel="Extensions reference"
+    >
       <DocsJsonLd
         page={{
-          title: `${tag.title} API`,
+          title: `${tag.title} | RoboSystems extensions`,
           description: tag.description,
           path: tag.path,
           updated: null,

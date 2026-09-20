@@ -1,3 +1,4 @@
+import { ApiShell } from '@/components/docs/api/ApiShell'
 import { CodeBlock } from '@/components/docs/api/CodeBlock'
 import { DocsMarkdown } from '@/components/docs/DocsMarkdown'
 import { PROSE } from '@/components/docs/prose'
@@ -13,7 +14,14 @@ import {
   type GraphqlCatalog,
   type GraphqlField,
 } from '@/lib/graphql'
-import { summarize } from '@/lib/openapi'
+import {
+  EXTENSIONS_BASE_PATH,
+  catalogForSurface,
+  collapseGraphqlOperations,
+  deferWhenSpecUrlIsAPlaceholder,
+  requireApiCatalog,
+  summarize,
+} from '@/lib/openapi'
 import { publicPageMetadata } from '@/lib/site'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -56,37 +64,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function GraphqlFieldPage({ params }: Props) {
   await deferWhenGraphqlUrlIsAPlaceholder()
+  await deferWhenSpecUrlIsAPlaceholder()
   const { field: slug } = await params
   const catalog = await requireGraphqlCatalog()
   const field = findGraphqlField(catalog, slug)
   if (!field) notFound()
 
+  const spec = catalogForSurface(await requireApiCatalog(), 'extensions')
   const returned = catalog.types[field.typeName]
   const domain = catalog.domains.find((d) => d.slug === field.domainSlug)
 
-  return (
-    <div className="mx-auto max-w-4xl px-6 py-12">
-      <nav className="mb-8 text-sm text-gray-500">
-        <Link href="/docs" className="hover:text-cyan-400">
-          Docs
-        </Link>
-        <span className="px-2">/</span>
-        <Link href={GRAPHQL_BASE_PATH} className="hover:text-cyan-400">
-          GraphQL
-        </Link>
-        {domain && (
-          <>
-            <span className="px-2">/</span>
-            <Link
-              href={`${GRAPHQL_BASE_PATH}#${domain.slug}`}
-              className="hover:text-cyan-400"
-            >
-              {domain.title}
-            </Link>
-          </>
-        )}
-      </nav>
+  const crumbs = [
+    { name: 'Docs', path: '/docs' },
+    { name: 'Extensions', path: EXTENSIONS_BASE_PATH },
+    { name: 'GraphQL', path: GRAPHQL_BASE_PATH },
+    { name: field.name, path: `${GRAPHQL_BASE_PATH}/${field.slug}` },
+  ]
 
+  return (
+    <ApiShell
+      catalog={collapseGraphqlOperations(spec)}
+      crumbs={crumbs}
+      activeTag="graphql"
+      basePath={EXTENSIONS_BASE_PATH}
+      overviewLabel="Extensions"
+      navLabel="Extensions reference"
+    >
       <h1 className="font-mono text-3xl text-white">{field.name}</h1>
       <p className="mt-3 font-mono text-sm text-gray-500">
         returns <span className="text-cyan-400">{typeLabel(field.type)}</span>
@@ -194,7 +197,7 @@ export default async function GraphqlFieldPage({ params }: Props) {
       </section>
 
       <Neighbors catalog={catalog} field={field} />
-    </div>
+    </ApiShell>
   )
 }
 

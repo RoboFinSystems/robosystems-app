@@ -229,9 +229,9 @@ describe('sitemap', () => {
     const byUrl = new Map((await sitemap()).map((e) => [e.url, e]))
 
     for (const url of [
-      'https://robosystems.ai/docs/graphql',
-      'https://robosystems.ai/docs/graphql/fiscal-calendar',
-      'https://robosystems.ai/docs/graphql/open-receivables-by-agent',
+      'https://robosystems.ai/docs/extensions/graphql',
+      'https://robosystems.ai/docs/extensions/graphql/fiscal-calendar',
+      'https://robosystems.ai/docs/extensions/graphql/open-receivables-by-agent',
     ]) {
       expect(byUrl.get(url)).toBeDefined()
       expect(byUrl.get(url)?.lastModified).toBeUndefined()
@@ -244,7 +244,7 @@ describe('sitemap', () => {
     const urls = (await sitemap()).map((e) => e.url)
 
     expect(urls).toContain('https://robosystems.ai/docs')
-    expect(urls.some((u) => u.includes('/docs/graphql'))).toBe(false)
+    expect(urls.some((u) => u.includes('/docs/extensions/graphql'))).toBe(false)
   })
 
   it('still lists the rest when the OpenAPI spec is unreachable', async () => {

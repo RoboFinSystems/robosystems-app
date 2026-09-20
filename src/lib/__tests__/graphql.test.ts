@@ -100,6 +100,22 @@ describe('the GraphQL reference', () => {
     }
   })
 
+  // The write surface lists every RoboLedger group before RoboInvestor. Investor sat
+  // above the block and library domains here, so a reader crossing between the two
+  // references had to re-learn where a product lives.
+  it('orders domains the way the write surface does', () => {
+    expect(DOMAIN_ORDER).toEqual([
+      'ledger',
+      'blocks',
+      'library',
+      'investor',
+      'probe',
+    ])
+    expect(DOMAIN_ORDER.indexOf('investor')).toBeGreaterThan(
+      DOMAIN_ORDER.indexOf('blocks')
+    )
+  })
+
   it('derives a unique URL slug per field, from the schema alone', () => {
     const slugs = QUERY_FIELDS.map(fieldSlug)
     expect(new Set(slugs).size).toBe(slugs.length)

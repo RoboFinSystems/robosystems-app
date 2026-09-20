@@ -1,7 +1,8 @@
 // The GraphQL reference, read from the API's own introspection.
 //
-// The REST reference renders from `/openapi.json`; this is its sibling for the extensions
-// read surface. The schema is composed per deployment — ledger fields need RoboLedger,
+// The read half of the extensions reference at `/docs/extensions`: writes are the named
+// operations, rendered from the OpenAPI spec like any other REST surface, and this is the
+// GraphQL side of the same hub. The schema is composed per deployment — ledger fields need RoboLedger,
 // investor fields need RoboInvestor — so the only honest source for "what can I ask for"
 // is the running API, not a snapshot committed here.
 //
@@ -13,7 +14,7 @@ import { connection } from 'next/server'
 import { cache } from 'react'
 import { API_SERVER_URL } from './openapi'
 
-export const GRAPHQL_BASE_PATH = '/docs/graphql'
+export const GRAPHQL_BASE_PATH = '/docs/extensions/graphql'
 
 /** The path readers actually call. `graph_id` is theirs; `library` is only ours, for introspection. */
 export const GRAPHQL_ENDPOINT_PATH = '/extensions/{graph_id}/graphql'
@@ -112,6 +113,9 @@ interface DomainSpec {
   claims: (field: string, typeName: string) => boolean
 }
 
+// Ordered to match the write surface, where every RoboLedger group precedes
+// RoboInvestor. A reader moving between the two references should not have to
+// re-learn where a product sits.
 const DOMAIN_SPECS: DomainSpec[] = [
   {
     slug: 'ledger',
@@ -164,6 +168,21 @@ const DOMAIN_SPECS: DomainSpec[] = [
       ].includes(f),
   },
   {
+    slug: 'blocks',
+    title: 'Information & taxonomy blocks',
+    description:
+      'The block envelopes both products share: a rendered statement, schedule or rollforward, and the taxonomy blocks behind them. Always present, whichever extensions are enabled.',
+    claims: (f) =>
+      f.startsWith('informationBlock') || f.startsWith('taxonomyBlock'),
+  },
+  {
+    slug: 'library',
+    title: 'Taxonomy library',
+    description:
+      'The shared public taxonomy library — taxonomies, elements, arcs, structures and traits. Browse it with the `library` graph id, or from a tenant graph to see its own taxonomies with public fallback.',
+    claims: (f) => f.startsWith('library') || f === 'searchLibraryElements',
+  },
+  {
     slug: 'investor',
     title: 'Investor',
     description:
@@ -178,21 +197,6 @@ const DOMAIN_SPECS: DomainSpec[] = [
         'holdings',
         'portfolioBlock',
       ].includes(f),
-  },
-  {
-    slug: 'blocks',
-    title: 'Information & taxonomy blocks',
-    description:
-      'The block envelopes both products share: a rendered statement, schedule or rollforward, and the taxonomy blocks behind them. Always present, whichever extensions are enabled.',
-    claims: (f) =>
-      f.startsWith('informationBlock') || f.startsWith('taxonomyBlock'),
-  },
-  {
-    slug: 'library',
-    title: 'Taxonomy library',
-    description:
-      'The shared public taxonomy library — taxonomies, elements, arcs, structures and traits. Browse it with the `library` graph id, or from a tenant graph to see its own taxonomies with public fallback.',
-    claims: (f) => f.startsWith('library') || f === 'searchLibraryElements',
   },
   {
     slug: 'probe',

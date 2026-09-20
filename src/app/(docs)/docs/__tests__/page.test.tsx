@@ -49,7 +49,16 @@ const catalog = (
   pages,
 })
 
+/** The door titles, in order. Doors are h3; the h2s are the section labels. */
 async function doorTitles(): Promise<string[]> {
+  render(await DocsLandingPage())
+  return screen
+    .getAllByRole('heading', { level: 3 })
+    .map((h) => h.textContent ?? '')
+}
+
+/** The labelled sections a reader sees above the doors. */
+async function sectionTitles(): Promise<string[]> {
   render(await DocsLandingPage())
   return screen
     .getAllByRole('heading', { level: 2 })
@@ -78,14 +87,14 @@ describe('DocsLandingPage', () => {
     )
 
     expect(await doorTitles()).toEqual([
-      'Technical docs',
-      'API reference',
-      'GraphQL reference',
       'RoboLedger',
       'RoboInvestor',
+      'Platform API',
+      'Extensions API',
+      'Technical docs',
     ])
     expect(
-      screen.getByRole('link', { name: /RoboInvestor/ }).getAttribute('href')
+      screen.getByRole('link', { name: /^RoboInvestor/ }).getAttribute('href')
     ).toBe('https://roboinvestor.ai/docs')
   })
 
@@ -96,12 +105,22 @@ describe('DocsLandingPage', () => {
 
     const titles = await doorTitles()
     expect(titles).toEqual([
-      'Technical docs',
-      'API reference',
-      'GraphQL reference',
       'RoboLedger',
+      'Platform API',
+      'Extensions API',
+      'Technical docs',
     ])
-    expect(screen.queryByRole('link', { name: /RoboInvestor/ })).toBeNull()
+    expect(screen.queryByRole('link', { name: /^RoboInvestor/ })).toBeNull()
+  })
+
+  it('labels the doors as guides and reference', async () => {
+    mockGetDocsCatalog.mockResolvedValue(
+      catalog([roboledger], [docsPage('roboledger', 'index', '/docs')])
+    )
+
+    expect(await sectionTitles()).toEqual(
+      expect.arrayContaining(['Guides', 'Reference'])
+    )
   })
 
   it('omits the RoboInvestor door when its collection has no pages', async () => {
@@ -114,10 +133,10 @@ describe('DocsLandingPage', () => {
     mockGetDocsCatalog.mockResolvedValue(null)
 
     expect(await doorTitles()).toEqual([
-      'Technical docs',
-      'API reference',
-      'GraphQL reference',
       'RoboLedger',
+      'Platform API',
+      'Extensions API',
+      'Technical docs',
     ])
   })
 })
