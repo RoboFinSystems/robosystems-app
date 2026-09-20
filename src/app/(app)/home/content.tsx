@@ -326,9 +326,9 @@ export default function AllGraphsHomePage() {
                   <div className="space-y-3">
                     {/* Header with name */}
                     <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
+                      <div className="flex min-w-0 flex-1 items-center gap-3">
                         <div
-                          className={`rounded-lg p-2 ${
+                          className={`shrink-0 rounded-lg p-2 ${
                             !live
                               ? 'bg-gray-100 dark:bg-zinc-700'
                               : graph.isRepository
@@ -354,7 +354,7 @@ export default function AllGraphsHomePage() {
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
                             <h3
-                              className={`font-semibold ${
+                              className={`min-w-0 font-semibold break-words ${
                                 live
                                   ? 'text-gray-900 dark:text-white'
                                   : 'text-gray-500 dark:text-gray-400'

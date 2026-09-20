@@ -451,12 +451,12 @@ export default function BackupManagementContent() {
       {/* Download Quota Card for Shared Repositories */}
       {isRepository && downloadQuota && (
         <Card>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-2">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="bg-primary-100 dark:bg-primary-900 shrink-0 rounded-lg p-2">
                 <HiDownload className="text-primary-600 dark:text-primary-400 h-5 w-5" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white">
                   Monthly Download Quota
                 </h3>
@@ -465,7 +465,7 @@ export default function BackupManagementContent() {
                 </p>
               </div>
             </div>
-            <div className="text-right">
+            <div className="shrink-0 text-right">
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
                 {downloadQuota.remaining} /{' '}
                 {downloadQuota.limit_per_month ??
@@ -493,7 +493,7 @@ export default function BackupManagementContent() {
 
       {/* Stats Cards - Only for user graphs */}
       {!isRepository && backupStats && (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
           <Card>
             <div className="space-y-2">
               <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
