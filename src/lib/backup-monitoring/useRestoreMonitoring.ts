@@ -38,7 +38,7 @@ export function useRestoreMonitoring() {
   }, [])
 
   const startProgressPolling = useCallback(
-    async (backupId: string, graphId: string) => {
+    async (_backupId: string, _graphId: string) => {
       setIsPollingProgress(true)
       setProgressError(null)
 

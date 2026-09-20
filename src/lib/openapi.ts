@@ -479,6 +479,34 @@ export function collapseGraphqlOperations(catalog: ApiCatalog): ApiCatalog {
   }
 }
 
+/**
+ * The extensions surface split into the three things it actually is.
+ *
+ * Analytics are read-only operations that query the materialized graph rather than the
+ * OLTP database, so the hub gives them their own section with its own explanation. They
+ * are identified by the tag name because that is where the distinction is recorded — the
+ * route shape is identical to a command write, so it cannot be read off the path.
+ *
+ * That makes the match load-bearing in a way a string comparison does not look: a tag
+ * renamed away from "Analytical Views" does not fail, it silently files read-only
+ * operations under "Writes", beside copy promising each one "takes a typed request,
+ * returns an operation envelope" and can be retried with an Idempotency-Key. Hence the
+ * test beside this.
+ */
+export function partitionExtensionTags(catalog: ApiCatalog): {
+  graphql: ApiTag | undefined
+  writes: ApiTag[]
+  analytics: ApiTag[]
+} {
+  const isGraphql = (tag: ApiTag) => tag.slug === 'graphql'
+  const isAnalytics = (tag: ApiTag) => tag.name.includes('Analytical Views')
+  return {
+    graphql: catalog.tags.find(isGraphql),
+    writes: catalog.tags.filter((t) => !isGraphql(t) && !isAnalytics(t)),
+    analytics: catalog.tags.filter(isAnalytics),
+  }
+}
+
 /** The catalog narrowed to one surface, so a page renders only what belongs to it. */
 export function catalogForSurface(
   catalog: ApiCatalog,

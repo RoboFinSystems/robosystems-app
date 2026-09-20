@@ -15,7 +15,7 @@ interface ReviewStepProps {
 
 export function ReviewStep({ formData, showTier }: ReviewStepProps) {
   const [tiers, setTiers] = useState<GraphTier[]>([])
-  const [loading, setLoading] = useState(true)
+  const [, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {

@@ -3,12 +3,19 @@ import { vi } from 'vitest'
 // Mock Flowbite React components
 export const mockFlowbiteComponents = () => {
   vi.mock('flowbite-react', () => ({
-    Badge: ({ children, color, size, ...props }: any) => (
+    Badge: ({ children, color: _color, size: _size, ...props }: any) => (
       <span data-testid="badge" {...props}>
         {children}
       </span>
     ),
-    Button: ({ children, onClick, disabled, color, size, ...props }: any) => (
+    Button: ({
+      children,
+      onClick,
+      disabled,
+      color: _color,
+      size: _size,
+      ...props
+    }: any) => (
       <button
         onClick={onClick}
         disabled={disabled}
@@ -29,7 +36,7 @@ export const mockFlowbiteComponents = () => {
         <div data-testid="dropdown-content">{children}</div>
       </div>
     ),
-    Progress: ({ progress, color, size, ...props }: any) => (
+    Progress: ({ progress, color, size: _size, ...props }: any) => (
       <div
         data-testid="progress"
         data-progress={progress}

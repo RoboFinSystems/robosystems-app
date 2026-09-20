@@ -29,7 +29,7 @@ export function parseCronExpression(cron: string): string {
     return cron // Return as-is if not valid format
   }
 
-  const [minute, hour, dayOfMonth, month, dayOfWeek] = parts
+  const [minute, hour, dayOfMonth, _month, dayOfWeek] = parts
 
   // Build human-readable description
   let description = ''

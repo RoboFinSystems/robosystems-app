@@ -202,7 +202,6 @@ export function OverviewTab({
   upcomingInvoice,
   hasPaymentMethod,
   billingEnabled,
-  router,
   currentOrg,
   subscriptions,
   showError,
@@ -428,7 +427,6 @@ export function OverviewTab({
 export function SubscriptionsTab({
   subscriptions,
   graphs,
-  offerings,
   router,
   onRefresh,
 }: {

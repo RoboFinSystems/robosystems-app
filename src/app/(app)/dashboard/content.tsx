@@ -37,7 +37,7 @@ export function GraphDashboardContent() {
   const router = useRouter()
   const { state: graphState, refreshGraphs } = useGraphContext()
   const graphId = graphState.currentGraphId
-  const { isRepository, currentGraph } = useIsRepository()
+  const { isRepository } = useIsRepository()
   const { currentOrg } = useOrg()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

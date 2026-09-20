@@ -523,25 +523,6 @@ export function UsageContent() {
       ? (durableUsageGb / data.graphLimits.storage.max_storage_gb) * 100
       : 0
 
-  const formatTransactionType = (type: string) => {
-    // Convert from API format (e.g., "CONSUMPTION", "ALLOCATION", "PURCHASE")
-    // to display format (e.g., "Consumption", "Allocation", "Purchase")
-    if (!type) return 'Unknown'
-    return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()
-  }
-
-  const getTransactionTypeColor = (type: string) => {
-    if (!type) return 'gray'
-    const normalizedType = type.toUpperCase()
-    if (normalizedType === 'PURCHASE' || normalizedType === 'ALLOCATION') {
-      return 'success'
-    }
-    if (normalizedType === 'CONSUMPTION') {
-      return 'gray'
-    }
-    return 'info'
-  }
-
   return (
     <PageLayout>
       {/* Header */}

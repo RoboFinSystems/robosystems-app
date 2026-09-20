@@ -24,7 +24,6 @@ interface EntityInfoStepProps {
 
 export function EntityInfoStep({
   entityName,
-  entityDetails,
   createEntity = true,
   graphName = '',
   entityDescription = '',
@@ -37,15 +36,6 @@ export function EntityInfoStep({
     const name = e.target.value
     onUpdate({
       entityName: name,
-    })
-  }
-
-  const handleDetailChange = (field: keyof EntityCreate, value: string) => {
-    onUpdate({
-      entityDetails: {
-        ...entityDetails,
-        [field]: value || undefined,
-      },
     })
   }
 
