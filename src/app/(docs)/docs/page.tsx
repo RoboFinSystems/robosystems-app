@@ -43,6 +43,12 @@ const DOORS = [
     external: false,
   },
   {
+    title: 'GraphQL reference',
+    href: '/docs/graphql',
+    body: 'The typed read surface for a graph: every ledger, investor, block and taxonomy-library query, with its arguments, return type and an example call.',
+    external: false,
+  },
+  {
     title: 'RoboLedger',
     href: 'https://roboledger.ai/docs',
     body: 'Connect QuickBooks and work with your books through Claude or ChatGPT: analyze, report, plan, and close the month.',

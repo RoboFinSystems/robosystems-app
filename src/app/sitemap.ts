@@ -1,5 +1,6 @@
 import { getAllPosts } from '@/lib/blog'
 import { DOCS_SITE, getDocsCatalog, getDocsNav, latestUpdate } from '@/lib/docs'
+import { GRAPHQL_BASE_PATH, getGraphqlCatalog } from '@/lib/graphql'
 import { API_BASE_PATH, getApiCatalog } from '@/lib/openapi'
 import type { MetadataRoute } from 'next'
 
@@ -60,6 +61,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ].map((entry) => ({ ...entry, changeFrequency: 'monthly' as const }))
     : []
 
+  // The GraphQL reference, from the API's own introspection: the overview and a page per
+  // query field. No lastModified, for the same reason as the REST block — the schema
+  // carries no per-field history.
+  const gql = await getGraphqlCatalog()
+  const graphqlPages: MetadataRoute.Sitemap = gql
+    ? [
+        { url: `${baseUrl}${GRAPHQL_BASE_PATH}`, priority: 0.8 },
+        ...gql.fields.map((field) => ({
+          url: `${baseUrl}${GRAPHQL_BASE_PATH}/${field.slug}`,
+          priority: 0.5,
+        })),
+      ].map((entry) => ({ ...entry, changeFrequency: 'monthly' as const }))
+    : []
+
   // The research portal lives on roboinvestor.ai (its sitemap lists it); /research and
   // /research/:ticker here are 308s in next.config.js and are deliberately not listed.
   // Static pages send no lastModified: they change on deploys, and nothing here knows
@@ -95,6 +110,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticPages,
     ...docsPages,
     ...apiPages,
+    ...graphqlPages,
     ...blogPosts,
   ]
 }
