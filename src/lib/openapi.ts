@@ -415,8 +415,9 @@ export function buildCatalog(doc: OpenApiDocument): ApiCatalog {
     if (ops.length === 0) continue
     const slug = tagSlug(name)
     // A tag's surface is its operations'. They never straddle the two in practice, and
-    // the first one deciding is better than a tag that renders on neither page.
-    const surface = ops[0]?.surface ?? 'platform'
+    // the first one deciding is better than a tag that renders on neither page. `ops` is
+    // non-empty here — the zero case `continue`d above.
+    const surface = ops[0].surface
     tags.push({
       name,
       slug,

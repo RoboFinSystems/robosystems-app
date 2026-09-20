@@ -68,24 +68,17 @@ const nextConfig = {
         destination: '/docs/extensions/graphql/:field',
         permanent: true,
       },
+      // `:operation*` matches zero segments too, so these also cover the bare tag
+      // URLs — `/docs/api/graphql` and `/docs/api/roboledger-fiscal-close` — and no
+      // separate exact-match rule is needed.
       {
         source: '/docs/api/graphql/:operation*',
         destination: '/docs/extensions/graphql',
         permanent: true,
       },
       {
-        source: '/docs/api/graphql',
-        destination: '/docs/extensions/graphql',
-        permanent: true,
-      },
-      {
         source: '/docs/api/:tag(roboledger-.*|roboinvestor)/:operation*',
         destination: '/docs/extensions/:tag/:operation*',
-        permanent: true,
-      },
-      {
-        source: '/docs/api/:tag(roboledger-.*|roboinvestor)',
-        destination: '/docs/extensions/:tag',
         permanent: true,
       },
       // /open-source was setup instructions dressed as a marketing page (local quick

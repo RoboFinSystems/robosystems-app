@@ -4,12 +4,16 @@ import { describe, expect, it, vi } from 'vitest'
 import {
   API_BASE_PATH,
   API_REVALIDATE_SECONDS,
+  EXTENSIONS_BASE_PATH,
   apiNeighbors,
+  basePathFor,
   buildCatalog,
+  catalogForSurface,
   findApiOperation,
   findApiTag,
   operationSlug,
   summarize,
+  surfaceOf,
   tagSlug,
   type OpenApiDocument,
 } from '../openapi'
@@ -98,6 +102,65 @@ describe('buildCatalog', () => {
     expect(created?.path).toBe(`${API_BASE_PATH}/graphs/create-graph`)
     expect(created?.route).toBe('/v1/graphs')
     expect(created?.method).toBe('post')
+  })
+
+  // The split between /docs/api and /docs/extensions is derived from each operation's
+  // own route, not from a tag list someone maintains. That is the whole reason a newly
+  // added extensions tag cannot land on the platform reference, so it is asserted
+  // directly rather than only through the pages that consume it.
+  it('reads an operation surface off its route, not off its tag', () => {
+    expect(surfaceOf('/v1/graphs')).toBe('platform')
+    expect(
+      surfaceOf('/extensions/roboledger/{graph_id}/operations/close-period')
+    ).toBe('extensions')
+    expect(surfaceOf('/extensions/{graph_id}/graphql')).toBe('extensions')
+    // Anything the API mounts outside /extensions documents with the platform.
+    expect(surfaceOf('/status')).toBe('platform')
+
+    expect(basePathFor('platform')).toBe(API_BASE_PATH)
+    expect(basePathFor('extensions')).toBe(EXTENSIONS_BASE_PATH)
+  })
+
+  it('addresses each operation under the reference its surface belongs to', () => {
+    const platform = findApiOperation(catalog, 'graphs', 'create-graph')
+    expect(platform?.surface).toBe('platform')
+    expect(platform?.path.startsWith(`${API_BASE_PATH}/`)).toBe(true)
+
+    const extensions = catalog.operations.find(
+      (o) => o.tagSlug === 'extensions-roboledger'
+    )
+    expect(extensions?.surface).toBe('extensions')
+    expect(extensions?.path.startsWith(`${EXTENSIONS_BASE_PATH}/`)).toBe(true)
+
+    expect(findApiTag(catalog, 'graphs')?.surface).toBe('platform')
+    expect(findApiTag(catalog, 'graphs')?.path).toBe(`${API_BASE_PATH}/graphs`)
+    expect(findApiTag(catalog, 'extensions-roboledger')?.surface).toBe(
+      'extensions'
+    )
+    expect(findApiTag(catalog, 'extensions-roboledger')?.path).toBe(
+      `${EXTENSIONS_BASE_PATH}/extensions-roboledger`
+    )
+  })
+
+  it('narrows the catalog to one surface, tags and operations together', () => {
+    const platform = catalogForSurface(catalog, 'platform')
+    expect(platform.tags.map((t) => t.slug)).toEqual(['graphs'])
+    expect(platform.operations.every((o) => o.surface === 'platform')).toBe(
+      true
+    )
+
+    const extensions = catalogForSurface(catalog, 'extensions')
+    expect(extensions.tags.map((t) => t.slug)).toEqual([
+      'extensions-roboledger',
+    ])
+    expect(extensions.operations.every((o) => o.surface === 'extensions')).toBe(
+      true
+    )
+
+    // Neither reference may silently drop an operation the other does not claim.
+    expect(platform.operations.length + extensions.operations.length).toBe(
+      catalog.operations.length
+    )
   })
 
   it('skips an operation with no operationId, since no page can address it', () => {
