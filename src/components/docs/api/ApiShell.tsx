@@ -99,6 +99,7 @@ export function ApiShell({
   activeOperation,
   basePath = API_BASE_PATH,
   overviewLabel = 'Overview',
+  navLabel = 'API reference',
   children,
 }: {
   catalog: ApiCatalog
@@ -106,14 +107,17 @@ export function ApiShell({
   activeTag?: string
   activeOperation?: string
   basePath?: string
+  /** The first link in the nav: the reference's own root. */
   overviewLabel?: string
+  /** What the nav is, for assistive tech and the mobile disclosure. */
+  navLabel?: string
   children: ReactNode
 }) {
   return (
     <div className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
       <div className="flex gap-10">
         <nav
-          aria-label="API reference"
+          aria-label={navLabel}
           className="sticky top-28 hidden max-h-[calc(100vh-8rem)] w-64 shrink-0 self-start overflow-y-auto pb-8 lg:block"
         >
           <TagNav
@@ -146,7 +150,7 @@ export function ApiShell({
 
           <details className="mb-8 rounded-lg border border-gray-800 bg-gray-900/50 p-4 lg:hidden">
             <summary className="cursor-pointer text-sm font-semibold text-gray-300">
-              Browse the API reference
+              Browse the {navLabel.toLowerCase()}
             </summary>
             <div className="mt-4">
               <TagNav

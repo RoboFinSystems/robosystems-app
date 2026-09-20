@@ -73,6 +73,7 @@ export default async function GraphqlReferencePage() {
       activeTag="graphql"
       basePath={EXTENSIONS_BASE_PATH}
       overviewLabel="Extensions"
+      navLabel="Extensions reference"
     >
       <h1 className="font-heading text-4xl text-white">
         GraphQL: the read surface

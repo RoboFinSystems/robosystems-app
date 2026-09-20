@@ -70,6 +70,7 @@ export default async function ExtensionsTagPage({ params }: Props) {
       activeTag={tag.slug}
       basePath={EXTENSIONS_BASE_PATH}
       overviewLabel="Extensions"
+      navLabel="Extensions reference"
     >
       <DocsJsonLd
         page={{

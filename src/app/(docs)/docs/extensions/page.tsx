@@ -81,6 +81,7 @@ export default async function ExtensionsHubPage() {
       crumbs={crumbs}
       basePath={EXTENSIONS_BASE_PATH}
       overviewLabel="Extensions"
+      navLabel="Extensions reference"
     >
       <h1 className="font-heading text-4xl text-white">Extensions</h1>
       <div className={`${PROSE} mt-6`}>

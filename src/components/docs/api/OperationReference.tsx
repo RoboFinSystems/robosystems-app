@@ -167,8 +167,16 @@ export async function OperationReference({
 
   const reference =
     surface === 'extensions'
-      ? { name: 'Extensions', path: EXTENSIONS_BASE_PATH }
-      : { name: 'API reference', path: API_BASE_PATH }
+      ? {
+          name: 'Extensions',
+          path: EXTENSIONS_BASE_PATH,
+          navLabel: 'Extensions reference',
+        }
+      : {
+          name: 'API reference',
+          path: API_BASE_PATH,
+          navLabel: 'API reference',
+        }
   const crumbs = [
     { name: 'Docs', path: '/docs' },
     reference,
@@ -194,6 +202,7 @@ export async function OperationReference({
       activeOperation={operation.slug}
       basePath={reference.path}
       overviewLabel={reference.name}
+      navLabel={reference.navLabel}
     >
       <DocsJsonLd
         page={{

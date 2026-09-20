@@ -103,6 +103,7 @@ export default async function GraphqlFieldPage({ params }: Props) {
       activeTag="graphql"
       basePath={EXTENSIONS_BASE_PATH}
       overviewLabel="Extensions"
+      navLabel="Extensions reference"
     >
       <h1 className="font-mono text-3xl text-white">{field.name}</h1>
       <p className="mt-3 font-mono text-sm text-gray-500">
