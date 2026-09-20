@@ -462,6 +462,23 @@ export const getApiCatalog = cache(async (): Promise<ApiCatalog | null> => {
   }
 })
 
+/**
+ * The catalog with GraphQL shown as a leaf in the nav.
+ *
+ * Its two HTTP operations are documented on the GraphQL page itself rather than as pages
+ * of their own, so the sidebar must not expand them — those links would resolve to the
+ * field route, match no field, and 404. That is the same dead URL the extensions split
+ * removed, and it comes back through the nav if this is dropped.
+ */
+export function collapseGraphqlOperations(catalog: ApiCatalog): ApiCatalog {
+  return {
+    ...catalog,
+    tags: catalog.tags.map((tag) =>
+      tag.slug === 'graphql' ? { ...tag, operations: [] } : tag
+    ),
+  }
+}
+
 /** The catalog narrowed to one surface, so a page renders only what belongs to it. */
 export function catalogForSurface(
   catalog: ApiCatalog,

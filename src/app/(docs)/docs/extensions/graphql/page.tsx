@@ -11,10 +11,10 @@ import {
 import {
   EXTENSIONS_BASE_PATH,
   catalogForSurface,
+  collapseGraphqlOperations,
   deferWhenSpecUrlIsAPlaceholder,
   requireApiCatalog,
   summarize,
-  type ApiCatalog,
   type ApiOperation,
 } from '@/lib/openapi'
 import { publicPageMetadata } from '@/lib/site'
@@ -39,21 +39,6 @@ export const metadata: Metadata = publicPageMetadata({
   description: DESCRIPTION,
 })
 
-/**
- * The catalog the nav renders from, with GraphQL shown as a leaf.
- *
- * Its two HTTP operations are documented on this page rather than as pages of their
- * own, so expanding them in the sidebar would offer links that resolve to nothing.
- */
-function navCatalog(catalog: ApiCatalog): ApiCatalog {
-  return {
-    ...catalog,
-    tags: catalog.tags.map((tag) =>
-      tag.slug === 'graphql' ? { ...tag, operations: [] } : tag
-    ),
-  }
-}
-
 export default async function GraphqlReferencePage() {
   await deferWhenGraphqlUrlIsAPlaceholder()
   await deferWhenSpecUrlIsAPlaceholder()
@@ -69,7 +54,7 @@ export default async function GraphqlReferencePage() {
 
   return (
     <ApiShell
-      catalog={navCatalog(spec)}
+      catalog={collapseGraphqlOperations(spec)}
       crumbs={crumbs}
       activeTag="graphql"
       basePath={EXTENSIONS_BASE_PATH}

@@ -9,6 +9,7 @@ import {
   basePathFor,
   buildCatalog,
   catalogForSurface,
+  collapseGraphqlOperations,
   findApiOperation,
   findApiTag,
   operationSlug,
@@ -140,6 +141,39 @@ describe('buildCatalog', () => {
     expect(findApiTag(catalog, 'extensions-roboledger')?.path).toBe(
       `${EXTENSIONS_BASE_PATH}/extensions-roboledger`
     )
+  })
+
+  // GraphQL's two HTTP operations are documented on the GraphQL page itself, so the
+  // sidebar must not expand them — those links resolve to the field route, match no
+  // field, and 404. Exactly the dead URL the split removed, returning via the nav.
+  it('collapses the GraphQL tag so the nav cannot link its operations', () => {
+    const withGraphql = buildCatalog({
+      info: { title: 'RoboSystems API', version: '1' },
+      tags: [{ name: 'GraphQL', description: 'GraphQL endpoint' }],
+      paths: {
+        '/extensions/{graph_id}/graphql': {
+          post: {
+            tags: ['GraphQL'],
+            summary: 'Run a GraphQL query',
+            operationId: 'handleHttpPost',
+            responses: {},
+          },
+        },
+      },
+      components: { schemas: {}, securitySchemes: {} },
+    })
+    expect(findApiTag(withGraphql, 'graphql')?.operations).toHaveLength(1)
+
+    const collapsed = collapseGraphqlOperations(withGraphql)
+    expect(findApiTag(collapsed, 'graphql')?.operations).toEqual([])
+    // The tag itself still appears, as a leaf: it is where the reader should go.
+    expect(collapsed.tags.map((t) => t.slug)).toEqual(['graphql'])
+    // Only GraphQL is collapsed; every other tag keeps its operations.
+    expect(
+      collapseGraphqlOperations(catalog).tags.every(
+        (t) => t.slug === 'graphql' || t.operations.length > 0
+      )
+    ).toBe(true)
   })
 
   it('narrows the catalog to one surface, tags and operations together', () => {
