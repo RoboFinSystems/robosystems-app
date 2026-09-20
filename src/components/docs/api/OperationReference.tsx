@@ -5,6 +5,7 @@ import { ParameterTable } from '@/components/docs/api/ParameterTable'
 import { SchemaFields } from '@/components/docs/api/SchemaFields'
 import { DocsJsonLd } from '@/components/docs/DocsJsonLd'
 import { DocsMarkdown } from '@/components/docs/DocsMarkdown'
+import { InlineMarkdown } from '@/components/docs/InlineMarkdown'
 import { PROSE } from '@/components/docs/prose'
 import {
   API_BASE_PATH,
@@ -138,7 +139,11 @@ function ResponseBody({
                     {response.status}
                   </td>
                   <td className="px-4 py-2 text-gray-300">
-                    {response.description || '—'}
+                    {response.description ? (
+                      <InlineMarkdown>{response.description}</InlineMarkdown>
+                    ) : (
+                      '—'
+                    )}
                   </td>
                 </tr>
               ))}

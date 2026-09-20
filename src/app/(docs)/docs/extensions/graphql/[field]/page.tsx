@@ -1,6 +1,7 @@
 import { ApiShell } from '@/components/docs/api/ApiShell'
 import { CodeBlock } from '@/components/docs/api/CodeBlock'
 import { DocsMarkdown } from '@/components/docs/DocsMarkdown'
+import { InlineMarkdown } from '@/components/docs/InlineMarkdown'
 import { PROSE } from '@/components/docs/prose'
 import {
   GRAPHQL_BASE_PATH,
@@ -135,7 +136,11 @@ export default async function GraphqlFieldPage({ params }: Props) {
                     )}
                   </td>
                   <td className="py-2 text-gray-300">
-                    {arg.description || '—'}
+                    {arg.description ? (
+                      <InlineMarkdown>{arg.description}</InlineMarkdown>
+                    ) : (
+                      '—'
+                    )}
                   </td>
                 </tr>
               ))}
@@ -151,7 +156,9 @@ export default async function GraphqlFieldPage({ params }: Props) {
             <span className="font-mono text-cyan-400">{returned.name}</span>
           </h2>
           {returned.description && (
-            <p className="mt-2 text-gray-400">{returned.description}</p>
+            <p className="mt-2 text-gray-400">
+              <InlineMarkdown>{returned.description}</InlineMarkdown>
+            </p>
           )}
           <table className="mt-4 w-full border-collapse text-sm">
             <thead>
@@ -178,7 +185,13 @@ export default async function GraphqlFieldPage({ params }: Props) {
                       />
                     )}
                   </td>
-                  <td className="py-2 text-gray-300">{f.description || '—'}</td>
+                  <td className="py-2 text-gray-300">
+                    {f.description ? (
+                      <InlineMarkdown>{f.description}</InlineMarkdown>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>

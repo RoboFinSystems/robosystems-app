@@ -1,3 +1,4 @@
+import { InlineMarkdown } from '@/components/docs/InlineMarkdown'
 import type { ApiCatalog, SchemaObject } from '@/lib/openapi'
 import { schemaFields } from '@/lib/openapi-schema'
 
@@ -49,7 +50,11 @@ function FieldTable({
                 {field.type}
               </td>
               <td className="px-4 py-3 text-gray-300">
-                {field.description && <p>{field.description}</p>}
+                {field.description && (
+                  <p>
+                    <InlineMarkdown>{field.description}</InlineMarkdown>
+                  </p>
+                )}
                 {field.enumValues.length > 0 && (
                   <p className="mt-1 text-xs text-gray-500">
                     One of:{' '}
