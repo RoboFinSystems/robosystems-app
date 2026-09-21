@@ -1,0 +1,46 @@
+name: IndexNow
+
+# Announces robosystems.ai's new URLs to IndexNow, which reaches Bing — and through
+# it Copilot and DuckDuckGo — plus Yandex, Seznam, Naver and Yep within minutes.
+# Google ignores the protocol; there the sitemap and Search Console remain the levers.
+#
+# The trigger is a schedule rather than a deploy because the pages this site publishes
+# do not all come from a deploy of this app: the guides and technical docs publish from
+# the robosystems repo to S3 and are picked up by an hourly revalidate, and the API and
+# GraphQL references follow the live spec the same way. A deploy hook would miss all
+# three. Diffing the live sitemap catches every source of a new page, whichever repo it
+# came from, and a run with nothing new submits nothing.
+
+on:
+  schedule:
+    # Every three hours, off the top of the hour — scheduled jobs on the hour queue
+    # behind everyone else's.
+    - cron: '17 */3 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Diff and report without submitting'
+        type: boolean
+        default: false
+
+concurrency:
+  group: indexnow-robosystems-ai
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      # The snapshot of the last run's sitemap lives in the Actions cache.
+      actions: write
+    steps:
+      - name: Announce new URLs
+        uses: RoboFinSystems/robosystems/.github/actions/indexnow-ping@main
+        with:
+          host: robosystems.ai
+          # Public by design: the same value is served at the host root, which is how
+          # IndexNow verifies we own the host. A variable, never a secret.
+          key: ${{ vars.INDEXNOW_KEY }}
+          dry_run: ${{ inputs.dry_run || false }}
