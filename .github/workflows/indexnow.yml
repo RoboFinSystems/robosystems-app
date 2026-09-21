@@ -1,20 +1,15 @@
 name: IndexNow
 
-# Announces robosystems.ai's new URLs to IndexNow, which reaches Bing — and through
-# it Copilot and DuckDuckGo — plus Yandex, Seznam, Naver and Yep within minutes.
-# Google ignores the protocol; there the sitemap and Search Console remain the levers.
+# Announces new URLs to Bing (so Copilot and DuckDuckGo), Yandex, Seznam, Naver and Yep.
+# Google ignores IndexNow.
 #
-# The trigger is a schedule rather than a deploy because the pages this site publishes
-# do not all come from a deploy of this app: the guides and technical docs publish from
-# the robosystems repo to S3 and are picked up by an hourly revalidate, and the API and
-# GraphQL references follow the live spec the same way. A deploy hook would miss all
-# three. Diffing the live sitemap catches every source of a new page, whichever repo it
-# came from, and a run with nothing new submits nothing.
+# Scheduled rather than hooked to a deploy: this site's pages also come from the docs
+# publish in the robosystems repo and from the live API spec, neither of which deploys
+# this app. Diffing the sitemap catches all three; a run with nothing new is a no-op.
 
 on:
   schedule:
-    # Every three hours, off the top of the hour — scheduled jobs on the hour queue
-    # behind everyone else's.
+    # Off the hour: scheduled jobs on the hour queue behind everyone else's.
     - cron: '17 */3 * * *'
   workflow_dispatch:
     inputs:
@@ -33,17 +28,13 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
-      # The snapshot of the last run's sitemap lives in the Actions cache.
-      actions: write
+      actions: write # the sitemap snapshot lives in the Actions cache
     steps:
       - name: Announce new URLs
         uses: RoboFinSystems/robosystems/.github/actions/indexnow-ping@main
         with:
           host: robosystems.ai
-          # A variable rather than a secret: the same value is served at the host root,
-          # which is how IndexNow verifies we own the host, and the image build needs it
-          # in the clear. It is still not committed — the Dockerfile writes the key file
-          # from this variable so it reaches the ECR image and not the self-host image
-          # published to Docker Hub, which is built from the same Dockerfile.
+          # Public once served, so a variable, not a secret. Not committed — the
+          # Dockerfile writes the file, keeping it out of the public self-host image.
           key: ${{ vars.INDEXNOW_KEY }}
           dry_run: ${{ inputs.dry_run || false }}
