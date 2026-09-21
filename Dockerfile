@@ -104,6 +104,30 @@ RUN chmod +x /app/bin/entrypoint.sh
 # Create cache directory with proper ownership
 RUN mkdir -p /app/.next/cache/images && chown -R appuser:appgroup /app/.next/cache
 
+# IndexNow proves we control a host by serving its key at the host root, so the file
+# has to exist in the image that serves robosystems.ai — but only that one. It is
+# written here from a build arg rather than committed, because this same Dockerfile
+# builds the self-host image published to Docker Hub: a committed public/<key>.txt
+# would ship our key to everyone who pulls it, and serve it from their host, which is
+# both a disclosure and simply wrong output. The ECR build in build.yml passes the arg;
+# dockerhub.yml does not, and the step is a no-op without it.
+#
+# Last in the stage on purpose: the arg changes only on a key rotation, and declaring
+# it earlier would invalidate the layer cache for everything below it.
+#
+# The value is recorded in this image's build metadata, so it is readable by anyone who
+# can pull from ECR. That is the accepted bound: the key's only power is submitting URLs
+# for robosystems.ai itself, IndexNow rejects any other host's URLs, and rotating it is
+# a new arg plus a new variable.
+ARG INDEXNOW_KEY=""
+RUN if [ -n "$INDEXNOW_KEY" ]; then \
+  printf '%s' "$INDEXNOW_KEY" > "/app/public/${INDEXNOW_KEY}.txt" && \
+  chown appuser:appgroup "/app/public/${INDEXNOW_KEY}.txt" && \
+  echo "Wrote IndexNow key file for ${INDEXNOW_KEY}"; \
+  else \
+  echo "No INDEXNOW_KEY build arg — no key file (correct for the self-host image)"; \
+  fi
+
 USER appuser
 
 EXPOSE 3000
