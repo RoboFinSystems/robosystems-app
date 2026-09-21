@@ -81,6 +81,31 @@ const nextConfig = {
         destination: '/docs/extensions/:tag/:operation*',
         permanent: true,
       },
+      // The tags above are the ones the spec carries now. The reference was published on
+      // 09-17 against the previous names — `Extensions: RoboLedger`, `Extensions:
+      // RoboInvestor`, `Extensions: GraphQL` — so `extensions-*` is what was in the
+      // sitemap for the three days before the API was retagged, and what an outside link
+      // is likeliest to hold. Only the bare tag pages need a rule: an operation under any
+      // of them is resolved by slug in OperationReference and redirected to whichever tag
+      // now holds it, which is also what covers the Auth carve-out and the next retag.
+      //
+      // RoboLedger's one tag became eight, so there is no single successor page; the hub
+      // lists all eight and is the honest destination.
+      {
+        source: '/docs/api/:tag(extensions-roboledger|roboledger)',
+        destination: '/docs/extensions',
+        permanent: true,
+      },
+      {
+        source: '/docs/api/extensions-roboinvestor',
+        destination: '/docs/extensions/roboinvestor',
+        permanent: true,
+      },
+      {
+        source: '/docs/api/extensions-graphql/:operation*',
+        destination: '/docs/extensions/graphql',
+        permanent: true,
+      },
       // /open-source was setup instructions dressed as a marketing page (local quick
       // start, SEC pipeline, MCP setup, client libraries, AWS bootstrap), and most of its
       // recent commits were fixes keeping those claims current. The technical docs are now
