@@ -536,6 +536,27 @@ export function findApiOperation(
   )
 }
 
+/**
+ * Where an operation lives now, when the tag in the URL no longer holds it.
+ *
+ * Retagging moves an operation's page: `close-period` was published under
+ * `Extensions: RoboLedger` and is now under `RoboLedger: Fiscal Close`, on the other
+ * surface. The slug itself is derived from the operationId and does not move with the
+ * tag, so the whole catalog still holds the page — pass the *unnarrowed* catalog and the
+ * caller can redirect to it instead of answering 404. That is what carries an old URL's
+ * search signals to the new one and keeps an outside link working, and it covers the next
+ * retag without a rule having to be written for it.
+ *
+ * Two operations sharing a slug is a 404 on purpose: the destination would be a guess.
+ */
+export function findMovedApiOperation(
+  catalog: ApiCatalog,
+  operation: string
+): ApiOperation | undefined {
+  const matches = catalog.operations.filter((o) => o.slug === operation)
+  return matches.length === 1 ? matches[0] : undefined
+}
+
 /** The operations before and after one, within its tag. */
 export function apiNeighbors(
   tag: ApiTag,

@@ -12,6 +12,7 @@ import {
   collapseGraphqlOperations,
   findApiOperation,
   findApiTag,
+  findMovedApiOperation,
   operationSlug,
   partitionExtensionTags,
   summarize,
@@ -448,6 +449,67 @@ describe('which API the reference documents', () => {
     })
     expect(mod.OPENAPI_URL).toBe('http://localhost:8000/openapi.json')
     expect(mod.API_SERVER_URL).toBe('http://localhost:8000')
+  })
+})
+
+describe('findMovedApiOperation', () => {
+  // Retagging moves an operation's page. The reference was published on 2026-09-17 against
+  // `Extensions: RoboLedger`; two days later that tag became eight `RoboLedger: *` tags on
+  // the extensions surface, and the Auth tag shed its passkey, MFA and SSO operations. Both
+  // left live URLs behind. The slug is derived from the operationId and does not move, so
+  // resolving it against the whole catalog answers "where is this page now?" for any retag
+  // without a rule per move.
+
+  it('finds an operation the URL filed under the wrong tag', () => {
+    const moved = findMovedApiOperation(catalog, 'close-period')
+    expect(moved?.slug).toBe('close-period')
+    expect(moved?.path).toBe(
+      `${EXTENSIONS_BASE_PATH}/extensions-roboledger/close-period`
+    )
+  })
+
+  it('looks across surfaces, which is what a retag out of /docs/api needs', () => {
+    // The caller narrowed to platform and missed; the whole catalog still holds the page.
+    expect(
+      findApiOperation(
+        catalogForSurface(catalog, 'platform'),
+        'graphs',
+        'close-period'
+      )
+    ).toBeUndefined()
+    expect(findMovedApiOperation(catalog, 'close-period')?.surface).toBe(
+      'extensions'
+    )
+  })
+
+  it('has nothing for a slug the spec never had', () => {
+    expect(findMovedApiOperation(catalog, 'no-such-operation')).toBeUndefined()
+  })
+
+  it('declines to guess when two tags share a slug', () => {
+    const ambiguous = buildCatalog({
+      ...doc,
+      paths: {
+        '/v1/a/close-period': {
+          post: {
+            tags: ['Graphs'],
+            summary: 'Close Period',
+            operationId: 'closePeriod',
+            responses: { '200': { description: 'OK' } },
+          },
+        },
+        '/extensions/b/close-period': {
+          post: {
+            tags: ['Extensions: RoboLedger'],
+            summary: 'Close Period',
+            operationId: 'closePeriod',
+            responses: { '200': { description: 'OK' } },
+          },
+        },
+      },
+    })
+    expect(ambiguous.operations).toHaveLength(2)
+    expect(findMovedApiOperation(ambiguous, 'close-period')).toBeUndefined()
   })
 })
 

@@ -15,6 +15,7 @@ import {
   deferWhenSpecUrlIsAPlaceholder,
   findApiOperation,
   findApiTag,
+  findMovedApiOperation,
   requireApiCatalog,
   summarize,
   type ApiCatalog,
@@ -29,7 +30,7 @@ import {
   schemaFields,
 } from '@/lib/openapi-schema'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 
 // The body of one operation's page: what it takes, what it returns, and a call you can
 // run. Shared by the platform reference at /docs/api and the extensions reference at
@@ -165,10 +166,17 @@ export async function OperationReference({
   operationSlug: string
 }) {
   await deferWhenSpecUrlIsAPlaceholder()
-  const catalog = catalogForSurface(await requireApiCatalog(), surface)
+  const full = await requireApiCatalog()
+  const catalog = catalogForSurface(full, surface)
   const operation = findApiOperation(catalog, tagSlug, operationSlug)
   const tag = findApiTag(catalog, tagSlug)
-  if (!operation || !tag) notFound()
+  if (!operation || !tag) {
+    // Not under this tag, but the catalog may still hold it under the one it was retagged
+    // to. Send the reader — and the old URL's search signals — to the page that exists.
+    const moved = findMovedApiOperation(full, operationSlug)
+    if (moved) permanentRedirect(moved.path)
+    notFound()
+  }
 
   const reference =
     surface === 'extensions'
