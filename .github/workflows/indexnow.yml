@@ -40,7 +40,10 @@ jobs:
         uses: RoboFinSystems/robosystems/.github/actions/indexnow-ping@main
         with:
           host: robosystems.ai
-          # Public by design: the same value is served at the host root, which is how
-          # IndexNow verifies we own the host. A variable, never a secret.
+          # A variable rather than a secret: the same value is served at the host root,
+          # which is how IndexNow verifies we own the host, and the image build needs it
+          # in the clear. It is still not committed — the Dockerfile writes the key file
+          # from this variable so it reaches the ECR image and not the self-host image
+          # published to Docker Hub, which is built from the same Dockerfile.
           key: ${{ vars.INDEXNOW_KEY }}
           dry_run: ${{ inputs.dry_run || false }}
