@@ -268,11 +268,12 @@ function Neighbors({
 }
 
 function curlFor(catalog: GraphqlCatalog, field: GraphqlField): string {
-  const query = exampleQuery(catalog, field).replace(/"/g, '\\"')
+  // JSON.stringify writes the whole quoted literal: hand-rolled escaping misses backslashes.
+  const query = JSON.stringify(exampleQuery(catalog, field))
   return `curl -X POST "${catalog.serverUrl}/extensions/$GRAPH_ID/graphql" \\
   -H "X-API-Key: $ROBOSYSTEMS_API_KEY" \\
   -H "Content-Type: application/json" \\
-  -d '{"query": "${query}"}'`
+  -d '{"query": ${query}}'`
 }
 
 /**
