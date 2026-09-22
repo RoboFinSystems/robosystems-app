@@ -109,6 +109,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/platform', changeFrequency: 'monthly', priority: 0.8 },
     { path: '/enterprise', changeFrequency: 'monthly', priority: 0.8 },
     { path: '/pricing', changeFrequency: 'monthly', priority: 0.8 },
+    { path: '/about', changeFrequency: 'monthly', priority: 0.6 },
     { path: '/pages/privacy', changeFrequency: 'yearly', priority: 0.3 },
     { path: '/pages/terms', changeFrequency: 'yearly', priority: 0.3 },
     { path: '/pages/msa', changeFrequency: 'yearly', priority: 0.3 },
