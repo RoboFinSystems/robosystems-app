@@ -39,6 +39,9 @@ describe('AboutContent', () => {
       screen.getByRole('link', { name: 'Joseph T. French on LinkedIn' })
     ).toHaveAttribute('href', 'https://www.linkedin.com/in/josephtfrench')
     expect(
+      screen.getByRole('link', { name: 'Joseph T. French on X' })
+    ).toHaveAttribute('href', 'https://x.com/JosephTFrench')
+    expect(
       screen.getByRole('link', { name: 'Harbinger FinLab' })
     ).toHaveAttribute('href', 'https://harbinger.finance')
   })
