@@ -18,7 +18,12 @@ export const organizationJsonLd = {
   ],
   founder: {
     '@type': 'Person',
-    name: 'Joseph French',
+    name: 'Joseph T. French',
+    image: 'https://robosystems.ai/images/joseph-t-french.webp',
+    sameAs: [
+      'https://www.linkedin.com/in/josephtfrench',
+      'https://x.com/JosephTFrench',
+    ],
   },
 }
 
