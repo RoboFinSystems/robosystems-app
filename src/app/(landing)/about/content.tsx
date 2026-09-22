@@ -4,6 +4,7 @@ import ContactModal from '@/components/landing/ContactModal'
 import FloatingElementsVariant from '@/components/landing/FloatingElementsVariant'
 import Footer from '@/components/landing/Footer'
 import Header from '@/components/landing/Header'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 
@@ -186,12 +187,13 @@ export default function AboutContent() {
               </div>
               <div className="rounded-2xl border border-gray-800 bg-zinc-900 p-6 sm:p-8 lg:col-span-3">
                 <div className="mb-5 flex items-center gap-4">
-                  <div
-                    aria-hidden="true"
-                    className="font-heading flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-linear-to-br from-cyan-500 to-blue-500 text-lg font-bold text-white"
-                  >
-                    JF
-                  </div>
+                  <Image
+                    src="/images/joseph-t-french.webp"
+                    alt="Joseph T. French"
+                    width={80}
+                    height={80}
+                    className="h-20 w-20 flex-shrink-0 rounded-full bg-linear-to-br from-cyan-500 to-blue-500"
+                  />
                   <div>
                     <h3 className="font-heading text-xl font-bold text-white">
                       Joseph T. French
