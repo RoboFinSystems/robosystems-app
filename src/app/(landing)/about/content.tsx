@@ -16,12 +16,12 @@ import { useState } from 'react'
 
 const PRINCIPLES: Array<{ title: string; body: string }> = [
   {
-    title: 'One model for every number',
-    body: "Books, statements, the plan and the public filers sit on the same elements, calculation trees and dimensions. That's why a forecast balances like the ledger, a report travels as data, and a comparison with a public company lines up.",
+    title: 'Open source is the commitment',
+    body: 'The whole platform is Apache-2.0 on GitHub. Read how every number is produced, run it in your own AWS account, or download your backups and go. If we disappeared tomorrow, the code would still be yours to run.',
   },
   {
-    title: 'Open, and yours to leave',
-    body: 'The platform is Apache-2.0 on GitHub. Read how every number is produced, run it in your own AWS account, or download your backups and go. Integrations speak the public API either way.',
+    title: 'Data first, then AI',
+    body: "Books, statements, the plan and the public filers sit on the same elements, calculation trees and dimensions. That's why a forecast balances like the ledger, a report travels as data, and a comparison with a public company lines up.",
   },
   {
     title: 'AI drafts, people sign',
@@ -85,10 +85,10 @@ export default function AboutContent() {
                 Financial reporting, open all the way down
               </h1>
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
-                RoboSystems puts a company&apos;s books, its plan and the public
-                filing record on one structured reporting model, reachable from
-                Claude, ChatGPT or any MCP client. The platform is open source,
-                and we run our own books on it.
+                RoboSystems gives small and growing businesses financial
+                reporting, planning and analysis on one structured reporting
+                model, reachable from Claude, ChatGPT or any MCP client. The
+                platform is open source, and we run our own books on it.
               </p>
             </div>
           </div>
@@ -100,15 +100,24 @@ export default function AboutContent() {
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center">
               <h2 className={sectionHeading}>Why we&apos;re building it</h2>
-              <p className={sectionLede}>
-                Public companies have reported as data for more than a decade:
-                every number tagged, every statement checkable, every filer
-                comparable with every other. Private companies still report in
-                PDFs and spreadsheets. We think the books a company already
-                keeps should produce statements that travel as data too, and
-                that the AI working on those books should read the same
-                structure an auditor would.
-              </p>
+              <div className="mx-auto max-w-3xl space-y-4 text-gray-400">
+                <p>
+                  Small businesses have been priced out of good financial
+                  tooling. Reporting, planning and analysis software has cost
+                  tens of thousands of dollars a year, sold by venture-backed
+                  companies that can shut down overnight when growth
+                  doesn&apos;t satisfy their investors. When they go, the
+                  customer&apos;s data and workflows go with them.
+                </p>
+                <p>
+                  We&apos;re building it for the right reasons. AI only adds
+                  value on top of well-kept data, so the work starts with
+                  knowledge and data management: books structured the way
+                  financial reporting is structured, every number traceable to
+                  where it came from. We give companies that foundation, in the
+                  open, so the AI they deploy on it actually helps.
+                </p>
+              </div>
             </div>
             <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
               {PRINCIPLES.map((item) => (
@@ -195,8 +204,9 @@ export default function AboutContent() {
                     Has founded multiple companies and served on boards.
                   </p>
                   <p>
-                    Owns engineering, product and the SOC 2 program at
-                    RoboSystems, and keeps the company&apos;s own books on the
+                    Runs all of RoboSystems: engineering and product, sales and
+                    go-to-market, finance and accounting, the SOC 2 program and
+                    the board. The company&apos;s own books are kept on the
                     platform.
                   </p>
                 </div>

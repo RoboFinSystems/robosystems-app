@@ -5,14 +5,14 @@ import AboutContent from './content'
 export const metadata: Metadata = {
   title: 'About | RoboSystems',
   description:
-    "Who builds RoboSystems and why: a company's books, its plan and the public filing record on one structured reporting model, open source, and run on our own books.",
+    'Who builds RoboSystems and why: open-source financial reporting, planning and analysis for small and growing businesses, built on well-kept data so the AI on top actually helps.',
   alternates: { canonical: 'https://robosystems.ai/about' },
   openGraph: {
     type: 'website',
     url: 'https://robosystems.ai/about',
     title: 'About RoboSystems',
     description:
-      "A company's books, its plan and the public filing record on one structured reporting model. Open source, and run on our own books.",
+      'Open-source financial tooling for small and growing businesses, built for the right reasons. We run our own books on it.',
     images: [OG_IMAGE],
   },
 }
