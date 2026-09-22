@@ -36,6 +36,9 @@ describe('AboutContent', () => {
       screen.getByText(/built and operated by RFS LLC/)
     ).toBeInTheDocument()
     expect(
+      screen.getByRole('link', { name: 'Joseph T. French on LinkedIn' })
+    ).toHaveAttribute('href', 'https://www.linkedin.com/in/josephtfrench')
+    expect(
       screen.getByRole('link', { name: 'Harbinger FinLab' })
     ).toHaveAttribute('href', 'https://harbinger.finance')
   })
