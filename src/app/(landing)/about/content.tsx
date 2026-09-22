@@ -238,8 +238,7 @@ export default function AboutContent() {
                 <div className="space-y-4 text-gray-300">
                   <p>
                     An inactive CPA with a career spent building financial data
-                    systems. Principal engineer at Workiva. Co-founder of
-                    Intrinio, a financial data vendor. Has founded multiple
+                    systems. Principal engineer at Workiva. Has founded multiple
                     companies and served on boards.
                   </p>
                   <p>
