@@ -1,6 +1,7 @@
 'use client'
 
 import { mcpEndpointFor } from '@/lib/mcp'
+import { CHATGPT_PLUGIN_URL } from '@/lib/site'
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -254,9 +255,31 @@ export default function SECRepositorySection() {
                 <h4 className="font-semibold text-white">MCP Clients</h4>
               </div>
               <p className="text-sm text-gray-400">
-                Use with Claude, ChatGPT, Grok, or any MCP-compatible AI client
-                — no install required.
+                Use with Claude, ChatGPT, Grok, or any MCP-compatible AI client,
+                no install required.
               </p>
+              <a
+                href={CHATGPT_PLUGIN_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-secondary-400 hover:text-secondary-300 mt-3 inline-flex items-center gap-1.5 text-sm font-medium transition-colors"
+              >
+                Published in the ChatGPT plugin directory
+                <svg
+                  className="h-3.5 w-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  />
+                </svg>
+              </a>
             </div>
 
             {/* MCP Protocol */}

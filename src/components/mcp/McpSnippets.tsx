@@ -1,6 +1,7 @@
 'use client'
 
 import { CopyButton } from '@/components/CopyableId'
+import { CHATGPT_PLUGIN_URL } from '@/lib/site'
 import type { ReactNode } from 'react'
 
 /**
@@ -67,7 +68,7 @@ export function McpSignInSnippets({
             A custom connector serves every tool of the graph you pick,
             RoboLedger included. Or install the{' '}
             <a
-              href="https://chatgpt.com/plugins/plugin_asdk_app_6a8f6d7d50d081918787990d4cab45ca"
+              href={CHATGPT_PLUGIN_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary-600 dark:text-primary-400 hover:underline"

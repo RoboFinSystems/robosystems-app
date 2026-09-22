@@ -15,6 +15,13 @@ export const SITE_TITLE = 'RoboSystems | Financial Intelligence Platform'
 export const SITE_DESCRIPTION =
   'Every number, every document, one platform your AI can reason over: a financial knowledge graph, search across filings and documents, and MCP tools.'
 
+// The published listing in OpenAI's plugin directory (the SEC repository surface). The
+// listing URL is stable across version bumps: an approved version replaces the previous
+// one at the same address, so this link survives a re-review. Deliberately no tool count
+// anywhere it is used, because that number moves with each approved version.
+export const CHATGPT_PLUGIN_URL =
+  'https://chatgpt.com/plugins/plugin_asdk_app_6a8f6d7d50d081918787990d4cab45ca'
+
 export const OG_IMAGE = {
   url: '/images/og-preview.png',
   width: 1200,
