@@ -49,6 +49,13 @@ describe('AboutContent', () => {
     expect(screen.queryByText(/certified/i)).not.toBeInTheDocument()
   })
 
+  it('states ownership as a present fact, never as a promise not to raise', () => {
+    render(<AboutContent />)
+
+    expect(screen.getByText(/no outside investors/)).toBeInTheDocument()
+    expect(screen.queryByText(/not raising/i)).not.toBeInTheDocument()
+  })
+
   it('opens the contact modal', () => {
     render(<AboutContent />)
 

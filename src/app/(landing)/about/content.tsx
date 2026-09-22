@@ -16,8 +16,8 @@ import { useState } from 'react'
 
 const PRINCIPLES: Array<{ title: string; body: string }> = [
   {
-    title: 'Open source is the commitment',
-    body: 'The whole platform is Apache-2.0 on GitHub. Read how every number is produced, run it in your own AWS account, or download your backups and go. If we disappeared tomorrow, the code would still be yours to run.',
+    title: "It's yours",
+    body: 'Fork the repository and you own the software: nobody can reprice it, take it away, or shut it down. Stay close to the main line and every fix, integration and reporting update comes with it. If we disappeared tomorrow, it would still run.',
   },
   {
     title: 'Data first, then AI',
@@ -108,6 +108,11 @@ export default function AboutContent() {
                   companies that can shut down overnight when growth
                   doesn&apos;t satisfy their investors. When they go, the
                   customer&apos;s data and workflows go with them.
+                </p>
+                <p>
+                  RoboSystems has no outside investors. It&apos;s owned by the
+                  people who build it, it runs lean, and it&apos;s built to be
+                  here in ten years.
                 </p>
                 <p>
                   We&apos;re building it for the right reasons. AI only adds
