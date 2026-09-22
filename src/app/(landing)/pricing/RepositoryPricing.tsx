@@ -1,3 +1,4 @@
+import { CHATGPT_PLUGIN_URL } from '@/lib/site'
 import Link from 'next/link'
 
 const CHECK_ICON = (
@@ -34,6 +35,18 @@ export default function RepositoryPricing({
         Access 75,000+ SEC filings from 8,000+ public companies, 2024 onward,
         through an intelligent AI agent that understands financial relationships
         and can answer complex queries in natural language.
+      </p>
+      <p className="mx-auto mb-10 max-w-2xl text-center text-sm text-gray-500">
+        Already in ChatGPT?{' '}
+        <a
+          href={CHATGPT_PLUGIN_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-green-400 underline decoration-green-500/40 underline-offset-4 transition-colors hover:text-green-300"
+        >
+          RoboSystems is published in the plugin directory
+        </a>
+        , so a subscription works in the chat you already use.
       </p>
       <div className="mx-auto grid max-w-3xl gap-6 sm:gap-8 md:grid-cols-2">
         {/* Starter */}
