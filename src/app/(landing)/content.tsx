@@ -19,9 +19,9 @@ export default function LandingPageContent() {
       <main>
         <HeroSection />
         <ProductOverview />
-        <SECRepositorySection />
         <FeaturesGrid />
         <ApplicationsSection />
+        <SECRepositorySection />
         <BuildSection />
         <OpenSourceSection />
         <FinalCTA />
