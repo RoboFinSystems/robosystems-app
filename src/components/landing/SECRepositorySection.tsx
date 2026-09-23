@@ -357,7 +357,7 @@ export default function SECRepositorySection() {
             Get Started
           </Link>
           <Link
-            href="/pricing"
+            href="/pricing#sec-repository"
             className="inline-flex items-center rounded-lg border border-gray-700 px-8 py-3 text-sm font-semibold text-gray-300 transition-all hover:border-gray-500 hover:text-white"
           >
             View Pricing

@@ -27,7 +27,7 @@ export default function RepositoryPricing({
   onContactSales,
 }: RepositoryPricingProps) {
   return (
-    <div className="mt-20 mb-4">
+    <div id="sec-repository" className="mt-20 mb-4 scroll-mt-24">
       <h2 className="mb-3 text-center text-3xl font-bold text-white">
         SEC Shared Repository
       </h2>
