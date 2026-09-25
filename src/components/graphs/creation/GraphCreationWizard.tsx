@@ -21,6 +21,37 @@ interface GraphCreationWizardProps extends GraphCreationConfig {
   className?: string
 }
 
+/** A problem with what the user entered, caught before any request is sent. */
+class SchemaInputError extends Error {}
+
+/**
+ * The pasted `custom_schema` for a generic graph, or undefined for the "empty" choice
+ * (core then sends a schema with no nodes, named after the graph). The API refuses a
+ * generic graph that carries neither a schema nor an initial entity.
+ */
+function customGenericSchema(
+  formData: GraphFormData
+): Record<string, unknown> | undefined {
+  if (formData.genericSchemaType !== 'custom') return undefined
+
+  const raw = (formData.genericCustomSchema || '').trim()
+  if (!raw) {
+    throw new SchemaInputError(
+      'Paste a custom schema, or choose an empty schema.'
+    )
+  }
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(raw)
+  } catch {
+    throw new SchemaInputError('The custom schema is not valid JSON.')
+  }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    throw new SchemaInputError('The custom schema must be a JSON object.')
+  }
+  return parsed as Record<string, unknown>
+}
+
 /**
  * Entity graph creation wizard using the new operation-based monitoring
  */
@@ -39,6 +70,7 @@ export function GraphCreationWizard({
   const { currentOrg } = useOrg()
 
   const [currentStep, setCurrentStep] = useState(0)
+  const [createError, setCreateError] = useState<string | null>(null)
   const [formData, setFormData] = useState<GraphFormData>({
     graphType: 'entity',
     entityName: '',
@@ -149,17 +181,20 @@ export function GraphCreationWizard({
       return
     }
     if (currentStep < steps.length - 1) {
+      setCreateError(null)
       setCurrentStep(currentStep + 1)
     }
   }
 
   const handleBack = () => {
     if (currentStep > 0) {
+      setCreateError(null)
       setCurrentStep(currentStep - 1)
     }
   }
 
   const handleCreate = async () => {
+    setCreateError(null)
     try {
       let result
 
@@ -185,10 +220,11 @@ export function GraphCreationWizard({
           org_id: currentOrg?.id,
         })
       } else {
-        // Create generic graph
         result = await graphCreation.createGenericGraph({
           graph_name: formData.genericGraphName,
           description: formData.genericGraphDescription,
+          tags: formData.genericGraphTags,
+          custom_schema: customGenericSchema(formData),
           instance_tier: formData.selectedTier,
           schema_extensions: formData.selectedExtensions,
           org_id: currentOrg?.id,
@@ -200,7 +236,14 @@ export function GraphCreationWizard({
         await onSuccess(result.graph_id, result)
       }
     } catch (error) {
-      console.error('Failed to create graph:', error)
+      if (!(error instanceof SchemaInputError)) {
+        console.error('Failed to create graph:', error)
+      }
+      setCreateError(
+        error instanceof Error && error.message
+          ? error.message
+          : 'The graph could not be created. Please try again.'
+      )
     }
   }
 
@@ -446,6 +489,12 @@ export function GraphCreationWizard({
           </p>
           {renderStepContent()}
         </div>
+
+        {createError && (
+          <Alert theme={customTheme.alert} color="failure">
+            {createError}
+          </Alert>
+        )}
 
         {/* Navigation buttons */}
         <div className="flex justify-between">

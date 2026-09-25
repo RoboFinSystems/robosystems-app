@@ -13,6 +13,7 @@ import {
   useIsRepository,
   useOrg,
 } from '@robosystems/core'
+import { isApiError, unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import { Alert, Badge, Button, Card } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -69,8 +70,10 @@ export function GraphDashboardContent() {
 
     try {
       // Get basic graph info
-      const graphsResponse = await getGraphs()
-      const graphInfo = graphsResponse.data?.graphs?.find(
+      // A refused read throws (caught below as a load failure), so it is never
+      // mistaken for "this graph does not exist".
+      const graphsData = unwrapSdk(await getGraphs())
+      const graphInfo = graphsData?.graphs?.find(
         (g: GraphInfo) => g.graphId === graphId
       )
 
@@ -90,12 +93,9 @@ export function GraphDashboardContent() {
       // Repositories don't have metrics and the API call times out
       if (!graphInfo.isRepository) {
         try {
-          const metricsResponse = await getGraphMetrics({
-            path: { graph_id: graphId },
-          })
-          if (metricsResponse.data) {
-            dashboardData.metrics = metricsResponse.data
-          }
+          dashboardData.metrics = unwrapSdk(
+            await getGraphMetrics({ path: { graph_id: graphId } })
+          )
         } catch (err) {
           // Metrics not available
           dashboardData.metricsError = 'Metrics not available'
@@ -112,7 +112,11 @@ export function GraphDashboardContent() {
     } catch (err) {
       if (loadedGraphIdRef.current !== requestedGraphId) return
       console.error('Failed to fetch dashboard data:', err)
-      setError('Failed to load dashboard data')
+      setError(
+        isApiError(err) && err.detail
+          ? err.detail
+          : 'Failed to load dashboard data'
+      )
     } finally {
       if (loadedGraphIdRef.current === requestedGraphId) setLoading(false)
     }

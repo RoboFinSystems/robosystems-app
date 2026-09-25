@@ -71,18 +71,16 @@ async function fetchCatalog(revalidate = 300): Promise<CatalogEntry[]> {
   return data.posts ?? []
 }
 
-/** This lane's posts, newest first. */
+/**
+ * This lane's posts, newest first. Throws when the catalog cannot be read, so a page
+ * regenerating during a CDN blip keeps its last good render rather than an empty list.
+ */
 export async function getAllPosts(): Promise<BlogPost[]> {
-  try {
-    const entries = await fetchCatalog()
-    return entries
-      .map(toPost)
-      .filter((p) => p.site === BLOG_SITE)
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  } catch (error) {
-    console.error('Error loading blog catalog:', error)
-    return []
-  }
+  const entries = await fetchCatalog()
+  return entries
+    .map(toPost)
+    .filter((p) => p.site === BLOG_SITE)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }
 
 export async function getPostSlugs(): Promise<string[]> {

@@ -66,17 +66,17 @@ export interface TocHeading {
   id: string
 }
 
-export async function getDocsCatalog(): Promise<DocsCatalog | null> {
-  try {
-    const res = await fetch(DOCS_CATALOG_URL, {
-      next: { revalidate: DOCS_REVALIDATE_SECONDS },
-    })
-    if (!res.ok) throw new Error(`Docs catalog fetch failed: ${res.status}`)
-    return (await res.json()) as DocsCatalog
-  } catch (error) {
-    console.error('Error loading docs catalog:', error)
-    return null
-  }
+/**
+ * The docs catalog. Throws when it cannot be read: a page regenerating during a CDN blip
+ * then keeps its last good render instead of caching a 404. Callers that can do without
+ * it (the sitemap, build-time params) catch.
+ */
+export async function getDocsCatalog(): Promise<DocsCatalog> {
+  const res = await fetch(DOCS_CATALOG_URL, {
+    next: { revalidate: DOCS_REVALIDATE_SECONDS },
+  })
+  if (!res.ok) throw new Error(`Docs catalog fetch failed: ${res.status}`)
+  return (await res.json()) as DocsCatalog
 }
 
 export function getDocsNav(
@@ -124,18 +124,18 @@ export function docsNeighbors(
   return { previous: nav.ordered[i - 1], next: nav.ordered[i + 1] }
 }
 
-/** A page's markdown body. Body keys are relative to the catalog's own URL. */
-export async function getDocsBody(page: DocsPage): Promise<string | null> {
-  try {
-    const res = await fetch(new URL(page.body, DOCS_CATALOG_URL), {
-      next: { revalidate: DOCS_REVALIDATE_SECONDS },
-    })
-    if (!res.ok) throw new Error(`Docs body fetch failed: ${res.status}`)
-    return await res.text()
-  } catch (error) {
-    console.error(`Error loading docs page ${page.path}:`, error)
-    return null
+/**
+ * A page's markdown body. Body keys are relative to the catalog's own URL. Throws when the
+ * body cannot be read, for the same reason as `getDocsCatalog`.
+ */
+export async function getDocsBody(page: DocsPage): Promise<string> {
+  const res = await fetch(new URL(page.body, DOCS_CATALOG_URL), {
+    next: { revalidate: DOCS_REVALIDATE_SECONDS },
+  })
+  if (!res.ok) {
+    throw new Error(`Docs body fetch failed for ${page.path}: ${res.status}`)
   }
+  return await res.text()
 }
 
 /** The newest `updated` date across pages, or none. */

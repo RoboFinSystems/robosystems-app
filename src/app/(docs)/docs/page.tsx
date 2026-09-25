@@ -1,3 +1,4 @@
+import { orBuildFallback } from '@/lib/build-phase'
 import { DOCS_SITE, getDocsCatalog, getDocsNav } from '@/lib/docs'
 import { publicPageMetadata } from '@/lib/site'
 import type { Metadata } from 'next'
@@ -106,7 +107,7 @@ function DoorGrid({ doors }: { doors: Door[] }) {
 }
 
 export default async function DocsLandingPage() {
-  const catalog = await getDocsCatalog()
+  const catalog = await orBuildFallback(getDocsCatalog(), null)
   const technical = catalog && getDocsNav(catalog, DOCS_SITE, 'technical')
   const guides = catalog && getDocsNav(catalog, DOCS_SITE, 'product')
   const hasGuides = !!guides && guides.ordered.length > 0

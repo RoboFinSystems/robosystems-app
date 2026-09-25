@@ -7,6 +7,7 @@ import {
 } from '@/lib/mcp'
 import { client, createSubgraph } from '@robosystems/client'
 import { useToast } from '@robosystems/core'
+import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import { customTheme } from '@robosystems/core/theme'
 import { Alert, Button, Card, Progress } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
@@ -130,52 +131,47 @@ export function SubgraphCreationWizard({
         credentials: 'include',
       })
 
-      // Create the subgraph
-      const response = await createSubgraph({
-        client,
-        path: {
-          graph_id: graphId,
-        },
-        body: {
-          name: formData.name,
-          display_name: formData.displayName,
-          description: formData.description || undefined,
-        },
-      })
+      // Create the subgraph. unwrapSdk turns a refusal into a thrown ApiError
+      // carrying `status`, which the status-keyed handling below needs.
+      const data = unwrapSdk(
+        await createSubgraph({
+          client,
+          path: {
+            graph_id: graphId,
+          },
+          body: {
+            name: formData.name,
+            display_name: formData.displayName,
+            description: formData.description || undefined,
+          },
+        })
+      )
 
-      if (response.data) {
-        // The non-fork path returns a completed envelope carrying the created
-        // subgraph. Fall back to the id the API would have built anyway —
-        // `{parent}_{name}` is deterministic — so the completion step always
-        // has an address to show.
-        const result = (
-          response.data as { result?: { graph_id?: unknown } | null }
-        ).result
-        const subgraphId =
-          typeof result?.graph_id === 'string'
-            ? result.graph_id
-            : subgraphIdFor(graphId, formData.name)
+      // The non-fork path returns a completed envelope carrying the created
+      // subgraph. Fall back to the id the API would have built anyway —
+      // `{parent}_{name}` is deterministic — so the completion step always
+      // has an address to show.
+      const result = (data as { result?: { graph_id?: unknown } | null }).result
+      const subgraphId =
+        typeof result?.graph_id === 'string'
+          ? result.graph_id
+          : subgraphIdFor(graphId, formData.name)
 
-        showSuccess(`Subgraph "${formData.displayName}" created successfully`)
-        setCreatedSubgraphId(subgraphId)
-      }
+      showSuccess(`Subgraph "${formData.displayName}" created successfully`)
+      setCreatedSubgraphId(subgraphId)
     } catch (error: any) {
       console.error('Failed to create subgraph:', error)
 
-      // Handle specific error cases
-      if (error.status === 403) {
-        showError(
-          'Your current tier does not support subgraphs. Please upgrade.'
-        )
-      } else if (error.status === 409) {
+      // A name collision sends the user back to fix the name. Every other
+      // refusal (tier cap, role, a disabled feature, an invalid name) is
+      // explained by the API's own detail.
+      if (error?.status === 409) {
         showError('A subgraph with this name already exists.')
         setErrors({ name: 'This name is already taken' })
         setCurrentStep(0)
-      } else if (error.status === 400 || error.status === 422) {
-        showError('Invalid subgraph configuration. Please check your inputs.')
-        setCurrentStep(0)
       } else {
-        showError(error.message || 'Failed to create subgraph')
+        showError(error?.message || 'Failed to create subgraph')
+        if (error?.status === 400 || error?.status === 422) setCurrentStep(0)
       }
     } finally {
       setIsCreating(false)

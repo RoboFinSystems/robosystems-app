@@ -21,6 +21,7 @@ import {
   useGraphContext,
   useToast,
 } from '@robosystems/core'
+import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import { useOperationMonitoring } from '@robosystems/core/task-monitoring/operationHooks'
 import {
   Alert,
@@ -68,32 +69,40 @@ export function SubgraphsContent() {
   const handleBackupClick = async (subgraph: SubgraphSummary) => {
     setBackingUpId(subgraph.graph_id)
     try {
-      const response = await createBackup({
-        path: { graph_id: subgraph.graph_id },
-        body: {
-          backup_format: 'full_dump',
-          retention_days: 90,
-        },
-      })
+      const envelope = unwrapSdk(
+        await createBackup({
+          path: { graph_id: subgraph.graph_id },
+          // One key per click: a retried send replays it, not a second backup.
+          headers: { 'Idempotency-Key': crypto.randomUUID() },
+          body: {
+            backup_format: 'full_dump',
+            retention_days: 90,
+          },
+        })
+      )
 
-      if (response.data) {
-        const operationId = response.data.operationId
-        showInfo('Backup started...', 3000)
-        await backupOperationMonitor.startMonitoring(operationId)
-        showSuccess(
-          `Backup created for ${subgraph.display_name}. View it on the Backups page.`
-        )
-        backupOperationMonitor.reset()
-      } else {
-        throw new Error('Failed to create backup')
-      }
-    } catch (err: any) {
+      const operationId = envelope.operationId
+      const accepted = envelope.result as
+        { retention_days?: number } | null | undefined
+      showInfo(
+        accepted?.retention_days !== undefined
+          ? `Backup started — kept for ${accepted.retention_days} days.`
+          : 'Backup started...',
+        3000
+      )
+      await backupOperationMonitor.startMonitoring(operationId)
+      showSuccess(
+        `Backup created for ${subgraph.display_name}. View it on the Backups page.`
+      )
+      backupOperationMonitor.reset()
+    } catch (err) {
       console.error('Subgraph backup error:', err)
-      if (err.status === 403) {
-        showError('Backup creation is currently disabled.', 5000)
-      } else {
-        showError(err.message || 'Failed to create backup', 5000)
-      }
+      showError(
+        err instanceof Error && err.message
+          ? err.message
+          : 'Failed to create backup',
+        5000
+      )
     } finally {
       setBackingUpId(null)
     }
@@ -160,14 +169,16 @@ export function SubgraphsContent() {
 
     setIsDeleting(true)
     try {
-      await deleteSubgraph({
-        path: { graph_id: currentGraphId },
-        body: {
-          subgraph_name: subgraphToDelete.subgraph_name,
-          force: true,
-          backup_first: false,
-        },
-      })
+      unwrapSdk(
+        await deleteSubgraph({
+          path: { graph_id: currentGraphId },
+          body: {
+            subgraph_name: subgraphToDelete.subgraph_name,
+            force: true,
+            backup_first: false,
+          },
+        })
+      )
 
       showSuccess(
         `Subgraph "${subgraphToDelete.display_name}" deleted successfully`

@@ -140,3 +140,25 @@ describe('SignUpForm (login home fork)', () => {
     expect(screen.queryByPlaceholderText('Full name')).not.toBeInTheDocument()
   })
 })
+
+describe('SignUpForm auth client', () => {
+  it('builds one auth client across re-renders', async () => {
+    const core = await import('@robosystems/core/auth-core/client')
+    const construct = vi.fn()
+    const Original = core.RoboSystemsAuthClient
+    class Counting extends Original {
+      constructor(apiUrl: string) {
+        super(apiUrl)
+        construct()
+      }
+    }
+    vi.spyOn(core, 'RoboSystemsAuthClient', 'get').mockReturnValue(
+      Counting as never
+    )
+    const { rerender } = render(<SignUpForm apiUrl="http://localhost:8000" />)
+    for (let i = 0; i < 3; i += 1) {
+      rerender(<SignUpForm apiUrl="http://localhost:8000" />)
+    }
+    expect(construct).toHaveBeenCalledTimes(1)
+  })
+})

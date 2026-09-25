@@ -13,6 +13,7 @@ import {
   useOrg,
   useToast,
 } from '@robosystems/core'
+import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import { format } from 'date-fns'
 import {
   Alert,
@@ -162,36 +163,49 @@ function OrganizationTabs() {
       setLoading(true)
 
       // Load members and limits
-      const [membersResponse, limitsResponse] = await Promise.all([
-        SDK.listOrgMembers({ path: { org_id: currentOrg.id } }),
-        SDK.getOrgLimits({ path: { org_id: currentOrg.id } }),
+      const [membersData, limitsResult] = await Promise.all([
+        SDK.listOrgMembers({ path: { org_id: currentOrg.id } }).then(unwrapSdk),
+        // Limits are optional context: their failure is reported, not fatal.
+        SDK.getOrgLimits({ path: { org_id: currentOrg.id } })
+          .then(unwrapSdk)
+          .then(
+            (data) => ({ data, error: null as unknown }),
+            (error: unknown) => ({ data: null, error })
+          ),
       ])
 
-      if (membersResponse.error) {
-        throw new Error('Failed to load organization members')
-      }
-
-      if (membersResponse.data) {
-        setMembers(membersResponse.data.members || [])
-      }
-
-      if (limitsResponse.data) {
-        setLimits(limitsResponse.data)
+      setMembers(membersData?.members || [])
+      setLimits(limitsResult.data ?? null)
+      if (limitsResult.error) {
+        handleApiError(
+          limitsResult.error,
+          'Organization limits could not be loaded'
+        )
       }
 
       // Usage and pending invitations are admin-only reads
       const isAdmin = ['owner', 'admin'].includes(currentOrg.role)
       if (isAdmin) {
-        const [usageResponse, invitationsResponse] = await Promise.all([
+        const [usageResult, invitationsResponse] = await Promise.all([
           SDK.getOrgUsage({
             path: { org_id: currentOrg.id },
             query: { days: 30 },
-          }),
+          })
+            .then(unwrapSdk)
+            .then(
+              (data) => ({ data, failed: false }),
+              (error: unknown) => ({ data: null, failed: true, error })
+            ),
           SDK.listOrgInvitations({ path: { org_id: currentOrg.id } }),
         ])
 
-        if (usageResponse?.data) {
-          setUsage(usageResponse.data)
+        setUsage(usageResult.data ?? null)
+        if (usageResult.failed) {
+          // Reported, but not fatal: members and limits are already shown.
+          handleApiError(
+            'error' in usageResult ? usageResult.error : undefined,
+            'Organization usage could not be loaded'
+          )
         }
 
         // Invitations are gated by a feature flag server-side; a 501 there
@@ -234,14 +248,13 @@ function OrganizationTabs() {
     }
 
     try {
-      const response = await SDK.updateOrgMemberRole({
-        path: { org_id: currentOrg.id, user_id: userId },
-        body: { role: newRole },
-      })
-
-      if (response.error) {
-        throw new Error('Failed to update role')
-      }
+      // A refusal throws an ApiError whose message is the API's detail.
+      unwrapSdk(
+        await SDK.updateOrgMemberRole({
+          path: { org_id: currentOrg.id, user_id: userId },
+          body: { role: newRole },
+        })
+      )
 
       showSuccess(`Updated ${userName}'s role to ${newRole}`)
       await loadOrgData()
@@ -255,13 +268,11 @@ function OrganizationTabs() {
     if (!confirm(`Remove ${userName} from the organization?`)) return
 
     try {
-      const response = await SDK.removeOrgMember({
-        path: { org_id: currentOrg.id, user_id: userId },
-      })
-
-      if (response.error) {
-        throw new Error('Failed to remove member')
-      }
+      unwrapSdk(
+        await SDK.removeOrgMember({
+          path: { org_id: currentOrg.id, user_id: userId },
+        })
+      )
 
       showSuccess(`${userName} has been removed`)
       await loadOrgData()

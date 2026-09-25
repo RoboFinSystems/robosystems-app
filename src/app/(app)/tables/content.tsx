@@ -11,6 +11,7 @@ import {
   PageLayout,
   useGraphContext,
 } from '@robosystems/core'
+import { isApiError, unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import {
   Alert,
   Badge,
@@ -69,6 +70,8 @@ export function TablesContent() {
   const [uploadFile, setUploadFile] = useState<File | null>(null)
   const [tableName, setTableName] = useState('')
   const [uploading, setUploading] = useState(false)
+  // Shown inside the upload modal, which covers the page-level error.
+  const [uploadError, setUploadError] = useState<string | null>(null)
   const [useExistingTable, setUseExistingTable] = useState(false)
   const [selectedExistingTable, setSelectedExistingTable] = useState('')
 
@@ -134,14 +137,16 @@ export function TablesContent() {
       setLoading(true)
       setError(null)
 
-      const response = await SDK.listTables({
-        path: { graph_id: graphId },
-      })
+      const tablesData = unwrapSdk(
+        await SDK.listTables({
+          path: { graph_id: graphId },
+        })
+      )
 
       if (loadedGraphIdRef.current !== graphId) return
 
-      if (response.data) {
-        const data = response.data as any
+      if (tablesData) {
+        const data = tablesData as any
         const tableList: TableInfo[] =
           data.tables?.map((t: any) => ({
             tableName: t.table_name,
@@ -183,15 +188,23 @@ export function TablesContent() {
     } catch (err) {
       if (loadedGraphIdRef.current !== graphId) return
       console.error('Failed to fetch tables:', err)
-      setError('Failed to load tables')
+      setError(
+        isApiError(err) && err.detail
+          ? `Failed to load tables: ${err.detail}`
+          : 'Failed to load tables'
+      )
     } finally {
       if (loadedGraphIdRef.current === graphId) setLoading(false)
     }
   }, [graphId])
 
+  // Each selection gets a sequence number; a files or preview read that lands
+  // after a newer selection is dropped rather than shown under that selection.
+  const selectionSeqRef = useRef(0)
+
   // Load files for selected table
   const fetchTableFiles = useCallback(
-    async (table: TableInfo) => {
+    async (table: TableInfo, seq = selectionSeqRef.current) => {
       if (!graphId) return
 
       try {
@@ -201,13 +214,19 @@ export function TablesContent() {
         })
 
         if (loadedGraphIdRef.current !== graphId) return
+        if (selectionSeqRef.current !== seq) return
 
-        if (response.data) {
-          const data = response.data as any
-          setTableFiles(data.files || [])
+        if (response.error || !response.data) {
+          console.error('Failed to fetch table files:', response.error)
+          setTableFiles([])
+          return
         }
+        const data = response.data as any
+        setTableFiles(data.files || [])
       } catch (err) {
+        if (selectionSeqRef.current !== seq) return
         console.error('Failed to fetch table files:', err)
+        setTableFiles([])
       }
     },
     [graphId]
@@ -215,8 +234,11 @@ export function TablesContent() {
 
   // Load preview data for selected table
   const fetchTablePreview = useCallback(
-    async (table: TableInfo) => {
+    async (table: TableInfo, seq = selectionSeqRef.current) => {
       if (!graphId) return
+
+      const isCurrent = () =>
+        loadedGraphIdRef.current === graphId && selectionSeqRef.current === seq
 
       try {
         setLoadingPreview(true)
@@ -225,23 +247,26 @@ export function TablesContent() {
           body: { sql: `SELECT * FROM ${table.tableName} LIMIT 10` },
         })
 
-        if (loadedGraphIdRef.current !== graphId) return
+        if (!isCurrent()) return
 
-        if (response.data) {
-          const data = response.data as any
-          setTablePreview({
-            columns: data.columns || [],
-            rows: data.rows || [],
-            executionTime: 0,
-            rowCount: data.rows?.length || 0,
-          })
+        if (response.error || !response.data) {
+          console.error('Failed to fetch table preview:', response.error)
+          setTablePreview(null)
+          return
         }
+        const data = response.data as any
+        setTablePreview({
+          columns: data.columns || [],
+          rows: data.rows || [],
+          executionTime: 0,
+          rowCount: data.rows?.length || 0,
+        })
       } catch (err) {
-        if (loadedGraphIdRef.current !== graphId) return
+        if (!isCurrent()) return
         console.error('Failed to fetch table preview:', err)
         setTablePreview(null)
       } finally {
-        if (loadedGraphIdRef.current === graphId) setLoadingPreview(false)
+        if (isCurrent()) setLoadingPreview(false)
       }
     },
     [graphId]
@@ -291,18 +316,21 @@ export function TablesContent() {
     try {
       setUploading(true)
       setError(null)
+      setUploadError(null)
 
       // Step 1: Get upload URL (content op — presign is in the envelope result)
-      const uploadUrlResponse = await SDK.createFileUpload({
-        path: { graph_id: graphId },
-        body: {
-          table_name: finalTableName,
-          file_name: uploadFile.name,
-          content_type: 'application/x-parquet',
-        },
-      })
+      const uploadUrlEnvelope = unwrapSdk(
+        await SDK.createFileUpload({
+          path: { graph_id: graphId },
+          body: {
+            table_name: finalTableName,
+            file_name: uploadFile.name,
+            content_type: 'application/x-parquet',
+          },
+        })
+      )
 
-      const uploadData = (uploadUrlResponse.data as any)?.result
+      const uploadData = (uploadUrlEnvelope as any)?.result
       if (!uploadData?.upload_url) {
         throw new Error('Failed to get upload URL')
       }
@@ -325,12 +353,14 @@ export function TablesContent() {
       }
 
       // Step 3: Ingest the uploaded file (content op — file_id in the body)
-      await SDK.ingestFile({
-        path: { graph_id: graphId },
-        body: {
-          file_id: fileId,
-        },
-      })
+      unwrapSdk(
+        await SDK.ingestFile({
+          path: { graph_id: graphId },
+          body: {
+            file_id: fileId,
+          },
+        })
+      )
 
       // Success - refresh tables
       await fetchTables()
@@ -339,7 +369,12 @@ export function TablesContent() {
       setTableName('')
     } catch (err) {
       console.error('Upload failed:', err)
-      setError('Failed to upload file')
+      // The API's reason (unknown table, bad file, graph busy) when it gave one.
+      setUploadError(
+        isApiError(err) && err.detail
+          ? `Upload failed: ${err.detail}`
+          : 'Failed to upload file'
+      )
     } finally {
       setUploading(false)
     }
@@ -423,12 +458,17 @@ export function TablesContent() {
     // name belonging to another graph, against the graph now selected.
     if (selectionGraphIdRef.current !== graphId) return
 
+    const seq = ++selectionSeqRef.current
+    // Clear first: until this selection's own reads land, nothing on screen
+    // belongs to it.
+    setTableFiles([])
+    setTablePreview(null)
     if (selectedTable) {
-      fetchTableFiles(selectedTable)
+      fetchTableFiles(selectedTable, seq)
       if (selectedTable.rowCount > 0) {
-        fetchTablePreview(selectedTable)
+        fetchTablePreview(selectedTable, seq)
       } else {
-        setTablePreview(null)
+        setLoadingPreview(false)
       }
     }
   }, [selectedTable, graphId, fetchTableFiles, fetchTablePreview])
@@ -1089,6 +1129,7 @@ export function TablesContent() {
                           onClick={() => {
                             setUseExistingTable(true)
                             setSelectedExistingTable(selectedTable.tableName)
+                            setUploadError(null)
                             setShowUploadModal(true)
                           }}
                         >
@@ -1346,6 +1387,7 @@ export function TablesContent() {
           <ModalHeader>Upload Parquet File</ModalHeader>
           <ModalBody>
             <div className="space-y-4">
+              {uploadError && <Alert color="failure">{uploadError}</Alert>}
               <Alert color="info" icon={HiInformationCircle}>
                 Upload Parquet files to staging tables. Files in the same table
                 will be merged for querying and ingestion.

@@ -1,3 +1,4 @@
+import { sdkError } from '@/test-utils/sdk'
 import {
   generateSsoToken,
   getAuthProviders,
@@ -445,5 +446,49 @@ describe('SignInForm passkey MFA lanes', () => {
     expect(
       screen.queryByRole('button', { name: 'Sign in with a passkey' })
     ).toBeNull()
+  })
+
+  describe('login refusals reach the right message (FS11)', () => {
+    async function signIn() {
+      mockedGetCurrentAuthUser.mockRejectedValue(new Error('unauthorized'))
+      render(<SignInForm apiUrl="http://localhost:8000" />)
+      await waitFor(() =>
+        expect(screen.getByPlaceholderText('Email address')).toBeInTheDocument()
+      )
+      fireEvent.change(screen.getByPlaceholderText('Email address'), {
+        target: { value: 'joey@example.com' },
+      })
+      fireEvent.change(screen.getByPlaceholderText('Password'), {
+        target: { value: 'hunter22!' },
+      })
+      fireEvent.click(screen.getByRole('button', { name: 'Sign in' }))
+    }
+
+    it.each([
+      [401, 'Invalid email or password'],
+      [
+        429,
+        'Too many sign-in attempts. Please wait a few minutes and try again.',
+      ],
+      [503, 'The server ran into a problem. Please try again in a moment.'],
+    ])('a %i reads as its own message', async (status, message) => {
+      mockedLoginUser.mockResolvedValue(sdkError(status, 'refused'))
+      await signIn()
+      expect(await screen.findByText(message)).toBeInTheDocument()
+    })
+
+    it('a request that never reached the server is not called bad credentials', async () => {
+      mockedLoginUser.mockResolvedValue({
+        data: undefined,
+        error: new TypeError('fetch failed'),
+        response: undefined,
+      } as never)
+      await signIn()
+      expect(
+        await screen.findByText(
+          'Unable to reach the server. Check your connection and try again.'
+        )
+      ).toBeInTheDocument()
+    })
   })
 })

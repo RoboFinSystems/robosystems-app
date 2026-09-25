@@ -18,6 +18,7 @@ import {
   useIsRepository,
 } from '@robosystems/core'
 import { useToast } from '@robosystems/core/hooks/use-toast'
+import { isApiError, unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import { useOperationMonitoring } from '@robosystems/core/task-monitoring/operationHooks'
 import {
   Badge,
@@ -80,6 +81,13 @@ export default function BackupManagementContent() {
   const [showDetailsModal, setShowDetailsModal] = useState(false)
 
   const [createFormRetentionDays, setCreateFormRetentionDays] = useState(90)
+  // Set before the create request, so a second click cannot send a second one
+  // while the first is in flight (the monitor only starts once it returns).
+  const [submittingCreate, setSubmittingCreate] = useState(false)
+  // One key per opened modal: a retried or double-sent create replays the
+  // first operation instead of starting another backup.
+  const createIdempotencyKeyRef = useRef<string>('')
+  const submittingCreateRef = useRef(false)
 
   const createOperationMonitor = useOperationMonitoring()
 
@@ -258,37 +266,51 @@ export default function BackupManagementContent() {
   }
 
   const handleCreateBackup = async () => {
-    if (!selectedGraphId) return
+    if (!selectedGraphId || submittingCreateRef.current) return
 
+    submittingCreateRef.current = true
+    setSubmittingCreate(true)
+    // A request that got no answer keeps its key, so a retry replays it
+    // rather than starting a second backup; one that was answered is done.
+    let answered = false
     try {
       const response = await createBackup({
         path: { graph_id: selectedGraphId },
+        headers: { 'Idempotency-Key': createIdempotencyKeyRef.current },
         body: {
           backup_format: 'full_dump',
           retention_days: createFormRetentionDays,
         },
       })
+      answered = (response.response?.status ?? 0) !== 0
+      const envelope = unwrapSdk(response)
 
-      if (response.data) {
-        const operationId = response.data.operationId
-        showInfo('Backup creation started...', 3000)
-        await createOperationMonitor.startMonitoring(operationId)
-        showSuccess('Backup operation completed successfully!')
-        fetchBackupData()
-      } else {
-        throw new Error('Failed to create backup')
-      }
-    } catch (err: any) {
+      const operationId = envelope.operationId
+      // The API caps retention at the tier maximum and says so in the result.
+      const accepted = envelope.result as
+        { message?: string; retention_days?: number } | null | undefined
+      showInfo(
+        accepted?.retention_days !== undefined
+          ? `${accepted.message ?? 'Backup creation started'} — kept for ${accepted.retention_days} days.`
+          : 'Backup creation started...',
+        5000
+      )
+      await createOperationMonitor.startMonitoring(operationId)
+      showSuccess('Backup operation completed successfully!')
+      fetchBackupData()
+    } catch (err) {
       console.error('Backup creation error:', err)
-
-      if (err.status === 403) {
-        showError(
-          'Backup creation is currently disabled. Please contact support if you need assistance.',
-          8000
-        )
-      } else {
-        showError(err.message || 'Failed to create backup', 5000)
-      }
+      showError(
+        err instanceof Error && err.message
+          ? err.message
+          : 'Failed to create backup',
+        isApiError(err) ? 8000 : 5000
+      )
+    } finally {
+      // The next create from this modal is a new backup, not a replay.
+      if (answered) createIdempotencyKeyRef.current = crypto.randomUUID()
+      submittingCreateRef.current = false
+      setSubmittingCreate(false)
     }
   }
 
@@ -296,29 +318,31 @@ export default function BackupManagementContent() {
     if (!selectedGraphId) return
 
     try {
-      const response = await getBackupDownloadUrl({
-        path: {
-          graph_id: backup.graph_id,
-          backup_id: backup.backup_id,
-        },
-        query: { expires_in: 3600 },
-      })
+      const data = unwrapSdk(
+        await getBackupDownloadUrl({
+          path: {
+            graph_id: backup.graph_id,
+            backup_id: backup.backup_id,
+          },
+          query: { expires_in: 3600 },
+        })
+      )
 
-      if (response.data?.download_url) {
-        window.open(response.data.download_url, '_blank')
+      if (data?.download_url) {
+        window.open(data.download_url, '_blank')
         showSuccess('Download started', 3000)
-      } else {
-        throw new Error('Failed to get download URL')
-      }
-    } catch (err: any) {
-      console.error('Download error:', err)
-      if (err.status === 429) {
-        const detail =
-          err.body?.detail || err.message || 'Download limit exceeded'
-        showError(detail, 8000)
       } else {
         showError('Failed to download backup', 5000)
       }
+    } catch (err) {
+      console.error('Download error:', err)
+      // A quota refusal's detail names the limit and when it resets.
+      showError(
+        isApiError(err) && err.detail
+          ? err.detail
+          : 'Failed to download backup',
+        isApiError(err) && err.status === 429 ? 8000 : 5000
+      )
     }
   }
 
@@ -437,6 +461,7 @@ export default function BackupManagementContent() {
                 onClick={() => {
                   setCreateFormRetentionDays(90)
                   createOperationMonitor.reset()
+                  createIdempotencyKeyRef.current = crypto.randomUUID()
                   setShowCreateModal(true)
                 }}
               >
@@ -622,6 +647,7 @@ export default function BackupManagementContent() {
                           size="sm"
                           color="gray"
                           onClick={() => handleDownloadBackup(backup)}
+                          aria-label="Download backup"
                           disabled={
                             isRepository && downloadQuota?.remaining === 0
                           }
@@ -658,9 +684,12 @@ export default function BackupManagementContent() {
                 min={1}
                 max={90}
                 value={createFormRetentionDays}
-                onChange={(e) =>
+                onChange={(e) => {
                   setCreateFormRetentionDays(parseInt(e.target.value))
-                }
+                  // A different request needs its own key: reusing one with a
+                  // changed body is refused by the API.
+                  createIdempotencyKeyRef.current = crypto.randomUUID()
+                }}
               />
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 How long to keep the backup (1-90 days). Storage expires backup
@@ -691,12 +720,14 @@ export default function BackupManagementContent() {
           <Button
             onClick={handleCreateBackup}
             disabled={
-              createOperationMonitor.isMonitoring &&
-              createOperationMonitor.progress !== 100
+              submittingCreate ||
+              (createOperationMonitor.isMonitoring &&
+                createOperationMonitor.progress !== 100)
             }
           >
-            {createOperationMonitor.isMonitoring &&
-            createOperationMonitor.progress !== 100 ? (
+            {submittingCreate ||
+            (createOperationMonitor.isMonitoring &&
+              createOperationMonitor.progress !== 100) ? (
               <>
                 <Spinner size="sm" className="mr-2 text-white" />
                 Creating...

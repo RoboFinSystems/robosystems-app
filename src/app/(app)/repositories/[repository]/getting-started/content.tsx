@@ -16,6 +16,7 @@ import {
   useServiceOfferings,
   useToast,
 } from '@robosystems/core'
+import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import { Button, Card, Spinner } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
@@ -116,18 +117,21 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
       // Scoped to this repository: the key works only here (least privilege),
       // and only on the repository's own MCP URL — the universal URL takes a
       // sign-in, never a key.
-      const response = await createUserApiKey({
-        body: {
-          name: `Repository Access - ${repository.toUpperCase()} - ${new Date().toLocaleDateString()}`,
-          graph_id: repository,
-        },
-      })
+      // A refusal (e.g. the key limit) throws an ApiError carrying its detail.
+      const created = unwrapSdk(
+        await createUserApiKey({
+          body: {
+            name: `Repository Access - ${repository.toUpperCase()} - ${new Date().toLocaleDateString()}`,
+            graph_id: repository,
+          },
+        })
+      )
 
-      if (!response.data?.key) {
+      if (!created?.key) {
         throw new Error('Failed to create API key')
       }
 
-      setApiKey(response.data.key)
+      setApiKey(created.key)
       setKeyCreated(true)
 
       showSuccess('Repository-scoped API key created!')

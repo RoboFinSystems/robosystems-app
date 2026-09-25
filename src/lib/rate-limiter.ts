@@ -71,8 +71,15 @@ function getClientIdentifier(request: NextRequest): string {
   return getClientIp(request) ?? 'unknown'
 }
 
-// Pre-configured rate limiters for different endpoints
+// Pre-configured rate limiters for different endpoints. Contact and support
+// keep separate counters: a prospect's tier or graph-limit requests (both sent
+// through the contact route) must not use up their support allowance.
 export const contactRateLimiter = rateLimit({
+  interval: 60 * 60 * 1000, // 1 hour
+  uniqueTokenPerInterval: 1000,
+})
+
+export const supportRateLimiter = rateLimit({
   interval: 60 * 60 * 1000, // 1 hour
   uniqueTokenPerInterval: 1000,
 })

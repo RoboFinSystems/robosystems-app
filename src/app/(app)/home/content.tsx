@@ -9,6 +9,7 @@ import {
   useGraphContext,
   useOrg,
 } from '@robosystems/core'
+import { isApiError, unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import {
   Badge,
   Button,
@@ -61,6 +62,9 @@ export default function AllGraphsHomePage() {
   const { currentOrg } = useOrg()
   const [graphs, setGraphs] = useState<GraphInfo[]>([])
   const [loading, setLoading] = useState(true)
+  // A failed read is not an empty account: without this the page told a user
+  // with graphs that they had none, and offered to create one.
+  const [loadError, setLoadError] = useState<string | null>(null)
 
   // Creating a graph commits the org to a recurring charge and consumes its
   // quota, so the API restricts it to owners and admins. Read from org context
@@ -76,17 +80,21 @@ export default function AllGraphsHomePage() {
   const fetchGraphs = async () => {
     try {
       setLoading(true)
-      const response = await getGraphs()
+      setLoadError(null)
+      const data = unwrapSdk(await getGraphs())
 
-      if (response.data?.graphs) {
+      if (data?.graphs) {
         // Show both user graphs and shared repositories, but hide subgraphs
-        const mainGraphs = response.data.graphs.filter(
-          (graph) => !graph.isSubgraph
-        )
+        const mainGraphs = data.graphs.filter((graph) => !graph.isSubgraph)
         setGraphs(mainGraphs)
       }
     } catch (err) {
       console.error('Failed to fetch graphs:', err)
+      setLoadError(
+        isApiError(err) && err.detail
+          ? err.detail
+          : 'The graph list could not be loaded'
+      )
     } finally {
       setLoading(false)
     }
@@ -136,6 +144,27 @@ export default function AllGraphsHomePage() {
     return (
       <PageLayout>
         <LoadingState message="Loading graphs..." />
+      </PageLayout>
+    )
+  }
+
+  if (loadError) {
+    return (
+      <PageLayout>
+        <Card>
+          <div className="py-12 text-center">
+            <HiDatabase className="mx-auto h-12 w-12 text-gray-400" />
+            <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
+              We could not load your graphs
+            </h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              {loadError}
+            </p>
+            <Button color="gray" className="mx-auto mt-4" onClick={fetchGraphs}>
+              Try again
+            </Button>
+          </div>
+        </Card>
       </PageLayout>
     )
   }

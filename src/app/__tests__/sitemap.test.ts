@@ -11,7 +11,7 @@ vi.mock('@/lib/blog', () => ({
 
 vi.mock('@/lib/docs', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
-  getDocsCatalog: () => mockGetDocsCatalog(),
+  getDocsCatalog: async () => mockGetDocsCatalog(),
 }))
 
 vi.mock('@/lib/openapi', async (importOriginal) => ({
@@ -192,7 +192,7 @@ describe('sitemap', () => {
 
   it('still lists the static pages when the docs catalog is unreachable', async () => {
     mockGetAllPosts.mockResolvedValue(posts)
-    mockGetDocsCatalog.mockResolvedValue(null)
+    mockGetDocsCatalog.mockRejectedValue(new Error('catalog unreachable'))
     const urls = (await sitemap()).map((e) => e.url)
 
     expect(urls).toContain('https://robosystems.ai/docs')

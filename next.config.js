@@ -10,19 +10,38 @@ const MOVED_TO_ROBOLEDGER = ['claude-ledger']
 // /research/:ticker page and the YouTube first-comment links that point at them.
 const RESEARCH_ORIGIN = 'https://roboinvestor.ai'
 
+// Server Actions compare the browser `Origin` with the host Next sees, which behind
+// CloudFront is App Runner's own. The public hosts are therefore listed explicitly: prod
+// and staging by name (`next start` re-reads this file at boot, and the App Runner
+// runtime does not carry the build's NEXT_PUBLIC_* values), plus the host of the app URL
+// in the environment, which covers a self-hosted image run with that variable set.
+function appUrlHost() {
+  try {
+    return new URL(process.env.NEXT_PUBLIC_ROBOSYSTEMS_APP_URL ?? '').host
+  } catch {
+    return null
+  }
+}
+
+export const SERVER_ACTION_ALLOWED_ORIGINS = [
+  ...new Set(
+    ['robosystems.ai', 'staging.robosystems.ai', appUrlHost()].filter(Boolean)
+  ),
+]
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   // Server Actions POST to the page route and Next rejects the request unless
   // the browser `Origin` matches the `Host`/`x-forwarded-host` it sees. In prod
   // the app runs on App Runner behind CloudFront, whose origin is the raw
-  // `*.awsapprunner.com` host — so Next never sees `robosystems.ai` and every
-  // action (graph/entity selection persistence) 500s. Allow the public origin
-  // explicitly so the CSRF origin check passes. www redirects to the apex, so
-  // only the apex is listed.
+  // `*.awsapprunner.com` host — so Next never sees the public host and every
+  // action (graph/entity selection persistence) 500s. Allow the public origins
+  // explicitly so the CSRF origin check passes (see
+  // SERVER_ACTION_ALLOWED_ORIGINS). www redirects to the apex.
   experimental: {
     serverActions: {
-      allowedOrigins: ['robosystems.ai'],
+      allowedOrigins: SERVER_ACTION_ALLOWED_ORIGINS,
     },
   },
   async redirects() {

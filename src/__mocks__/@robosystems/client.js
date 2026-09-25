@@ -178,6 +178,9 @@ export const updateOrg = vi.fn()
 
 // Organization billing — backs the Billing / Subscriptions / Invoices tabs
 export const getOrgBillingCustomer = vi.fn()
+export const createCheckoutSession = vi.fn()
+export const changeSubscriptionPlan = vi.fn()
+export const createRepositorySubscription = vi.fn()
 export const listOrgSubscriptions = vi.fn()
 export const getOrgUpcomingInvoice = vi.fn()
 export const listOrgInvoices = vi.fn()
@@ -185,6 +188,7 @@ export const cancelOrgSubscription = vi.fn()
 export const createPortalSession = vi.fn()
 export const cancelRepositorySubscription = vi.fn()
 export const changeTier = vi.fn()
+export const getCheckoutStatus = vi.fn()
 
 // Graph membership
 export const listGraphMembers = vi.fn()

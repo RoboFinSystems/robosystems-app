@@ -1,3 +1,4 @@
+import { sdkError } from '@/test-utils/sdk'
 import { render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { GraphDashboardContent } from '../content'
@@ -193,5 +194,20 @@ describe('GraphDashboardContent', () => {
     })
     expect(screen.queryByText('Description')).not.toBeInTheDocument()
     expect(screen.queryByText('Tags')).not.toBeInTheDocument()
+  })
+
+  it('says the graph list failed to load, not that the graph does not exist', async () => {
+    mockSDK.getGraphs.mockImplementation(async () =>
+      sdkError(503, 'Service temporarily unavailable')
+    )
+
+    render(<GraphDashboardContent />)
+
+    expect(
+      await screen.findByText('Service temporarily unavailable')
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText('Graph or repository not found')
+    ).not.toBeInTheDocument()
   })
 })

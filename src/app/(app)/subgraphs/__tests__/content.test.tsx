@@ -1,18 +1,24 @@
-import { listSubgraphs } from '@robosystems/client'
+import { sdkError } from '@/test-utils/sdk'
+import {
+  createBackup,
+  deleteSubgraph,
+  listSubgraphs,
+} from '@robosystems/client'
 import { useGraphContext } from '@robosystems/core'
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { SubgraphsContent } from '../content'
 
 const mockPush = vi.fn()
+const toast = vi.hoisted(() => ({
+  showSuccess: vi.fn(),
+  showError: vi.fn(),
+  showInfo: vi.fn(),
+}))
 
 vi.mock('@robosystems/core', () => ({
   useGraphContext: vi.fn(),
-  useToast: () => ({
-    showSuccess: vi.fn(),
-    showError: vi.fn(),
-    showInfo: vi.fn(),
-  }),
+  useToast: () => toast,
   PageLayout: ({ children }: any) => <div>{children}</div>,
   PageHeader: ({ title, subtitle, actions }: any) => (
     <div>
@@ -28,8 +34,13 @@ vi.mock('@robosystems/core', () => ({
   ),
   EmptyState: ({ title }: any) => <div data-testid="empty-state">{title}</div>,
   LoadingState: ({ message }: any) => <div>{message}</div>,
-  ConfirmModal: ({ show, children }: any) =>
-    show ? <div>{children}</div> : null,
+  ConfirmModal: ({ show, children, onConfirm }: any) =>
+    show ? (
+      <div>
+        {children}
+        <button onClick={onConfirm}>confirm-delete</button>
+      </div>
+    ) : null,
 }))
 
 vi.mock('@robosystems/core/task-monitoring/operationHooks', () => ({
@@ -181,5 +192,57 @@ describe('SubgraphsContent', () => {
     })
     expect(screen.getByText('Create Subgraph').closest('button')).toBeDisabled()
     expect(screen.getByText(/Subgraphs: 3 \/ 3/)).toBeInTheDocument()
+  })
+
+  test('shows the refusal detail when a subgraph backup is refused', async () => {
+    setup({
+      parent_graph_name: 'Acme Ledger',
+      subgraph_count: 1,
+      max_subgraphs: 3,
+      subgraphs: [SUBGRAPH],
+    })
+    vi.mocked(createBackup).mockResolvedValue(
+      sdkError(403, 'Backup creation is disabled for this graph')
+    )
+
+    render(<SubgraphsContent />)
+    const [backup] = await screen.findAllByRole('button', {
+      name: 'Back up Related Entities',
+    })
+    fireEvent.click(backup)
+
+    await waitFor(() =>
+      expect(toast.showError).toHaveBeenCalledWith(
+        'Backup creation is disabled for this graph',
+        5000
+      )
+    )
+    expect(toast.showInfo).not.toHaveBeenCalled()
+  })
+
+  test('reports a refused delete as an error, not a success', async () => {
+    setup({
+      parent_graph_name: 'Acme Ledger',
+      subgraph_count: 1,
+      max_subgraphs: 3,
+      subgraphs: [SUBGRAPH],
+    })
+    vi.mocked(deleteSubgraph).mockResolvedValue(
+      sdkError(403, 'Admin access to parent graph required')
+    )
+
+    render(<SubgraphsContent />)
+    const [del] = await screen.findAllByRole('button', {
+      name: 'Delete Related Entities',
+    })
+    fireEvent.click(del)
+    fireEvent.click(await screen.findByText('confirm-delete'))
+
+    await waitFor(() =>
+      expect(toast.showError).toHaveBeenCalledWith(
+        'Admin access to parent graph required'
+      )
+    )
+    expect(toast.showSuccess).not.toHaveBeenCalled()
   })
 })

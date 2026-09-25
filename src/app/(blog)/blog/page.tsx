@@ -4,6 +4,7 @@ import {
   BlogListJsonLd,
 } from '@/components/blog/BlogJsonLd'
 import { getAllPosts } from '@/lib/blog'
+import { orBuildFallback } from '@/lib/build-phase'
 import { format } from 'date-fns'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
 }
 
 export default async function BlogPage() {
-  const posts = await getAllPosts()
+  const posts = await orBuildFallback(getAllPosts(), [])
 
   return (
     <div className="min-h-screen bg-black">

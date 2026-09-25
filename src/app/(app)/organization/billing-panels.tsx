@@ -15,7 +15,9 @@ import {
   fetchGraphTiers,
   type GraphTier,
 } from '@robosystems/core/lib/graph-tiers'
+import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import { useTaskMonitoring } from '@robosystems/core/task-monitoring/hooks'
+import { POLLING_CANCELLED } from '@robosystems/core/task-monitoring/taskMonitor'
 import { format } from 'date-fns'
 import {
   Alert,
@@ -47,6 +49,32 @@ import {
   HiSwitchHorizontal,
   HiXCircle,
 } from 'react-icons/hi'
+
+/**
+ * Subscription statuses still in force. `past_due`, `unpaid` and `paused` are
+ * listed so an owner whose renewal failed sees the subscription and why, rather
+ * than finding it gone; `canceled` stays listed until its period ends.
+ */
+const IN_FORCE_STATUSES = new Set([
+  'active',
+  'upgrading',
+  'past_due',
+  'unpaid',
+  'paused',
+  'pending',
+  'pending_payment',
+  'provisioning',
+])
+
+function isListedSubscription(s: SDK.GraphSubscriptionResponse): boolean {
+  if (IN_FORCE_STATUSES.has(s.status)) return true
+  if (s.status === 'canceled' && s.current_period_end) {
+    return new Date(s.current_period_end) > new Date()
+  }
+  return false
+}
+
+const PAYMENT_FAILED_STATUSES = new Set(['past_due', 'unpaid'])
 
 /**
  * Billing data for the organization page's Billing / Subscriptions / Invoices
@@ -98,37 +126,55 @@ export function useBillingData(enabled: boolean) {
       setLoading(true)
       setError(null)
 
-      // Load organization billing data in parallel
+      // Load organization billing data in parallel. Each read rejects on a
+      // refusal (unwrapSdk). The customer and upcoming invoice are absent when
+      // billing is off or nothing is due, so their failures are expected; a
+      // failed subscription or invoice list must not read as "you have none".
       const [customerRes, subscriptionsRes, upcomingInvoiceRes, invoicesRes] =
         await Promise.allSettled([
-          SDK.getOrgBillingCustomer({ path: { org_id: requestedOrgId } }),
-          SDK.listOrgSubscriptions({ path: { org_id: requestedOrgId } }),
-          SDK.getOrgUpcomingInvoice({ path: { org_id: requestedOrgId } }),
-          SDK.listOrgInvoices({ path: { org_id: requestedOrgId } }),
+          SDK.getOrgBillingCustomer({ path: { org_id: requestedOrgId } }).then(
+            unwrapSdk
+          ),
+          SDK.listOrgSubscriptions({ path: { org_id: requestedOrgId } }).then(
+            unwrapSdk
+          ),
+          SDK.getOrgUpcomingInvoice({ path: { org_id: requestedOrgId } }).then(
+            unwrapSdk
+          ),
+          SDK.listOrgInvoices({ path: { org_id: requestedOrgId } }).then(
+            unwrapSdk
+          ),
         ])
 
       if (loadedOrgIdRef.current !== requestedOrgId) return
 
-      if (customerRes.status === 'fulfilled' && customerRes.value.data) {
-        setBillingCustomer(customerRes.value.data)
+      if (customerRes.status === 'fulfilled' && customerRes.value) {
+        setBillingCustomer(customerRes.value)
       }
 
-      if (
-        subscriptionsRes.status === 'fulfilled' &&
-        subscriptionsRes.value.data
-      ) {
-        setOrgSubscriptions(subscriptionsRes.value.data || [])
+      if (subscriptionsRes.status === 'fulfilled') {
+        setOrgSubscriptions(subscriptionsRes.value || [])
       }
 
       if (
         upcomingInvoiceRes.status === 'fulfilled' &&
-        upcomingInvoiceRes.value.data
+        upcomingInvoiceRes.value
       ) {
-        setUpcomingInvoice(upcomingInvoiceRes.value.data)
+        setUpcomingInvoice(upcomingInvoiceRes.value)
       }
 
-      if (invoicesRes.status === 'fulfilled' && invoicesRes.value.data) {
-        setInvoices(invoicesRes.value.data.invoices || [])
+      if (invoicesRes.status === 'fulfilled') {
+        setInvoices(invoicesRes.value?.invoices || [])
+      }
+
+      const failed = [
+        subscriptionsRes.status === 'rejected' && 'subscriptions',
+        invoicesRes.status === 'rejected' && 'invoices',
+      ].filter(Boolean)
+      if (failed.length > 0) {
+        setError(
+          `Could not load ${failed.join(' and ')}. Refresh to try again.`
+        )
       }
     } catch (err) {
       if (loadedOrgIdRef.current !== requestedOrgId) return
@@ -253,8 +299,13 @@ export function OverviewTab({
 
   const billingType = getBillingType()
 
-  // Count subscriptions by type
-  const graphSubs = subscriptions.filter((s) => s.resource_type === 'graph')
+  // Count subscriptions by type. A graph counts as active while its
+  // subscription is serving (active, or mid tier change).
+  const graphSubs = subscriptions.filter(
+    (s) =>
+      s.resource_type === 'graph' &&
+      (s.status === 'active' || s.status === 'upgrading')
+  )
   const repoSubs = subscriptions.filter(
     (s) =>
       s.resource_type === 'repository' &&
@@ -452,18 +503,13 @@ export function SubscriptionsTab({
   const [upgrading, setUpgrading] = useState(false)
   const [loadingTiers, setLoadingTiers] = useState(false)
   const taskMonitoring = useTaskMonitoring()
+  // The graph whose tier change this page is watching. One monitor serves the
+  // whole tab, so its progress belongs to one row, not every `upgrading` row.
+  const [monitoredResourceId, setMonitoredResourceId] = useState<string | null>(
+    null
+  )
 
-  const activeSubscriptions = subscriptions.filter((s) => {
-    if (s.status === 'active' || s.status === 'upgrading') {
-      return true
-    }
-    if (s.status === 'canceled' && s.current_period_end) {
-      const endsAt = new Date(s.current_period_end)
-      const now = new Date()
-      return endsAt > now
-    }
-    return false
-  })
+  const activeSubscriptions = subscriptions.filter(isListedSubscription)
 
   const graphSubscriptions = activeSubscriptions.filter(
     (s) => s.resource_type === 'graph'
@@ -492,6 +538,19 @@ export function SubscriptionsTab({
           </div>
         </Badge>
       )
+    }
+    if (PAYMENT_FAILED_STATUSES.has(subscription.status)) {
+      return <Badge color="failure">Payment failed</Badge>
+    }
+    if (subscription.status === 'paused') {
+      return <Badge color="warning">Paused</Badge>
+    }
+    if (
+      subscription.status === 'provisioning' ||
+      subscription.status === 'pending' ||
+      subscription.status === 'pending_payment'
+    ) {
+      return <Badge color="info">Setting up</Badge>
     }
     if (subscription.status === 'canceled') {
       return (
@@ -631,23 +690,15 @@ export function SubscriptionsTab({
 
     try {
       setUpgrading(true)
-      const response = await SDK.changeTier({
-        path: { graph_id: subscriptionToUpgrade.resource_id },
-        body: {
-          new_tier: selectedTier as
-            'ladybug-standard' | 'ladybug-large' | 'ladybug-xlarge',
-        },
-      })
-
-      if (response.error) {
-        throw new Error(
-          typeof response.error === 'object' && 'detail' in response.error
-            ? String(response.error.detail)
-            : 'Failed to change tier'
-        )
-      }
-
-      const data = response.data
+      const data = unwrapSdk(
+        await SDK.changeTier({
+          path: { graph_id: subscriptionToUpgrade.resource_id },
+          body: {
+            new_tier: selectedTier as
+              'ladybug-standard' | 'ladybug-large' | 'ladybug-xlarge',
+          },
+        })
+      )
       const operationId = data?.operationId
 
       if (operationId) {
@@ -655,10 +706,17 @@ export function SubscriptionsTab({
           'Tier change initiated. Migrating your graph infrastructure...'
         )
         setShowUpgradeModal(false)
+        // Refresh now, so the row shows `upgrading` and its Change Tier button
+        // disables while the migration runs rather than when it finishes.
+        onRefresh()
+        const resourceId = subscriptionToUpgrade.resource_id
+        setMonitoredResourceId(resourceId)
 
         taskMonitoring
+          // A migration reports `running` for as long as it takes; 60 polls
+          // (5 minutes) called a slow one a failure while it carried on.
           .startMonitoring(operationId, {
-            maxAttempts: 60,
+            maxAttempts: 180,
             pollInterval: 5000,
           })
           .then(() => {
@@ -666,11 +724,20 @@ export function SubscriptionsTab({
             onRefresh()
           })
           .catch((err) => {
+            // Leaving the page stops watching; the change itself carries on.
+            if (err instanceof Error && err.message === POLLING_CANCELLED) {
+              return
+            }
             showError(
               `Tier upgrade failed: ${err instanceof Error ? err.message : 'Unknown error'}`
             )
             onRefresh()
           })
+          .finally(() =>
+            setMonitoredResourceId((current) =>
+              current === resourceId ? null : current
+            )
+          )
       } else {
         showSuccess('Tier changed successfully!')
         setShowUpgradeModal(false)
@@ -727,32 +794,43 @@ export function SubscriptionsTab({
                           : 'N/A'}
                       </span>
                     </div>
-                    {sub.status === 'upgrading' && taskMonitoring.isLoading && (
-                      <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-3">
-                        <div className="text-primary-700 dark:text-primary-300 flex items-center gap-2 text-sm">
-                          <Spinner size="xs" />
-                          <span>
-                            {taskMonitoring.currentStep ||
-                              'Migrating infrastructure...'}
-                          </span>
-                        </div>
-                        {taskMonitoring.progress != null && (
-                          <div className="bg-primary-200 dark:bg-primary-800 mt-2 h-1.5 w-full rounded-full">
-                            <div
-                              className="bg-primary-600 h-1.5 rounded-full transition-all duration-500"
-                              style={{ width: `${taskMonitoring.progress}%` }}
-                            />
-                          </div>
-                        )}
-                      </div>
+                    {PAYMENT_FAILED_STATUSES.has(sub.status) && (
+                      <p className="text-sm text-red-600 dark:text-red-400">
+                        The last payment for this graph failed. Update your
+                        payment method on the Billing tab to restore access.
+                      </p>
                     )}
+                    {sub.status === 'upgrading' &&
+                      taskMonitoring.isLoading &&
+                      monitoredResourceId === sub.resource_id && (
+                        <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-3">
+                          <div className="text-primary-700 dark:text-primary-300 flex items-center gap-2 text-sm">
+                            <Spinner size="xs" />
+                            <span>
+                              {taskMonitoring.currentStep ||
+                                'Migrating infrastructure...'}
+                            </span>
+                          </div>
+                          {taskMonitoring.progress != null && (
+                            <div className="bg-primary-200 dark:bg-primary-800 mt-2 h-1.5 w-full rounded-full">
+                              <div
+                                className="bg-primary-600 h-1.5 rounded-full transition-all duration-500"
+                                style={{ width: `${taskMonitoring.progress}%` }}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      )}
                     <div className="space-y-2">
                       <Button
                         size="sm"
                         color="gray"
                         onClick={() => handleUpgradeClick(sub)}
                         className="w-full"
-                        disabled={sub.status !== 'active'}
+                        disabled={
+                          sub.status !== 'active' ||
+                          monitoredResourceId !== null
+                        }
                       >
                         <HiArrowUp className="mr-2 h-4 w-4" />
                         Change Tier
