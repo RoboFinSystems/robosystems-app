@@ -9,6 +9,12 @@ import { ImageResponse } from 'next/og'
 export const OG_SIZE = { width: 1200, height: 630 }
 export const OG_CONTENT_TYPE = 'image/png'
 
+// ImageResponse answers `max-age=0, must-revalidate` in production, which would make
+// every fetch re-render the card on the app instance. A card changes only when a post's
+// title or excerpt does, so a day at the CDN is fresh enough.
+export const CARD_CACHE_CONTROL =
+  'public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800'
+
 const GRADIENT = 'linear-gradient(135deg, #06B6D4, #3B7AF5 55%, #6366F1)'
 const ACCENT = '#3B7AF5'
 const DOMAIN = 'robosystems.ai'
@@ -87,6 +93,6 @@ export function renderOgImage({
         {DOMAIN}
       </div>
     </div>,
-    OG_SIZE
+    { ...OG_SIZE, headers: { 'cache-control': CARD_CACHE_CONTROL } }
   )
 }

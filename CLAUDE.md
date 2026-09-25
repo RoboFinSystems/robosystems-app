@@ -89,6 +89,9 @@ npm run format:check # Check code formatting
   - `TRUSTED_PROXY_HOPS` - fallback only; the client IP normally comes from
     CloudFront's `CloudFront-Viewer-Address` header. Applies to requests that
     did not arrive through CloudFront. Optional, defaults to 1
+  - `ORIGIN_VERIFY_SECRET` - set by the stack from the `ORIGIN_VERIFY_SECRET`
+    GitHub secret; CloudFront sends it to the origin, and the viewer-address
+    header is trusted only when it matches. Unset leaves that check off
 
 ## Important Notes
 

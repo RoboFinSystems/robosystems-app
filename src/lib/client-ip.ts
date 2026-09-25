@@ -5,8 +5,10 @@
  *
  * `CloudFront-Viewer-Address` is CloudFront's own record of the address it
  * accepted the connection from. CloudFront sets it and overwrites anything the
- * caller sent, so it cannot be forged, and it does not depend on knowing how
- * many proxies sit in front of the app. When it is present, it is the answer.
+ * caller sent, and it does not depend on knowing how many proxies sit in front
+ * of the app. It is CloudFront's only when the request came through
+ * CloudFront, which `X-Origin-Verify` (a secret CloudFront adds as an origin
+ * header) proves; then it is the answer, and otherwise it is ignored.
  *
  * `X-Forwarded-For` is the fallback for requests that did not arrive through
  * CloudFront. It is a list each proxy appends to and the caller can seed, so
@@ -24,6 +26,8 @@
  * only runs when the request did *not* come through CloudFront, where a second
  * appended hop should not be assumed.
  */
+import { createHash, timingSafeEqual } from 'node:crypto'
+
 const DEFAULT_TRUSTED_PROXY_HOPS = 1
 
 function trustedProxyHops(): number {
@@ -31,6 +35,24 @@ function trustedProxyHops(): number {
   return Number.isInteger(configured) && configured > 0
     ? configured
     : DEFAULT_TRUSTED_PROXY_HOPS
+}
+
+/**
+ * Whether the request carries the header CloudFront adds on its way to the
+ * origin. Only then did CloudFront write `CloudFront-Viewer-Address`. Until
+ * `ORIGIN_VERIFY_SECRET` is configured the header is trusted as before, so a
+ * deploy that precedes the secret changes nothing.
+ */
+function arrivedThroughCloudFront(request: Request): boolean {
+  const expected = process.env.ORIGIN_VERIFY_SECRET
+  if (!expected) return true
+
+  const presented = request.headers.get('x-origin-verify')
+  if (!presented) return false
+
+  // Compare fixed-length digests so the comparison leaks neither content nor length.
+  const digest = (value: string) => createHash('sha256').update(value).digest()
+  return timingSafeEqual(digest(presented), digest(expected))
 }
 
 /**
@@ -52,7 +74,9 @@ function cloudfrontViewerIp(request: Request): string | undefined {
  * header is present (e.g. a direct request in local development).
  */
 export function getClientIp(request: Request): string | undefined {
-  const viewerIp = cloudfrontViewerIp(request)
+  const viewerIp = arrivedThroughCloudFront(request)
+    ? cloudfrontViewerIp(request)
+    : undefined
   if (viewerIp) return viewerIp
 
   const forwardedFor = request.headers.get('x-forwarded-for')

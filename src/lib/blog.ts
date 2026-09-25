@@ -95,22 +95,23 @@ export async function getPostSlugs(): Promise<string[]> {
  * post that moved to roboledger.ai keeps rendering here (with the catalog's canonical, which
  * already names its new home) until the redirect in next.config.js ships, so the move never
  * opens a 404 window between the reindex and the deploy.
+ *
+ * `null` means the catalog has no such post. A catalog or body that cannot be read throws,
+ * so a CDN blip during regeneration keeps the last good render instead of caching a 404 or
+ * an empty post.
  */
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  try {
-    const entries = await fetchCatalog()
-    const entry = entries.find((e) => e.slug === slug)
-    if (!entry) return null
-    const post = toPost(entry)
-    if (entry.assets?.body) {
-      const res = await fetch(entry.assets.body, { next: { revalidate: 300 } })
-      if (res.ok) post.content = await res.text()
-    }
-    return post
-  } catch (error) {
-    console.error(`Error loading post ${slug}:`, error)
-    return null
+  const entries = await fetchCatalog()
+  const entry = entries.find((e) => e.slug === slug)
+  if (!entry) return null
+  const post = toPost(entry)
+  if (entry.assets?.body) {
+    const res = await fetch(entry.assets.body, { next: { revalidate: 300 } })
+    if (!res.ok)
+      throw new Error(`Post body fetch failed for ${slug}: ${res.status}`)
+    post.content = await res.text()
   }
+  return post
 }
 
 /**
