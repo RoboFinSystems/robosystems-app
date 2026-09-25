@@ -139,11 +139,13 @@ export function ConsentContent() {
 
   // Default selection: the graph fixed by a per-graph URL; otherwise the
   // graph the user is already working in, when it can be chosen; otherwise
-  // their first own graph.
+  // their first own graph. Only fills an empty choice: this effect can run
+  // after a click, and must not overwrite it.
   useEffect(() => {
     if (!pending || selectedGraphId) return
     if (pending.graph_id) {
-      setSelectedGraphId(pending.graph_id)
+      const fixed = pending.graph_id
+      setSelectedGraphId((chosen) => chosen ?? fixed)
       return
     }
     if (graphState.isLoading) return
@@ -151,7 +153,8 @@ export function ConsentContent() {
       (graph) => graph.graphId === graphState.currentGraphId
     )
     const first = ownGraphs[0] ?? eligibleGraphs[0]
-    setSelectedGraphId(current?.graphId ?? first?.graphId ?? null)
+    const fallback = current?.graphId ?? first?.graphId ?? null
+    setSelectedGraphId((chosen) => chosen ?? fallback)
   }, [pending, selectedGraphId, graphState, eligibleGraphs, ownGraphs])
 
   const fixedGraph = pending?.graph_id
