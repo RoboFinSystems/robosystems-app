@@ -1,11 +1,20 @@
 // Site-wide Schema.org structured data. The Organization block is rendered in the root
 // layout so every page carries publisher identity; the SoftwareApplication block is rendered
 // on the homepage. `sameAs` mirrors the real social profiles linked from the footer.
+//
+// The two `@id`s are the identity every Robo* site points at: roboledger.ai and
+// roboinvestor.ai reference this Organization as their publisher, so the family reads as one
+// company and one founder, whose credentials live on /about.
+
+export const ORGANIZATION_ID = 'https://robosystems.ai/#organization'
+export const FOUNDER_ID = 'https://robosystems.ai/about#founder'
 
 export const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
+  '@id': ORGANIZATION_ID,
   name: 'RoboSystems',
+  legalName: 'RFS LLC',
   url: 'https://robosystems.ai',
   logo: 'https://robosystems.ai/images/logos/robosystems-icon.png',
   description:
@@ -18,7 +27,10 @@ export const organizationJsonLd = {
   ],
   founder: {
     '@type': 'Person',
+    '@id': FOUNDER_ID,
     name: 'Joseph T. French',
+    jobTitle: 'Founder',
+    url: 'https://robosystems.ai/about',
     image: 'https://robosystems.ai/images/joseph-t-french.webp',
     sameAs: [
       'https://www.linkedin.com/in/josephtfrench',
@@ -56,4 +68,5 @@ export const softwareJsonLd = {
   ],
   softwareVersion: '1.0',
   url: 'https://robosystems.ai',
+  publisher: { '@id': ORGANIZATION_ID },
 }

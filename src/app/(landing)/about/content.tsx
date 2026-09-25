@@ -174,7 +174,7 @@ export default function AboutContent() {
         </section>
 
         {/* Founder */}
-        <section className="relative bg-zinc-950 py-16 sm:py-20">
+        <section id="founder" className="relative bg-zinc-950 py-16 sm:py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-5">
               <div className="lg:col-span-2">
