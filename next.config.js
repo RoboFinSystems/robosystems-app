@@ -11,9 +11,10 @@ const MOVED_TO_ROBOLEDGER = ['claude-ledger']
 const RESEARCH_ORIGIN = 'https://roboinvestor.ai'
 
 // Server Actions compare the browser `Origin` with the host Next sees, which behind
-// CloudFront is App Runner's own. The public host is therefore listed explicitly: the
-// prod apex always, plus the host of the app URL this build was made for, so staging
-// (staging.robosystems.ai) and a fork on its own domain pass the check too.
+// CloudFront is App Runner's own. The public hosts are therefore listed explicitly: prod
+// and staging by name (`next start` re-reads this file at boot, and the App Runner
+// runtime does not carry the build's NEXT_PUBLIC_* values), plus the host of the app URL
+// in the environment, which covers a self-hosted image run with that variable set.
 function appUrlHost() {
   try {
     return new URL(process.env.NEXT_PUBLIC_ROBOSYSTEMS_APP_URL ?? '').host
@@ -23,7 +24,9 @@ function appUrlHost() {
 }
 
 export const SERVER_ACTION_ALLOWED_ORIGINS = [
-  ...new Set(['robosystems.ai', appUrlHost()].filter(Boolean)),
+  ...new Set(
+    ['robosystems.ai', 'staging.robosystems.ai', appUrlHost()].filter(Boolean)
+  ),
 ]
 
 /** @type {import('next').NextConfig} */

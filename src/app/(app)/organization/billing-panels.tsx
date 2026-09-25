@@ -701,8 +701,10 @@ export function SubscriptionsTab({
         setMonitoredResourceId(resourceId)
 
         taskMonitoring
+          // A migration reports `running` for as long as it takes; 60 polls
+          // (5 minutes) called a slow one a failure while it carried on.
           .startMonitoring(operationId, {
-            maxAttempts: 60,
+            maxAttempts: 180,
             pollInterval: 5000,
           })
           .then(() => {

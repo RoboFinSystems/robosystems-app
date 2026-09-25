@@ -688,9 +688,12 @@ export default function BackupManagementContent() {
                 min={1}
                 max={90}
                 value={createFormRetentionDays}
-                onChange={(e) =>
+                onChange={(e) => {
                   setCreateFormRetentionDays(parseInt(e.target.value))
-                }
+                  // A different request needs its own key: reusing one with a
+                  // changed body is refused by the API.
+                  createIdempotencyKeyRef.current = crypto.randomUUID()
+                }}
               />
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 How long to keep the backup (1-90 days). Storage expires backup
