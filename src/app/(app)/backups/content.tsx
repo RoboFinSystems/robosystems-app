@@ -1,6 +1,7 @@
 'use client'
 
 import { GuideLink } from '@/components/docs/GuideLink'
+import { sdkFailure } from '@/lib/sdk-error'
 import type { BackupResponse, BackupStatsResponse } from '@robosystems/client'
 import {
   createBackup,
@@ -80,6 +81,13 @@ export default function BackupManagementContent() {
   const [showDetailsModal, setShowDetailsModal] = useState(false)
 
   const [createFormRetentionDays, setCreateFormRetentionDays] = useState(90)
+  // Set before the create request, so a second click cannot send a second one
+  // while the first is in flight (the monitor only starts once it returns).
+  const [submittingCreate, setSubmittingCreate] = useState(false)
+  // One key per opened modal: a retried or double-sent create replays the
+  // first operation instead of starting another backup.
+  const createIdempotencyKeyRef = useRef<string>('')
+  const submittingCreateRef = useRef(false)
 
   const createOperationMonitor = useOperationMonitoring()
 
@@ -258,37 +266,56 @@ export default function BackupManagementContent() {
   }
 
   const handleCreateBackup = async () => {
-    if (!selectedGraphId) return
+    if (!selectedGraphId || submittingCreateRef.current) return
 
+    submittingCreateRef.current = true
+    setSubmittingCreate(true)
+    // A request that got no answer keeps its key, so a retry replays it
+    // rather than starting a second backup; one that was answered is done.
+    let answered = false
     try {
       const response = await createBackup({
         path: { graph_id: selectedGraphId },
+        headers: { 'Idempotency-Key': createIdempotencyKeyRef.current },
         body: {
           backup_format: 'full_dump',
           retention_days: createFormRetentionDays,
         },
       })
 
-      if (response.data) {
-        const operationId = response.data.operationId
-        showInfo('Backup creation started...', 3000)
-        await createOperationMonitor.startMonitoring(operationId)
-        showSuccess('Backup operation completed successfully!')
-        fetchBackupData()
-      } else {
-        throw new Error('Failed to create backup')
+      answered = (response.response?.status ?? 0) !== 0
+      const failure = sdkFailure(response, 'Failed to create backup')
+      if (failure || !response.data) {
+        showError(failure?.detail ?? 'Failed to create backup', 8000)
+        return
       }
-    } catch (err: any) {
-      console.error('Backup creation error:', err)
 
-      if (err.status === 403) {
-        showError(
-          'Backup creation is currently disabled. Please contact support if you need assistance.',
-          8000
-        )
-      } else {
-        showError(err.message || 'Failed to create backup', 5000)
-      }
+      const operationId = response.data.operationId
+      // The API caps retention at the tier maximum and says so in the result.
+      const accepted = response.data.result as
+        { message?: string; retention_days?: number } | null | undefined
+      showInfo(
+        accepted?.retention_days !== undefined
+          ? `${accepted.message ?? 'Backup creation started'} — kept for ${accepted.retention_days} days.`
+          : 'Backup creation started...',
+        5000
+      )
+      await createOperationMonitor.startMonitoring(operationId)
+      showSuccess('Backup operation completed successfully!')
+      fetchBackupData()
+    } catch (err) {
+      console.error('Backup creation error:', err)
+      showError(
+        err instanceof Error && err.message
+          ? err.message
+          : 'Failed to create backup',
+        5000
+      )
+    } finally {
+      // The next create from this modal is a new backup, not a replay.
+      if (answered) createIdempotencyKeyRef.current = crypto.randomUUID()
+      submittingCreateRef.current = false
+      setSubmittingCreate(false)
     }
   }
 
@@ -304,21 +331,22 @@ export default function BackupManagementContent() {
         query: { expires_in: 3600 },
       })
 
+      const failure = sdkFailure(response, 'Failed to download backup')
+      if (failure) {
+        // A quota refusal's detail names the limit and when it resets.
+        showError(failure.detail, failure.status === 429 ? 8000 : 5000)
+        return
+      }
+
       if (response.data?.download_url) {
         window.open(response.data.download_url, '_blank')
         showSuccess('Download started', 3000)
       } else {
-        throw new Error('Failed to get download URL')
-      }
-    } catch (err: any) {
-      console.error('Download error:', err)
-      if (err.status === 429) {
-        const detail =
-          err.body?.detail || err.message || 'Download limit exceeded'
-        showError(detail, 8000)
-      } else {
         showError('Failed to download backup', 5000)
       }
+    } catch (err) {
+      console.error('Download error:', err)
+      showError('Failed to download backup', 5000)
     }
   }
 
@@ -437,6 +465,7 @@ export default function BackupManagementContent() {
                 onClick={() => {
                   setCreateFormRetentionDays(90)
                   createOperationMonitor.reset()
+                  createIdempotencyKeyRef.current = crypto.randomUUID()
                   setShowCreateModal(true)
                 }}
               >
@@ -622,6 +651,7 @@ export default function BackupManagementContent() {
                           size="sm"
                           color="gray"
                           onClick={() => handleDownloadBackup(backup)}
+                          aria-label="Download backup"
                           disabled={
                             isRepository && downloadQuota?.remaining === 0
                           }
@@ -691,12 +721,14 @@ export default function BackupManagementContent() {
           <Button
             onClick={handleCreateBackup}
             disabled={
-              createOperationMonitor.isMonitoring &&
-              createOperationMonitor.progress !== 100
+              submittingCreate ||
+              (createOperationMonitor.isMonitoring &&
+                createOperationMonitor.progress !== 100)
             }
           >
-            {createOperationMonitor.isMonitoring &&
-            createOperationMonitor.progress !== 100 ? (
+            {submittingCreate ||
+            (createOperationMonitor.isMonitoring &&
+              createOperationMonitor.progress !== 100) ? (
               <>
                 <Spinner size="sm" className="mr-2 text-white" />
                 Creating...

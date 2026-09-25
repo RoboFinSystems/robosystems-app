@@ -2,6 +2,7 @@
 
 import { CopyableId } from '@/components/CopyableId'
 import { GuideLink } from '@/components/docs/GuideLink'
+import { sdkFailure } from '@/lib/sdk-error'
 import type {
   ListSubgraphsResponse,
   SubgraphSummary,
@@ -76,24 +77,34 @@ export function SubgraphsContent() {
         },
       })
 
-      if (response.data) {
-        const operationId = response.data.operationId
-        showInfo('Backup started...', 3000)
-        await backupOperationMonitor.startMonitoring(operationId)
-        showSuccess(
-          `Backup created for ${subgraph.display_name}. View it on the Backups page.`
-        )
-        backupOperationMonitor.reset()
-      } else {
-        throw new Error('Failed to create backup')
+      const failure = sdkFailure(response, 'Failed to create backup')
+      if (failure || !response.data) {
+        showError(failure?.detail ?? 'Failed to create backup', 5000)
+        return
       }
-    } catch (err: any) {
+
+      const operationId = response.data.operationId
+      const accepted = response.data.result as
+        { retention_days?: number } | null | undefined
+      showInfo(
+        accepted?.retention_days !== undefined
+          ? `Backup started — kept for ${accepted.retention_days} days.`
+          : 'Backup started...',
+        3000
+      )
+      await backupOperationMonitor.startMonitoring(operationId)
+      showSuccess(
+        `Backup created for ${subgraph.display_name}. View it on the Backups page.`
+      )
+      backupOperationMonitor.reset()
+    } catch (err) {
       console.error('Subgraph backup error:', err)
-      if (err.status === 403) {
-        showError('Backup creation is currently disabled.', 5000)
-      } else {
-        showError(err.message || 'Failed to create backup', 5000)
-      }
+      showError(
+        err instanceof Error && err.message
+          ? err.message
+          : 'Failed to create backup',
+        5000
+      )
     } finally {
       setBackingUpId(null)
     }
