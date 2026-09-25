@@ -76,6 +76,22 @@ describe('contact and support routes', () => {
     expect((await support(req(supportBody, ip))).status).toBe(200)
   })
 
+  it.each([
+    ['a@b.co', 200],
+    ['first.last@mail.example.co.uk', 200],
+    ['a@b', 400],
+    ['a@b..co', 400],
+    ['a b@c.co', 400],
+  ])('validates the email %s', async (email, status) => {
+    const { contact, support } = await routes()
+    expect(
+      (await contact(req({ ...contactBody, email }, nextIp()))).status
+    ).toBe(status)
+    expect(
+      (await support(req({ ...supportBody, email }, nextIp()))).status
+    ).toBe(status)
+  })
+
   it('answers 400, not 500, to a body that is not JSON', async () => {
     const { contact, support } = await routes()
     expect((await contact(req('{not json', nextIp()))).status).toBe(400)
