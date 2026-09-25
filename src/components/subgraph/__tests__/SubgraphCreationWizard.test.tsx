@@ -196,8 +196,10 @@ describe('SubgraphCreationWizard', () => {
     expect(showError).toHaveBeenCalled()
   })
 
-  test('explains a tier refusal', async () => {
-    mockCreateSubgraph.mockResolvedValue(sdkError(403, 'Tier has no subgraphs'))
+  test("shows the API's reason for a 403 rather than assuming the tier", async () => {
+    mockCreateSubgraph.mockResolvedValue(
+      sdkError(403, 'Admin access to parent graph required')
+    )
 
     renderWizard()
     fillForm('entities')
@@ -206,7 +208,7 @@ describe('SubgraphCreationWizard', () => {
 
     await waitFor(() =>
       expect(showError).toHaveBeenCalledWith(
-        'Your current tier does not support subgraphs. Please upgrade.'
+        'Admin access to parent graph required'
       )
     )
   })

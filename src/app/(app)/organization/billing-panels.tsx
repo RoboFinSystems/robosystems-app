@@ -690,23 +690,15 @@ export function SubscriptionsTab({
 
     try {
       setUpgrading(true)
-      const response = await SDK.changeTier({
-        path: { graph_id: subscriptionToUpgrade.resource_id },
-        body: {
-          new_tier: selectedTier as
-            'ladybug-standard' | 'ladybug-large' | 'ladybug-xlarge',
-        },
-      })
-
-      if (response.error) {
-        throw new Error(
-          typeof response.error === 'object' && 'detail' in response.error
-            ? String(response.error.detail)
-            : 'Failed to change tier'
-        )
-      }
-
-      const data = response.data
+      const data = unwrapSdk(
+        await SDK.changeTier({
+          path: { graph_id: subscriptionToUpgrade.resource_id },
+          body: {
+            new_tier: selectedTier as
+              'ladybug-standard' | 'ladybug-large' | 'ladybug-xlarge',
+          },
+        })
+      )
       const operationId = data?.operationId
 
       if (operationId) {

@@ -72,6 +72,8 @@ export function SubgraphsContent() {
       const envelope = unwrapSdk(
         await createBackup({
           path: { graph_id: subgraph.graph_id },
+          // One key per click: a retried send replays it, not a second backup.
+          headers: { 'Idempotency-Key': crypto.randomUUID() },
           body: {
             backup_format: 'full_dump',
             retention_days: 90,

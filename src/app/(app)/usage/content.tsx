@@ -229,7 +229,12 @@ export function UsageContent() {
             path: { graph_id: graphId },
             query: { limit: 10 },
           }).then(unwrapSdk),
-          getDatabaseHealth({ path: { graph_id: graphId } }).then(unwrapSdk),
+          // Instance health is shown only for owned graphs.
+          graphInfo.isRepository
+            ? Promise.resolve(null)
+            : getDatabaseHealth({ path: { graph_id: graphId } }).then(
+                unwrapSdk
+              ),
         ])
 
       // A refused read rejects (unwrapSdk), so a section that could not be
@@ -246,7 +251,10 @@ export function UsageContent() {
       // Process credits (available for both graphs and repositories)
       if (creditRes.status === 'fulfilled') {
         usageData.creditSummary = creditRes.value as unknown as CreditSummary
-      } else {
+      } else if (!(
+        isApiError(creditRes.reason) && creditRes.reason.status === 404
+      )) {
+        // A 404 means no credit pool applies (e.g. a repository without one).
         unavailable.push('credits')
       }
 

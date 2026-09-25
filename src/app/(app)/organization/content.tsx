@@ -163,13 +163,25 @@ function OrganizationTabs() {
       setLoading(true)
 
       // Load members and limits
-      const [membersData, limitsData] = await Promise.all([
+      const [membersData, limitsResult] = await Promise.all([
         SDK.listOrgMembers({ path: { org_id: currentOrg.id } }).then(unwrapSdk),
-        SDK.getOrgLimits({ path: { org_id: currentOrg.id } }).then(unwrapSdk),
+        // Limits are optional context: their failure is reported, not fatal.
+        SDK.getOrgLimits({ path: { org_id: currentOrg.id } })
+          .then(unwrapSdk)
+          .then(
+            (data) => ({ data, error: null as unknown }),
+            (error: unknown) => ({ data: null, error })
+          ),
       ])
 
       setMembers(membersData?.members || [])
-      setLimits(limitsData ?? null)
+      setLimits(limitsResult.data ?? null)
+      if (limitsResult.error) {
+        handleApiError(
+          limitsResult.error,
+          'Organization limits could not be loaded'
+        )
+      }
 
       // Usage and pending invitations are admin-only reads
       const isAdmin = ['owner', 'admin'].includes(currentOrg.role)

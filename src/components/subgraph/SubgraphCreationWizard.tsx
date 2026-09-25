@@ -162,20 +162,16 @@ export function SubgraphCreationWizard({
     } catch (error: any) {
       console.error('Failed to create subgraph:', error)
 
-      // Handle specific error cases
-      if (error.status === 403) {
-        showError(
-          'Your current tier does not support subgraphs. Please upgrade.'
-        )
-      } else if (error.status === 409) {
+      // A name collision sends the user back to fix the name. Every other
+      // refusal (tier cap, role, a disabled feature, an invalid name) is
+      // explained by the API's own detail.
+      if (error?.status === 409) {
         showError('A subgraph with this name already exists.')
         setErrors({ name: 'This name is already taken' })
         setCurrentStep(0)
-      } else if (error.status === 400 || error.status === 422) {
-        showError('Invalid subgraph configuration. Please check your inputs.')
-        setCurrentStep(0)
       } else {
-        showError(error.message || 'Failed to create subgraph')
+        showError(error?.message || 'Failed to create subgraph')
+        if (error?.status === 400 || error?.status === 422) setCurrentStep(0)
       }
     } finally {
       setIsCreating(false)
