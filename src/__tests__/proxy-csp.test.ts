@@ -40,3 +40,25 @@ describe('proxy CSP connect-src (production host)', () => {
     expect(sources.some((s) => s.includes('PLACEHOLDER'))).toBe(false)
   })
 })
+
+describe('proxy CSP connect-src (as the deployed server receives the request)', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.resetModules()
+  })
+
+  // A production server reports its own listen address in nextUrl, whatever
+  // Host the browser sent, so the hostname cannot mean "running locally".
+  it('serves the production policy to a request that reaches it as localhost', async () => {
+    vi.stubEnv('NODE_ENV', 'production')
+    const { proxy } = await import('../proxy')
+    const response = proxy(
+      new NextRequest('http://localhost:3000/tables', {
+        headers: { host: 'robosystems.ai' },
+      })
+    )
+    const sources = connectSrc(response.headers.get('Content-Security-Policy'))
+    expect(sources).toContain('https://*.s3.amazonaws.com')
+    expect(sources).not.toContain('http://localhost:*')
+  })
+})
