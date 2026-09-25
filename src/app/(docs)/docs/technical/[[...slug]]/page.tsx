@@ -30,7 +30,8 @@ async function load(slug?: string[]) {
 }
 
 export async function generateStaticParams() {
-  const catalog = await getDocsCatalog()
+  // A catalog the build cannot read leaves every page to render on demand.
+  const catalog = await getDocsCatalog().catch(() => null)
   const nav = catalog && getDocsNav(catalog, DOCS_SITE, 'technical')
   return (nav?.ordered ?? []).map((page) => ({
     slug: page.slug === 'index' ? [] : [page.slug],
@@ -51,7 +52,6 @@ export default async function TechnicalDocsPage({ params }: Props) {
   const found = await load((await params).slug)
   if (!found) notFound()
   const body = await getDocsBody(found.page)
-  if (body === null) notFound()
 
   const { nav, page } = found
   const isIndex = page.slug === 'index'
