@@ -25,15 +25,14 @@ interface GraphCreationWizardProps extends GraphCreationConfig {
 class SchemaInputError extends Error {}
 
 /**
- * The `custom_schema` a generic graph is created with. The API refuses a generic graph
- * that carries neither a schema nor an initial entity, so the "empty" choice is sent as a
- * schema with no nodes rather than as nothing.
+ * The pasted `custom_schema` for a generic graph, or undefined for the "empty" choice
+ * (core then sends a schema with no nodes, named after the graph). The API refuses a
+ * generic graph that carries neither a schema nor an initial entity.
  */
-function genericSchema(formData: GraphFormData): Record<string, unknown> {
-  const name = formData.genericGraphName.trim()
-  if (formData.genericSchemaType !== 'custom') {
-    return { name, nodes: [], relationships: [] }
-  }
+function customGenericSchema(
+  formData: GraphFormData
+): Record<string, unknown> | undefined {
+  if (formData.genericSchemaType !== 'custom') return undefined
 
   const raw = (formData.genericCustomSchema || '').trim()
   if (!raw) {
@@ -50,7 +49,7 @@ function genericSchema(formData: GraphFormData): Record<string, unknown> {
   if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
     throw new SchemaInputError('The custom schema must be a JSON object.')
   }
-  return { name, ...(parsed as Record<string, unknown>) }
+  return parsed as Record<string, unknown>
 }
 
 /**
@@ -221,19 +220,15 @@ export function GraphCreationWizard({
           org_id: currentOrg?.id,
         })
       } else {
-        // Create generic graph. `custom_schema` and `tags` need a core whose
-        // createGraph forwards them; the request is built as a value (not an
-        // inline literal) so it still type-checks against the older signature.
-        const genericRequest = {
+        result = await graphCreation.createGenericGraph({
           graph_name: formData.genericGraphName,
           description: formData.genericGraphDescription,
           tags: formData.genericGraphTags,
-          custom_schema: genericSchema(formData),
+          custom_schema: customGenericSchema(formData),
           instance_tier: formData.selectedTier,
           schema_extensions: formData.selectedExtensions,
           org_id: currentOrg?.id,
-        }
-        result = await graphCreation.createGenericGraph(genericRequest)
+        })
       }
 
       // Call success callback with full result

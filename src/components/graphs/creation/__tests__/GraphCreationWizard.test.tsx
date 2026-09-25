@@ -105,14 +105,14 @@ describe('GraphCreationWizard (generic)', () => {
     ).toBeInTheDocument()
   })
 
-  it('sends an empty schema and the tags for the empty choice', async () => {
+  it('leaves the empty schema to core and passes the tags for the empty choice', async () => {
     createGenericGraph.mockResolvedValue({ graph_id: 'kg1' })
     createGeneric()
     await waitFor(() => expect(createGenericGraph).toHaveBeenCalled())
     expect(createGenericGraph.mock.calls[0][0]).toMatchObject({
       graph_name: 'My Graph',
       tags: ['prod', 'acme'],
-      custom_schema: { name: 'My Graph', nodes: [], relationships: [] },
+      custom_schema: undefined,
     })
   })
 
