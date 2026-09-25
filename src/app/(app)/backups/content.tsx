@@ -1,7 +1,6 @@
 'use client'
 
 import { GuideLink } from '@/components/docs/GuideLink'
-import { sdkFailure } from '@/lib/sdk-error'
 import type { BackupResponse, BackupStatsResponse } from '@robosystems/client'
 import {
   createBackup,
@@ -19,6 +18,7 @@ import {
   useIsRepository,
 } from '@robosystems/core'
 import { useToast } from '@robosystems/core/hooks/use-toast'
+import { isApiError, unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import { useOperationMonitoring } from '@robosystems/core/task-monitoring/operationHooks'
 import {
   Badge,
@@ -282,17 +282,12 @@ export default function BackupManagementContent() {
           retention_days: createFormRetentionDays,
         },
       })
-
       answered = (response.response?.status ?? 0) !== 0
-      const failure = sdkFailure(response, 'Failed to create backup')
-      if (failure || !response.data) {
-        showError(failure?.detail ?? 'Failed to create backup', 8000)
-        return
-      }
+      const envelope = unwrapSdk(response)
 
-      const operationId = response.data.operationId
+      const operationId = envelope.operationId
       // The API caps retention at the tier maximum and says so in the result.
-      const accepted = response.data.result as
+      const accepted = envelope.result as
         { message?: string; retention_days?: number } | null | undefined
       showInfo(
         accepted?.retention_days !== undefined
@@ -309,7 +304,7 @@ export default function BackupManagementContent() {
         err instanceof Error && err.message
           ? err.message
           : 'Failed to create backup',
-        5000
+        isApiError(err) ? 8000 : 5000
       )
     } finally {
       // The next create from this modal is a new backup, not a replay.
@@ -323,30 +318,31 @@ export default function BackupManagementContent() {
     if (!selectedGraphId) return
 
     try {
-      const response = await getBackupDownloadUrl({
-        path: {
-          graph_id: backup.graph_id,
-          backup_id: backup.backup_id,
-        },
-        query: { expires_in: 3600 },
-      })
+      const data = unwrapSdk(
+        await getBackupDownloadUrl({
+          path: {
+            graph_id: backup.graph_id,
+            backup_id: backup.backup_id,
+          },
+          query: { expires_in: 3600 },
+        })
+      )
 
-      const failure = sdkFailure(response, 'Failed to download backup')
-      if (failure) {
-        // A quota refusal's detail names the limit and when it resets.
-        showError(failure.detail, failure.status === 429 ? 8000 : 5000)
-        return
-      }
-
-      if (response.data?.download_url) {
-        window.open(response.data.download_url, '_blank')
+      if (data?.download_url) {
+        window.open(data.download_url, '_blank')
         showSuccess('Download started', 3000)
       } else {
         showError('Failed to download backup', 5000)
       }
     } catch (err) {
       console.error('Download error:', err)
-      showError('Failed to download backup', 5000)
+      // A quota refusal's detail names the limit and when it resets.
+      showError(
+        isApiError(err) && err.detail
+          ? err.detail
+          : 'Failed to download backup',
+        isApiError(err) && err.status === 429 ? 8000 : 5000
+      )
     }
   }
 

@@ -1,7 +1,6 @@
 'use client'
 
 import { GuideLink } from '@/components/docs/GuideLink'
-import { sdkFailure } from '@/lib/sdk-error'
 import type { GraphInfo } from '@robosystems/client'
 import {
   getCreditSummary,
@@ -18,6 +17,7 @@ import {
   useGraphContext,
   useIsRepository,
 } from '@robosystems/core'
+import { isApiError, unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import { Alert, Badge, Button, Card, Progress } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -127,6 +127,8 @@ interface UsageData {
   graphLimits?: GraphLimits
   recentTransactions?: CreditTransaction[]
   instanceResources?: InstanceResources
+  /** Sections whose read failed, named so the page can say so. */
+  unavailable?: string[]
 }
 
 /**
@@ -199,19 +201,10 @@ export function UsageContent() {
 
     try {
       // Get basic graph info
-      const graphsResponse = await getGraphs()
-      const graphsFailure = sdkFailure(
-        graphsResponse,
-        'The graph list could not be loaded'
-      )
-      if (graphsFailure) {
-        // Not "not found": the list could not be read at all.
-        if (loadedGraphIdRef.current !== requestedGraphId) return
-        setError(graphsFailure.detail)
-        setLoading(false)
-        return
-      }
-      const graphInfo = graphsResponse.data?.graphs?.find(
+      // A refused read throws (caught below as a load failure), so it is never
+      // mistaken for "this graph does not exist".
+      const graphsData = unwrapSdk(await getGraphs())
+      const graphInfo = graphsData?.graphs?.find(
         (g: GraphInfo) => g.graphId === graphId
       )
 
@@ -230,43 +223,52 @@ export function UsageContent() {
       // that no route ever reached.
       const [limitsRes, creditRes, transactionsRes, healthRes] =
         await Promise.allSettled([
-          getGraphLimits({ path: { graph_id: graphId } }),
-          getCreditSummary({ path: { graph_id: graphId } }),
+          getGraphLimits({ path: { graph_id: graphId } }).then(unwrapSdk),
+          getCreditSummary({ path: { graph_id: graphId } }).then(unwrapSdk),
           listCreditTransactions({
             path: { graph_id: graphId },
             query: { limit: 10 },
-          }),
-          getDatabaseHealth({ path: { graph_id: graphId } }),
+          }).then(unwrapSdk),
+          getDatabaseHealth({ path: { graph_id: graphId } }).then(unwrapSdk),
         ])
 
+      // A refused read rejects (unwrapSdk), so a section that could not be
+      // loaded is reported as such instead of silently missing.
+      const unavailable: string[] = []
+
       // Process limits (includes instance storage usage)
-      if (limitsRes.status === 'fulfilled' && limitsRes.value.data) {
-        usageData.graphLimits = limitsRes.value.data as unknown as GraphLimits
+      if (limitsRes.status === 'fulfilled') {
+        usageData.graphLimits = limitsRes.value as unknown as GraphLimits
+      } else {
+        unavailable.push('limits')
       }
 
       // Process credits (available for both graphs and repositories)
-      if (creditRes.status === 'fulfilled' && creditRes.value.data) {
-        usageData.creditSummary = creditRes.value
-          .data as unknown as CreditSummary
+      if (creditRes.status === 'fulfilled') {
+        usageData.creditSummary = creditRes.value as unknown as CreditSummary
+      } else {
+        unavailable.push('credits')
       }
 
       // Process transactions
-      if (
-        transactionsRes.status === 'fulfilled' &&
-        transactionsRes.value.data
-      ) {
-        const txData = transactionsRes.value.data as any
-        usageData.recentTransactions = txData.transactions || []
+      if (transactionsRes.status === 'fulfilled') {
+        const txData = transactionsRes.value as any
+        usageData.recentTransactions = txData?.transactions || []
+      } else {
+        unavailable.push('recent activity')
       }
 
       // Process instance resources. The API omits these unless the instance
       // is dedicated, so an absent status simply means "not applicable here".
-      if (healthRes.status === 'fulfilled' && healthRes.value.data) {
-        const health = healthRes.value.data as unknown as InstanceResources
-        if (health.resource_status) {
+      if (healthRes.status === 'fulfilled') {
+        const health = healthRes.value as unknown as InstanceResources
+        if (health?.resource_status) {
           usageData.instanceResources = health
         }
+      } else {
+        unavailable.push('instance health')
       }
+      usageData.unavailable = unavailable
 
       if (loadedGraphIdRef.current !== requestedGraphId) return
 
@@ -274,7 +276,9 @@ export function UsageContent() {
     } catch (err) {
       if (loadedGraphIdRef.current !== requestedGraphId) return
       console.error('Failed to fetch usage data:', err)
-      setError('Failed to load usage data')
+      setError(
+        isApiError(err) && err.detail ? err.detail : 'Failed to load usage data'
+      )
     } finally {
       if (loadedGraphIdRef.current === requestedGraphId) setLoading(false)
     }
@@ -555,6 +559,13 @@ export function UsageContent() {
           )
         }
       />
+
+      {data.unavailable && data.unavailable.length > 0 && (
+        <Alert color="warning" icon={HiExclamationCircle}>
+          Some usage data could not be loaded ({data.unavailable.join(', ')}).
+          Refresh to try again.
+        </Alert>
+      )}
 
       {/* Credit Balance - For both graphs and repositories */}
       {data.creditSummary && (

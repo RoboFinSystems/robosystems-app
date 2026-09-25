@@ -15,7 +15,9 @@ import {
   fetchGraphTiers,
   type GraphTier,
 } from '@robosystems/core/lib/graph-tiers'
+import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import { useTaskMonitoring } from '@robosystems/core/task-monitoring/hooks'
+import { POLLING_CANCELLED } from '@robosystems/core/task-monitoring/taskMonitor'
 import { format } from 'date-fns'
 import {
   Alert,
@@ -124,37 +126,55 @@ export function useBillingData(enabled: boolean) {
       setLoading(true)
       setError(null)
 
-      // Load organization billing data in parallel
+      // Load organization billing data in parallel. Each read rejects on a
+      // refusal (unwrapSdk). The customer and upcoming invoice are absent when
+      // billing is off or nothing is due, so their failures are expected; a
+      // failed subscription or invoice list must not read as "you have none".
       const [customerRes, subscriptionsRes, upcomingInvoiceRes, invoicesRes] =
         await Promise.allSettled([
-          SDK.getOrgBillingCustomer({ path: { org_id: requestedOrgId } }),
-          SDK.listOrgSubscriptions({ path: { org_id: requestedOrgId } }),
-          SDK.getOrgUpcomingInvoice({ path: { org_id: requestedOrgId } }),
-          SDK.listOrgInvoices({ path: { org_id: requestedOrgId } }),
+          SDK.getOrgBillingCustomer({ path: { org_id: requestedOrgId } }).then(
+            unwrapSdk
+          ),
+          SDK.listOrgSubscriptions({ path: { org_id: requestedOrgId } }).then(
+            unwrapSdk
+          ),
+          SDK.getOrgUpcomingInvoice({ path: { org_id: requestedOrgId } }).then(
+            unwrapSdk
+          ),
+          SDK.listOrgInvoices({ path: { org_id: requestedOrgId } }).then(
+            unwrapSdk
+          ),
         ])
 
       if (loadedOrgIdRef.current !== requestedOrgId) return
 
-      if (customerRes.status === 'fulfilled' && customerRes.value.data) {
-        setBillingCustomer(customerRes.value.data)
+      if (customerRes.status === 'fulfilled' && customerRes.value) {
+        setBillingCustomer(customerRes.value)
       }
 
-      if (
-        subscriptionsRes.status === 'fulfilled' &&
-        subscriptionsRes.value.data
-      ) {
-        setOrgSubscriptions(subscriptionsRes.value.data || [])
+      if (subscriptionsRes.status === 'fulfilled') {
+        setOrgSubscriptions(subscriptionsRes.value || [])
       }
 
       if (
         upcomingInvoiceRes.status === 'fulfilled' &&
-        upcomingInvoiceRes.value.data
+        upcomingInvoiceRes.value
       ) {
-        setUpcomingInvoice(upcomingInvoiceRes.value.data)
+        setUpcomingInvoice(upcomingInvoiceRes.value)
       }
 
-      if (invoicesRes.status === 'fulfilled' && invoicesRes.value.data) {
-        setInvoices(invoicesRes.value.data.invoices || [])
+      if (invoicesRes.status === 'fulfilled') {
+        setInvoices(invoicesRes.value?.invoices || [])
+      }
+
+      const failed = [
+        subscriptionsRes.status === 'rejected' && 'subscriptions',
+        invoicesRes.status === 'rejected' && 'invoices',
+      ].filter(Boolean)
+      if (failed.length > 0) {
+        setError(
+          `Could not load ${failed.join(' and ')}. Refresh to try again.`
+        )
       }
     } catch (err) {
       if (loadedOrgIdRef.current !== requestedOrgId) return
@@ -712,6 +732,10 @@ export function SubscriptionsTab({
             onRefresh()
           })
           .catch((err) => {
+            // Leaving the page stops watching; the change itself carries on.
+            if (err instanceof Error && err.message === POLLING_CANCELLED) {
+              return
+            }
             showError(
               `Tier upgrade failed: ${err instanceof Error ? err.message : 'Unknown error'}`
             )

@@ -1,3 +1,4 @@
+import { sdkError } from '@/test-utils/sdk'
 import { createSubgraph } from '@robosystems/client'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
@@ -180,7 +181,9 @@ describe('SubgraphCreationWizard', () => {
   })
 
   test('returns to the form when the name is already taken', async () => {
-    mockCreateSubgraph.mockRejectedValue({ status: 409 })
+    mockCreateSubgraph.mockResolvedValue(
+      sdkError(409, 'Subgraph already exists')
+    )
 
     renderWizard()
     fillForm('entities')
@@ -191,5 +194,20 @@ describe('SubgraphCreationWizard', () => {
       expect(screen.getByText('This name is already taken')).toBeInTheDocument()
     })
     expect(showError).toHaveBeenCalled()
+  })
+
+  test('explains a tier refusal', async () => {
+    mockCreateSubgraph.mockResolvedValue(sdkError(403, 'Tier has no subgraphs'))
+
+    renderWizard()
+    fillForm('entities')
+    fireEvent.click(screen.getByText('Next'))
+    fireEvent.click(screen.getByText('Create Subgraph'))
+
+    await waitFor(() =>
+      expect(showError).toHaveBeenCalledWith(
+        'Your current tier does not support subgraphs. Please upgrade.'
+      )
+    )
   })
 })

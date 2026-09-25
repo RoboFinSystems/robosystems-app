@@ -1,6 +1,7 @@
 import type { AvailableExtension } from '@robosystems/client'
 import { getAvailableExtensions } from '@robosystems/client'
 import { customTheme } from '@robosystems/core'
+import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import { Alert, Badge, Card, Checkbox, Spinner } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import { HiCheckCircle, HiExclamationCircle } from 'react-icons/hi'
@@ -29,10 +30,10 @@ export function SchemaExtensionsStep({
       try {
         setIsLoading(true)
         setError(null)
-        const response = await getAvailableExtensions()
-        if (response.data) {
-          setAllExtensions(response.data.extensions)
-        }
+        // A refused read throws, so it shows as a load error rather than an
+        // empty list (which would let a graph be created without extensions).
+        const data = unwrapSdk(await getAvailableExtensions())
+        setAllExtensions(data?.extensions ?? [])
       } catch (err) {
         console.error('Failed to fetch extensions:', err)
         setError('Failed to load available extensions')

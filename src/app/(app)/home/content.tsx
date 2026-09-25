@@ -1,6 +1,5 @@
 'use client'
 
-import { sdkFailure } from '@/lib/sdk-error'
 import type { GraphInfo } from '@robosystems/client'
 import { getGraphs } from '@robosystems/client'
 import {
@@ -10,6 +9,7 @@ import {
   useGraphContext,
   useOrg,
 } from '@robosystems/core'
+import { isApiError, unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import {
   Badge,
   Button,
@@ -81,24 +81,20 @@ export default function AllGraphsHomePage() {
     try {
       setLoading(true)
       setLoadError(null)
-      const response = await getGraphs()
+      const data = unwrapSdk(await getGraphs())
 
-      const failure = sdkFailure(response, 'The graph list could not be loaded')
-      if (failure) {
-        setLoadError(failure.detail)
-        return
-      }
-
-      if (response.data?.graphs) {
+      if (data?.graphs) {
         // Show both user graphs and shared repositories, but hide subgraphs
-        const mainGraphs = response.data.graphs.filter(
-          (graph) => !graph.isSubgraph
-        )
+        const mainGraphs = data.graphs.filter((graph) => !graph.isSubgraph)
         setGraphs(mainGraphs)
       }
     } catch (err) {
       console.error('Failed to fetch graphs:', err)
-      setLoadError('The graph list could not be loaded')
+      setLoadError(
+        isApiError(err) && err.detail
+          ? err.detail
+          : 'The graph list could not be loaded'
+      )
     } finally {
       setLoading(false)
     }

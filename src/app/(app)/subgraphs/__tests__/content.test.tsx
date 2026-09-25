@@ -1,5 +1,9 @@
 import { sdkError } from '@/test-utils/sdk'
-import { createBackup, listSubgraphs } from '@robosystems/client'
+import {
+  createBackup,
+  deleteSubgraph,
+  listSubgraphs,
+} from '@robosystems/client'
 import { useGraphContext } from '@robosystems/core'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
@@ -30,8 +34,13 @@ vi.mock('@robosystems/core', () => ({
   ),
   EmptyState: ({ title }: any) => <div data-testid="empty-state">{title}</div>,
   LoadingState: ({ message }: any) => <div>{message}</div>,
-  ConfirmModal: ({ show, children }: any) =>
-    show ? <div>{children}</div> : null,
+  ConfirmModal: ({ show, children, onConfirm }: any) =>
+    show ? (
+      <div>
+        {children}
+        <button onClick={onConfirm}>confirm-delete</button>
+      </div>
+    ) : null,
 }))
 
 vi.mock('@robosystems/core/task-monitoring/operationHooks', () => ({
@@ -209,5 +218,31 @@ describe('SubgraphsContent', () => {
       )
     )
     expect(toast.showInfo).not.toHaveBeenCalled()
+  })
+
+  test('reports a refused delete as an error, not a success', async () => {
+    setup({
+      parent_graph_name: 'Acme Ledger',
+      subgraph_count: 1,
+      max_subgraphs: 3,
+      subgraphs: [SUBGRAPH],
+    })
+    vi.mocked(deleteSubgraph).mockResolvedValue(
+      sdkError(403, 'Admin access to parent graph required')
+    )
+
+    render(<SubgraphsContent />)
+    const [del] = await screen.findAllByRole('button', {
+      name: 'Delete Related Entities',
+    })
+    fireEvent.click(del)
+    fireEvent.click(await screen.findByText('confirm-delete'))
+
+    await waitFor(() =>
+      expect(toast.showError).toHaveBeenCalledWith(
+        'Admin access to parent graph required'
+      )
+    )
+    expect(toast.showSuccess).not.toHaveBeenCalled()
   })
 })

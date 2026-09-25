@@ -4,6 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const startMonitoring = vi.fn()
+const showError = vi.fn()
 
 vi.mock('@robosystems/core', async () => {
   const actual =
@@ -15,7 +16,7 @@ vi.mock('@robosystems/core', async () => {
     useApiError: () => ({ handleApiError: vi.fn() }),
     useToast: () => ({
       showSuccess: vi.fn(),
-      showError: vi.fn(),
+      showError,
       ToastContainer: () => null,
     }),
   }
@@ -95,6 +96,32 @@ describe('SubscriptionsTab', () => {
     fireEvent.click(screen.getByRole('button', { name: /Confirm Change/ }))
     await waitFor(() => expect(SDK.changeTier).toHaveBeenCalled())
     await waitFor(() => expect(onRefresh).toHaveBeenCalled())
+  })
+})
+
+describe('SubscriptionsTab tier change, leaving the page', () => {
+  it('does not report a failure when watching stops because the page was left', async () => {
+    const { POLLING_CANCELLED } =
+      await import('@robosystems/core/task-monitoring/taskMonitor')
+    startMonitoring.mockRejectedValue(new Error(POLLING_CANCELLED))
+    vi.mocked(SDK.changeTier).mockResolvedValue(
+      sdkOk({ operationId: 'op_1', status: 'pending' })
+    )
+    render(
+      <SubscriptionsTab
+        subscriptions={[sub({})]}
+        graphs={graphs}
+        offerings={{}}
+        router={{ push: vi.fn() }}
+        onRefresh={vi.fn()}
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: /Change Tier/ }))
+    fireEvent.click(await screen.findByText('Large'))
+    fireEvent.click(screen.getByRole('button', { name: /Confirm Change/ }))
+    await waitFor(() => expect(startMonitoring).toHaveBeenCalled())
+    await new Promise((r) => setTimeout(r, 20))
+    expect(showError).not.toHaveBeenCalled()
   })
 })
 

@@ -2,7 +2,6 @@
 
 import { CopyableId } from '@/components/CopyableId'
 import { GuideLink } from '@/components/docs/GuideLink'
-import { sdkFailure } from '@/lib/sdk-error'
 import type {
   ListSubgraphsResponse,
   SubgraphSummary,
@@ -22,6 +21,7 @@ import {
   useGraphContext,
   useToast,
 } from '@robosystems/core'
+import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import { useOperationMonitoring } from '@robosystems/core/task-monitoring/operationHooks'
 import {
   Alert,
@@ -69,22 +69,18 @@ export function SubgraphsContent() {
   const handleBackupClick = async (subgraph: SubgraphSummary) => {
     setBackingUpId(subgraph.graph_id)
     try {
-      const response = await createBackup({
-        path: { graph_id: subgraph.graph_id },
-        body: {
-          backup_format: 'full_dump',
-          retention_days: 90,
-        },
-      })
+      const envelope = unwrapSdk(
+        await createBackup({
+          path: { graph_id: subgraph.graph_id },
+          body: {
+            backup_format: 'full_dump',
+            retention_days: 90,
+          },
+        })
+      )
 
-      const failure = sdkFailure(response, 'Failed to create backup')
-      if (failure || !response.data) {
-        showError(failure?.detail ?? 'Failed to create backup', 5000)
-        return
-      }
-
-      const operationId = response.data.operationId
-      const accepted = response.data.result as
+      const operationId = envelope.operationId
+      const accepted = envelope.result as
         { retention_days?: number } | null | undefined
       showInfo(
         accepted?.retention_days !== undefined
@@ -171,14 +167,16 @@ export function SubgraphsContent() {
 
     setIsDeleting(true)
     try {
-      await deleteSubgraph({
-        path: { graph_id: currentGraphId },
-        body: {
-          subgraph_name: subgraphToDelete.subgraph_name,
-          force: true,
-          backup_first: false,
-        },
-      })
+      unwrapSdk(
+        await deleteSubgraph({
+          path: { graph_id: currentGraphId },
+          body: {
+            subgraph_name: subgraphToDelete.subgraph_name,
+            force: true,
+            backup_first: false,
+          },
+        })
+      )
 
       showSuccess(
         `Subgraph "${subgraphToDelete.display_name}" deleted successfully`

@@ -1,4 +1,4 @@
-import { sdkError } from '@/test-utils/sdk'
+import { sdkError, sdkOk } from '@/test-utils/sdk'
 import * as RoboClient from '@robosystems/client'
 import { useGraphContext } from '@robosystems/core'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
@@ -24,6 +24,8 @@ vi.mock('@robosystems/client', () => ({
   listFiles: vi.fn(),
   executeSql: vi.fn(),
   deleteFile: vi.fn(),
+  createFileUpload: vi.fn(),
+  ingestFile: vi.fn(),
   ingestFiles: vi.fn(),
   uploadFile: vi.fn(),
 }))
@@ -278,6 +280,45 @@ describe('TablesContent', () => {
       await new Promise((r) => setTimeout(r, 20))
       expect(screen.queryByText('Acme Customer')).not.toBeInTheDocument()
       expect(screen.getByText('INV-1')).toBeInTheDocument()
+    })
+  })
+
+  describe('upload', () => {
+    beforeEach(() => setGraph('kg_test', 'generic'))
+
+    test('keeps the modal open and shows why when ingest is refused', async () => {
+      mockTables([{ name: 'Customers', rows: 10 }])
+      vi.mocked(RoboClient.createFileUpload).mockResolvedValue(
+        sdkOk({
+          operationId: 'op_1',
+          status: 'completed',
+          result: { upload_url: 'https://s3.test/put', file_id: 'f1' },
+        })
+      )
+      vi.mocked(globalThis.fetch).mockResolvedValue(
+        new Response(null, { status: 200 })
+      )
+      vi.mocked(RoboClient.ingestFile).mockResolvedValue(
+        sdkError(409, 'Graph is busy; try again shortly')
+      )
+
+      render(<TablesContent />)
+      fireEvent.click(await screen.findByText('Upload File'))
+      const input = document.querySelector(
+        'input[type="file"]'
+      ) as HTMLInputElement
+      const file = new File(['x'], 'data.parquet')
+      Object.defineProperty(file, 'arrayBuffer', {
+        value: async () => new ArrayBuffer(1),
+      })
+      fireEvent.change(input, { target: { files: [file] } })
+      fireEvent.submit(input.closest('form')!)
+
+      expect(
+        await screen.findByText(/Graph is busy; try again shortly/)
+      ).toBeInTheDocument()
+      expect(RoboClient.ingestFile).toHaveBeenCalled()
+      expect(screen.getByText('Upload Parquet File')).toBeInTheDocument()
     })
   })
 })
