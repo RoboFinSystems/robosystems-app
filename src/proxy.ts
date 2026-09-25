@@ -1,6 +1,19 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
+/** The origin of an http(s) URL, or null for anything else (e.g. a build placeholder). */
+function originOf(url: string | undefined): string | null {
+  if (!url) return null
+  try {
+    const parsed = new URL(url)
+    return parsed.protocol === 'https:' || parsed.protocol === 'http:'
+      ? parsed.origin
+      : null
+  } catch {
+    return null
+  }
+}
+
 export function proxy(request: NextRequest) {
   const response = NextResponse.next()
   const isDevelopment = process.env.NODE_ENV === 'development'
@@ -13,6 +26,19 @@ export function proxy(request: NextRequest) {
   // CloudFront CDN serving the research/blog portal's images, video, and audio
   // (the catalog + per-report assets produced by robosystems-content-machine).
   const RESEARCH_ASSETS = 'https://assets.robosystems.ai'
+
+  // The Data Lake upload PUTs the file straight to the presigned URL the API
+  // returns for the user-data bucket, which comes back in either the global or
+  // the us-east-1 regional S3 host form.
+  const S3_UPLOAD_HOSTS =
+    'https://*.s3.amazonaws.com https://*.s3.us-east-1.amazonaws.com'
+
+  // The API this build talks to. The hosted API hosts are listed below; this
+  // adds the configured one, so an image pointed at another API (a self-host)
+  // can still reach it.
+  const CONFIGURED_API_ORIGIN = originOf(
+    process.env.NEXT_PUBLIC_ROBOSYSTEMS_API_URL
+  )
 
   // Comprehensive CSP configuration for modern web apps
   const cspDirectives = [
@@ -67,6 +93,8 @@ export function proxy(request: NextRequest) {
         'https://cdn.jsdelivr.net'
       : "connect-src 'self' " +
         'https://api.robosystems.ai https://staging.api.robosystems.ai ' +
+        (CONFIGURED_API_ORIGIN ? `${CONFIGURED_API_ORIGIN} ` : '') +
+        `${S3_UPLOAD_HOSTS} ` +
         'https://cloudflareinsights.com https://static.cloudflareinsights.com ' +
         'https://www.google-analytics.com https://analytics.google.com ' +
         'https://region1.google-analytics.com https://www.googletagmanager.com ' +
