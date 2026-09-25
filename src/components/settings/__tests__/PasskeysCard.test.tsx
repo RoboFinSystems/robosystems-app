@@ -1,4 +1,6 @@
+import { sdkError } from '@/test-utils/sdk'
 import {
+  deleteUserPasskey,
   getMfaStatus,
   getPasskeyRegistrationOptions,
   listUserPasskeys,
@@ -147,5 +149,65 @@ describe('PasskeysCard enrollment re-auth gate', () => {
     ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Remove' })).toBeInTheDocument()
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument()
+  })
+
+  describe('removing a passkey the API refuses (FS4)', () => {
+    const enrolled = () => {
+      mockedListUserPasskeys.mockResolvedValue({
+        data: {
+          passkeys: [
+            {
+              id: 'upk_1',
+              name: 'Mac',
+              created_at: '2026-08-15T00:00:00Z',
+              last_used_at: null,
+              backup_eligible: true,
+            },
+          ],
+        },
+      } as never)
+    }
+
+    async function remove(onSuccess: () => void, onError: () => void) {
+      render(<PasskeysCard onSuccess={onSuccess} onError={onError} />)
+      fireEvent.click(await screen.findByRole('button', { name: 'Remove' }))
+      fireEvent.change(screen.getByPlaceholderText('Current password'), {
+        target: { value: 'hunter2!' },
+      })
+      const confirm = screen.getAllByRole('button', { name: 'Remove' })
+      fireEvent.click(confirm[confirm.length - 1])
+    }
+
+    it('explains an MFA-required refusal instead of reporting success', async () => {
+      enrolled()
+      vi.mocked(deleteUserPasskey).mockResolvedValue(
+        sdkError(409, 'Your role requires MFA')
+      )
+      const onSuccess = vi.fn()
+      const onError = vi.fn()
+      await remove(onSuccess, onError)
+
+      await waitFor(() =>
+        expect(onError).toHaveBeenCalledWith(
+          'Your role requires MFA — add another passkey before removing this one.'
+        )
+      )
+      expect(onSuccess).not.toHaveBeenCalled()
+    })
+
+    it('reports a wrong password as a failed re-authentication', async () => {
+      enrolled()
+      vi.mocked(deleteUserPasskey).mockResolvedValue(
+        sdkError(401, 'Invalid password')
+      )
+      const onSuccess = vi.fn()
+      const onError = vi.fn()
+      await remove(onSuccess, onError)
+
+      await waitFor(() =>
+        expect(onError).toHaveBeenCalledWith('Re-authentication failed')
+      )
+      expect(onSuccess).not.toHaveBeenCalled()
+    })
   })
 })

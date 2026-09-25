@@ -72,7 +72,13 @@ export function SignUpForm({
   const [inviteChecked, setInviteChecked] = useState(!inviteToken)
   const [providers, setProviders] = useState<AuthProviders | null>(null)
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
-  const authClientRef = useRef(new RoboSystemsAuthClient(apiUrl))
+  // Built once: `useRef(new …)` evaluates its argument on every render, which
+  // constructed (and discarded) a new auth client each time.
+  const authClientRef = useRef<RoboSystemsAuthClient | null>(null)
+  if (authClientRef.current === null) {
+    authClientRef.current = new RoboSystemsAuthClient(apiUrl)
+  }
+  const authClient = authClientRef.current
   const rawReturnTo = useReturnTo()
   const withAuthParams = useCarriedAuthParams()
 
@@ -84,7 +90,7 @@ export function SignUpForm({
   // enforces regardless.
   useEffect(() => {
     let cancelled = false
-    authClientRef.current.getAuthProviders().then((posture) => {
+    authClient.getAuthProviders().then((posture) => {
       if (!cancelled) {
         setProviders(posture)
       }
@@ -92,7 +98,7 @@ export function SignUpForm({
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [authClient])
 
   // Resolve the invitation before the form is usable. A token that no longer
   // resolves (revoked, expired, already accepted) degrades to ordinary
@@ -102,7 +108,7 @@ export function SignUpForm({
 
     let cancelled = false
     setInviteChecked(false)
-    authClientRef.current
+    authClient
       .getInvitation(inviteToken)
       .then((preview) => {
         if (cancelled) return
@@ -122,26 +128,29 @@ export function SignUpForm({
     return () => {
       cancelled = true
     }
-  }, [inviteToken])
+  }, [authClient, inviteToken])
 
-  const checkPassword = useCallback(async (password: string, email: string) => {
-    if (password.length < 4) {
-      setPasswordStrength(null)
-      return
-    }
-    setCheckingPassword(true)
-    try {
-      const result = await authClientRef.current.checkPasswordStrength(
-        password,
-        email || undefined
-      )
-      setPasswordStrength(result)
-    } catch {
-      setPasswordStrength(null)
-    } finally {
-      setCheckingPassword(false)
-    }
-  }, [])
+  const checkPassword = useCallback(
+    async (password: string, email: string) => {
+      if (password.length < 4) {
+        setPasswordStrength(null)
+        return
+      }
+      setCheckingPassword(true)
+      try {
+        const result = await authClient.checkPasswordStrength(
+          password,
+          email || undefined
+        )
+        setPasswordStrength(result)
+      } catch {
+        setPasswordStrength(null)
+      } finally {
+        setCheckingPassword(false)
+      }
+    },
+    [authClient]
+  )
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -217,7 +226,7 @@ export function SignUpForm({
     }
 
     try {
-      await authClientRef.current.register(
+      await authClient.register(
         formData.email,
         formData.password,
         formData.name,

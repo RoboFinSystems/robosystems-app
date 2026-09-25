@@ -5,6 +5,7 @@ import { useOptionalAuth } from '@robosystems/core/auth-components'
 import { RoboSystemsAuthClient } from '@robosystems/core/auth-core/client'
 import { getAppConfig } from '@robosystems/core/auth-core/config'
 import { useSSO } from '@robosystems/core/auth-core/sso'
+import { isApiError } from '@robosystems/core/lib/sdk-errors'
 import { LogoBadge, Spinner } from '@robosystems/core/ui-components'
 import { startAuthentication } from '@simplewebauthn/browser'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
@@ -34,7 +35,8 @@ export interface SignInFormProps {
  * request never reached the server — `fetch` throws a `TypeError`) must NOT be
  * reported as bad credentials: that sends users to reset a password that is
  * actually correct. Reached-server auth rejection (401/403, or an empty/invalid
- * auth body) stays "Invalid email or password"; 5xx gets its own message.
+ * auth body) stays "Invalid email or password"; 429 and 5xx get their own
+ * messages. Core's auth client rejects with an `ApiError` carrying the status.
  */
 export function loginErrorMessage(error: unknown): string {
   const err = error as {
@@ -46,12 +48,16 @@ export function loginErrorMessage(error: unknown): string {
   const message = String(err?.message ?? '')
 
   if (
+    (isApiError(error) && error.isNetworkError) ||
     error instanceof TypeError ||
     /failed to fetch|networkerror|load failed|fetch failed|err_(connection|network|name_not_resolved)/i.test(
       message
     )
   ) {
     return 'Unable to reach the server. Check your connection and try again.'
+  }
+  if (status === 429) {
+    return 'Too many sign-in attempts. Please wait a few minutes and try again.'
   }
   if (typeof status === 'number' && status >= 500) {
     return 'The server ran into a problem. Please try again in a moment.'
