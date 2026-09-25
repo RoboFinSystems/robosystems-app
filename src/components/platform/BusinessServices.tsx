@@ -26,7 +26,7 @@ export default function BusinessServices() {
         'AI-triaged transaction inbox — preview what posts before it hits the GL',
         'US-GAAP auto-mapping with confidence scores',
         'Live statements from the ledger, plus a guided period close',
-        'Report Creator — XBRL 2.1 and JSON-LD export',
+        'Report Creator — Tavi and XBRL 2.1 export',
         'Plan — statements and assumptions across the actuals/forecast seam',
       ],
     },

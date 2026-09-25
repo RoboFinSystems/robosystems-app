@@ -160,8 +160,8 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Report Creator — XBRL 2.1 and JSON-LD export with
-                        publish lists
+                        Report Creator — Tavi and XBRL 2.1 export with publish
+                        lists
                       </span>
                     </li>
                   </ul>
