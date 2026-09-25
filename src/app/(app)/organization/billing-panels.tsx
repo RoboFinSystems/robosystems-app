@@ -100,6 +100,10 @@ export function useBillingData(enabled: boolean) {
   const [invoices, setInvoices] = useState<SDK.Invoice[]>([])
 
   const [loading, setLoading] = useState(true)
+  // Only the first load for an org gates the panels. A reload (the refresh
+  // after a tier change) keeps them mounted, and with them any running
+  // operation monitor.
+  const [hasLoaded, setHasLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // The org a request was issued for, readable from inside an in-flight call so
@@ -110,6 +114,7 @@ export function useBillingData(enabled: boolean) {
   const loadedOrgIdRef = useRef(currentOrg?.id)
   useEffect(() => {
     loadedOrgIdRef.current = currentOrg?.id
+    setHasLoaded(false)
     setBillingCustomer(null)
     setOrgSubscriptions([])
     setUpcomingInvoice(null)
@@ -182,7 +187,10 @@ export function useBillingData(enabled: boolean) {
       setError(errorMsg)
       handleApiError(err, errorMsg)
     } finally {
-      if (loadedOrgIdRef.current === requestedOrgId) setLoading(false)
+      if (loadedOrgIdRef.current === requestedOrgId) {
+        setLoading(false)
+        setHasLoaded(true)
+      }
     }
   }, [currentOrg?.id, handleApiError])
 
@@ -200,7 +208,7 @@ export function useBillingData(enabled: boolean) {
     offerings,
     // Offerings gate `billingEnabled`, so a panel rendered before they resolve
     // would flash "Billing Disabled" against the `?? true` default.
-    loading: loading || offeringsLoading,
+    loading: (loading && !hasLoaded) || offeringsLoading,
     error,
     billingEnabled: offerings?.billingEnabled ?? true,
     hasPaymentMethod:
