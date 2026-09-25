@@ -494,7 +494,7 @@ Resources:
               - HEAD
             Compress: true
             CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # CachingOptimized
-          - PathPattern: /blog/opengraph-image*
+          - PathPattern: /blog/opengraph-image
             TargetOriginId: AppRunner-Dynamic-Content
             ViewerProtocolPolicy: redirect-to-https
             AllowedMethods:
@@ -505,7 +505,29 @@ Resources:
               - HEAD
             Compress: true
             CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # CachingOptimized
-          - PathPattern: /blog/twitter-image*
+          - PathPattern: /blog/opengraph-image-*
+            TargetOriginId: AppRunner-Dynamic-Content
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - GET
+              - HEAD
+            Compress: true
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # CachingOptimized
+          - PathPattern: /blog/twitter-image
+            TargetOriginId: AppRunner-Dynamic-Content
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - GET
+              - HEAD
+            Compress: true
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # CachingOptimized
+          - PathPattern: /blog/twitter-image-*
             TargetOriginId: AppRunner-Dynamic-Content
             ViewerProtocolPolicy: redirect-to-https
             AllowedMethods:

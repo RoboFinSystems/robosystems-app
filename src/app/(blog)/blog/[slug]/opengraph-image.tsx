@@ -11,9 +11,10 @@ export default async function Image({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const post = await getPostBySlug(slug).catch(() => null)
+  const post = await getPostBySlug(slug)
   // No card for a slug that is not a post, and only a short cache on the refusal so a
-  // post published a moment later gets its card.
+  // post published a moment later gets its card. A catalog that cannot be read throws
+  // instead, so a real post is never answered with a cached 404.
   if (!post) {
     return new Response('Not found', {
       status: 404,
