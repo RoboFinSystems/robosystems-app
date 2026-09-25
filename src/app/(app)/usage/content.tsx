@@ -1,6 +1,7 @@
 'use client'
 
 import { GuideLink } from '@/components/docs/GuideLink'
+import { sdkFailure } from '@/lib/sdk-error'
 import type { GraphInfo } from '@robosystems/client'
 import {
   getCreditSummary,
@@ -199,6 +200,17 @@ export function UsageContent() {
     try {
       // Get basic graph info
       const graphsResponse = await getGraphs()
+      const graphsFailure = sdkFailure(
+        graphsResponse,
+        'The graph list could not be loaded'
+      )
+      if (graphsFailure) {
+        // Not "not found": the list could not be read at all.
+        if (loadedGraphIdRef.current !== requestedGraphId) return
+        setError(graphsFailure.detail)
+        setLoading(false)
+        return
+      }
       const graphInfo = graphsResponse.data?.graphs?.find(
         (g: GraphInfo) => g.graphId === graphId
       )

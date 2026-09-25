@@ -1,6 +1,7 @@
+import { sdkError } from '@/test-utils/sdk'
 import * as RoboClient from '@robosystems/client'
 import { useGraphContext } from '@robosystems/core'
-import { render, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { TablesContent } from '../content'
 
@@ -64,7 +65,9 @@ vi.mock('flowbite-react', () => ({
     <select {...props}>{children}</select>
   ),
   Spinner: () => <span>Spinner</span>,
-  Tabs: ({ children }: any) => <div>{children}</div>,
+  Tabs: Object.assign(({ children }: any) => <div>{children}</div>, {
+    Item: ({ children }: any) => <div>{children}</div>,
+  }),
   TextInput: (props: any) => <input type="text" {...props} />,
 }))
 
@@ -73,11 +76,11 @@ const mockListTables = vi.mocked(RoboClient.listTables)
 const mockListFiles = vi.mocked(RoboClient.listFiles)
 const mockExecuteSql = vi.mocked(RoboClient.executeSql)
 
-function setGraph(graphId: string | null) {
+function setGraph(graphId: string | null, graphType = 'entity') {
   mockUseGraphContext.mockReturnValue({
     state: {
       currentGraphId: graphId,
-      graphs: [{ graphId, graphType: 'entity' }],
+      graphs: [{ graphId, graphType }],
     },
   } as any)
 }
@@ -212,6 +215,69 @@ describe('TablesContent', () => {
       // graph's table under the new graph's id.
       expect(mockExecuteSql).not.toHaveBeenCalled()
       expect(mockListFiles).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('switching tables', () => {
+    beforeEach(() => setGraph('kg_test', 'generic'))
+
+    test("does not show the previous table's preview when the next one fails", async () => {
+      mockTables([
+        { name: 'Customers', rows: 10 },
+        { name: 'Invoices', rows: 4 },
+      ])
+      mockExecuteSql.mockResolvedValueOnce({
+        data: { columns: ['name'], rows: [['Acme Customer']] },
+        error: undefined,
+      } as any)
+
+      render(<TablesContent />)
+      expect(await screen.findByText('Acme Customer')).toBeInTheDocument()
+
+      mockExecuteSql.mockResolvedValueOnce(sdkError(400, 'Invalid table'))
+      mockListFiles.mockResolvedValueOnce(sdkError(500, 'boom'))
+      fireEvent.click(screen.getAllByText('Invoices')[0])
+
+      await waitFor(() =>
+        expect(mockExecuteSql).toHaveBeenCalledWith(
+          expect.objectContaining({
+            body: { sql: 'SELECT * FROM Invoices LIMIT 10' },
+          })
+        )
+      )
+      await waitFor(() =>
+        expect(screen.queryByText('Acme Customer')).not.toBeInTheDocument()
+      )
+    })
+
+    test('drops a slower preview that lands after a newer selection', async () => {
+      mockTables([
+        { name: 'Customers', rows: 10 },
+        { name: 'Invoices', rows: 4 },
+      ])
+      let resolveCustomers: (v: unknown) => void = () => {}
+      mockExecuteSql.mockReturnValueOnce(
+        new Promise((resolve) => {
+          resolveCustomers = resolve
+        }) as any
+      )
+      mockExecuteSql.mockResolvedValueOnce({
+        data: { columns: ['number'], rows: [['INV-1']] },
+        error: undefined,
+      } as any)
+
+      render(<TablesContent />)
+      await waitFor(() => expect(mockExecuteSql).toHaveBeenCalledTimes(1))
+      fireEvent.click(screen.getAllByText('Invoices')[0])
+      expect(await screen.findByText('INV-1')).toBeInTheDocument()
+
+      resolveCustomers({
+        data: { columns: ['name'], rows: [['Acme Customer']] },
+        error: undefined,
+      })
+      await new Promise((r) => setTimeout(r, 20))
+      expect(screen.queryByText('Acme Customer')).not.toBeInTheDocument()
+      expect(screen.getByText('INV-1')).toBeInTheDocument()
     })
   })
 })

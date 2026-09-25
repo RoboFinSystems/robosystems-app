@@ -189,9 +189,13 @@ export function TablesContent() {
     }
   }, [graphId])
 
+  // Each selection gets a sequence number; a files or preview read that lands
+  // after a newer selection is dropped rather than shown under that selection.
+  const selectionSeqRef = useRef(0)
+
   // Load files for selected table
   const fetchTableFiles = useCallback(
-    async (table: TableInfo) => {
+    async (table: TableInfo, seq = selectionSeqRef.current) => {
       if (!graphId) return
 
       try {
@@ -201,13 +205,19 @@ export function TablesContent() {
         })
 
         if (loadedGraphIdRef.current !== graphId) return
+        if (selectionSeqRef.current !== seq) return
 
-        if (response.data) {
-          const data = response.data as any
-          setTableFiles(data.files || [])
+        if (response.error || !response.data) {
+          console.error('Failed to fetch table files:', response.error)
+          setTableFiles([])
+          return
         }
+        const data = response.data as any
+        setTableFiles(data.files || [])
       } catch (err) {
+        if (selectionSeqRef.current !== seq) return
         console.error('Failed to fetch table files:', err)
+        setTableFiles([])
       }
     },
     [graphId]
@@ -215,8 +225,11 @@ export function TablesContent() {
 
   // Load preview data for selected table
   const fetchTablePreview = useCallback(
-    async (table: TableInfo) => {
+    async (table: TableInfo, seq = selectionSeqRef.current) => {
       if (!graphId) return
+
+      const isCurrent = () =>
+        loadedGraphIdRef.current === graphId && selectionSeqRef.current === seq
 
       try {
         setLoadingPreview(true)
@@ -225,23 +238,26 @@ export function TablesContent() {
           body: { sql: `SELECT * FROM ${table.tableName} LIMIT 10` },
         })
 
-        if (loadedGraphIdRef.current !== graphId) return
+        if (!isCurrent()) return
 
-        if (response.data) {
-          const data = response.data as any
-          setTablePreview({
-            columns: data.columns || [],
-            rows: data.rows || [],
-            executionTime: 0,
-            rowCount: data.rows?.length || 0,
-          })
+        if (response.error || !response.data) {
+          console.error('Failed to fetch table preview:', response.error)
+          setTablePreview(null)
+          return
         }
+        const data = response.data as any
+        setTablePreview({
+          columns: data.columns || [],
+          rows: data.rows || [],
+          executionTime: 0,
+          rowCount: data.rows?.length || 0,
+        })
       } catch (err) {
-        if (loadedGraphIdRef.current !== graphId) return
+        if (!isCurrent()) return
         console.error('Failed to fetch table preview:', err)
         setTablePreview(null)
       } finally {
-        if (loadedGraphIdRef.current === graphId) setLoadingPreview(false)
+        if (isCurrent()) setLoadingPreview(false)
       }
     },
     [graphId]
@@ -423,12 +439,17 @@ export function TablesContent() {
     // name belonging to another graph, against the graph now selected.
     if (selectionGraphIdRef.current !== graphId) return
 
+    const seq = ++selectionSeqRef.current
+    // Clear first: until this selection's own reads land, nothing on screen
+    // belongs to it.
+    setTableFiles([])
+    setTablePreview(null)
     if (selectedTable) {
-      fetchTableFiles(selectedTable)
+      fetchTableFiles(selectedTable, seq)
       if (selectedTable.rowCount > 0) {
-        fetchTablePreview(selectedTable)
+        fetchTablePreview(selectedTable, seq)
       } else {
-        setTablePreview(null)
+        setLoadingPreview(false)
       }
     }
   }, [selectedTable, graphId, fetchTableFiles, fetchTablePreview])

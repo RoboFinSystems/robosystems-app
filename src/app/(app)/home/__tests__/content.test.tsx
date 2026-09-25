@@ -1,3 +1,4 @@
+import { sdkError } from '@/test-utils/sdk'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import AllGraphsHomePage from '../content'
@@ -105,5 +106,18 @@ describe('AllGraphsHomePage', () => {
     )
     const row = rowFor('Live Graph')
     expect(within(row).getByText('Open').closest('button')).toBeEnabled()
+  })
+
+  it('reports a failed graph read instead of claiming there are no graphs', async () => {
+    mockSDK.getGraphs.mockResolvedValue(sdkError(503, 'Service unavailable'))
+
+    render(<AllGraphsHomePage />)
+
+    expect(
+      await screen.findByText('We could not load your graphs')
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText('No graphs or repositories found')
+    ).not.toBeInTheDocument()
   })
 })
