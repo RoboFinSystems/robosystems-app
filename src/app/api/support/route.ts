@@ -1,4 +1,4 @@
-import { contactRateLimiter } from '@/lib/rate-limiter'
+import { supportRateLimiter } from '@/lib/rate-limiter'
 import { snsService } from '@/lib/sns'
 import {
   getClientIp,
@@ -8,29 +8,25 @@ import {
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
+const METADATA_FIELD_MAX = 200
+
 export async function POST(request: NextRequest) {
   try {
-    // Apply rate limiting (5 requests per hour for support)
-    const rateLimitResult = await contactRateLimiter.check(request, 5)
-
-    if (!rateLimitResult.success) {
+    let body
+    try {
+      body = await request.json()
+    } catch {
       return NextResponse.json(
-        {
-          error: 'Too many requests. Please try again later.',
-          retryAfter: rateLimitResult.reset.toISOString(),
-        },
-        {
-          status: 429,
-          headers: {
-            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
-            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
-            'X-RateLimit-Reset': rateLimitResult.reset.toISOString(),
-          },
-        }
+        { error: 'Request body must be JSON', code: 'INVALID_JSON' },
+        { status: 400 }
       )
     }
-
-    const body = await request.json()
+    if (!body || typeof body !== 'object') {
+      return NextResponse.json(
+        { error: 'Request body must be a JSON object', code: 'INVALID_JSON' },
+        { status: 400 }
+      )
+    }
 
     // Validate required fields
     const requiredFields = ['name', 'email', 'subject', 'message']
@@ -64,6 +60,37 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(body.email)) {
+      return NextResponse.json(
+        { error: 'Invalid email format', code: 'INVALID_EMAIL' },
+        { status: 400 }
+      )
+    }
+
+    // Apply rate limiting (5 requests per hour for support). Charged only for a
+    // well-formed submission, and before the CAPTCHA check, which calls out to
+    // Cloudflare.
+    const rateLimitResult = await supportRateLimiter.check(request, 5)
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        {
+          error: 'Too many requests. Please try again later.',
+          retryAfter: rateLimitResult.reset.toISOString(),
+        },
+        {
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': rateLimitResult.reset.toISOString(),
+          },
+        }
+      )
+    }
+
     // Verify CAPTCHA if required
     if (isCaptchaRequired()) {
       const captchaToken = body.captchaToken
@@ -86,17 +113,24 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (body.email.length > 254 || !emailRegex.test(body.email)) {
-      return NextResponse.json(
-        { error: 'Invalid email format', code: 'INVALID_EMAIL' },
-        { status: 400 }
-      )
+    // Build metadata section for the message. The client sends it, so only
+    // bounded strings are forwarded.
+    const rawMetadata =
+      body.metadata && typeof body.metadata === 'object' ? body.metadata : {}
+    const metadataField = (key: string): string | undefined => {
+      const value = rawMetadata[key]
+      return typeof value === 'string' && value
+        ? value.slice(0, METADATA_FIELD_MAX)
+        : undefined
     }
-
-    // Build metadata section for the message
-    const metadata = body.metadata || {}
+    const metadata = {
+      orgName: metadataField('orgName'),
+      orgId: metadataField('orgId'),
+      orgType: metadataField('orgType'),
+      graphName: metadataField('graphName'),
+      graphId: metadataField('graphId'),
+      userRole: metadataField('userRole'),
+    }
     const metadataLines = [
       metadata.orgName && `Organization: ${metadata.orgName}`,
       metadata.orgId && `Org ID: ${metadata.orgId}`,
@@ -111,14 +145,26 @@ export async function POST(request: NextRequest) {
         ? `\n\n--- Context ---\n${metadataLines.join('\n')}`
         : ''
 
-    // Send SNS notification via the contact form publisher
-    await snsService.publishContactForm({
+    // Send SNS notification via the contact form publisher. A ticket SNS did
+    // not accept is not "sent".
+    const delivered = await snsService.publishContactForm({
       name: body.name,
       email: body.email,
       company: metadata.orgName || 'N/A',
       message: `[Subject: ${body.subject}]\n\n${body.message}${metadataSection}`,
       formType: 'support',
     })
+
+    if (!delivered) {
+      return NextResponse.json(
+        {
+          error:
+            'Your message could not be delivered. Please try again shortly.',
+          code: 'SUBMISSION_NOT_DELIVERED',
+        },
+        { status: 503 }
+      )
+    }
 
     return NextResponse.json(
       { message: 'Support message sent successfully' },

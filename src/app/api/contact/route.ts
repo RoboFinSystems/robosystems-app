@@ -10,7 +10,72 @@ import { NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    // Apply rate limiting (10 requests per hour)
+    let body
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json(
+        { error: 'Request body must be JSON', code: 'INVALID_JSON' },
+        { status: 400 }
+      )
+    }
+    if (!body || typeof body !== 'object') {
+      return NextResponse.json(
+        { error: 'Request body must be a JSON object', code: 'INVALID_JSON' },
+        { status: 400 }
+      )
+    }
+
+    // Validate required fields
+    const requiredFields = ['name', 'email', 'company', 'message']
+
+    for (const field of requiredFields) {
+      if (!body[field]) {
+        return NextResponse.json(
+          { error: `Missing required field: ${field}`, code: 'MISSING_FIELD' },
+          { status: 400 }
+        )
+      }
+    }
+
+    // Enforce string types and bound field lengths to reject oversized or
+    // malformed payloads before they reach SNS.
+    const fieldLimits: Array<[string, number]> = [
+      ['name', 200],
+      ['email', 254],
+      ['company', 200],
+      ['message', 5000],
+      ['type', 50],
+    ]
+    for (const [field, maxLen] of fieldLimits) {
+      const value = body[field]
+      if (value !== undefined && value !== null && typeof value !== 'string') {
+        return NextResponse.json(
+          { error: `Invalid field: ${field}`, code: 'INVALID_FIELD' },
+          { status: 400 }
+        )
+      }
+      if (typeof value === 'string' && value.length > maxLen) {
+        return NextResponse.json(
+          { error: `Field too long: ${field}`, code: 'FIELD_TOO_LONG' },
+          { status: 400 }
+        )
+      }
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(body.email)) {
+      return NextResponse.json(
+        { error: 'Invalid email format', code: 'INVALID_EMAIL' },
+        { status: 400 }
+      )
+    }
+
+    // Apply rate limiting (10 requests per hour). Charged only for a
+    // well-formed submission, so a user correcting a validation error does not
+    // spend their allowance; it still runs before the CAPTCHA check, which
+    // calls out to Cloudflare.
     const rateLimitResult = await contactRateLimiter.check(request, 10)
 
     if (!rateLimitResult.success) {
@@ -32,8 +97,6 @@ export async function POST(request: NextRequest) {
         }
       )
     }
-
-    const body = await request.json()
 
     // Verify CAPTCHA if required
     if (isCaptchaRequired()) {
@@ -76,51 +139,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Validate required fields
-    const requiredFields = ['name', 'email', 'company', 'message']
-
-    for (const field of requiredFields) {
-      if (!body[field]) {
-        return NextResponse.json(
-          { error: `Missing required field: ${field}`, code: 'MISSING_FIELD' },
-          { status: 400 }
-        )
-      }
-    }
-
-    // Enforce string types and bound field lengths to reject oversized or
-    // malformed payloads before they reach SNS.
-    const fieldLimits: Array<[string, number]> = [
-      ['name', 200],
-      ['company', 200],
-      ['message', 5000],
-      ['type', 50],
-    ]
-    for (const [field, maxLen] of fieldLimits) {
-      const value = body[field]
-      if (value !== undefined && value !== null && typeof value !== 'string') {
-        return NextResponse.json(
-          { error: `Invalid field: ${field}`, code: 'INVALID_FIELD' },
-          { status: 400 }
-        )
-      }
-      if (typeof value === 'string' && value.length > maxLen) {
-        return NextResponse.json(
-          { error: `Field too long: ${field}`, code: 'FIELD_TOO_LONG' },
-          { status: 400 }
-        )
-      }
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (body.email.length > 254 || !emailRegex.test(body.email)) {
-      return NextResponse.json(
-        { error: 'Invalid email format', code: 'INVALID_EMAIL' },
-        { status: 400 }
-      )
-    }
-
     // Format the contact submission
     const contactSubmission = {
       name: body.name,
@@ -131,14 +149,26 @@ export async function POST(request: NextRequest) {
       submittedAt: new Date().toISOString(),
     }
 
-    // Send SNS notification
-    await snsService.publishContactForm({
+    // Send SNS notification. A submission SNS did not accept is not "sent":
+    // answering 200 would tell the user it arrived when nobody will see it.
+    const delivered = await snsService.publishContactForm({
       name: contactSubmission.name,
       email: contactSubmission.email,
       company: contactSubmission.company,
       message: contactSubmission.message,
       formType: contactSubmission.type,
     })
+
+    if (!delivered) {
+      return NextResponse.json(
+        {
+          error:
+            'Your message could not be delivered. Please try again shortly.',
+          code: 'SUBMISSION_NOT_DELIVERED',
+        },
+        { status: 503 }
+      )
+    }
 
     return NextResponse.json(
       {
