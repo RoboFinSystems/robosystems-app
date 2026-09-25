@@ -139,6 +139,13 @@ Parameters:
     Default: ''
     Description: Email address for admin notifications (leave empty to skip SNS setup)
 
+  # Origin verification (shared by CloudFront and the app; empty disables it)
+  OriginVerifySecret:
+    Type: String
+    Default: ''
+    NoEcho: true
+    Description: Value CloudFront sends to the App Runner origin in X-Origin-Verify
+
 Conditions:
   # Access mode conditions
   IsPublicMode: !Equals [!Ref AppAccessMode, 'public']
@@ -153,6 +160,11 @@ Conditions:
   CreateSNSTopic: !Not
     - !Equals
       - !Ref NotificationEmail
+      - ''
+
+  HasOriginVerifySecret: !Not
+    - !Equals
+      - !Ref OriginVerifySecret
       - ''
 
 Resources:
@@ -319,6 +331,8 @@ Resources:
                 Value: !If [CreateSNSTopic, !Ref ContactFormTopic, '']
               - Name: REQUIRE_CAPTCHA
                 Value: 'true'
+              - Name: ORIGIN_VERIFY_SECRET
+                Value: !Ref OriginVerifySecret
             RuntimeEnvironmentSecrets:
               - Name: TURNSTILE_SECRET_KEY
                 Value: !Sub '${RoboSystemsSecretsArn}:TURNSTILE_SECRET_KEY::'
@@ -422,6 +436,11 @@ Resources:
               OriginProtocolPolicy: https-only
               OriginSSLProtocols:
                 - TLSv1.2
+            OriginCustomHeaders: !If
+              - HasOriginVerifySecret
+              - - HeaderName: X-Origin-Verify
+                  HeaderValue: !Ref OriginVerifySecret
+              - !Ref AWS::NoValue
         DefaultCacheBehavior:
           TargetOriginId: AppRunner-Dynamic-Content
           ViewerProtocolPolicy: redirect-to-https
@@ -440,6 +459,63 @@ Resources:
           CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # CachingDisabled
           OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac # AllViewerExceptHostHeader
         CacheBehaviors:
+          # Blog social cards: rendered on App Runner, cached at the edge for
+          # as long as the route's Cache-Control allows.
+          - PathPattern: /blog/*/og.png
+            TargetOriginId: AppRunner-Dynamic-Content
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - GET
+              - HEAD
+            Compress: true
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # CachingOptimized
+          - PathPattern: /blog/*/opengraph-image*
+            TargetOriginId: AppRunner-Dynamic-Content
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - GET
+              - HEAD
+            Compress: true
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # CachingOptimized
+          - PathPattern: /blog/*/twitter-image*
+            TargetOriginId: AppRunner-Dynamic-Content
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - GET
+              - HEAD
+            Compress: true
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # CachingOptimized
+          - PathPattern: /blog/opengraph-image*
+            TargetOriginId: AppRunner-Dynamic-Content
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - GET
+              - HEAD
+            Compress: true
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # CachingOptimized
+          - PathPattern: /blog/twitter-image*
+            TargetOriginId: AppRunner-Dynamic-Content
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - GET
+              - HEAD
+            Compress: true
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # CachingOptimized
           - PathPattern: /images/*
             TargetOriginId: S3-Static-Assets
             ViewerProtocolPolicy: redirect-to-https

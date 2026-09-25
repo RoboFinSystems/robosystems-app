@@ -12,7 +12,15 @@ export default async function Image({
 }) {
   const { slug } = await params
   const post = await getPostBySlug(slug).catch(() => null)
-  const excerpt = post?.excerpt || ''
+  // No card for a slug that is not a post, and only a short cache on the refusal so a
+  // post published a moment later gets its card.
+  if (!post) {
+    return new Response('Not found', {
+      status: 404,
+      headers: { 'cache-control': 'public, max-age=60, s-maxage=60' },
+    })
+  }
+  const excerpt = post.excerpt || ''
   // Trim to a word boundary so the subtitle never cuts mid-word.
   const subtitle =
     excerpt.length > 100
@@ -20,7 +28,7 @@ export default async function Image({
       : excerpt
   return renderOgImage({
     eyebrow: 'RoboSystems Blog',
-    title: post?.title || 'RoboSystems Blog',
+    title: post.title || 'RoboSystems Blog',
     subtitle,
   })
 }

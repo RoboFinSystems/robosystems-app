@@ -7,10 +7,67 @@ function requestWith(headers: Record<string, string>): Request {
 
 describe('getClientIp', () => {
   const originalHops = process.env.TRUSTED_PROXY_HOPS
+  const originalSecret = process.env.ORIGIN_VERIFY_SECRET
 
   afterEach(() => {
     if (originalHops === undefined) delete process.env.TRUSTED_PROXY_HOPS
     else process.env.TRUSTED_PROXY_HOPS = originalHops
+    if (originalSecret === undefined) delete process.env.ORIGIN_VERIFY_SECRET
+    else process.env.ORIGIN_VERIFY_SECRET = originalSecret
+  })
+
+  describe('origin verification', () => {
+    it('trusts the viewer address when the origin header matches', () => {
+      process.env.ORIGIN_VERIFY_SECRET = 'edge-secret'
+      expect(
+        getClientIp(
+          requestWith({
+            'x-origin-verify': 'edge-secret',
+            'cloudfront-viewer-address': '203.0.113.7:54969',
+            'x-forwarded-for': '203.0.113.7, 15.158.61.134',
+          })
+        )
+      ).toBe('203.0.113.7')
+    })
+
+    it('ignores the viewer address when the origin header is missing', () => {
+      process.env.ORIGIN_VERIFY_SECRET = 'edge-secret'
+      expect(
+        getClientIp(
+          requestWith({
+            'cloudfront-viewer-address': '198.51.100.1:1000',
+            'x-forwarded-for': '198.51.100.1, 203.0.113.7',
+          })
+        )
+      ).toBe('203.0.113.7')
+    })
+
+    it('ignores the viewer address when the origin header is wrong', () => {
+      process.env.ORIGIN_VERIFY_SECRET = 'edge-secret'
+      const ips = ['198.51.100.1', '198.51.100.2'].map((forged) =>
+        getClientIp(
+          requestWith({
+            'x-origin-verify': 'edge-secreT',
+            'cloudfront-viewer-address': `${forged}:1000`,
+            'x-forwarded-for': '203.0.113.7',
+          })
+        )
+      )
+      expect(ips).toEqual(['203.0.113.7', '203.0.113.7'])
+    })
+
+    it('ignores a same-prefix header of a different length', () => {
+      process.env.ORIGIN_VERIFY_SECRET = 'edge-secret'
+      expect(
+        getClientIp(
+          requestWith({
+            'x-origin-verify': 'edge-secret-and-more',
+            'cloudfront-viewer-address': '198.51.100.1:1000',
+            'x-forwarded-for': '203.0.113.7',
+          })
+        )
+      ).toBe('203.0.113.7')
+    })
   })
 
   describe('cloudfront-viewer-address', () => {
