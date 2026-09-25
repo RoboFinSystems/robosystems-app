@@ -639,6 +639,11 @@ Resources:
         Origins:
           - Id: Dummy-Origin
             DomainName: !GetAtt AppRunnerService.ServiceUrl
+            OriginCustomHeaders: !If
+              - HasOriginVerifySecret
+              - - HeaderName: X-Origin-Verify
+                  HeaderValue: !Ref OriginVerifySecret
+              - !Ref AWS::NoValue
             CustomOriginConfig:
               HTTPSPort: 443
               OriginProtocolPolicy: https-only

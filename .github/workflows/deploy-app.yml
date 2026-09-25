@@ -109,6 +109,11 @@ on:
         required: true
         type: string
 
+    secrets:
+      ORIGIN_VERIFY_SECRET:
+        description: 'Shared secret CloudFront sends to the origin (optional; empty disables the check)'
+        required: false
+
 jobs:
   deploy:
     runs-on: ${{ fromJSON(inputs.runner_config) }}
