@@ -38,7 +38,7 @@
     "@aws-sdk/client-sns": "^3.1121.0",
     "@monaco-editor/react": "^4.7.0",
     "@robosystems/client": "^2.0.0",
-    "@robosystems/core": "^0.11.3",
+    "@robosystems/core": "^0.11.4",
     "@simplewebauthn/browser": "13.3.0",
     "date-fns": "^4.1.0",
     "flowbite": "^3.1",
