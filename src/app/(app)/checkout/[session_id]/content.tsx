@@ -34,6 +34,33 @@ type CheckoutStatus =
 // heuristic misread every `kg…` graph as a repository — graph ids were never
 // UUIDs — and sent a paying owner to the shared-repo getting-started page
 // instead of their own dashboard (F9).
+const POLL_INTERVAL_MS = 3000
+// Consecutive status-read failures before the page stops asking. A stale or
+// foreign session link fails the same way every time.
+const MAX_CONSECUTIVE_ERRORS = 5
+// Provisioning normally finishes in a minute or two; past this the page stops
+// polling and says so, rather than spinning for as long as the tab is open.
+const MAX_POLL_MS = 10 * 60 * 1000
+
+// A first invoice that fails after the redirect leaves the subscription unpaid
+// or past due. Neither will become active without the user, so both end the
+// wait as a failed payment.
+const PAYMENT_FAILED_STATUSES = new Set(['unpaid', 'past_due'])
+
+function toCheckoutStatus(raw: string): CheckoutStatus {
+  if (PAYMENT_FAILED_STATUSES.has(raw)) return 'failed'
+  switch (raw) {
+    case 'pending_payment':
+    case 'provisioning':
+    case 'active':
+    case 'failed':
+    case 'canceled':
+      return raw
+    default:
+      return 'unknown'
+  }
+}
+
 export const isRepositoryResource = (id: string | null): boolean =>
   !!id && !/^kg[0-9a-f]/i.test(id)
 
@@ -48,7 +75,15 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
   const [operationId, setOperationId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [pollingStopped, setPollingStopped] = useState<
+    'errors' | 'timeout' | null
+  >(null)
   const pollingRef = useRef<NodeJS.Timeout | null>(null)
+  const pollStartedAtRef = useRef(Date.now())
+  const consecutiveErrorsRef = useRef(0)
+  // Status reads are fired on a fixed interval; a slow one must not let the
+  // next start on top of it, or error counts and toasts double up.
+  const inFlightRef = useRef(false)
 
   const stopPolling = useCallback(() => {
     if (pollingRef.current) {
@@ -58,6 +93,13 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
   }, [])
 
   const checkStatus = useCallback(async () => {
+    if (inFlightRef.current) return
+    if (Date.now() - pollStartedAtRef.current > MAX_POLL_MS) {
+      stopPolling()
+      setPollingStopped('timeout')
+      return
+    }
+    inFlightRef.current = true
     try {
       const response = await SDK.getCheckoutStatus({
         path: { session_id: sessionId },
@@ -71,8 +113,10 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
         throw new Error(errorMsg)
       }
 
+      consecutiveErrorsRef.current = 0
+
       if (response.data) {
-        const checkoutStatus = response.data.status as CheckoutStatus
+        const checkoutStatus = toCheckoutStatus(response.data.status)
         setStatus(checkoutStatus)
         setSubscriptionId(response.data.subscription_id || null)
         const currentResourceId = response.data.resource_id || null
@@ -131,8 +175,17 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
       }
     } catch (err) {
       console.error('Checkout status error:', err)
-      handleApiError(err, 'Failed to check payment status')
+      consecutiveErrorsRef.current += 1
+      // One toast for a run of failures, not one every poll.
+      if (consecutiveErrorsRef.current === 1) {
+        handleApiError(err, 'Failed to check payment status')
+      }
+      if (consecutiveErrorsRef.current >= MAX_CONSECUTIVE_ERRORS) {
+        stopPolling()
+        setPollingStopped('errors')
+      }
     } finally {
+      inFlightRef.current = false
       setLoading(false)
     }
   }, [
@@ -145,9 +198,10 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
   ])
 
   useEffect(() => {
+    pollStartedAtRef.current = Date.now()
     checkStatus()
 
-    pollingRef.current = setInterval(checkStatus, 3000)
+    pollingRef.current = setInterval(checkStatus, POLL_INTERVAL_MS)
 
     return () => {
       stopPolling()
@@ -243,7 +297,8 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
 
             {status !== 'active' &&
               status !== 'failed' &&
-              status !== 'canceled' && (
+              status !== 'canceled' &&
+              !pollingStopped && (
                 <div className="space-y-2">
                   <Progress
                     progress={getProgressValue()}
@@ -257,6 +312,22 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
                   </p>
                 </div>
               )}
+
+            {pollingStopped === 'errors' && (
+              <Alert color="failure" icon={HiExclamationCircle}>
+                We could not check this payment. If you completed checkout, your
+                subscription will appear on the Organization page once it is
+                ready.
+              </Alert>
+            )}
+
+            {pollingStopped === 'timeout' && (
+              <Alert color="warning" icon={HiExclamationCircle}>
+                This is taking longer than expected. You can close this page;
+                setup continues in the background and your subscription will
+                appear on the Organization page once it is ready.
+              </Alert>
+            )}
 
             {error && (
               <Alert color="failure" icon={HiExclamationCircle}>
