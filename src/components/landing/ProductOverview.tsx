@@ -1,6 +1,7 @@
 'use client'
 
 import FloatingElementsVariant from './FloatingElementsVariant'
+import LiveDemo from './LiveDemo'
 
 export default function ProductOverview() {
   return (
@@ -13,155 +14,25 @@ export default function ProductOverview() {
             How It Works
           </p>
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-            Three Layers of Financial Intelligence
+            Every Number, in Context
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            Your financial data isn&apos;t just numbers&mdash;it&apos;s
-            decisions, relationships, documents, and institutional knowledge.
-            RoboSystems unifies structured facts, searchable documents, and
-            semantic memory into one platform where AI doesn&apos;t just
-            retrieve information&mdash;it understands meaning and context.
+            A figure on its own answers nothing. RoboSystems keeps each fact
+            with the company, filing, concept and period it belongs to, the
+            passage that explains it, and what your team decided about it last
+            time&mdash;the three layers your AI reads before it answers.
           </p>
         </div>
 
-        {/* Three Layers Visual */}
-        <div className="mb-16">
-          <div className="mx-auto max-w-5xl">
-            <div className="grid gap-4 md:grid-cols-3">
-              {/* Layer 1: Knowledge Graph */}
-              <div className="border-secondary-500/50 from-secondary-950/40 relative rounded-2xl border bg-linear-to-br to-zinc-900 p-6">
-                <div className="absolute -top-3 left-6">
-                  <span className="bg-secondary-600 rounded-full px-3 py-1 text-xs font-medium text-white">
-                    Structured
-                  </span>
-                </div>
-                <div className="mb-4 flex h-16 items-center justify-center">
-                  <svg className="h-16 w-24" viewBox="0 0 96 64" fill="none">
-                    <line
-                      x1="24"
-                      y1="20"
-                      x2="48"
-                      y2="32"
-                      stroke="#06b6d4"
-                      strokeWidth="2"
-                      strokeOpacity="0.5"
-                    />
-                    <line
-                      x1="48"
-                      y1="32"
-                      x2="72"
-                      y2="20"
-                      stroke="#06b6d4"
-                      strokeWidth="2"
-                      strokeOpacity="0.5"
-                    />
-                    <line
-                      x1="48"
-                      y1="32"
-                      x2="48"
-                      y2="52"
-                      stroke="#06b6d4"
-                      strokeWidth="2"
-                      strokeOpacity="0.5"
-                    />
-                    <line
-                      x1="24"
-                      y1="20"
-                      x2="24"
-                      y2="44"
-                      stroke="#06b6d4"
-                      strokeWidth="2"
-                      strokeOpacity="0.5"
-                    />
-                    <line
-                      x1="72"
-                      y1="20"
-                      x2="72"
-                      y2="44"
-                      stroke="#06b6d4"
-                      strokeWidth="2"
-                      strokeOpacity="0.5"
-                    />
-                    <circle cx="24" cy="20" r="6" fill="#06b6d4" />
-                    <circle cx="72" cy="20" r="6" fill="#06b6d4" />
-                    <circle cx="48" cy="32" r="8" fill="#0891b2" />
-                    <circle cx="48" cy="52" r="5" fill="#06b6d4" />
-                    <circle cx="24" cy="44" r="5" fill="#06b6d4" />
-                    <circle cx="72" cy="44" r="5" fill="#06b6d4" />
-                  </svg>
-                </div>
-                <h3 className="mb-2 text-center font-semibold text-white">
-                  Knowledge Graph
-                </h3>
-                <p className="text-center text-sm text-gray-400">
-                  XBRL facts, transactions, and relationships in a queryable
-                  graph database powered by LadybugDB
-                </p>
-              </div>
-
-              {/* Layer 2: Document Search */}
-              <div className="border-primary-500/50 from-primary-950/40 relative rounded-2xl border bg-linear-to-br to-zinc-900 p-6">
-                <div className="absolute -top-3 left-6">
-                  <span className="bg-primary-600 rounded-full px-3 py-1 text-xs font-medium text-white">
-                    Documents
-                  </span>
-                </div>
-                <div className="mb-4 flex h-16 items-center justify-center">
-                  <svg
-                    className="text-primary-400 h-10 w-10"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="mb-2 text-center font-semibold text-white">
-                  Document Search
-                </h3>
-                <p className="text-center text-sm text-gray-400">
-                  Full-text and semantic search across SEC filings, uploaded
-                  documents, and connected sources via OpenSearch
-                </p>
-              </div>
-
-              {/* Layer 3: AI Memory */}
-              <div className="border-accent-500/50 from-accent-950/40 relative rounded-2xl border bg-linear-to-br to-zinc-900 p-6">
-                <div className="absolute -top-3 left-6">
-                  <span className="bg-accent-600 rounded-full px-3 py-1 text-xs font-medium text-white">
-                    Memory
-                  </span>
-                </div>
-                <div className="mb-4 flex h-16 items-center justify-center">
-                  <svg
-                    className="text-accent-400 h-10 w-10"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="mb-2 text-center font-semibold text-white">
-                  Semantic Memory
-                </h3>
-                <p className="text-center text-sm text-gray-400">
-                  Decisions and conventions from past work, recorded and
-                  recalled by agents via LanceDB
-                </p>
-              </div>
-            </div>
-          </div>
+        {/* One fact across the three layers */}
+        <div className="mx-auto mb-16 max-w-5xl">
+          <LiveDemo
+            name="trace"
+            aspect={1200 / 750}
+            phoneAspect={720 / 1040}
+            label="Westrock Coffee's 2025 gross profit as a fact in the knowledge graph, linked to its company, 10-K, concept and period, then to the MD&A passage that explains it, and to a saved memory about the peer set."
+            className="rounded-2xl border border-gray-800 bg-black"
+          />
         </div>
 
         {/* What Context Enables */}

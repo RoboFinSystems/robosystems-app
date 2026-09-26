@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import ContactModal from './ContactModal'
 import FloatingElementsVariant from './FloatingElementsVariant'
+import LiveDemo from './LiveDemo'
 
 export default function HeroSection() {
   const [showContactModal, setShowContactModal] = useState(false)
@@ -36,120 +37,21 @@ export default function HeroSection() {
 
       <div className="relative mx-auto max-w-7xl px-4 pt-32 pb-16 sm:px-6 sm:pt-40 sm:pb-24 md:pt-48 md:pb-32 lg:px-8">
         <div className="text-center">
-          {/* Badge */}
           <h1 className="font-heading mb-6 text-4xl leading-tight font-extrabold sm:text-5xl md:mb-8 md:text-7xl lg:text-8xl">
             <span className="animate-pulsate-gradient-subtle text-transparent">
-              Financial Data,
+              The Knowledge Graph
             </span>
             <span className="from-secondary-400 via-primary-400 to-accent-400 mt-2 block bg-linear-to-r bg-clip-text pb-2 text-transparent">
-              Finally Connected
+              for Financial Data
             </span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-3xl text-base leading-relaxed text-gray-300 sm:text-lg md:mt-8 md:text-2xl">
-            Every number, every document, one platform your AI can reason over.
-            Structured data in a knowledge graph, full-text and semantic search
-            across filings and documents, and AI memory that persists across
-            sessions&mdash;powered by{' '}
-            <strong className="text-secondary-400">
-              Model Context Protocol (MCP)
-            </strong>{' '}
-            tools.
+            Put SEC filings and your own data in one graph. Your AI queries the
+            facts, reads the documents behind them, and remembers the work from
+            one session to the next, in Claude, ChatGPT, or any{' '}
+            <strong className="text-secondary-400">MCP</strong> client.
           </p>
-
-          {/* Key Value Props */}
-          <div className="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-4 sm:gap-6 md:mt-16 md:grid-cols-3">
-            <div className="group border-secondary-500/20 bg-secondary-950/20 hover:border-secondary-500/50 hover:bg-secondary-950/30 relative overflow-hidden rounded-2xl border p-4 backdrop-blur-sm transition-all duration-300 sm:p-6">
-              <div className="from-secondary-500/10 absolute inset-0 bg-linear-to-br to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-              <div className="relative">
-                <div className="bg-secondary-500/20 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
-                  <svg
-                    className="text-secondary-400 h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                  >
-                    <circle cx="12" cy="12" r="2" fill="currentColor" />
-                    <circle cx="6" cy="6" r="2" fill="currentColor" />
-                    <circle cx="18" cy="6" r="2" fill="currentColor" />
-                    <circle cx="6" cy="18" r="2" fill="currentColor" />
-                    <circle cx="18" cy="18" r="2" fill="currentColor" />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 10V6m0 12v-4m-4-2H6m12 0h-2m-2.5-3.5L8 6m8 0l-1.5 1.5M8 18l1.5-1.5m5 0L16 18"
-                    />
-                  </svg>
-                </div>
-                <h3 className="mb-2 text-center text-lg font-semibold text-white">
-                  Structured Financial Data
-                </h3>
-                <p className="text-center text-sm text-gray-400">
-                  Every transaction, fact, and relationship in a queryable
-                  semantic layer. Not spreadsheets&mdash;structured data that AI
-                  understands.
-                </p>
-              </div>
-            </div>
-
-            <div className="group border-primary-500/20 bg-primary-950/20 hover:border-primary-500/50 hover:bg-primary-950/30 relative overflow-hidden rounded-2xl border p-4 backdrop-blur-sm transition-all duration-300 sm:p-6">
-              <div className="from-primary-500/10 absolute inset-0 bg-linear-to-br to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-              <div className="relative">
-                <div className="bg-primary-500/20 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
-                  <svg
-                    className="text-primary-400 h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="mb-2 text-center text-lg font-semibold text-white">
-                  AI That Knows Your Financials
-                </h3>
-                <p className="text-center text-sm text-gray-400">
-                  Ask questions in plain English. AI searches your documents,
-                  queries your data, and builds reports&mdash;with full context.
-                </p>
-              </div>
-            </div>
-
-            <div className="group border-accent-500/20 bg-accent-950/20 hover:border-accent-500/50 hover:bg-accent-950/30 relative overflow-hidden rounded-2xl border p-4 backdrop-blur-sm transition-all duration-300 sm:p-6">
-              <div className="from-accent-500/10 absolute inset-0 bg-linear-to-br to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-              <div className="relative">
-                <div className="bg-accent-500/20 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
-                  <svg
-                    className="text-accent-400 h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="mb-2 text-center text-lg font-semibold text-white">
-                  Connect Everything
-                </h3>
-                <p className="text-center text-sm text-gray-400">
-                  SEC filings, QuickBooks, your own documents, and any source
-                  you connect through the public API. One platform, one query,
-                  one answer.
-                </p>
-              </div>
-            </div>
-          </div>
 
           {/* CTA Buttons */}
           <div className="mx-auto mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center md:mt-16">
@@ -171,6 +73,16 @@ export default function HeroSection() {
               </svg>
               View on GitHub
             </a>
+          </div>
+
+          <div className="relative mx-auto mt-14 max-w-6xl md:mt-20">
+            <LiveDemo
+              name="hero"
+              aspect={16 / 9}
+              phoneAspect={720 / 1080}
+              label="An AI chat connected to RoboSystems over MCP compares gross margins at three public coffee companies from their 10-Ks, finds the passages that explain the difference, and saves the peer set to memory, while the RoboSystems app updates beside the chat."
+              className="rounded-2xl border border-gray-800 bg-black shadow-2xl"
+            />
           </div>
 
           {/* Trust Indicators */}

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import ContactModal from './ContactModal'
 import FloatingElementsVariant from './FloatingElementsVariant'
+import LiveDemo from './LiveDemo'
 
 /**
  * The three write lanes an integration can use, in the order the API docs
@@ -214,79 +215,15 @@ export default function BuildSection() {
             </p>
           </div>
 
-          {/* Trust boundary */}
+          {/* Trust boundary, in motion */}
           <div className="mx-auto mb-10 max-w-4xl">
-            <div className="grid items-stretch gap-4 md:grid-cols-[1fr_auto_1fr]">
-              <div className="rounded-xl border border-dashed border-gray-700 bg-black/40 p-5">
-                <p className="mb-4 text-center text-[11px] font-semibold tracking-wider text-gray-500 uppercase">
-                  Your Side
-                </p>
-                <div className="space-y-2">
-                  {['Your source system', 'Collect', 'Transform'].map(
-                    (step, i) => (
-                      <div key={step}>
-                        {i > 0 && (
-                          <div className="mb-2 text-center text-xs text-gray-600">
-                            &darr;
-                          </div>
-                        )}
-                        <div className="rounded-lg border border-gray-800 bg-zinc-900/80 px-3 py-2 text-center text-sm text-gray-300">
-                          {step}
-                        </div>
-                      </div>
-                    )
-                  )}
-                </div>
-                <p className="mt-4 text-center text-xs text-gray-500">
-                  Your repo, your runtime, your credentials
-                </p>
-              </div>
-
-              <div className="flex flex-col items-center justify-center gap-1.5 px-2">
-                <span className="text-[11px] font-semibold tracking-wider text-gray-400 uppercase">
-                  Public API
-                </span>
-                <svg
-                  className="text-secondary-500/70 h-6 w-6 rotate-90 md:h-8 md:w-8 md:rotate-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
-                <span className="text-xs text-gray-500">+ API key</span>
-              </div>
-
-              <div className="border-secondary-500/30 bg-secondary-950/20 rounded-xl border p-5">
-                <p className="text-secondary-400/80 mb-4 text-center text-[11px] font-semibold tracking-wider uppercase">
-                  RoboSystems
-                </p>
-                <div className="space-y-2">
-                  {['Validate', 'Load', 'Graph, ledger, and documents'].map(
-                    (step, i) => (
-                      <div key={step}>
-                        {i > 0 && (
-                          <div className="text-secondary-500/40 mb-2 text-center text-xs">
-                            &darr;
-                          </div>
-                        )}
-                        <div className="border-secondary-500/20 rounded-lg border bg-zinc-900/80 px-3 py-2 text-center text-sm text-gray-300">
-                          {step}
-                        </div>
-                      </div>
-                    )
-                  )}
-                </div>
-                <p className="mt-4 text-center text-xs text-gray-500">
-                  Your integration code never runs here
-                </p>
-              </div>
-            </div>
+            <LiveDemo
+              name="build"
+              aspect={1200 / 640}
+              phoneAspect={720 / 1140}
+              label="An integration runs in its own repository, uploads five staging tables and materializes them through the public API with an API key, while the RoboSystems Data Lake fills and the Schema viewer shows the new node and relationship types."
+              className="rounded-2xl border border-gray-800 bg-black"
+            />
           </div>
 
           {/* Three lanes */}
