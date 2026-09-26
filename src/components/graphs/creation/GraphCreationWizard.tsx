@@ -71,6 +71,7 @@ export function GraphCreationWizard({
 
   const [currentStep, setCurrentStep] = useState(0)
   const [createError, setCreateError] = useState<string | null>(null)
+  const [tierSelectable, setTierSelectable] = useState(false)
   const [formData, setFormData] = useState<GraphFormData>({
     graphType: 'entity',
     entityName: '',
@@ -147,7 +148,7 @@ export function GraphCreationWizard({
           id: 'tier-selection',
           title: 'Select Tier',
           description: 'Choose the appropriate tier for your needs',
-          validate: () => true,
+          validate: () => tierSelectable,
         })
       }
     } else {
@@ -303,6 +304,7 @@ export function GraphCreationWizard({
             onTierChange={(tier) =>
               setFormData({ ...formData, selectedTier: tier })
             }
+            onSelectableChange={setTierSelectable}
           />
         )
       case 'generic-graph':
@@ -517,6 +519,9 @@ export function GraphCreationWizard({
                 theme={customTheme.button}
                 onClick={handleNext}
                 color="primary"
+                disabled={
+                  currentStepInfo.id === 'tier-selection' && !tierSelectable
+                }
               >
                 Next
                 <HiArrowRight className="ml-2 h-4 w-4" />

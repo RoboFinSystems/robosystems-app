@@ -486,6 +486,63 @@ describe('TierSelectionStep', () => {
     })
   })
 
+  describe('Selectable reporting', () => {
+    it('reports the selected tier as not selectable while loading and when at capacity', async () => {
+      mockFetchGraphCapacity.mockResolvedValue({
+        tiers: [{ tier: 'ladybug-standard', status: 'at_capacity' }],
+      })
+      const onSelectableChange = vi.fn()
+
+      render(
+        <TierSelectionStep
+          selectedTier="ladybug-standard"
+          onTierChange={mockOnTierChange}
+          onSelectableChange={onSelectableChange}
+        />
+      )
+
+      expect(onSelectableChange).toHaveBeenLastCalledWith(false)
+      await waitFor(() => {
+        expect(screen.getByText('At Capacity')).toBeInTheDocument()
+      })
+      expect(onSelectableChange).toHaveBeenLastCalledWith(false)
+      expect(onSelectableChange).not.toHaveBeenCalledWith(true)
+    })
+
+    it('reports an available selected tier as selectable once loaded', async () => {
+      const onSelectableChange = vi.fn()
+
+      render(
+        <TierSelectionStep
+          selectedTier="ladybug-standard"
+          onTierChange={mockOnTierChange}
+          onSelectableChange={onSelectableChange}
+        />
+      )
+
+      await waitFor(() => {
+        expect(onSelectableChange).toHaveBeenLastCalledWith(true)
+      })
+    })
+
+    it('leaves the choice to the API when capacity cannot be loaded', async () => {
+      mockFetchGraphCapacity.mockRejectedValue(new Error('down'))
+      const onSelectableChange = vi.fn()
+
+      render(
+        <TierSelectionStep
+          selectedTier="ladybug-standard"
+          onTierChange={mockOnTierChange}
+          onSelectableChange={onSelectableChange}
+        />
+      )
+
+      await waitFor(() => {
+        expect(onSelectableChange).toHaveBeenLastCalledWith(true)
+      })
+    })
+  })
+
   describe('Default props', () => {
     it('should default to ladybug-standard when no selectedTier provided', async () => {
       render(<TierSelectionStep onTierChange={mockOnTierChange} />)
