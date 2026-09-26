@@ -158,8 +158,9 @@ export function constraintsOf(schema: SchemaObject): string[] {
     sources.map((source) => source[key]).find((value) => value !== undefined)
 
   const out = [
-    range(pick('minLength'), pick('maxLength'), 'character'),
-    range(pick('minItems'), pick('maxItems'), 'item'),
+    // A zero floor on a count says nothing; on a number it means non-negative.
+    range(pick('minLength') || undefined, pick('maxLength'), 'character'),
+    range(pick('minItems') || undefined, pick('maxItems'), 'item'),
     range(pick('minimum'), pick('maximum'), ''),
   ]
   const exclusiveMin = pick('exclusiveMinimum')

@@ -315,8 +315,8 @@ export async function OperationReference({
 
         <Section id="example-request" title="Example request">
           <div className="space-y-4">
-            {curlExamples(catalog, operation).map((sample) => (
-              <CodeBlock key={sample.label} label={sample.label}>
+            {curlExamples(catalog, operation).map((sample, i) => (
+              <CodeBlock key={i} label={sample.label}>
                 {sample.command}
               </CodeBlock>
             ))}

@@ -600,6 +600,13 @@ describe('constraintsOf', () => {
     ])
   })
 
+  it('drops a zero floor on a count but keeps it on a number', () => {
+    expect(constraintsOf({ type: 'string', minLength: 0 })).toEqual([])
+    expect(constraintsOf({ type: 'integer', minimum: 0 })).toEqual([
+      'at least 0',
+    ])
+  })
+
   it('says nothing for an unconstrained field', () => {
     expect(constraintsOf({ type: 'string' })).toEqual([])
   })

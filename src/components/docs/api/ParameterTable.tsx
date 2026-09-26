@@ -86,7 +86,7 @@ export function ParameterTable({
                     <p className="mt-1 text-xs text-gray-500">
                       {parameter.examples.length > 1 ? 'Examples' : 'Example'}:{' '}
                       {parameter.examples.map((example, i) => (
-                        <span key={example.label}>
+                        <span key={i}>
                           {i > 0 && ', '}
                           <code className="font-mono text-gray-400">
                             {JSON.stringify(example.value)}
