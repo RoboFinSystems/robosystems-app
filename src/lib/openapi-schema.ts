@@ -308,7 +308,8 @@ export function hasExampleBody(value: unknown): boolean {
  */
 export function curlExample(
   catalog: ApiCatalog,
-  operation: ApiOperation
+  operation: ApiOperation,
+  bodyOverride?: unknown
 ): string {
   // One way in, not all of them: the alternatives are a choice, and a sample carrying
   // every scheme would read as though each were required. The first is the API key here.
@@ -337,9 +338,9 @@ export function curlExample(
     lines.push(`  -H "${parameter.name}: <${parameter.name}>"`)
   }
 
-  const body = operation.body
-    ? exampleValue(catalog, operation.body.schema)
-    : undefined
+  const body =
+    bodyOverride ??
+    (operation.body ? exampleValue(catalog, operation.body.schema) : undefined)
   if (operation.body && hasExampleBody(body)) {
     lines.push(`  -H "Content-Type: ${operation.body.contentType}"`)
     // Single quotes close the shell literal, so any in the payload are re-opened.
@@ -348,4 +349,36 @@ export function curlExample(
   }
 
   return lines.join(' \\\n')
+}
+
+export interface CurlSample {
+  label: string
+  command: string
+}
+
+/**
+ * The example calls for a page. A tagged-union body gets one per arm that carries its own
+ * example — each is a different request, and the first alone leaves the rest unshown. An
+ * arm without one (the 501 statement arms) gets none: a generated sample of a call that
+ * only fails is worse than no sample.
+ */
+export function curlExamples(
+  catalog: ApiCatalog,
+  operation: ApiOperation
+): CurlSample[] {
+  const union = operation.body
+    ? schemaUnion(catalog, operation.body.schema)
+    : null
+  const exampled = (union?.variants ?? []).filter(
+    (variant) => variant.schema.examples?.length
+  )
+  if (!union || exampled.length < 2) {
+    return [{ label: 'curl', command: curlExample(catalog, operation) }]
+  }
+  return exampled.map((variant) => ({
+    label: union.discriminator
+      ? `curl · ${union.discriminator} = ${variant.values.join(' | ')}`
+      : `curl · ${variant.name}`,
+    command: curlExample(catalog, operation, variant.schema.examples![0]),
+  }))
 }

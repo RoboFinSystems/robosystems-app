@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { buildCatalog, type ApiCatalog, type OpenApiDocument } from '../openapi'
 import {
   curlExample,
+  curlExamples,
   enumValuesOf,
   exampleValue,
   hasExampleBody,
@@ -68,6 +69,37 @@ const schemas = {
       block_type: { type: 'string', enum: ['balance_sheet', 'metric'] },
     },
   },
+  _RollforwardArm: {
+    type: 'object',
+    title: '_RollforwardArm',
+    required: ['block_type'],
+    properties: { block_type: { type: 'string', const: 'rollforward' } },
+    examples: [{ block_type: 'rollforward' }],
+  },
+  _ForecastArm: {
+    type: 'object',
+    title: '_ForecastArm',
+    required: ['block_type'],
+    properties: { block_type: { type: 'string', const: 'forecast' } },
+    examples: [{ block_type: 'forecast' }],
+  },
+  UpdateBlock: {
+    title: 'UpdateBlock',
+    oneOf: [
+      { $ref: '#/components/schemas/_RollforwardArm' },
+      { $ref: '#/components/schemas/_ForecastArm' },
+      { $ref: '#/components/schemas/_LegacyArm' },
+    ],
+    discriminator: {
+      propertyName: 'block_type',
+      mapping: {
+        rollforward: '#/components/schemas/_RollforwardArm',
+        forecast: '#/components/schemas/_ForecastArm',
+        balance_sheet: '#/components/schemas/_LegacyArm',
+        metric: '#/components/schemas/_LegacyArm',
+      },
+    },
+  },
   CreateBlock: {
     title: 'CreateBlock',
     oneOf: [
@@ -126,6 +158,23 @@ const doc: OpenApiDocument = {
           content: {
             'application/json': {
               schema: { $ref: '#/components/schemas/Invoice' },
+            },
+          },
+        },
+        responses: { '200': { description: 'OK' } },
+      },
+    },
+    '/v1/graphs/{graph_id}/blocks': {
+      post: {
+        tags: ['Billing'],
+        summary: 'Update Block',
+        operationId: 'updateBlock',
+        security: [{ APIKeyHeader: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/UpdateBlock' },
             },
           },
         },
@@ -401,6 +450,25 @@ describe('curlExample', () => {
     })
     const sample = curlExample(quoted, quoted.operations[0])
     expect(sample).toContain(`it'\\''s here`)
+  })
+})
+
+describe('curlExamples', () => {
+  it('gives one sample per union arm with its own example, and none to an arm without', () => {
+    const update = catalog.operations.find((o) => o.slug === 'update-block')!
+    const samples = curlExamples(catalog, update)
+    expect(samples.map((s) => s.label)).toEqual([
+      'curl · block_type = rollforward',
+      'curl · block_type = forecast',
+    ])
+    expect(samples[1].command).toContain('"block_type": "forecast"')
+  })
+
+  it('keeps a single sample for an ordinary body', () => {
+    const samples = curlExamples(catalog, operation)
+    expect(samples).toEqual([
+      { label: 'curl', command: curlExample(catalog, operation) },
+    ])
   })
 })
 
