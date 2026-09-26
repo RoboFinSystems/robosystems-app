@@ -39,14 +39,21 @@ export function resolveSchema(
   return catalog.schemas[name] ?? schema
 }
 
+/** Whether a schema is a union — `anyOf` for FastAPI's optionals, `oneOf` for tagged ones. */
+function isUnion(schema: SchemaObject): boolean {
+  return !!(schema.anyOf ?? schema.oneOf)
+}
+
 /**
- * The member of an optional field's union that carries the real type. FastAPI writes every
- * optional as `anyOf: [T, {type: 'null'}]`, so a table that printed the union verbatim
- * would say `string | null` on most rows and tell the reader nothing the required column
- * does not already say.
+ * A union's members that carry a real type. FastAPI writes every optional as
+ * `anyOf: [T, {type: 'null'}]`, so a table that printed the union verbatim would say
+ * `string | null` on most rows and tell the reader nothing the required column does not
+ * already say.
  */
 function withoutNull(schema: SchemaObject): SchemaObject[] {
-  return (schema.anyOf ?? []).filter((member) => member.type !== 'null')
+  return (schema.anyOf ?? schema.oneOf ?? []).filter(
+    (member) => member.type !== 'null'
+  )
 }
 
 /** A readable type for a field: `string`, `string (date)`, `Foo`, `Foo[]`, `string | integer`. */
@@ -57,7 +64,7 @@ export function typeLabel(
   if (!schema) return 'any'
   const name = refName(schema)
   if (name) return name
-  if (schema.anyOf) {
+  if (isUnion(schema)) {
     const members = withoutNull(schema)
     if (members.length === 0) return 'null'
     return members.map((member) => typeLabel(catalog, member)).join(' | ')
@@ -75,7 +82,7 @@ function coreSchema(
   catalog: ApiCatalog,
   schema: SchemaObject
 ): SchemaObject | undefined {
-  if (schema.anyOf) {
+  if (isUnion(schema)) {
     const members = withoutNull(schema)
     return members.length === 1 ? coreSchema(catalog, members[0]) : undefined
   }
@@ -92,7 +99,7 @@ function coreName(
   catalog: ApiCatalog,
   schema: SchemaObject
 ): string | undefined {
-  if (schema.anyOf) {
+  if (isUnion(schema)) {
     const members = withoutNull(schema)
     return members.length === 1 ? coreName(catalog, members[0]) : undefined
   }
@@ -161,6 +168,63 @@ export function schemaFields(
   })
 }
 
+export interface SchemaVariant {
+  /** The discriminator values that select this arm; empty when the union has no tag. */
+  values: string[]
+  /** The arm's model name, for a union with no tag to label it by. */
+  name: string
+  description: string
+  schema: SchemaObject
+}
+
+export interface SchemaUnion {
+  /** The property whose value picks the arm, e.g. `block_type`. */
+  discriminator: string | null
+  variants: SchemaVariant[]
+}
+
+function tagValues(property: SchemaObject | undefined): string[] {
+  if (!property) return []
+  if (property.const !== undefined) return [literal(property.const)]
+  return (property.enum ?? []).map(literal)
+}
+
+/**
+ * A body whose root is a union of object models, read as its arms. Such a body has no
+ * properties of its own, so a field table over it is empty — each arm gets its own, headed
+ * by the discriminator values that select it.
+ */
+export function schemaUnion(
+  catalog: ApiCatalog,
+  schema: SchemaObject | undefined
+): SchemaUnion | null {
+  const resolved = resolveSchema(catalog, schema)
+  if (!resolved || resolved.properties || !isUnion(resolved)) return null
+  const tag = resolved.discriminator?.propertyName ?? null
+  const mapping = Object.entries(resolved.discriminator?.mapping ?? {})
+
+  const variants = withoutNull(resolved).flatMap((member) => {
+    const arm = resolveSchema(catalog, member)
+    if (!arm?.properties) return []
+    const mapped = member.$ref
+      ? mapping.filter(([, ref]) => ref === member.$ref).map(([value]) => value)
+      : []
+    return [
+      {
+        values: mapped.length
+          ? mapped
+          : tag
+            ? tagValues(arm.properties[tag])
+            : [],
+        name: refName(member) ?? arm.title ?? '',
+        description: arm.description ?? '',
+        schema: arm,
+      },
+    ]
+  })
+  return variants.length ? { discriminator: tag, variants } : null
+}
+
 function placeholder(schema: SchemaObject, format?: string): unknown {
   const type = Array.isArray(schema.type) ? schema.type[0] : schema.type
   switch (type) {
@@ -194,15 +258,17 @@ export function exampleValue(
   if (schema.const !== undefined) return schema.const
   if (schema.enum?.length) return schema.enum[0]
 
-  if (schema.anyOf) {
-    const members = withoutNull(schema)
-    return members.length ? exampleValue(catalog, members[0], depth) : null
-  }
-
   const resolved = resolveSchema(catalog, schema)
   if (!resolved) return null
   if (resolved !== schema && resolved.examples?.length)
     return resolved.examples[0]
+
+  // A tagged union's example is its first arm's — a body the endpoint accepts, where a
+  // merge of every arm would be one it rejects.
+  if (isUnion(resolved)) {
+    const members = withoutNull(resolved)
+    return members.length ? exampleValue(catalog, members[0], depth) : null
+  }
 
   if (resolved.type === 'array') {
     return depth >= MAX_EXAMPLE_DEPTH

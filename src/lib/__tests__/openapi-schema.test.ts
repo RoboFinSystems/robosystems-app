@@ -6,6 +6,7 @@ import {
   exampleValue,
   hasExampleBody,
   schemaFields,
+  schemaUnion,
   typeLabel,
 } from '../openapi-schema'
 
@@ -46,6 +47,40 @@ const schemas = {
       due: { anyOf: [{ type: 'string', format: 'date' }, { type: 'null' }] },
       tags: { type: 'array', items: { type: 'string' } },
       payload: { additionalProperties: true, type: 'object' },
+    },
+  },
+  // A tagged union body, the shape of the information-block operations.
+  _ScheduleArm: {
+    type: 'object',
+    title: '_ScheduleArm',
+    description: 'Body for a schedule.\n\nCarries a typed payload.',
+    required: ['block_type', 'payload'],
+    properties: {
+      block_type: { type: 'string', const: 'schedule' },
+      payload: { $ref: '#/components/schemas/Money' },
+    },
+  },
+  _LegacyArm: {
+    type: 'object',
+    title: '_LegacyArm',
+    required: ['block_type'],
+    properties: {
+      block_type: { type: 'string', enum: ['balance_sheet', 'metric'] },
+    },
+  },
+  CreateBlock: {
+    title: 'CreateBlock',
+    oneOf: [
+      { $ref: '#/components/schemas/_ScheduleArm' },
+      { $ref: '#/components/schemas/_LegacyArm' },
+    ],
+    discriminator: {
+      propertyName: 'block_type',
+      mapping: {
+        schedule: '#/components/schemas/_ScheduleArm',
+        balance_sheet: '#/components/schemas/_LegacyArm',
+        metric: '#/components/schemas/_LegacyArm',
+      },
     },
   },
 }
@@ -188,6 +223,39 @@ describe('schemaFields', () => {
   it('has no rows for a schema with no properties', () => {
     expect(schemaFields(catalog, { type: 'object' })).toEqual([])
     expect(schemaFields(catalog, undefined)).toEqual([])
+  })
+})
+
+describe('schemaUnion', () => {
+  const body = { $ref: '#/components/schemas/CreateBlock' }
+
+  it('reads a tagged-union body as its arms, labelled by the values that pick them', () => {
+    const union = schemaUnion(catalog, body)!
+    expect(union.discriminator).toBe('block_type')
+    expect(union.variants.map((v) => v.values)).toEqual([
+      ['schedule'],
+      ['balance_sheet', 'metric'],
+    ])
+    expect(
+      schemaFields(catalog, union.variants[0].schema).map((f) => f.name)
+    ).toEqual(['block_type', 'payload'])
+  })
+
+  it('leaves an ordinary model to the field table', () => {
+    expect(schemaUnion(catalog, invoice)).toBeNull()
+  })
+
+  it('types a oneOf field by its members', () => {
+    expect(
+      typeLabel(catalog, { oneOf: [{ type: 'string' }, { type: 'object' }] })
+    ).toBe('string | object')
+  })
+
+  it('examples the first arm rather than a placeholder string', () => {
+    expect(exampleValue(catalog, body)).toEqual({
+      block_type: 'schedule',
+      payload: { amount: 0 },
+    })
   })
 })
 

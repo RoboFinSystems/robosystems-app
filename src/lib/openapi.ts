@@ -89,9 +89,9 @@ export type HttpMethod = (typeof HTTP_METHODS)[number]
 
 /**
  * The subset of JSON Schema the spec actually uses. FastAPI emits `anyOf` for optional
- * fields and nothing else of the composition keywords — a census of all 466 component
- * schemas found no `allOf` and no `oneOf` — so the renderer handles `anyOf` only and
- * would show an unhandled keyword as a bare type rather than silently wrong text.
+ * fields; `oneOf` with a `discriminator` appears where a body is a tagged union (the
+ * information-block operations) and on a few hand-written fields. No schema uses
+ * `allOf`, so the renderer would show one as a bare type rather than silently wrong text.
  */
 export interface SchemaObject {
   $ref?: string
@@ -103,6 +103,8 @@ export interface SchemaObject {
   required?: string[]
   items?: SchemaObject
   anyOf?: SchemaObject[]
+  oneOf?: SchemaObject[]
+  discriminator?: { propertyName: string; mapping?: Record<string, string> }
   enum?: unknown[]
   default?: unknown
   examples?: unknown[]
