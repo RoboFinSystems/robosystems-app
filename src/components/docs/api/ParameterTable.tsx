@@ -1,5 +1,6 @@
+import { Constraints } from '@/components/docs/api/Constraints'
 import type { ApiCatalog, ApiParameter } from '@/lib/openapi'
-import { enumValuesOf, typeLabel } from '@/lib/openapi-schema'
+import { constraintsOf, enumValuesOf, typeLabel } from '@/lib/openapi-schema'
 
 // Path, query and header parameters. Separate from the field table because a parameter
 // carries its own `required` flag and location rather than living in a model's
@@ -33,6 +34,7 @@ export function ParameterTable({
         <tbody>
           {parameters.map((parameter) => {
             const values = enumValuesOf(catalog, parameter.schema)
+            const constraints = constraintsOf(parameter.schema)
             return (
               <tr
                 key={`${parameter.location}:${parameter.name}`}
@@ -73,6 +75,25 @@ export function ParameterTable({
                       <code className="font-mono text-gray-400">
                         {JSON.stringify(parameter.schema.default)}
                       </code>
+                    </p>
+                  )}
+                  {constraints.length > 0 && (
+                    <p className="mt-1 text-xs text-gray-500">
+                      <Constraints values={constraints} />
+                    </p>
+                  )}
+                  {parameter.examples.length > 0 && (
+                    <p className="mt-1 text-xs text-gray-500">
+                      {parameter.examples.length > 1 ? 'Examples' : 'Example'}:{' '}
+                      {parameter.examples.map((example, i) => (
+                        <span key={example.label}>
+                          {i > 0 && ', '}
+                          <code className="font-mono text-gray-400">
+                            {JSON.stringify(example.value)}
+                          </code>
+                          {example.label !== 'Example' && ` (${example.label})`}
+                        </span>
+                      ))}
                     </p>
                   )}
                 </td>

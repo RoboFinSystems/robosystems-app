@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { buildCatalog, type ApiCatalog, type OpenApiDocument } from '../openapi'
 import {
+  constraintsOf,
   curlExample,
   curlExamples,
   enumValuesOf,
@@ -49,6 +50,18 @@ const schemas = {
       tags: { type: 'array', items: { type: 'string' } },
       payload: { additionalProperties: true, type: 'object' },
     },
+  },
+  Transition: {
+    type: 'object',
+    title: 'Transition',
+    required: ['period'],
+    properties: {
+      period: { type: 'string', pattern: '^\\d{4}-\\d{2}$' },
+      note: {
+        anyOf: [{ type: 'string', maxLength: 500 }, { type: 'null' }],
+      },
+    },
+    examples: [{ period: '2026-01' }, { period: '2026-02', note: 'late' }],
   },
   // A tagged union body, the shape of the information-block operations.
   _ScheduleArm: {
@@ -175,6 +188,60 @@ const doc: OpenApiDocument = {
           content: {
             'application/json': {
               schema: { $ref: '#/components/schemas/UpdateBlock' },
+            },
+          },
+        },
+        responses: { '200': { description: 'OK' } },
+      },
+    },
+    '/v1/graphs/{graph_id}/transitions': {
+      post: {
+        tags: ['Billing'],
+        summary: 'Transition',
+        operationId: 'transition',
+        parameters: [
+          {
+            name: 'format',
+            in: 'query',
+            required: false,
+            schema: { type: 'string' },
+            examples: {
+              json: { summary: 'JSON Format', value: 'json' },
+              yaml: { summary: 'YAML Format', value: 'yaml' },
+            },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/Transition' },
+            },
+          },
+        },
+        responses: { '200': { description: 'OK' } },
+      },
+    },
+    '/v1/graphs/{graph_id}/query': {
+      post: {
+        tags: ['Billing'],
+        summary: 'Query',
+        operationId: 'query',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: { query: { type: 'string' } },
+              },
+              examples: {
+                close: {
+                  summary: 'What is blocking the close',
+                  value: { query: '{ a }' },
+                },
+                introspect: { value: { query: '{ b }' } },
+              },
             },
           },
         },
@@ -464,11 +531,77 @@ describe('curlExamples', () => {
     expect(samples[1].command).toContain('"block_type": "forecast"')
   })
 
+  it('gives one sample per example a model writes out, numbered', () => {
+    const transition = catalog.operations.find((o) => o.slug === 'transition')!
+    const samples = curlExamples(catalog, transition)
+    expect(samples.map((s) => s.label)).toEqual([
+      'curl · example 1 of 2',
+      'curl · example 2 of 2',
+    ])
+    expect(samples[1].command).toContain('"note": "late"')
+  })
+
+  it('labels the spec’s named examples by their summaries, else their keys', () => {
+    const query = catalog.operations.find((o) => o.slug === 'query')!
+    const samples = curlExamples(catalog, query)
+    expect(samples.map((s) => s.label)).toEqual([
+      'curl · What is blocking the close',
+      'curl · introspect',
+    ])
+    expect(samples[0].command).toContain('"query": "{ a }"')
+  })
+
+  it('reads a parameter’s named examples', () => {
+    const transition = catalog.operations.find((o) => o.slug === 'transition')!
+    expect(transition.parameters[0].examples).toEqual([
+      { label: 'JSON Format', value: 'json' },
+      { label: 'YAML Format', value: 'yaml' },
+    ])
+  })
+
   it('keeps a single sample for an ordinary body', () => {
     const samples = curlExamples(catalog, operation)
     expect(samples).toEqual([
       { label: 'curl', command: curlExample(catalog, operation) },
     ])
+  })
+})
+
+describe('constraintsOf', () => {
+  it('reads ranges as words and keeps a pattern verbatim', () => {
+    expect(
+      constraintsOf({ type: 'string', minLength: 1, maxLength: 20 })
+    ).toEqual(['1–20 characters'])
+    expect(constraintsOf({ type: 'integer', minimum: 1, maximum: 90 })).toEqual(
+      ['1–90']
+    )
+    expect(constraintsOf({ type: 'array', maxItems: 100 })).toEqual([
+      'at most 100 items',
+    ])
+    expect(constraintsOf({ type: 'number', exclusiveMinimum: 0 })).toEqual([
+      'greater than 0',
+    ])
+    expect(constraintsOf({ type: 'string', pattern: '^full$' })).toEqual([
+      'matches ^full$',
+    ])
+  })
+
+  it('reads an optional field’s limits off its non-null member', () => {
+    expect(
+      constraintsOf({
+        anyOf: [{ type: 'string', maxLength: 500 }, { type: 'null' }],
+      })
+    ).toEqual(['at most 500 characters'])
+  })
+
+  it('keeps a count of one singular', () => {
+    expect(constraintsOf({ type: 'string', minLength: 1 })).toEqual([
+      'at least 1 character',
+    ])
+  })
+
+  it('says nothing for an unconstrained field', () => {
+    expect(constraintsOf({ type: 'string' })).toEqual([])
   })
 })
 

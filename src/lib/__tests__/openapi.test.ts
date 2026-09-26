@@ -322,6 +322,7 @@ describe('buildCatalog', () => {
         required: true,
         description: '',
         schema: { type: 'string' },
+        examples: [],
       },
     ])
   })

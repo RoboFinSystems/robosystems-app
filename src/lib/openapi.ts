@@ -113,7 +113,22 @@ export interface SchemaObject {
   minLength?: number
   maxLength?: number
   minItems?: number
+  maxItems?: number
+  minimum?: number
+  maximum?: number
+  exclusiveMinimum?: number
+  exclusiveMaximum?: number
+  pattern?: string
   const?: unknown
+}
+
+/**
+ * A named example from the spec's `examples` map on a request body or parameter — the
+ * OpenAPI form, which carries a summary, as opposed to JSON Schema's bare `examples` list.
+ */
+export interface NamedExample {
+  label: string
+  value: unknown
 }
 
 export interface ApiParameter {
@@ -122,12 +137,14 @@ export interface ApiParameter {
   required: boolean
   description: string
   schema: SchemaObject
+  examples: NamedExample[]
 }
 
 export interface ApiBody {
   required: boolean
   contentType: string
   schema?: SchemaObject
+  examples: NamedExample[]
 }
 
 export interface ApiResponse {
@@ -250,6 +267,29 @@ function schemaOf(content: unknown): SchemaObject | undefined {
   return entry?.schema
 }
 
+/** The OpenAPI `examples` map (or a lone `example`) on a media type or parameter. */
+function namedExamples(holder: unknown): NamedExample[] {
+  if (!holder || typeof holder !== 'object') return []
+  const { examples, example } = holder as {
+    examples?: Record<string, { summary?: string; value?: unknown }>
+    example?: unknown
+  }
+  if (examples && typeof examples === 'object') {
+    return Object.entries(examples)
+      .filter(([, entry]) => entry && entry.value !== undefined)
+      .map(([key, entry]) => ({
+        label: asString(entry.summary) || key,
+        value: entry.value,
+      }))
+  }
+  return example === undefined ? [] : [{ label: 'Example', value: example }]
+}
+
+function jsonMediaOf(content: unknown): unknown {
+  if (!content || typeof content !== 'object') return undefined
+  return (content as Record<string, unknown>)['application/json']
+}
+
 function contentTypeOf(content: unknown): string {
   if (!content || typeof content !== 'object') return 'application/json'
   const keys = Object.keys(content as Record<string, unknown>)
@@ -356,6 +396,7 @@ export function buildCatalog(doc: OpenApiDocument): ApiCatalog {
         required: p.required === true,
         description: asString(p.description),
         schema: (p.schema ?? {}) as SchemaObject,
+        examples: namedExamples(p),
       }))
 
       const rawBody = operation.requestBody as
@@ -365,6 +406,7 @@ export function buildCatalog(doc: OpenApiDocument): ApiCatalog {
             required: rawBody.required === true,
             contentType: contentTypeOf(rawBody.content),
             schema: schemaOf(rawBody.content),
+            examples: namedExamples(jsonMediaOf(rawBody.content)),
           }
         : undefined
 

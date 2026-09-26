@@ -1,3 +1,4 @@
+import { Constraints } from '@/components/docs/api/Constraints'
 import { InlineMarkdown } from '@/components/docs/InlineMarkdown'
 import type { ApiCatalog, SchemaObject } from '@/lib/openapi'
 import { schemaFields, schemaUnion } from '@/lib/openapi-schema'
@@ -72,6 +73,11 @@ function FieldTable({
                     <code className="font-mono text-gray-400">
                       {field.defaultValue}
                     </code>
+                  </p>
+                )}
+                {field.constraints.length > 0 && (
+                  <p className="mt-1 text-xs text-gray-500">
+                    <Constraints values={field.constraints} />
                   </p>
                 )}
                 {field.nested && (
