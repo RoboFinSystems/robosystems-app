@@ -15,7 +15,7 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ replace: mockReplace }),
 }))
 vi.mock('../content', () => ({
-  default: () => <h1>Financial data, finally connected.</h1>,
+  default: () => <h1>The knowledge graph for financial data.</h1>,
 }))
 vi.mock('../maintenance', () => ({
   default: () => <div>Maintenance</div>,
@@ -41,7 +41,7 @@ describe('LandingGate', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: 'Financial data, finally connected.',
+        name: 'The knowledge graph for financial data.',
         hidden: true,
       })
     ).toBeInTheDocument()
@@ -52,7 +52,7 @@ describe('LandingGate', () => {
     mockUseAuth.mockReturnValue({ isAuthenticated: false, isLoading: true })
     const html = renderToString(<LandingGate />)
 
-    expect(html).toContain('<h1>Financial data, finally connected.</h1>')
+    expect(html).toContain('<h1>The knowledge graph for financial data.</h1>')
     expect(html).not.toContain('aria-hidden')
     expect(html).not.toContain('inert')
   })
@@ -62,7 +62,7 @@ describe('LandingGate', () => {
     render(<LandingGate />)
 
     const page = screen.getByRole('heading', {
-      name: 'Financial data, finally connected.',
+      name: 'The knowledge graph for financial data.',
       hidden: true,
     }).parentElement
     expect(page).toHaveAttribute('inert')
@@ -75,13 +75,13 @@ describe('LandingGate', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: 'Financial data, finally connected.',
+        name: 'The knowledge graph for financial data.',
       })
     ).toBeInTheDocument()
     expect(screen.queryByTestId('landing-gate-cover')).not.toBeInTheDocument()
     expect(
       screen.getByRole('heading', {
-        name: 'Financial data, finally connected.',
+        name: 'The knowledge graph for financial data.',
       }).parentElement
     ).not.toHaveAttribute('inert')
     expect(mockReplace).not.toHaveBeenCalled()

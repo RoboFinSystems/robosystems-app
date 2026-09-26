@@ -3,139 +3,13 @@
 import { mcpEndpointFor } from '@/lib/mcp'
 import { CHATGPT_PLUGIN_URL } from '@/lib/site'
 import Link from 'next/link'
-import { useCallback, useEffect, useRef, useState } from 'react'
-
 import FloatingElementsVariant from './FloatingElementsVariant'
-
-const QUERIES = [
-  {
-    label: 'R&D Spending',
-    question:
-      "Compare Microsoft and Google's R&D spending as a percentage of revenue over the last 3 years",
-    response: `Analyzing SEC filings for MSFT and GOOGL...
-
-Microsoft (MSFT) R&D % of Revenue:
-  FY2025: 13.2%  ($28.1B / $212.6B)
-  FY2024: 12.8%  ($27.2B / $211.9B)
-  FY2023: 12.4%  ($25.3B / $204.1B)
-
-Alphabet (GOOGL) R&D % of Revenue:
-  FY2025: 12.7%  ($45.4B / $357.6B)
-  FY2024: 12.2%  ($42.8B / $350.0B)
-  FY2023: 12.1%  ($39.5B / $326.8B)
-
-Trend: Both companies increased R&D intensity.
-Microsoft leads by ~0.5pp despite lower absolute spend.`,
-  },
-  {
-    label: 'Semiconductor Margins',
-    question:
-      'What are the gross margins for the top 5 semiconductor companies?',
-    response: `Querying XBRL facts for SIC code 3674...
-
-Gross Margins (TTM):
-  NVDA  (NVIDIA):          74.8%
-  AVGO  (Broadcom):        68.2%
-  QCOM  (Qualcomm):        56.1%
-  AMD   (AMD):             50.7%
-  INTC  (Intel):           41.3%
-
-Industry median: 52.4%
-NVIDIA's margin expansion driven by data center GPU
-demand, up from 64.6% two years ago.`,
-  },
-  {
-    label: 'Apple Revenue',
-    question: "Show Apple's revenue trend by segment for the last 4 quarters",
-    response: `Traversing revenue segments for AAPL...
-
-Apple Revenue by Segment (Quarterly, $B):
-                   Q1'26   Q4'25   Q3'25   Q2'25
-  iPhone:          $71.2   $46.2   $39.3   $45.6
-  Services:        $26.3   $25.0   $24.2   $23.1
-  Mac:             $11.8   $ 7.7   $ 7.0   $ 6.8
-  iPad:            $ 9.4   $ 6.9   $ 7.2   $ 5.6
-  Wearables:       $17.9   $10.0   $ 8.1   $ 7.7
-
-Services segment shows consistent QoQ growth,
-now representing 19.3% of total revenue.`,
-  },
-  {
-    label: 'Bank Ratios',
-    question:
-      'Compare debt-to-equity ratios for JPMorgan, Bank of America, and Wells Fargo',
-    response: `Pulling balance sheet data for major banks...
-
-Debt-to-Equity Ratios (Most Recent Filing):
-  JPM  (JPMorgan Chase):      1.18
-  BAC  (Bank of America):     1.42
-  WFC  (Wells Fargo):         1.26
-
-Historical Comparison (YoY):
-  JPM: 1.18 vs 1.21 (-2.5%)  ▼ Improving
-  BAC: 1.42 vs 1.38 (+2.9%)  ▲ Increasing
-  WFC: 1.26 vs 1.31 (-3.8%)  ▼ Improving
-
-JPMorgan maintains lowest leverage among
-the three largest US banks by assets.`,
-  },
-]
-
-const CYCLE_INTERVAL = 6000
+import LiveDemo from './LiveDemo'
 
 export default function SECRepositorySection() {
-  const [activeQuery, setActiveQuery] = useState(0)
-  const [isVisible, setIsVisible] = useState(false)
-  const sectionRef = useRef<HTMLDivElement>(null)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
-  const startCycling = useCallback(() => {
-    if (intervalRef.current) clearInterval(intervalRef.current)
-    intervalRef.current = setInterval(() => {
-      setActiveQuery((prev) => (prev + 1) % QUERIES.length)
-    }, CYCLE_INTERVAL)
-  }, [])
-
-  const stopCycling = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current)
-      intervalRef.current = null
-    }
-  }, [])
-
-  useEffect(() => {
-    const ref = sectionRef.current
-    if (!ref) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting)
-      },
-      { threshold: 0.2 }
-    )
-
-    observer.observe(ref)
-    return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
-    if (isVisible) {
-      startCycling()
-    } else {
-      stopCycling()
-    }
-    return stopCycling
-  }, [isVisible, startCycling, stopCycling])
-
-  const handleQuerySelect = (index: number) => {
-    setActiveQuery(index)
-    startCycling()
-  }
-
   return (
     <section
       id="sec-repository"
-      ref={sectionRef}
       className="relative overflow-hidden bg-black py-16 sm:py-24"
     >
       <FloatingElementsVariant variant="sec-repository" />
@@ -181,55 +55,15 @@ export default function SECRepositorySection() {
 
         {/* Interactive Demo + Access Methods */}
         <div className="mb-16 grid gap-6 lg:grid-cols-5">
-          {/* Terminal Demo - Left */}
+          {/* Console demo - Left */}
           <div className="lg:col-span-3">
-            <div className="overflow-hidden rounded-2xl border border-gray-800 bg-zinc-900/50">
-              {/* Terminal chrome */}
-              <div className="flex items-center gap-2 border-b border-gray-800 px-4 py-3">
-                <span className="h-3 w-3 rounded-full bg-red-500"></span>
-                <span className="h-3 w-3 rounded-full bg-yellow-500"></span>
-                <span className="h-3 w-3 rounded-full bg-green-500"></span>
-                <span className="ml-2 text-xs text-gray-500">
-                  SEC Repository — AI Query Console
-                </span>
-                <span className="ml-auto text-xs text-gray-600">
-                  Simulated results
-                </span>
-              </div>
-
-              {/* Query + Response */}
-              <div className="h-[420px] overflow-y-auto p-4 sm:p-6">
-                <div className="mb-4">
-                  <span className="text-xs text-gray-500">QUERY</span>
-                  <p className="mt-1 text-sm text-gray-300 italic sm:text-base">
-                    &ldquo;{QUERIES[activeQuery].question}&rdquo;
-                  </p>
-                </div>
-                <div>
-                  <span className="text-xs text-gray-500">RESPONSE</span>
-                  <pre className="text-secondary-300/90 mt-1 overflow-x-auto font-mono text-xs whitespace-pre-wrap sm:text-sm">
-                    {QUERIES[activeQuery].response}
-                  </pre>
-                </div>
-              </div>
-
-              {/* Query selector tabs */}
-              <div className="flex flex-wrap gap-1 border-t border-gray-800 px-4 py-3">
-                {QUERIES.map((q, i) => (
-                  <button
-                    key={q.label}
-                    onClick={() => handleQuerySelect(i)}
-                    className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                      i === activeQuery
-                        ? 'bg-secondary-500/20 text-secondary-400'
-                        : 'text-gray-500 hover:bg-gray-800 hover:text-gray-300'
-                    }`}
-                  >
-                    {q.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <LiveDemo
+              name="sec"
+              aspect={1200 / 860}
+              phoneAspect={720 / 1000}
+              label="The RoboSystems Console on the SEC repository shows Westrock Coffee's income statement from its 10-K, finds the MD&A passage explaining its gross margin, and breaks net sales out by segment."
+              className="rounded-2xl border border-gray-800 bg-black"
+            />
           </div>
 
           {/* Access Methods - Right */}
