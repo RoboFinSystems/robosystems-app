@@ -17,6 +17,10 @@ import type { GraphFormData } from '../types'
 interface TierSelectionStepProps {
   selectedTier?: GraphFormData['selectedTier']
   onTierChange: (tier: NonNullable<GraphFormData['selectedTier']>) => void
+  // Whether the selected tier can be created self-serve — false while
+  // capacity loads and when the tier is at capacity, so the wizard can hold
+  // Next rather than send a request the API will refuse.
+  onSelectableChange?: (selectable: boolean) => void
 }
 
 // Standard is the self-serve entry point. The larger tiers are provisioned
@@ -37,6 +41,7 @@ export const TIER_BUTTON_COLOR = {
 export function TierSelectionStep({
   selectedTier = 'ladybug-standard',
   onTierChange,
+  onSelectableChange,
 }: TierSelectionStepProps) {
   const [tiers, setTiers] = useState<GraphTier[]>([])
   const [capacityMap, setCapacityMap] = useState<Record<string, TierCapacity>>(
@@ -107,6 +112,11 @@ export function TierSelectionStep({
 
     loadTiersAndCapacity()
   }, [])
+
+  const selectedAtCapacity = capacityMap[selectedTier]?.status === 'at_capacity'
+  useEffect(() => {
+    onSelectableChange?.(!loading && !selectedAtCapacity)
+  }, [loading, selectedAtCapacity, onSelectableChange])
 
   if (loading) {
     return (

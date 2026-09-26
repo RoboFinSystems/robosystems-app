@@ -68,11 +68,28 @@ vi.mock('../steps/GenericGraphStep', () => ({
   ),
 }))
 vi.mock('../steps/ReviewStep', () => ({ ReviewStep: () => <div>review</div> }))
-vi.mock('../steps/EntityInfoStep', () => ({ EntityInfoStep: () => null }))
+vi.mock('../steps/EntityInfoStep', () => ({
+  EntityInfoStep: ({
+    onUpdate,
+  }: {
+    onUpdate: (u: { entityName: string }) => void
+  }) => <button onClick={() => onUpdate({ entityName: 'Acme' })}>name</button>,
+}))
 vi.mock('../steps/SchemaExtensionsStep', () => ({
   SchemaExtensionsStep: () => null,
 }))
-vi.mock('../steps/TierSelectionStep', () => ({ TierSelectionStep: () => null }))
+vi.mock('../steps/TierSelectionStep', () => ({
+  TierSelectionStep: ({
+    onSelectableChange,
+  }: {
+    onSelectableChange: (s: boolean) => void
+  }) => (
+    <div>
+      <button onClick={() => onSelectableChange(false)}>tier-full</button>
+      <button onClick={() => onSelectableChange(true)}>tier-open</button>
+    </div>
+  ),
+}))
 
 import { GraphCreationWizard } from '../GraphCreationWizard'
 
@@ -141,5 +158,36 @@ describe('GraphCreationWizard (generic)', () => {
       await screen.findByText(/custom schema is not valid JSON/i)
     ).toBeInTheDocument()
     expect(createGenericGraph).not.toHaveBeenCalled()
+  })
+})
+
+describe('GraphCreationWizard (tier step)', () => {
+  function walkToTierStep() {
+    render(
+      <GraphCreationWizard
+        allowGenericGraphs={false}
+        onSuccess={vi.fn()}
+        onCancel={vi.fn()}
+      />
+    )
+    fireEvent.click(screen.getByText('name'))
+    fireEvent.click(screen.getByText(/Next/))
+    fireEvent.click(screen.getByText(/Next/))
+  }
+
+  it('holds Next while the selected tier is at capacity', () => {
+    walkToTierStep()
+    fireEvent.click(screen.getByText('tier-full'))
+    const next = screen.getByRole('button', { name: /Next/ })
+    expect(next).toBeDisabled()
+    fireEvent.click(next)
+    expect(screen.getByText('tier-full')).toBeInTheDocument()
+  })
+
+  it('advances once the selected tier is available', () => {
+    walkToTierStep()
+    fireEvent.click(screen.getByText('tier-open'))
+    fireEvent.click(screen.getByRole('button', { name: /Next/ }))
+    expect(screen.getByText('review')).toBeInTheDocument()
   })
 })
