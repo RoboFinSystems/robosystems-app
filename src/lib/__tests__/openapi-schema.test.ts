@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import { buildCatalog, type ApiCatalog, type OpenApiDocument } from '../openapi'
 import {
+  constraintsOf,
   curlExample,
+  curlExamples,
   enumValuesOf,
   exampleValue,
   hasExampleBody,
   schemaFields,
+  schemaUnion,
   typeLabel,
 } from '../openapi-schema'
 
@@ -46,6 +49,83 @@ const schemas = {
       due: { anyOf: [{ type: 'string', format: 'date' }, { type: 'null' }] },
       tags: { type: 'array', items: { type: 'string' } },
       payload: { additionalProperties: true, type: 'object' },
+    },
+  },
+  Transition: {
+    type: 'object',
+    title: 'Transition',
+    required: ['period'],
+    properties: {
+      period: { type: 'string', pattern: '^\\d{4}-\\d{2}$' },
+      note: {
+        anyOf: [{ type: 'string', maxLength: 500 }, { type: 'null' }],
+      },
+    },
+    examples: [{ period: '2026-01' }, { period: '2026-02', note: 'late' }],
+  },
+  // A tagged union body, the shape of the information-block operations.
+  _ScheduleArm: {
+    type: 'object',
+    title: '_ScheduleArm',
+    description: 'Body for a schedule.\n\nCarries a typed payload.',
+    required: ['block_type', 'payload'],
+    properties: {
+      block_type: { type: 'string', const: 'schedule' },
+      payload: { $ref: '#/components/schemas/Money' },
+    },
+  },
+  _LegacyArm: {
+    type: 'object',
+    title: '_LegacyArm',
+    required: ['block_type'],
+    properties: {
+      block_type: { type: 'string', enum: ['balance_sheet', 'metric'] },
+    },
+  },
+  _RollforwardArm: {
+    type: 'object',
+    title: '_RollforwardArm',
+    required: ['block_type'],
+    properties: { block_type: { type: 'string', const: 'rollforward' } },
+    examples: [{ block_type: 'rollforward' }],
+  },
+  _ForecastArm: {
+    type: 'object',
+    title: '_ForecastArm',
+    required: ['block_type'],
+    properties: { block_type: { type: 'string', const: 'forecast' } },
+    examples: [{ block_type: 'forecast' }],
+  },
+  UpdateBlock: {
+    title: 'UpdateBlock',
+    oneOf: [
+      { $ref: '#/components/schemas/_RollforwardArm' },
+      { $ref: '#/components/schemas/_ForecastArm' },
+      { $ref: '#/components/schemas/_LegacyArm' },
+    ],
+    discriminator: {
+      propertyName: 'block_type',
+      mapping: {
+        rollforward: '#/components/schemas/_RollforwardArm',
+        forecast: '#/components/schemas/_ForecastArm',
+        balance_sheet: '#/components/schemas/_LegacyArm',
+        metric: '#/components/schemas/_LegacyArm',
+      },
+    },
+  },
+  CreateBlock: {
+    title: 'CreateBlock',
+    oneOf: [
+      { $ref: '#/components/schemas/_ScheduleArm' },
+      { $ref: '#/components/schemas/_LegacyArm' },
+    ],
+    discriminator: {
+      propertyName: 'block_type',
+      mapping: {
+        schedule: '#/components/schemas/_ScheduleArm',
+        balance_sheet: '#/components/schemas/_LegacyArm',
+        metric: '#/components/schemas/_LegacyArm',
+      },
     },
   },
 }
@@ -91,6 +171,77 @@ const doc: OpenApiDocument = {
           content: {
             'application/json': {
               schema: { $ref: '#/components/schemas/Invoice' },
+            },
+          },
+        },
+        responses: { '200': { description: 'OK' } },
+      },
+    },
+    '/v1/graphs/{graph_id}/blocks': {
+      post: {
+        tags: ['Billing'],
+        summary: 'Update Block',
+        operationId: 'updateBlock',
+        security: [{ APIKeyHeader: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/UpdateBlock' },
+            },
+          },
+        },
+        responses: { '200': { description: 'OK' } },
+      },
+    },
+    '/v1/graphs/{graph_id}/transitions': {
+      post: {
+        tags: ['Billing'],
+        summary: 'Transition',
+        operationId: 'transition',
+        parameters: [
+          {
+            name: 'format',
+            in: 'query',
+            required: false,
+            schema: { type: 'string' },
+            examples: {
+              json: { summary: 'JSON Format', value: 'json' },
+              yaml: { summary: 'YAML Format', value: 'yaml' },
+            },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/Transition' },
+            },
+          },
+        },
+        responses: { '200': { description: 'OK' } },
+      },
+    },
+    '/v1/graphs/{graph_id}/query': {
+      post: {
+        tags: ['Billing'],
+        summary: 'Query',
+        operationId: 'query',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: { query: { type: 'string' } },
+              },
+              examples: {
+                close: {
+                  summary: 'What is blocking the close',
+                  value: { query: '{ a }' },
+                },
+                introspect: { value: { query: '{ b }' } },
+              },
             },
           },
         },
@@ -188,6 +339,39 @@ describe('schemaFields', () => {
   it('has no rows for a schema with no properties', () => {
     expect(schemaFields(catalog, { type: 'object' })).toEqual([])
     expect(schemaFields(catalog, undefined)).toEqual([])
+  })
+})
+
+describe('schemaUnion', () => {
+  const body = { $ref: '#/components/schemas/CreateBlock' }
+
+  it('reads a tagged-union body as its arms, labelled by the values that pick them', () => {
+    const union = schemaUnion(catalog, body)!
+    expect(union.discriminator).toBe('block_type')
+    expect(union.variants.map((v) => v.values)).toEqual([
+      ['schedule'],
+      ['balance_sheet', 'metric'],
+    ])
+    expect(
+      schemaFields(catalog, union.variants[0].schema).map((f) => f.name)
+    ).toEqual(['block_type', 'payload'])
+  })
+
+  it('leaves an ordinary model to the field table', () => {
+    expect(schemaUnion(catalog, invoice)).toBeNull()
+  })
+
+  it('types a oneOf field by its members', () => {
+    expect(
+      typeLabel(catalog, { oneOf: [{ type: 'string' }, { type: 'object' }] })
+    ).toBe('string | object')
+  })
+
+  it('examples the first arm rather than a placeholder string', () => {
+    expect(exampleValue(catalog, body)).toEqual({
+      block_type: 'schedule',
+      payload: { amount: 0 },
+    })
   })
 })
 
@@ -333,6 +517,98 @@ describe('curlExample', () => {
     })
     const sample = curlExample(quoted, quoted.operations[0])
     expect(sample).toContain(`it'\\''s here`)
+  })
+})
+
+describe('curlExamples', () => {
+  it('gives one sample per union arm with its own example, and none to an arm without', () => {
+    const update = catalog.operations.find((o) => o.slug === 'update-block')!
+    const samples = curlExamples(catalog, update)
+    expect(samples.map((s) => s.label)).toEqual([
+      'curl · block_type = rollforward',
+      'curl · block_type = forecast',
+    ])
+    expect(samples[1].command).toContain('"block_type": "forecast"')
+  })
+
+  it('gives one sample per example a model writes out, numbered', () => {
+    const transition = catalog.operations.find((o) => o.slug === 'transition')!
+    const samples = curlExamples(catalog, transition)
+    expect(samples.map((s) => s.label)).toEqual([
+      'curl · example 1 of 2',
+      'curl · example 2 of 2',
+    ])
+    expect(samples[1].command).toContain('"note": "late"')
+  })
+
+  it('labels the spec’s named examples by their summaries, else their keys', () => {
+    const query = catalog.operations.find((o) => o.slug === 'query')!
+    const samples = curlExamples(catalog, query)
+    expect(samples.map((s) => s.label)).toEqual([
+      'curl · What is blocking the close',
+      'curl · introspect',
+    ])
+    expect(samples[0].command).toContain('"query": "{ a }"')
+  })
+
+  it('reads a parameter’s named examples', () => {
+    const transition = catalog.operations.find((o) => o.slug === 'transition')!
+    expect(transition.parameters[0].examples).toEqual([
+      { label: 'JSON Format', value: 'json' },
+      { label: 'YAML Format', value: 'yaml' },
+    ])
+  })
+
+  it('keeps a single sample for an ordinary body', () => {
+    const samples = curlExamples(catalog, operation)
+    expect(samples).toEqual([
+      { label: 'curl', command: curlExample(catalog, operation) },
+    ])
+  })
+})
+
+describe('constraintsOf', () => {
+  it('reads ranges as words and keeps a pattern verbatim', () => {
+    expect(
+      constraintsOf({ type: 'string', minLength: 1, maxLength: 20 })
+    ).toEqual(['1–20 characters'])
+    expect(constraintsOf({ type: 'integer', minimum: 1, maximum: 90 })).toEqual(
+      ['1–90']
+    )
+    expect(constraintsOf({ type: 'array', maxItems: 100 })).toEqual([
+      'at most 100 items',
+    ])
+    expect(constraintsOf({ type: 'number', exclusiveMinimum: 0 })).toEqual([
+      'greater than 0',
+    ])
+    expect(constraintsOf({ type: 'string', pattern: '^full$' })).toEqual([
+      'matches ^full$',
+    ])
+  })
+
+  it('reads an optional field’s limits off its non-null member', () => {
+    expect(
+      constraintsOf({
+        anyOf: [{ type: 'string', maxLength: 500 }, { type: 'null' }],
+      })
+    ).toEqual(['at most 500 characters'])
+  })
+
+  it('keeps a count of one singular', () => {
+    expect(constraintsOf({ type: 'string', minLength: 1 })).toEqual([
+      'at least 1 character',
+    ])
+  })
+
+  it('drops a zero floor on a count but keeps it on a number', () => {
+    expect(constraintsOf({ type: 'string', minLength: 0 })).toEqual([])
+    expect(constraintsOf({ type: 'integer', minimum: 0 })).toEqual([
+      'at least 0',
+    ])
+  })
+
+  it('says nothing for an unconstrained field', () => {
+    expect(constraintsOf({ type: 'string' })).toEqual([])
   })
 })
 

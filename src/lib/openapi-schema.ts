@@ -17,6 +17,8 @@ export interface SchemaField {
   description: string
   enumValues: string[]
   defaultValue: string | null
+  /** The limits a value must meet, e.g. `1–20 characters`, `format ^\d{4}$`. */
+  constraints: string[]
   /** The model behind this field, when it is worth showing its own table. */
   nested?: { name: string; schema: SchemaObject }
 }
@@ -39,14 +41,21 @@ export function resolveSchema(
   return catalog.schemas[name] ?? schema
 }
 
+/** Whether a schema is a union — `anyOf` for FastAPI's optionals, `oneOf` for tagged ones. */
+function isUnion(schema: SchemaObject): boolean {
+  return !!(schema.anyOf ?? schema.oneOf)
+}
+
 /**
- * The member of an optional field's union that carries the real type. FastAPI writes every
- * optional as `anyOf: [T, {type: 'null'}]`, so a table that printed the union verbatim
- * would say `string | null` on most rows and tell the reader nothing the required column
- * does not already say.
+ * A union's members that carry a real type. FastAPI writes every optional as
+ * `anyOf: [T, {type: 'null'}]`, so a table that printed the union verbatim would say
+ * `string | null` on most rows and tell the reader nothing the required column does not
+ * already say.
  */
 function withoutNull(schema: SchemaObject): SchemaObject[] {
-  return (schema.anyOf ?? []).filter((member) => member.type !== 'null')
+  return (schema.anyOf ?? schema.oneOf ?? []).filter(
+    (member) => member.type !== 'null'
+  )
 }
 
 /** A readable type for a field: `string`, `string (date)`, `Foo`, `Foo[]`, `string | integer`. */
@@ -57,7 +66,7 @@ export function typeLabel(
   if (!schema) return 'any'
   const name = refName(schema)
   if (name) return name
-  if (schema.anyOf) {
+  if (isUnion(schema)) {
     const members = withoutNull(schema)
     if (members.length === 0) return 'null'
     return members.map((member) => typeLabel(catalog, member)).join(' | ')
@@ -75,7 +84,7 @@ function coreSchema(
   catalog: ApiCatalog,
   schema: SchemaObject
 ): SchemaObject | undefined {
-  if (schema.anyOf) {
+  if (isUnion(schema)) {
     const members = withoutNull(schema)
     return members.length === 1 ? coreSchema(catalog, members[0]) : undefined
   }
@@ -92,7 +101,7 @@ function coreName(
   catalog: ApiCatalog,
   schema: SchemaObject
 ): string | undefined {
-  if (schema.anyOf) {
+  if (isUnion(schema)) {
     const members = withoutNull(schema)
     return members.length === 1 ? coreName(catalog, members[0]) : undefined
   }
@@ -119,6 +128,48 @@ export function enumValuesOf(
   if (direct) return direct.map(literal)
   const core = coreSchema(catalog, schema)
   return (core?.enum ?? []).map(literal)
+}
+
+function range(
+  low: number | undefined,
+  high: number | undefined,
+  unit: string
+): string | null {
+  const of = (n: number) => (unit ? ` ${unit}${n === 1 ? '' : 's'}` : '')
+  if (low !== undefined && high !== undefined)
+    return low === high
+      ? `exactly ${low}${of(low)}`
+      : `${low}–${high}${of(high)}`
+  if (low !== undefined) return `at least ${low}${of(low)}`
+  if (high !== undefined) return `at most ${high}${of(high)}`
+  return null
+}
+
+/**
+ * The limits a value is validated against, read off the field itself and, for an
+ * optional, its non-null member — FastAPI puts a `Field(max_length=…)` on the member.
+ * A request that breaks one is a 422, so the page says them rather than leaving the
+ * reader to find each by failing.
+ */
+export function constraintsOf(schema: SchemaObject): string[] {
+  const members = isUnion(schema) ? withoutNull(schema) : []
+  const sources = [schema, ...(members.length === 1 ? members : [])]
+  const pick = <K extends keyof SchemaObject>(key: K) =>
+    sources.map((source) => source[key]).find((value) => value !== undefined)
+
+  const out = [
+    // A zero floor on a count says nothing; on a number it means non-negative.
+    range(pick('minLength') || undefined, pick('maxLength'), 'character'),
+    range(pick('minItems') || undefined, pick('maxItems'), 'item'),
+    range(pick('minimum'), pick('maximum'), ''),
+  ]
+  const exclusiveMin = pick('exclusiveMinimum')
+  const exclusiveMax = pick('exclusiveMaximum')
+  if (exclusiveMin !== undefined) out.push(`greater than ${exclusiveMin}`)
+  if (exclusiveMax !== undefined) out.push(`less than ${exclusiveMax}`)
+  const pattern = pick('pattern')
+  if (pattern) out.push(`matches ${pattern}`)
+  return out.filter((entry): entry is string => !!entry)
 }
 
 /**
@@ -156,9 +207,67 @@ export function schemaFields(
       enumValues: enumValuesOf(catalog, property),
       defaultValue:
         property.default === undefined ? null : literal(property.default),
+      constraints: constraintsOf(property),
       nested: expandable ? { name: model, schema: core } : undefined,
     }
   })
+}
+
+export interface SchemaVariant {
+  /** The discriminator values that select this arm; empty when the union has no tag. */
+  values: string[]
+  /** The arm's model name, for a union with no tag to label it by. */
+  name: string
+  description: string
+  schema: SchemaObject
+}
+
+export interface SchemaUnion {
+  /** The property whose value picks the arm, e.g. `block_type`. */
+  discriminator: string | null
+  variants: SchemaVariant[]
+}
+
+function tagValues(property: SchemaObject | undefined): string[] {
+  if (!property) return []
+  if (property.const !== undefined) return [literal(property.const)]
+  return (property.enum ?? []).map(literal)
+}
+
+/**
+ * A body whose root is a union of object models, read as its arms. Such a body has no
+ * properties of its own, so a field table over it is empty — each arm gets its own, headed
+ * by the discriminator values that select it.
+ */
+export function schemaUnion(
+  catalog: ApiCatalog,
+  schema: SchemaObject | undefined
+): SchemaUnion | null {
+  const resolved = resolveSchema(catalog, schema)
+  if (!resolved || resolved.properties || !isUnion(resolved)) return null
+  const tag = resolved.discriminator?.propertyName ?? null
+  const mapping = Object.entries(resolved.discriminator?.mapping ?? {})
+
+  const variants = withoutNull(resolved).flatMap((member) => {
+    const arm = resolveSchema(catalog, member)
+    if (!arm?.properties) return []
+    const mapped = member.$ref
+      ? mapping.filter(([, ref]) => ref === member.$ref).map(([value]) => value)
+      : []
+    return [
+      {
+        values: mapped.length
+          ? mapped
+          : tag
+            ? tagValues(arm.properties[tag])
+            : [],
+        name: refName(member) ?? arm.title ?? '',
+        description: arm.description ?? '',
+        schema: arm,
+      },
+    ]
+  })
+  return variants.length ? { discriminator: tag, variants } : null
 }
 
 function placeholder(schema: SchemaObject, format?: string): unknown {
@@ -194,15 +303,17 @@ export function exampleValue(
   if (schema.const !== undefined) return schema.const
   if (schema.enum?.length) return schema.enum[0]
 
-  if (schema.anyOf) {
-    const members = withoutNull(schema)
-    return members.length ? exampleValue(catalog, members[0], depth) : null
-  }
-
   const resolved = resolveSchema(catalog, schema)
   if (!resolved) return null
   if (resolved !== schema && resolved.examples?.length)
     return resolved.examples[0]
+
+  // A tagged union's example is its first arm's — a body the endpoint accepts, where a
+  // merge of every arm would be one it rejects.
+  if (isUnion(resolved)) {
+    const members = withoutNull(resolved)
+    return members.length ? exampleValue(catalog, members[0], depth) : null
+  }
 
   if (resolved.type === 'array') {
     return depth >= MAX_EXAMPLE_DEPTH
@@ -242,7 +353,8 @@ export function hasExampleBody(value: unknown): boolean {
  */
 export function curlExample(
   catalog: ApiCatalog,
-  operation: ApiOperation
+  operation: ApiOperation,
+  bodyOverride?: unknown
 ): string {
   // One way in, not all of them: the alternatives are a choice, and a sample carrying
   // every scheme would read as though each were required. The first is the API key here.
@@ -271,9 +383,9 @@ export function curlExample(
     lines.push(`  -H "${parameter.name}: <${parameter.name}>"`)
   }
 
-  const body = operation.body
-    ? exampleValue(catalog, operation.body.schema)
-    : undefined
+  const body =
+    bodyOverride ??
+    (operation.body ? exampleValue(catalog, operation.body.schema) : undefined)
   if (operation.body && hasExampleBody(body)) {
     lines.push(`  -H "Content-Type: ${operation.body.contentType}"`)
     // Single quotes close the shell literal, so any in the payload are re-opened.
@@ -282,4 +394,81 @@ export function curlExample(
   }
 
   return lines.join(' \\\n')
+}
+
+export interface CurlSample {
+  label: string
+  command: string
+}
+
+interface BodySample {
+  label: string
+  body: unknown
+}
+
+function numbered(label: string, examples: unknown[]): BodySample[] {
+  return examples.map((body, i) => ({
+    label:
+      examples.length > 1
+        ? `${label}${label ? ' · ' : ''}example ${i + 1} of ${examples.length}`
+        : label,
+    body,
+  }))
+}
+
+/**
+ * Every request body the spec writes out for an operation, most specific source first:
+ * the OpenAPI named examples, which carry their own summaries; then a tagged union's arms,
+ * each by the values that select it; then the model's own `examples` list. Each is a
+ * different request, and a page showing only the first leaves the rest unshown. A union
+ * arm without an example of its own (the 501 statement arms) gets none — a generated
+ * sample of a call that only fails is worse than no sample.
+ */
+function bodySamples(
+  catalog: ApiCatalog,
+  operation: ApiOperation
+): BodySample[] {
+  const body = operation.body
+  if (!body) return []
+  if (body.examples.length) {
+    return body.examples.map((example) => ({
+      label: example.label,
+      body: example.value,
+    }))
+  }
+
+  const union = schemaUnion(catalog, body.schema)
+  if (union) {
+    const samples = union.variants.flatMap((variant) =>
+      numbered(
+        union.discriminator
+          ? `${union.discriminator} = ${variant.values.join(' | ')}`
+          : variant.name,
+        variant.schema.examples ?? []
+      )
+    )
+    if (samples.length) return samples
+  }
+
+  return numbered('', resolveSchema(catalog, body.schema)?.examples ?? [])
+}
+
+/** The example calls for a page: one per written-out body, or a single generated one. */
+export function curlExamples(
+  catalog: ApiCatalog,
+  operation: ApiOperation
+): CurlSample[] {
+  const samples = bodySamples(catalog, operation)
+  if (samples.length < 2) {
+    return [
+      {
+        label: 'curl',
+        command: curlExample(catalog, operation, samples[0]?.body),
+      },
+    ]
+  }
+  return samples.map((sample) => ({
+    label: `curl · ${sample.label}`,
+    command: curlExample(catalog, operation, sample.body),
+  }))
 }

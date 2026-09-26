@@ -24,7 +24,7 @@ import {
   type ApiSurface,
 } from '@/lib/openapi'
 import {
-  curlExample,
+  curlExamples,
   exampleValue,
   hasExampleBody,
   schemaFields,
@@ -314,7 +314,13 @@ export async function OperationReference({
         )}
 
         <Section id="example-request" title="Example request">
-          <CodeBlock label="curl">{curlExample(catalog, operation)}</CodeBlock>
+          <div className="space-y-4">
+            {curlExamples(catalog, operation).map((sample, i) => (
+              <CodeBlock key={i} label={sample.label}>
+                {sample.command}
+              </CodeBlock>
+            ))}
+          </div>
         </Section>
 
         {operation.responses.length > 0 && (
