@@ -7,7 +7,7 @@ export default function MasterServiceAgreement() {
         </h1>
 
         <p className="mb-12 text-gray-600 dark:text-gray-400">
-          Version 2.1 · Last Revision: August 17, 2026
+          Version 2.2 · Last Revision: September 25, 2026
         </p>
 
         <p>
@@ -259,15 +259,29 @@ export default function MasterServiceAgreement() {
           TO LIABILITY.
         </p>
 
-        <h2 className="mt-8 mb-4 text-xl font-bold">11. Publicity</h2>
+        <h2 className="mt-8 mb-4 text-xl font-bold">11. Publicity and Marks</h2>
 
         <p>
-          Neither party will use the other&apos;s name or marks in publicity
-          without prior written consent, except that Provider may identify
-          Customer in a customer list following Customer&apos;s written
-          approval. Neither party will characterize the other&apos;s compliance
-          posture inaccurately; Section 7.3 governs statements about attestation
-          scope.
+          11.1 Neither party will use the other&apos;s name or marks in
+          publicity without prior written consent, except as Section 11.2
+          permits and except that Provider may identify Customer in a customer
+          list following Customer&apos;s written approval. Neither party will
+          characterize the other&apos;s compliance posture inaccurately; Section
+          7.3 governs statements about attestation scope.
+        </p>
+
+        <p>
+          11.2 <strong>Use of Provider marks. </strong>During the term, Provider
+          grants Customer a non-exclusive, non-transferable, revocable license
+          to use the ROBOSYSTEMS and ROBOLEDGER marks, and the names and logos
+          of the Services, solely to identify accurately that Customer uses the
+          Services — including on reports, statements, and materials Customer
+          produces with them. Customer will not use the marks as or in the name
+          of its own product, service, or domain, alter them, or suggest that
+          Provider endorses or sponsors Customer or its offerings. The marks are
+          owned by Harbinger Consultants LLC and used by Provider under license;
+          all goodwill from Customer&apos;s use inures to the owner. The license
+          ends when this Agreement ends.
         </p>
 
         <h2 className="mt-8 mb-4 text-xl font-bold">
