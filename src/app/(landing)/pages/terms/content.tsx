@@ -16,7 +16,7 @@ export default function TermsOfService() {
           </h1>
 
           <p className="mb-12 text-gray-600 dark:text-gray-400">
-            Last Revision: August 17, 2026
+            Last Revision: September 25, 2026
           </p>
 
           <p className="mt-8 text-2xl font-semibold">
@@ -340,11 +340,18 @@ export default function TermsOfService() {
             service mark, trademark and/or trade dress of RoboSystems and may
             not be copied, imitated or used, in whole or in part, without our
             prior written permission. All other trademarks, registered
-            trademarks, product names and RoboSystems names or logos mentioned
-            in the Site are the property of their respective owners. Reference
-            to any products, services, processes or other information, by trade
-            name, trademark, supplier or otherwise does not constitute or imply
-            endorsement, sponsorship or recommendation thereof by us.
+            trademarks and product names mentioned in the Site are the property
+            of their respective owners. Reference to any products, services,
+            processes or other information, by trade name, trademark, supplier
+            or otherwise does not constitute or imply endorsement, sponsorship
+            or recommendation thereof by us.
+          </p>
+
+          <p>
+            The source code for the Services is separately available under the
+            Apache License 2.0, which governs use of that code; these Terms
+            govern use of the hosted Services. Neither grants any right to use
+            the trademarks above.
           </p>
 
           <p>
