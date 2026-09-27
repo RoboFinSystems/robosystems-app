@@ -1,10 +1,14 @@
 /*
- * Hero pitch: an AI answering from memory, the turn, then three beats of
- * asking over MCP while RoboSystems changes beside the chat: query the facts,
- * read the documents, keep the work. Margins and quoted passages are from the
- * latest 10-Ks of Coffee Holding (JVA, FY ended 2025-10-31), Farmer Bros
- * (FARM, 2025-06-30) and Westrock Coffee (WEST, 2025-12-31). Search scores,
- * query timings and the Northwind Research workspace are illustrative.
+ * Hero pitch: an AI guessing without your books, the turn, then four beats of
+ * asking over MCP while RoboSystems changes beside the chat. Inside the
+ * company first (its own margin, from its ledger graph), then outside it (the
+ * public peers from the SEC repository, and the MD&A behind their numbers),
+ * then the work kept for next time. Driftline Coffee Roasters is the demo
+ * company: revenue and gross profit are from its compiled report
+ * (examples/coffee_roaster_demo, FY ended 2026-08-31 and 2025-08-31). Peer
+ * margins and quoted passages are from the latest 10-Ks of Coffee Holding
+ * (JVA, FY ended 2025-10-31), Farmer Bros (FARM, 2025-06-30) and Westrock
+ * Coffee (WEST, 2025-12-31). Search scores and query timings are illustrative.
  */
 import {
   appChrome,
@@ -21,21 +25,37 @@ import {
   typed,
 } from './kit.js'
 
+// win: the app window a beat lands in. A is the SEC repository, B the
+// company's own graph; beat i shows view v{i}.
 const BEATS = [
   {
     k: 'console',
-    q: 'How have margins moved at the public coffee roasters?',
+    win: 'B',
+    q: 'How did our gross margin move this year?',
+    tool: 'driftline · build-fact-grid',
+    res: 'Revenue, gross profit · FY2025, FY2026',
+    a: [
+      'Up 2.9 points. ',
+      'Gross margin is 58.6%',
+      ' for the year ended August 31, from 55.7%.',
+    ],
+  },
+  {
+    k: 'console',
+    win: 'A',
+    q: 'How does that compare with the public coffee roasters?',
     tool: 'sec · build-fact-grid',
     res: 'JVA, FARM, WEST · gross margin · last two 10-Ks',
     a: [
-      'Two fell and one rose. ',
-      'Farmer Bros is up 4.2 points',
-      '; Coffee Holding and Westrock are down.',
+      'Well above all three. ',
+      'Farmer Bros is closest at 43.5%',
+      '; Coffee Holding and Westrock are in the teens.',
     ],
   },
   {
     k: 'search',
-    q: 'Why did they move apart?',
+    win: 'A',
+    q: 'What is moving their margins?',
     tool: 'sec · search-documents',
     res: '3 passages · MD&A · latest 10-Ks',
     a: [
@@ -46,21 +66,38 @@ const BEATS = [
   },
   {
     k: 'memory',
+    win: 'B',
     q: 'Remember this peer set for next quarter.',
-    tool: 'northwind · remember',
+    tool: 'driftline · remember',
     res: 'Saved · fact · tags: peers, coffee',
     a: [
       'Saved to ',
-      'Northwind Research',
-      '. Next quarter, ask how the coffee peers are doing and it starts from here.',
+      'your graph',
+      '. Next quarter, ask how you compare and it starts from here.',
     ],
   },
 ]
 
 const STEP = [
-  '<i>01</i>Query the facts.',
-  '<i>02</i>Read the documents.',
-  '<i>03</i>Keep the work. <em class="grad">It remembers.</em>',
+  '<i>01</i>Your numbers.',
+  '<i>02</i>Beside your peers.',
+  '<i>03</i>Read why.',
+  '<i>04</i>Keep the work. <em class="grad">It remembers.</em>',
+]
+
+const OWN_CYPHER = `MATCH (:Report)-[:REPORT_HAS_FACT]->(f:Fact {has_dimensions: false}),
+      (f)-[:FACT_HAS_ELEMENT]->(el:Element),
+      (f)-[:FACT_HAS_PERIOD]->(p:Period {duration_type: 'annual'})
+WHERE el.qname IN ['rs-gaap:Revenues', 'rs-gaap:GrossProfit']
+WITH p.end_date AS fiscal_year_end,
+     sum(CASE el.qname WHEN 'rs-gaap:Revenues' THEN f.numeric_value END) AS revenue,
+     sum(CASE el.qname WHEN 'rs-gaap:GrossProfit' THEN f.numeric_value END) AS gross_profit
+RETURN fiscal_year_end, revenue, gross_profit,
+       round(100.0 * gross_profit / revenue, 1) AS gross_margin`
+
+const OWN = [
+  ['2025-08-31', '189,599.96', '105,599.96', '55.7%'],
+  ['2026-08-31', '1,226,399.87', '718,399.87', '58.6%'],
 ]
 
 const CYPHER = `MATCH (e:Entity)-[:ENTITY_HAS_REPORT]->(:Report)
@@ -108,7 +145,7 @@ const MEMS = [
     'b-ind',
     'mcp',
     ['peers', 'coffee'],
-    'Coffee peer set: JVA, FARM, WEST. Compare gross margin from each filer’s latest 10-K. FY2025: JVA 16.0%, FARM 43.5%, WEST 12.7%.',
+    'Coffee peer set: JVA, FARM, WEST. Benchmark our gross margin against each filer’s latest 10-K. Ours 58.6% (FY2026); JVA 16.0%, FARM 43.5%, WEST 12.7%.',
   ],
   [
     'b-info',
@@ -116,7 +153,7 @@ const MEMS = [
     'b-mute',
     'api',
     ['periods'],
-    'Fiscal years differ: JVA ends in October, FARM in June, WEST in December. Label every period by its end date.',
+    'Fiscal years differ: ours ends in August, JVA’s in October, FARM’s in June, WEST’s in December. Label every period by its end date.',
   ],
   [
     'b-purple',
@@ -124,7 +161,7 @@ const MEMS = [
     'b-warn',
     'agent',
     ['style'],
-    'The investment committee reads margins in points, not percent change.',
+    'The board reads margins in points, not percent change.',
   ],
 ]
 
@@ -137,6 +174,20 @@ const chatGroups = BEATS.map(
     <div class="ans" id="an${i}"></div>
   </div>`
 ).join('')
+
+const ownView = `<div class="view" id="v0">${pageHeader('Console', 'AI analyst for your accounting ledger')}
+    <div class="term">
+      <div class="meta">09:40 - USER</div>
+      <div class="m m-user">Gross margin for our last two fiscal years</div>
+      <div class="meta">09:40 - RESULT</div>
+      <div class="cy" id="cy0"><div class="cyh"><span>GENERATED CYPHER</span><span>Run</span></div><pre>${OWN_CYPHER}</pre></div>
+      <div class="dt" id="dt0"><div class="dth"><span>2 rows</span><span>Copy JSON</span><span>Download CSV</span></div>
+        <table><tr><th>fiscal_year_end</th><th class="n">revenue</th><th class="n">gross_profit</th><th class="n">gross_margin</th></tr>
+        ${OWN.map((r, i) => `<tr id="or${i}"><td>${r[0]}</td><td class="n">${r[1]}</td><td class="n">${r[2]}</td><td class="n">${r[3]}</td></tr>`).join('')}
+        </table></div>
+      <div class="foot" id="cf0">Query completed in 188ms · Rows returned: 2</div>
+    </div><div class="hl" id="hl0"></div>
+  </div>`
 
 const consoleView = `<div class="view" id="v1">${pageHeader('Console', 'AI financial analyst for 10,000+ public companies')}
     <div class="term">
@@ -172,12 +223,14 @@ const memoryView = `<div class="view" id="v3">
     ).join('')}
   </div>`
 
+const ORG = 'Driftline Coffee Roasters'
+
 const html = `
 <div class="bg"></div><div class="gridbg"></div>
 
 <div class="scene" id="s1"><div class="center">
   <div class="eyebrow" id="eb">Numbers · Narratives · Memory</div>
-  <div class="big" style="margin-top:34px"><span class="wd" id="w1">Ask</span> <span class="wd" id="w2">your</span> <span class="wd" id="w3">AI</span> <span class="wd" id="w4">about</span><br><span class="wd grad" id="w5">a company.</span></div>
+  <div class="big" style="margin-top:34px"><span class="wd" id="w1">Ask</span> <span class="wd" id="w2">your</span> <span class="wd" id="w3">AI</span> <span class="wd" id="w4">about</span><br><span class="wd grad" id="w5">your company.</span></div>
 </div></div>
 
 <div class="scene" id="s2">
@@ -185,7 +238,7 @@ const html = `
     <div class="ub" style="max-width:720px;margin-left:auto" id="gq"></div>
     <div class="ans" id="ga" style="color:#d1d5db;margin-top:30px"></div>
   </div>
-  <div class="caption" id="c2">A number with no source. <em>It is a year out of date.</em></div>
+  <div class="caption" id="c2">It can't see your books. <em>And it's guessing about everyone else.</em></div>
 </div>
 
 <div class="scene" id="s3"><div class="center">
@@ -200,12 +253,12 @@ const html = `
 <div class="scene" id="s4">
   <div id="chat">
     <div class="hd"><div class="t">Your AI chat · connected over MCP</div>
-      <span class="chip"><span class="dot"></span>SEC filings</span><span class="chip"><span class="dot"></span>Northwind Research</span></div>
+      <span class="chip"><span class="dot"></span>Driftline Coffee Roasters</span><span class="chip"><span class="dot"></span>SEC Repository</span></div>
     <div id="chatbody">${chatGroups}</div>
   </div>
   <div id="app">
-    <div class="ch" id="appA">${appChrome({ active: 'console', nav: 'repo', graph: 'SEC Repository', main: consoleView })}</div>
-    <div class="ch" id="appB">${appChrome({ active: 'memory', nav: 'graph', graph: 'Northwind Research', main: memoryView })}</div>
+    <div class="ch" id="appA">${appChrome({ active: 'console', nav: 'repo', graph: 'SEC Repository', org: ORG, main: consoleView })}</div>
+    <div class="ch" id="appB">${appChrome({ active: 'console', nav: 'graph', graph: ORG, org: ORG, main: ownView + memoryView })}</div>
   </div>
 </div>
 
@@ -214,7 +267,7 @@ const html = `
   <div class="big grad" id="cu" style="font-size:108px;margin-top:34px">robosystems.ai</div>
   <div id="cn" style="font-size:40px;font-weight:600;margin-top:30px">Every number traces back to its source.</div>
   <div id="cw" style="font-size:28px;color:var(--muted);margin-top:26px">Works with Claude, ChatGPT, or any MCP client · Open source</div>
-  <div id="cd" style="position:absolute;bottom:40px;font-size:18px;color:var(--dim)">Figures from the latest 10-Ks of JVA, FARM and WEST. Northwind Research is a demo workspace.</div>
+  <div id="cd" style="position:absolute;bottom:40px;font-size:18px;color:var(--dim)">Peer figures from the latest 10-Ks of JVA, FARM and WEST. Driftline Coffee Roasters is a demo company.</div>
 </div></div>
 `
 
@@ -267,10 +320,10 @@ const css = `
 const S1 = [0, 3.4],
   S2 = [3.4, 8.2],
   S3 = [8.2, 11.8]
-const B = [11.8, 16.4, 21.0]
-const S4 = [11.8, 25.8],
-  S5 = [25.8, 30.4]
-const TOTAL = 30.4
+const B = [11.8, 16.4, 21.0, 25.6]
+const S4 = [11.8, 30.2],
+  S5 = [30.2, 34.8]
+const TOTAL = 34.8
 
 function win(el, t, [a, b], fi = 0.45, fo = 0.4) {
   const v =
@@ -306,18 +359,18 @@ function setup(ctx) {
     lt = win($('s2'), t, S2)
     rise($('gc'), eo(seg(lt, 0, 0.5)), 30)
     $('gq').textContent = typed(
-      "What was Coffee Holding's gross margin last year?",
+      'How does our gross margin compare with other roasters?',
       lt,
       0.5,
       40
     )
     $('ga').textContent = typed(
-      'About 20%, based on its recent results. Margins in coffee have been fairly stable.',
+      "I don't have your financials. Roasters usually run somewhere around 20 to 40 percent.",
       lt,
-      1.9,
+      2.0,
       70
     )
-    rise($('c2'), eo(seg(lt, 3.1, 3.6)), 20)
+    rise($('c2'), eo(seg(lt, 3.3, 3.8)), 20)
 
     lt = win($('s3'), t, S3)
     blurIn($('t1'), seg(lt, 0.1, 0.7))
@@ -364,57 +417,71 @@ function setup(ctx) {
       const vi = bt >= 1.2 || bi === 0 ? bi : bi - 1
       const vt =
         bt >= 1.2 ? bt - 1.2 : bi === 0 ? 0 : bt + (B[bi] - B[bi - 1]) - 1.2
-      const f = bi === 0 ? 1 : eio(seg(vt, 0, 0.45))
-      // Console and Search live on the SEC repository; Memory on the workspace
-      // graph, so the whole window changes graph for the last beat.
-      ;[1, 2].forEach((n) => {
-        const i = n - 1
-        const p = i === vi ? f : i === vi - 1 ? (vi === 2 ? 1 : 1 - f) : 0
+      const f = vi === 0 ? 1 : eio(seg(vt, 0, 0.45))
+      // Console and Search on the SEC repository sit in window A; the
+      // company's Console and Memory in window B. A beat in the same window
+      // slides the view; a beat in the other window crossfades the windows.
+      const same = vi > 0 && BEATS[vi].win === BEATS[vi - 1].win
+      BEATS.forEach((_, n) => {
+        const p =
+          n === vi ? (same ? f : 1) : n === vi - 1 ? (same ? 1 - f : 1) : 0
         const v = $('v' + n)
         v.style.opacity = p
-        v.style.transform = `translateX(${(1 - p) * (i === vi ? 30 : -30)}px)`
+        v.style.transform = `translateX(${(1 - p) * (n === vi ? 30 : -30)}px)`
       })
-      $('v3').style.opacity = 1
-      $('appA').style.opacity = vi < 2 ? 1 : 1 - f
-      $('appB').style.opacity = vi === 2 ? f : 0
-      $('appB').style.transform = `translateX(${(vi === 2 ? 1 - f : 1) * 30}px)`
-      if (vi < 2)
-        ctx.nav(
-          BEATS[vi].k,
-          vi > 0 ? BEATS[vi - 1].k : BEATS[vi].k,
-          seg(vt, 0, 0.7),
-          $('appA')
-        )
-      else ctx.nav('memory', 'memory', 1, $('appB'))
+      ;['A', 'B'].forEach((w) => {
+        const into = BEATS[vi].win === w
+        const p = into
+          ? same || vi === 0
+            ? 1
+            : f
+          : vi > 0 && !same && BEATS[vi - 1].win === w
+            ? 1 - f
+            : 0
+        const el = $('app' + w)
+        el.style.opacity = p
+        el.style.transform = `translateX(${into ? (1 - p) * 30 : 0}px)`
+      })
+      ctx.nav(
+        BEATS[vi].k,
+        same ? BEATS[vi - 1].k : BEATS[vi].k,
+        same ? seg(vt, 0, 0.7) : 1,
+        $('app' + BEATS[vi].win)
+      )
 
-      if (vi === 0) {
-        rise($('cy'), eo(seg(vt, 0.05, 0.4)), 12)
-        rise($('dt'), eo(seg(vt, 0.35, 0.7)), 12)
-        ;[0, 1, 2].forEach((i) =>
-          rise($('mr' + i), eo(seg(vt, 0.5 + i * 0.1, 0.8 + i * 0.1)), 8)
+      // each view builds while it is current and holds its last frame after,
+      // so seeking to any time draws the same picture
+      const lv = (n) => (n === vi ? vt : n < vi ? 99 : 0)
+      const table = (cy, dt, rows, cf, t) => {
+        rise($(cy), eo(seg(t, 0.05, 0.4)), 12)
+        rise($(dt), eo(seg(t, 0.35, 0.7)), 12)
+        rows.forEach((r, i) =>
+          rise($(r), eo(seg(t, 0.5 + i * 0.1, 0.8 + i * 0.1)), 8)
         )
-        $('cf').style.opacity = seg(vt, 0.8, 1.1)
-        ctx.ring($('hl1'), $('mr1'), eo(seg(vt, 1.3, 1.6)))
-      } else $('hl1').style.opacity = 0
-      if (vi === 1) {
-        $('sq').textContent = typed('gross margin', vt, 0.05, 30)
-        $('rm').style.opacity = seg(vt, 0.5, 0.8)
-        ;[0, 1, 2].forEach((i) =>
-          rise($('h' + i), eo(seg(vt, 0.55 + i * 0.14, 0.9 + i * 0.14)), 16)
-        )
-        ctx.ring($('hl2'), $('h1'), eo(seg(vt, 1.6, 1.9)))
-      } else $('hl2').style.opacity = 0
-      if (vi === 2) {
-        swap($('mc'), vt, 0.9, '12 memories stored.', '13 memories stored.')
-        // the new memory slides in above the two already there
-        const p = eo(seg(vt, 0.6, 1.0))
-        rise($('m0'), p, 16)
-        $('m0').style.borderColor =
-          `rgba(34,211,238,${0.6 * seg(vt, 0.9, 1.2)})`
-        const shift = (1 - p) * -118
-        $('m1').style.transform = `translateY(${shift}px)`
-        $('m2').style.transform = `translateY(${shift}px)`
+        $(cf).style.opacity = seg(t, 0.8, 1.1)
       }
+      table('cy0', 'dt0', ['or0', 'or1'], 'cf0', lv(0))
+      ctx.ring($('hl0'), $('or1'), vi === 0 ? eo(seg(vt, 1.3, 1.6)) : 0)
+      table('cy', 'dt', ['mr0', 'mr1', 'mr2'], 'cf', lv(1))
+      ctx.ring($('hl1'), $('mr1'), vi === 1 ? eo(seg(vt, 1.3, 1.6)) : 0)
+
+      const st = lv(2)
+      $('sq').textContent = typed('gross margin', st, 0.05, 30)
+      $('rm').style.opacity = seg(st, 0.5, 0.8)
+      ;[0, 1, 2].forEach((i) =>
+        rise($('h' + i), eo(seg(st, 0.55 + i * 0.14, 0.9 + i * 0.14)), 16)
+      )
+      ctx.ring($('hl2'), $('h1'), vi === 2 ? eo(seg(vt, 1.6, 1.9)) : 0)
+
+      const mt = lv(3)
+      swap($('mc'), mt, 0.9, '12 memories stored.', '13 memories stored.')
+      // the new memory slides in above the two already there
+      const mp = eo(seg(mt, 0.6, 1.0))
+      rise($('m0'), mp, 16)
+      $('m0').style.borderColor = `rgba(34,211,238,${0.6 * seg(mt, 0.9, 1.2)})`
+      const shift = (1 - mp) * -118
+      $('m1').style.transform = `translateY(${shift}px)`
+      $('m2').style.transform = `translateY(${shift}px)`
     }
 
     // the end card fades into the background and the loop opens on the first
@@ -472,7 +539,7 @@ export default {
   width: 1920,
   height: 1080,
   total: TOTAL,
-  poster: 15.6,
+  poster: 20.2,
   css,
   html,
   setup,
