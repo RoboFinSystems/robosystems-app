@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'RoboSystems | Financial Intelligence Platform',
     short_name: 'RoboSystems',
     description:
-      'Unify structured data, document search, and AI memory in one platform — knowledge graphs, SEC filings search, and AI agents via MCP.',
+      'Your company, the companies around it, and public SEC filings in one knowledge graph, with document search and AI memory over MCP.',
     start_url: '/',
     display: 'standalone',
     background_color: '#000000',

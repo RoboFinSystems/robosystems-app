@@ -1,7 +1,7 @@
 /*
  * Hero pitch: an AI answering from memory, the turn, then three beats of
  * asking over MCP while RoboSystems changes beside the chat: query the facts,
- * read the filings, keep the work. Margins and quoted passages are from the
+ * read the documents, keep the work. Margins and quoted passages are from the
  * latest 10-Ks of Coffee Holding (JVA, FY ended 2025-10-31), Farmer Bros
  * (FARM, 2025-06-30) and Westrock Coffee (WEST, 2025-12-31). Search scores,
  * query timings and the Northwind Research workspace are illustrative.
@@ -59,7 +59,7 @@ const BEATS = [
 
 const STEP = [
   '<i>01</i>Query the facts.',
-  '<i>02</i>Read the filings.',
+  '<i>02</i>Read the documents.',
   '<i>03</i>Keep the work. <em class="grad">It remembers.</em>',
 ]
 
@@ -189,9 +189,9 @@ const html = `
 </div>
 
 <div class="scene" id="s3"><div class="center">
-  <div class="big" style="font-size:96px"><span id="t1" style="display:inline-block">Give it the filings.</span><br><span class="grad" id="t2" style="display:inline-block">And your own data.</span></div>
+  <div class="big" style="font-size:96px"><span id="t1" style="display:inline-block">Your company.</span><br><span class="grad" id="t2" style="display:inline-block">And every company around it.</span></div>
   <div class="flow">
-    <div class="node" id="n1">SEC filings · your documents</div><div class="wire" id="wr1"></div>
+    <div class="node" id="n1">Your books · your holdings · public filings</div><div class="wire" id="wr1"></div>
     <div class="node" id="n2" style="border-color:var(--c500)">${tile(48, 12)}RoboSystems</div><div class="wire" id="wr2"></div>
     <div class="node" id="n3">Claude · ChatGPT · any MCP client</div>
   </div>
@@ -212,7 +212,7 @@ const html = `
 <div class="scene" id="s5"><div class="center">
   <span id="cl">${tile(110, 26)}</span>
   <div class="big grad" id="cu" style="font-size:108px;margin-top:34px">robosystems.ai</div>
-  <div id="cn" style="font-size:40px;font-weight:600;margin-top:30px">Every number traces back to its filing.</div>
+  <div id="cn" style="font-size:40px;font-weight:600;margin-top:30px">Every number traces back to its source.</div>
   <div id="cw" style="font-size:28px;color:var(--muted);margin-top:26px">Works with Claude, ChatGPT, or any MCP client · Open source</div>
   <div id="cd" style="position:absolute;bottom:40px;font-size:18px;color:var(--dim)">Figures from the latest 10-Ks of JVA, FARM and WEST. Northwind Research is a demo workspace.</div>
 </div></div>

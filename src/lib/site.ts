@@ -13,7 +13,7 @@ export const SITE_URL = 'https://robosystems.ai'
 export const SITE_TITLE = 'RoboSystems | Financial Intelligence Platform'
 
 export const SITE_DESCRIPTION =
-  'Every number, every document, one platform your AI can reason over: a financial knowledge graph, search across filings and documents, and MCP tools.'
+  "One knowledge graph for your company's data, the companies around it, and public SEC filings, with document search and MCP tools for your AI."
 
 // The published listing in OpenAI's plugin directory (the SEC repository surface). The
 // listing URL is stable across version bumps: an approved version replaces the previous

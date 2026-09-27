@@ -88,6 +88,9 @@ export default function ApplicationsSection() {
                   className="h-14 w-14"
                 />
                 <div>
+                  <p className="text-secondary-400 text-xs font-semibold tracking-wider uppercase">
+                    Inside your company
+                  </p>
                   <h3 className="font-heading text-xl font-bold text-white sm:text-2xl">
                     RoboLedger
                   </h3>
@@ -233,6 +236,9 @@ export default function ApplicationsSection() {
                   className="h-14 w-14"
                 />
                 <div>
+                  <p className="text-xs font-semibold tracking-wider text-green-400 uppercase">
+                    Outside your company
+                  </p>
                   <h3 className="font-heading text-xl font-bold text-white sm:text-2xl">
                     RoboInvestor
                   </h3>

@@ -18,7 +18,7 @@ export default function ProductOverview() {
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
             A figure on its own answers nothing. RoboSystems keeps each fact
-            with the company, filing, concept and period it belongs to, the
+            with the company, report, concept and period it belongs to, the
             passage that explains it, and what your team decided about it last
             time&mdash;the three layers your AI reads before it answers.
           </p>
