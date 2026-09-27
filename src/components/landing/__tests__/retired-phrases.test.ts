@@ -19,6 +19,11 @@ const RETIRED = [
   // No-lock-in rests on backups, the API and Account Transfer, not on a
   // blanket readability claim that awaits its audit (enterprise/content.tsx).
   'read everything',
+  // "Filing" as the generic noun reads to a private company as a place to file
+  // reports. It stays only where it means public SEC filings.
+  'give it the filings',
+  'traces back to its filing',
+  'read the filings',
 ]
 
 const landingDir = path.resolve(__dirname, '..')
