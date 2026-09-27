@@ -47,9 +47,10 @@ export default function HeroSection() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-3xl text-base leading-relaxed text-gray-300 sm:text-lg md:mt-8 md:text-2xl">
-            Put SEC filings and your own data in one graph. Your AI queries the
-            facts, reads the documents behind them, and remembers the work from
-            one session to the next, in Claude, ChatGPT, or any{' '}
+            Your company, the companies around it, and the public record, in one
+            knowledge graph. Your AI queries the facts, reads the documents
+            behind them, and remembers the work from one session to the next, in
+            Claude, ChatGPT, or any{' '}
             <strong className="text-secondary-400">MCP</strong> client.
           </p>
 

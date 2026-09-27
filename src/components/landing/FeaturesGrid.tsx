@@ -127,7 +127,7 @@ export default function FeaturesGrid() {
                 Document Search
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Hybrid search across filings, documents, and disclosures powered
+                Hybrid search across your documents and public filings, powered
                 by OpenSearch.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
