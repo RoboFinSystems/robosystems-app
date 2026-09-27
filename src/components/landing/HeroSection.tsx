@@ -81,7 +81,7 @@ export default function HeroSection() {
               name="hero"
               aspect={16 / 9}
               phoneAspect={720 / 1080}
-              label="An AI chat connected to RoboSystems over MCP compares gross margins at three public coffee companies from their 10-Ks, finds the passages that explain the difference, and saves the peer set to memory, while the RoboSystems app updates beside the chat."
+              label="An AI chat connected to RoboSystems over MCP reads a company's own gross margin from its ledger graph, compares it with three public coffee companies from their 10-Ks, finds the passages that explain their margins, and saves the peer set to the company's memory, while the RoboSystems app updates beside the chat."
               className="rounded-2xl border border-gray-800 bg-black shadow-2xl"
             />
           </div>
