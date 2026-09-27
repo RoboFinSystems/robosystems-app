@@ -311,8 +311,8 @@ export default function FeaturesGrid() {
                 Security & Isolation
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Your own graph database per subscription, or your own AWS
-                account on a Dedicated Deployment.
+                A dedicated graph-database instance per subscription, or your
+                own AWS account on a Dedicated Deployment.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
