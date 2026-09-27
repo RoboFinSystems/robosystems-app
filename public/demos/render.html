@@ -34,7 +34,7 @@
       // one demo at native size and exposes the __init / __total / __seek contract.
       // &phone=1 poses its phone layout instead (a vertical cut).
       import { mount, variant } from './kit.js'
-      const DEMOS = ['hero', 'trace', 'sec', 'build']
+      const DEMOS = ['hero', 'trace', 'sec', 'build', 'graphs', 'console']
       const name = new URLSearchParams(location.search).get('demo') || 'hero'
       if (!DEMOS.includes(name)) {
         throw new Error(
