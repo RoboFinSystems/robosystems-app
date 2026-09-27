@@ -1,11 +1,11 @@
 'use client'
 
 import { McpLogo } from '@/components/mcp/McpLogo'
+import { LiveDemo } from '@robosystems/core/ui-components'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import ContactModal from './ContactModal'
 import FloatingElementsVariant from './FloatingElementsVariant'
-import LiveDemo from './LiveDemo'
 
 export default function HeroSection() {
   const [showContactModal, setShowContactModal] = useState(false)

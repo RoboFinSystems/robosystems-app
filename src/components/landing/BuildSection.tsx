@@ -1,11 +1,11 @@
 'use client'
 
 import { MCP_OAUTH_URL } from '@/lib/mcp'
+import { LiveDemo } from '@robosystems/core/ui-components'
 import Link from 'next/link'
 import { useState } from 'react'
 import ContactModal from './ContactModal'
 import FloatingElementsVariant from './FloatingElementsVariant'
-import LiveDemo from './LiveDemo'
 
 /**
  * The three write lanes an integration can use, in the order the API docs

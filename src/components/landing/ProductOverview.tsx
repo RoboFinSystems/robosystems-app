@@ -1,7 +1,7 @@
 'use client'
 
+import { LiveDemo } from '@robosystems/core/ui-components'
 import FloatingElementsVariant from './FloatingElementsVariant'
-import LiveDemo from './LiveDemo'
 
 export default function ProductOverview() {
   return (
