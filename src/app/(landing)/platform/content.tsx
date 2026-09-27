@@ -4,10 +4,9 @@ import FloatingElementsVariant from '@/components/landing/FloatingElementsVarian
 import Footer from '@/components/landing/Footer'
 import Header from '@/components/landing/Header'
 import BusinessServices from '@/components/platform/BusinessServices'
-import ConsoleDemo from '@/components/platform/ConsoleDemo'
 import FinancialServices from '@/components/platform/FinancialServices'
-import GraphDashboard from '@/components/platform/GraphDashboard'
 import SchemaArchitecture from '@/components/platform/SchemaArchitecture'
+import { LiveDemo } from '@robosystems/core/ui-components'
 import Link from 'next/link'
 
 export default function PlatformContent() {
@@ -60,7 +59,15 @@ export default function PlatformContent() {
               </p>
             </div>
 
-            <GraphDashboard />
+            <div className="mx-auto mb-12 max-w-6xl">
+              <LiveDemo
+                name="graphs"
+                aspect={1200 / 820}
+                phoneAspect={720 / 880}
+                label="The RoboSystems graph selector moves between the shared SEC repository, a RoboLedger company graph, a RoboInvestor fund graph and a custom research graph, each opening on its dashboard with its own metrics, schema extensions and sidebar."
+                className="rounded-2xl border border-gray-800 bg-black shadow-2xl"
+              />
+            </div>
           </div>
         </section>
 
@@ -81,7 +88,15 @@ export default function PlatformContent() {
               </p>
             </div>
 
-            <ConsoleDemo />
+            <div className="mx-auto max-w-6xl">
+              <LiveDemo
+                name="console"
+                aspect={1200 / 820}
+                phoneAspect={720 / 1120}
+                label="The RoboSystems Console on a company ledger graph answers which customers owe the most with its generated Cypher and rows, searches the graph's policy documents, and recalls a saved memory about the largest account."
+                className="rounded-2xl border border-gray-800 bg-black shadow-2xl"
+              />
+            </div>
 
             <div className="mt-12 grid gap-6 md:grid-cols-3">
               <div className="group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-cyan-950/20 p-6 transition-all hover:border-cyan-500/50">

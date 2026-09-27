@@ -48,3 +48,32 @@ describe('landing copy', () => {
     expect(offenders.map((f) => path.relative(landingDir, f))).toEqual([])
   })
 })
+
+// What a product mock or demo shows on screen is a demo company, never a real
+// customer's or our own graph: the platform page's graph switcher once listed
+// the RFS LLC and Harbinger FinLab graphs by name. The company names are fine in
+// prose (about, privacy, enterprise); this scans only the screens.
+const REAL_GRAPHS = ['rfs llc', 'harbinger']
+const platformDir = path.resolve(__dirname, '../../platform')
+const screens = [
+  ...readdirSync(demosDir)
+    .filter((f) => f.endsWith('.js'))
+    .map((f) => path.join(demosDir, f)),
+  ...readdirSync(platformDir)
+    .filter((f) => f.endsWith('.tsx'))
+    .map((f) => path.join(platformDir, f)),
+]
+
+describe('product screens', () => {
+  it('scans the demos and the platform page mocks', () => {
+    expect(screens.some((f) => f.endsWith('graphs.js'))).toBe(true)
+    expect(screens.some((f) => f.endsWith('SchemaArchitecture.tsx'))).toBe(true)
+  })
+
+  it.each(REAL_GRAPHS)('never show "%s" as a graph', (name) => {
+    const offenders = screens.filter((f) =>
+      readFileSync(f, 'utf8').toLowerCase().includes(name)
+    )
+    expect(offenders.map((f) => path.relative(landingDir, f))).toEqual([])
+  })
+})
