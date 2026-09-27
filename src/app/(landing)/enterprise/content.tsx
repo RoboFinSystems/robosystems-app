@@ -47,7 +47,7 @@ const MODES: Mode[] = [
   {
     name: 'Managed Platform',
     tagline: 'Self-serve · per graph',
-    body: 'Your graphs run on our multi-tenant platform, each in its own isolated graph database. Sign up, connect QuickBooks or the SEC repository, done.',
+    body: 'Your graphs run on our managed platform, each on its own dedicated graph-database instance. Sign up, connect QuickBooks or the SEC repository, done.',
     facts: [
       { label: 'Price', value: 'From $99 per graph per month' },
       {
@@ -107,7 +107,7 @@ const COMPARISON: Array<{ row: string; m: string; d: string; s: string }> = [
   },
   {
     row: 'Isolation',
-    m: 'Your own graph database per subscription',
+    m: 'A dedicated graph-database instance per graph',
     d: 'Your own AWS account',
     s: 'Your environment',
   },
@@ -137,7 +137,7 @@ const COMPARISON: Array<{ row: string; m: string; d: string; s: string }> = [
   },
   {
     row: 'Leaving',
-    m: 'Download backups; read everything through the public API',
+    m: 'Download backups; query your graphs through the public API and MCP',
     d: 'Account Transfer to your own ownership — a priced engagement, terms in the MSA from day one',
     s: 'Nothing to leave',
   },
@@ -167,7 +167,7 @@ const IDENTITY: Array<{ title: string; body: string; scope: string }> = [
 ]
 
 const SECURITY: string[] = [
-  'Encryption in transit and at rest; every graph in its own database.',
+  'Encryption in transit and at rest; every graph on its own graph-database instance, and ledger data in its own schema.',
   'Tenant isolation is tested, not asserted: an authenticated harness provisions two tenants against a live deployment and fires a cross-tenant and privilege-escalation matrix at it — REST, Cypher, GraphQL, MCP, both extension surfaces, both directions.',
   'A pinned supply chain: every CI action pinned to a commit, release deployments dispatch-only, provenance certified per pull request. Dedicated Deployments run a byte-identical, tag-pinned mirror of the public repository.',
   'Security incidents affecting your data: notice within 72 hours. Security releases: applied fleet-wide.',

@@ -134,11 +134,11 @@ export default function PricingContent() {
                     a Dedicated Deployment?
                   </h4>
                   <p className="text-gray-400">
-                    A graph subscription is one isolated graph database on our
-                    managed, multi-tenant platform &mdash; self-serve, priced
-                    per graph. A Dedicated Deployment is the whole platform
-                    provisioned into an AWS account dedicated to your
-                    organization, which we operate for you: account-level
+                    A graph subscription is one graph on its own dedicated
+                    graph-database instance, on our managed platform &mdash;
+                    self-serve, priced per graph. A Dedicated Deployment is the
+                    whole platform provisioned into an AWS account dedicated to
+                    your organization, which we operate for you: account-level
                     isolation, sign-in and user provisioning from your identity
                     provider, and the option to transfer the account to your own
                     ownership later. Most customers start with a subscription;

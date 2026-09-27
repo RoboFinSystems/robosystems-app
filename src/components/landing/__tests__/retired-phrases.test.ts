@@ -11,6 +11,14 @@ const RETIRED = [
   'finally connected',
   'simulated results',
   'three layers of financial intelligence',
+  // Every graph tier is a dedicated graph-database instance (graph.yml:
+  // databases_per_instance 1); only the API and the ledger's Postgres, one
+  // schema per graph, are shared. The marketing pages once undersold that.
+  // The legal pages keep their own defined terms and are not scanned.
+  'multi-tenant platform',
+  // No-lock-in rests on backups, the API and Account Transfer, not on a
+  // blanket readability claim that awaits its audit (enterprise/content.tsx).
+  'read everything',
 ]
 
 const landingDir = path.resolve(__dirname, '..')
@@ -20,6 +28,8 @@ const files = [
     .filter((f) => f.endsWith('.tsx') || f.endsWith('.ts'))
     .map((f) => path.join(landingDir, f)),
   path.resolve(__dirname, '../../../app/(landing)/metadata.ts'),
+  path.resolve(__dirname, '../../../app/(landing)/enterprise/content.tsx'),
+  path.resolve(__dirname, '../../../app/(landing)/pricing/content.tsx'),
   // The animated demos carry landing copy of their own.
   ...readdirSync(demosDir)
     .filter((f) => f.endsWith('.js'))

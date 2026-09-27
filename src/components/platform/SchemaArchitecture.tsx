@@ -316,11 +316,12 @@ export default function SchemaArchitecture() {
               </svg>
             </div>
             <h3 className="mb-2 text-lg font-semibold text-white">
-              Multi-Tenant Isolation
+              Dedicated Graph Instances
             </h3>
             <p className="text-sm text-gray-400">
-              Each company operates in their own isolated knowledge graph—your
-              data never mixes with other organizations
+              Each graph runs on its own graph-database instance, and its ledger
+              in its own database schema&mdash;your data never mixes with
+              another organization&apos;s
             </p>
           </div>
           <div className="group rounded-xl border border-gray-800 bg-gradient-to-br from-green-500/10 to-zinc-900 p-6 transition-all hover:border-green-500/50">
