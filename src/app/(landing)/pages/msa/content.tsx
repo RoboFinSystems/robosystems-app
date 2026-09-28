@@ -588,9 +588,11 @@ export default function MasterServiceAgreement() {
 
         <p>
           C.4 <strong>Metering and verification. </strong>Provider reports
-          metered amounts to AWS at least daily. Every metered amount is
-          computed from the Infrastructure Cost that Customer can view through
-          its read-only cost and usage access under Schedule B, so Customer can
+          metered amounts to AWS at least daily. For purchases under this
+          Schedule, the read-only access under Schedule B always includes
+          Customer&apos;s cost and usage data. Every metered amount is computed
+          from the Infrastructure Cost that Customer can view through its
+          read-only cost and usage access under Schedule B, so Customer can
           reconcile each metered charge to its own view of the Deployment
           Account. Where the cloud provider later adjusts a period&apos;s
           charges, Provider reflects the adjustment in a subsequent period or by
