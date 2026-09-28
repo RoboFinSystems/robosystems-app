@@ -536,8 +536,9 @@ export default function MasterServiceAgreement() {
           B.9 <strong>Shared data. </strong>Provider&apos;s shared repositories
           and shared taxonomy library are not deployed in the Deployment
           Account. Where the Order Form includes it, Provider provides access to
-          them through a Managed Platform account under Schedule A, covered by
-          the platform fee.
+          them through a Managed Platform account under Schedule A, used solely
+          for that access and covered by the platform fee. Any other use of the
+          Managed Platform is purchased separately.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
