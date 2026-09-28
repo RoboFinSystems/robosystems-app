@@ -7,7 +7,7 @@ export default function MasterServiceAgreement() {
         </h1>
 
         <p className="mb-12 text-gray-600 dark:text-gray-400">
-          Version 2.2 · Last Revision: September 25, 2026
+          Version 2.3 · Last Revision: September 28, 2026
         </p>
 
         <p>
@@ -39,12 +39,15 @@ export default function MasterServiceAgreement() {
           &quot;Order Form&quot;), together with related support
           (&quot;Services&quot;). Each Order Form incorporates this Agreement
           and exactly one Service Schedule, which states the delivery mode and
-          its specific terms.
+          its specific terms. Schedule C is not a delivery mode; it supplements
+          the Service Schedule where an Order Form is placed through AWS
+          Marketplace.
         </p>
 
         <p>
-          1.2 Order of precedence, highest first: the Order Form; the applicable
-          Service Schedule; this Agreement; any incorporated addendum.
+          1.2 Order of precedence, highest first: the Order Form; Schedule C,
+          where it applies; the applicable Service Schedule; this Agreement; any
+          incorporated addendum.
         </p>
 
         <p>
@@ -407,11 +410,17 @@ export default function MasterServiceAgreement() {
         <p>
           B.4 <strong>Fees. </strong>(a) Cloud infrastructure costs, passed
           through at Provider&apos;s actual cost per Section 3; (b) a support
-          and operations fee as stated in the Order Form; (c) an annual platform
-          fee as stated in the Order Form; and (d) any separately quoted
-          integration development. Provider does not apply enterprise discount
-          or savings-plan sharing to the Deployment Account, so pass-through
-          amounts reflect Customer&apos;s own consumption.
+          and operations fee as stated in the Order Form, for operating the
+          Deployment Account and supporting Customer&apos;s personnel; (c) an
+          annual platform fee as stated in the Order Form, for the platform
+          Provider maintains across all deployments: its security and compliance
+          program, including the examination described in Section 7.3; ongoing
+          feature development and tested releases; and management of the release
+          pipeline, shared services, and shared data described in Section B.9;
+          and (d) any separately quoted integration development. Provider does
+          not apply enterprise discount or savings-plan sharing to the
+          Deployment Account, so pass-through amounts reflect Customer&apos;s
+          own consumption.
         </p>
 
         <p>
@@ -458,13 +467,14 @@ export default function MasterServiceAgreement() {
         <p>
           (b) <strong>Engagement fee. </strong>Provider will execute the
           transfer as a fixed-price service engagement at a fee equal to one (1)
-          month of the support and operations fee then in effect, invoiced on
-          initiation and in addition to fees for the notice-period month of
-          service. This fee compensates Provider for the work of executing the
-          transfer, which is separate from and additional to operating the
-          Services; it is not an early-termination charge, and Customer&apos;s
-          right to transfer is not conditioned on renewal or continued purchase
-          of any service.
+          month of the support and operations fee then in effect, excluding any
+          portion of that fee calculated from cloud infrastructure costs,
+          invoiced on initiation and in addition to fees for the notice-period
+          month of service. This fee compensates Provider for the work of
+          executing the transfer, which is separate from and additional to
+          operating the Services; it is not an early-termination charge, and
+          Customer&apos;s right to transfer is not conditioned on renewal or
+          continued purchase of any service.
         </p>
 
         <p>
@@ -520,6 +530,122 @@ export default function MasterServiceAgreement() {
           will cooperate in good faith to complete the transfer through those
           mechanisms, including changes to the account&apos;s root contact,
           billing, and support arrangements.
+        </p>
+
+        <p>
+          B.9 <strong>Shared data. </strong>Provider&apos;s shared repositories
+          and shared taxonomy library are not deployed in the Deployment
+          Account. Where the Order Form includes it, Provider provides access to
+          them through a Managed Platform account under Schedule A, used solely
+          for that access and covered by the platform fee. Any other use of the
+          Managed Platform is purchased separately.
+        </p>
+
+        <h2 className="mt-8 text-2xl font-semibold">
+          Schedule C — AWS Marketplace Purchases
+        </h2>
+
+        <p>
+          Applies where Customer purchases the Services through a private offer
+          on AWS Marketplace, in addition to the Service Schedule the offer
+          designates.
+        </p>
+
+        <p>
+          C.1 <strong>Formation. </strong>A private offer that Customer accepts
+          through AWS Marketplace, and that incorporates this Agreement as its
+          end user license agreement, is an Order Form, and its acceptance date
+          is the Effective Date. Amazon Web Services, Inc. and its affiliates
+          are not parties to this Agreement. Customer&apos;s use of AWS
+          Marketplace itself is governed by Customer&apos;s agreement with AWS.
+        </p>
+
+        <p>
+          C.2 <strong>Billing. </strong>AWS invoices and collects all fees
+          stated in the offer through Customer&apos;s AWS account, on AWS&apos;s
+          billing terms and payment schedule, and calculates any applicable
+          taxes on them. The invoicing, payment-term, and late-interest
+          provisions of Section 3 do not apply to those fees, and Provider will
+          not invoice Customer separately for them or collect Customer&apos;s
+          payment details. Work outside the offer, including separately quoted
+          integration development under Schedule B and services under Section
+          1.4, is billed under its own agreement.
+        </p>
+
+        <p>
+          C.3 <strong>Fee components. </strong>The offer states the fees due
+          under Schedule B as follows:
+        </p>
+
+        <p>
+          (a) <strong>Infrastructure Cost. </strong>The charges the cloud
+          provider records for the Deployment Account, at the rates it applies
+          to that account, without markup (&quot;Infrastructure Cost&quot;).
+          Provider meters Infrastructure Cost to AWS as usage.
+        </p>
+
+        <p>
+          (b) <strong>Platform fee </strong>and{' '}
+          <strong>support and operations fee. </strong>Each may have a fixed
+          component, stated as an amount for the term or per billing period, and
+          a variable component, stated as a percentage of Infrastructure Cost
+          for the same period. The offer states, for each fee, whether the
+          variable component is added to the fixed component or whether the fee
+          is the greater of the two. Provider meters the variable component to
+          AWS as usage, and where the fee is the greater of the two, meters only
+          the amount by which the percentage exceeds the fixed component.
+        </p>
+
+        <p>
+          (c) The offer may state a different percentage for each fee, and
+          percentages and fixed components may differ between offers and
+          renewals.
+        </p>
+
+        <p>
+          C.4 <strong>Metering and verification. </strong>Provider reports
+          metered amounts to AWS at least daily. For purchases under this
+          Schedule, the read-only access under Schedule B always includes
+          Customer&apos;s cost and usage data. Every metered amount is computed
+          from the Infrastructure Cost that Customer can view through its
+          read-only cost and usage access under Schedule B, so Customer can
+          reconcile each metered charge to its own view of the Deployment
+          Account. Where the cloud provider later adjusts a period&apos;s
+          charges, Provider reflects the adjustment in a subsequent period or by
+          refund through AWS Marketplace. Customer may dispute a metered amount
+          within sixty (60) days of the AWS invoice that includes it, and
+          Provider will correct confirmed errors in the same way.
+        </p>
+
+        <p>
+          C.5 <strong>Marketplace fees. </strong>Provider bears the fees AWS
+          charges Provider for transactions under the offer. They are not added
+          to Infrastructure Cost or to any metered amount.
+        </p>
+
+        <p>
+          C.6 <strong>Term and renewal. </strong>The subscription term and any
+          installment schedule are stated in the offer. Renewal is by a new
+          private offer. Section 4 applies, except that any refund due under
+          this Agreement is made through AWS Marketplace.
+        </p>
+
+        <p>
+          C.7 <strong>Account Transfer. </strong>Schedule B, Section B.8
+          applies. The transfer engagement fee is charged through a separate
+          private offer that Customer accepts, or invoiced directly where
+          Customer prefers. From the transfer date, Provider stops metering,
+          Infrastructure Cost is billed by the cloud provider to Customer
+          directly, and the treatment of fixed components for the remainder of
+          the term is as stated in the offer.
+        </p>
+
+        <p>
+          C.8 <strong>Standard Contract. </strong>Where Customer asks that an
+          offer use the Standard Contract for AWS Marketplace in place of this
+          Agreement, Provider will attach an amendment incorporating Schedule B
+          and this Schedule C, which governs in accordance with that
+          contract&apos;s order of precedence.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
