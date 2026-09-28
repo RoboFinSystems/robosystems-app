@@ -5,6 +5,7 @@ import type { SidebarItemData } from '@robosystems/core'
 import {
   HiChartBar,
   HiChip,
+  HiClock,
   HiCode,
   HiDatabase,
   HiDocumentText,
@@ -14,7 +15,6 @@ import {
   HiPuzzle,
   HiSearch,
   HiTable,
-  HiTerminal,
   HiViewGrid,
 } from 'react-icons/hi'
 
@@ -53,11 +53,6 @@ export const getNavigationItems = (
           icon: HiViewGrid,
           label: 'Dashboard',
           href: '/dashboard',
-        },
-        {
-          icon: HiTerminal,
-          label: 'Console',
-          href: '/console',
         },
         {
           icon: HiSearch,
@@ -105,6 +100,16 @@ export const getNavigationItems = (
           label: 'Usage',
           href: '/usage',
         },
+        // Changes to a user graph; a repository takes none from its users.
+        ...(!isRepository
+          ? [
+              {
+                icon: HiClock,
+                label: 'Activity',
+                href: '/activity',
+              },
+            ]
+          : []),
       ]
     : []
 

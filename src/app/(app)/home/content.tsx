@@ -4,6 +4,7 @@ import type { GraphInfo } from '@robosystems/client'
 import { getGraphs } from '@robosystems/client'
 import {
   LoadingState,
+  openConsoleDrawer,
   PageHeader,
   PageLayout,
   useGraphContext,
@@ -113,7 +114,7 @@ export default function AllGraphsHomePage() {
     if (graphState.currentGraphId !== graph.graphId) {
       await setCurrentGraph(graph.graphId)
     }
-    router.push('/console')
+    openConsoleDrawer()
   }
 
   const handleOpenUsage = async (graph: GraphInfo) => {

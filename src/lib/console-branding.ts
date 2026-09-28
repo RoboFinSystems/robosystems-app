@@ -1,17 +1,11 @@
-'use client'
-
-import {
-  ConsoleContent,
-  useGraphAwareConsoleConfig,
-  type ConsoleBranding,
-} from '@robosystems/core'
+import type { ConsoleBranding } from '@robosystems/core'
 
 // RoboSystems is the parent app and sees every graph kind, so the console is
 // fully graph-aware: the example sets live in core (graphAwareConfig) and swap
 // based on the selected graph — SEC repository, RoboLedger ledger, RoboInvestor
 // portfolio, or a generic custom graph. This app supplies only branding and,
 // being brand-neutral, sets no preferredKind tiebreak.
-const ROBOSYSTEMS_BRANDING: ConsoleBranding = {
+export const ROBOSYSTEMS_CONSOLE_BRANDING: ConsoleBranding = {
   title: 'Console',
   consoleName: 'RoboSystems Console',
   gradientFrom: 'from-primary-500',
@@ -21,9 +15,4 @@ const ROBOSYSTEMS_BRANDING: ConsoleBranding = {
     serverName: 'robosystems',
     contextIdFallback: 'your_graph_id',
   },
-}
-
-export function QueryInterfaceContent() {
-  const config = useGraphAwareConsoleConfig(ROBOSYSTEMS_BRANDING)
-  return <ConsoleContent config={config} />
 }

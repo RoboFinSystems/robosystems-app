@@ -10,6 +10,7 @@ import {
 import {
   ActiveSubscriptions,
   BrowseRepositories,
+  openConsoleDrawer,
   PageLayout,
   useToast,
 } from '@robosystems/core'
@@ -66,7 +67,7 @@ export function SharedRepositoriesContent() {
     <PageLayout>
       <ActiveSubscriptions
         key={refreshKey}
-        onOpenConsole={() => router.push('/console')}
+        onOpenConsole={() => openConsoleDrawer()}
         onOpenUsage={() => router.push('/usage')}
         onGettingStarted={(repoId) =>
           router.push(`/repositories/${repoId}/getting-started`)

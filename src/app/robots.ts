@@ -13,6 +13,7 @@ export default function robots(): MetadataRoute.Robots {
       // crawlable. /billing is not in (app); it is a redirect in next.config.js.
       disallow: [
         '/api',
+        '/activity',
         '/backups',
         '/billing',
         '/checkout',

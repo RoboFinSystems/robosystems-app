@@ -1,11 +1,19 @@
-import type { Metadata } from 'next'
-import { QueryInterfaceContent } from './content'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Query Interface | RoboSystems',
-  description: 'Execute Cypher queries on your graph database',
-}
+import { openConsoleDrawer } from '@robosystems/core'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
-export default function QueryPage() {
-  return <QueryInterfaceContent />
+// The console lives in the bottom drawer on every page. This route stays so
+// old links, bookmarks and the post-checkout redirect still land on it: open
+// the drawer, go home.
+export default function ConsolePage() {
+  const router = useRouter()
+
+  useEffect(() => {
+    openConsoleDrawer()
+    router.replace('/home')
+  }, [router])
+
+  return null
 }
