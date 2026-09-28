@@ -28,4 +28,20 @@ describe('getNavigationItems', () => {
     expect(hrefs).not.toContain('/docs')
     expect(hrefs).not.toContain('/blog')
   })
+
+  const hrefsFor = (graph: GraphInfo | null) =>
+    getNavigationItems(graph).flatMap((item) => [
+      item.href,
+      ...(item.items ?? []).map((child) => child.href),
+    ])
+
+  // The console is the bottom drawer on every page; /console only redirects.
+  it('has no Console item', () => {
+    expect(hrefsFor(userGraph)).not.toContain('/console')
+  })
+
+  it('shows Activity for a user graph but not a repository', () => {
+    expect(hrefsFor(userGraph)).toContain('/activity')
+    expect(hrefsFor(repository)).not.toContain('/activity')
+  })
 })

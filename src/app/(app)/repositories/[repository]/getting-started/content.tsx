@@ -10,6 +10,7 @@ import {
 } from '@/lib/mcp'
 import { createUserApiKey } from '@robosystems/client/sdk'
 import {
+  openConsoleDrawer,
   PageHeader,
   PageLayout,
   useGraphContext,
@@ -99,7 +100,7 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
     } catch (error) {
       console.warn('Failed to set graph, navigating anyway:', error)
     }
-    router.push('/console')
+    openConsoleDrawer()
   }
 
   const handleOpenUsage = async () => {

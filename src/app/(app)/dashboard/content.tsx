@@ -6,6 +6,7 @@ import type { GraphInfo, GraphMetricsResponse } from '@robosystems/client'
 import { getGraphMetrics, getGraphs } from '@robosystems/client'
 import {
   LoadingState,
+  openConsoleDrawer,
   PageHeader,
   PageLayout,
   StatCard,
@@ -360,7 +361,7 @@ export function GraphDashboardContent() {
       {/* Quick Actions */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         <button
-          onClick={() => router.push('/console')}
+          onClick={() => openConsoleDrawer()}
           className="flex items-center gap-4 rounded-lg border border-zinc-200 bg-white/80 p-6 text-left shadow-lg backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-zinc-300 hover:shadow-xl dark:border-zinc-700 dark:bg-zinc-950 dark:hover:border-zinc-500"
         >
           <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-3">
