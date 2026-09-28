@@ -225,6 +225,14 @@ setup_config() {
     gh variable set MAX_CONCURRENCY_STAGING --body "100"
     print_success "App Runner configuration set"
 
+    # Compute route: apprunner (default when unset) or ecs-express. App Runner is
+    # closed to new AWS customers; an account that has never used it needs
+    # ecs-express. CPU_*/MEMORY_* stay in App Runner form either way.
+    if ! gh variable get APP_COMPUTE >/dev/null 2>&1; then
+        print_info "APP_COMPUTE unset - deploys use App Runner. For a new AWS account run:"
+        echo "  gh variable set APP_COMPUTE --body ecs-express"
+    fi
+
     # -------------------------------------------------------------------------
     # Access Mode (always public for frontend apps)
     # -------------------------------------------------------------------------
