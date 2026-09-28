@@ -410,11 +410,17 @@ export default function MasterServiceAgreement() {
         <p>
           B.4 <strong>Fees. </strong>(a) Cloud infrastructure costs, passed
           through at Provider&apos;s actual cost per Section 3; (b) a support
-          and operations fee as stated in the Order Form; (c) an annual platform
-          fee as stated in the Order Form; and (d) any separately quoted
-          integration development. Provider does not apply enterprise discount
-          or savings-plan sharing to the Deployment Account, so pass-through
-          amounts reflect Customer&apos;s own consumption.
+          and operations fee as stated in the Order Form, for operating the
+          Deployment Account and supporting Customer&apos;s personnel; (c) an
+          annual platform fee as stated in the Order Form, for the platform
+          Provider maintains across all deployments: its security and compliance
+          program, including the examination described in Section 7.3; ongoing
+          feature development and tested releases; and management of the release
+          pipeline, shared services, and shared data described in Section B.9;
+          and (d) any separately quoted integration development. Provider does
+          not apply enterprise discount or savings-plan sharing to the
+          Deployment Account, so pass-through amounts reflect Customer&apos;s
+          own consumption.
         </p>
 
         <p>
@@ -461,13 +467,14 @@ export default function MasterServiceAgreement() {
         <p>
           (b) <strong>Engagement fee. </strong>Provider will execute the
           transfer as a fixed-price service engagement at a fee equal to one (1)
-          month of the support and operations fee then in effect, invoiced on
-          initiation and in addition to fees for the notice-period month of
-          service. This fee compensates Provider for the work of executing the
-          transfer, which is separate from and additional to operating the
-          Services; it is not an early-termination charge, and Customer&apos;s
-          right to transfer is not conditioned on renewal or continued purchase
-          of any service.
+          month of the support and operations fee then in effect, excluding any
+          portion of that fee calculated from cloud infrastructure costs,
+          invoiced on initiation and in addition to fees for the notice-period
+          month of service. This fee compensates Provider for the work of
+          executing the transfer, which is separate from and additional to
+          operating the Services; it is not an early-termination charge, and
+          Customer&apos;s right to transfer is not conditioned on renewal or
+          continued purchase of any service.
         </p>
 
         <p>
@@ -523,6 +530,14 @@ export default function MasterServiceAgreement() {
           will cooperate in good faith to complete the transfer through those
           mechanisms, including changes to the account&apos;s root contact,
           billing, and support arrangements.
+        </p>
+
+        <p>
+          B.9 <strong>Shared data. </strong>Provider&apos;s shared repositories
+          and shared taxonomy library are not deployed in the Deployment
+          Account. Where the Order Form includes it, Provider provides access to
+          them through a Managed Platform account under Schedule A, covered by
+          the platform fee.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
