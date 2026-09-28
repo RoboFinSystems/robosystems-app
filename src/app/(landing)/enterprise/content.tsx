@@ -67,7 +67,11 @@ const MODES: Mode[] = [
         value:
           'AWS at cost, plus an operations fee and an annual platform fee — quoted per engagement',
       },
-      { label: 'Paper', value: 'MSA + Order Form, Schedule B' },
+      {
+        label: 'Paper',
+        value:
+          'MSA + Order Form, Schedule B — or an AWS Marketplace private offer, Schedule C',
+      },
     ],
     featured: true,
   },
@@ -126,7 +130,7 @@ const COMPARISON: Array<{ row: string; m: string; d: string; s: string }> = [
   {
     row: 'Contract',
     m: 'Terms of Service, or MSA + Order Form',
-    d: 'MSA + Order Form (Schedule B)',
+    d: 'MSA + Order Form (Schedule B), or an AWS Marketplace private offer (Schedule C)',
     s: 'Apache 2.0; services via Harbinger FinLab',
   },
   {
@@ -181,7 +185,7 @@ const BUYING: Array<{ title: string; body: string }> = [
   },
   {
     title: 'Dedicated',
-    body: "One conversation, one Order Form with Schedule B. Pricing is AWS at cost plus an operations fee and an annual platform fee; we don't mark up the cloud bill.",
+    body: "One conversation, one Order Form with Schedule B. Pricing is AWS at cost plus an operations fee and an annual platform fee; we don't mark up the cloud bill. Or buy it as an AWS Marketplace private offer, billed on your AWS invoice.",
   },
   {
     title: 'Self-hosted',
