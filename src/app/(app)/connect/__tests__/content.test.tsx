@@ -475,6 +475,74 @@ describe('ConnectContent', () => {
     expect(document.body.textContent).not.toContain('Runs ')
   })
 
+  test('offers the RoboLedger address when a graph runs RoboLedger', () => {
+    setGraphs(
+      [
+        { graphId: 'kgplain', graphName: 'Plain Graph', schemaExtensions: [] },
+        {
+          graphId: 'kg1a2b3c',
+          graphName: 'Acme Ledger',
+          schemaExtensions: ['roboledger'],
+        },
+      ],
+      // The address is graph-agnostic, so it follows the graph list, not the
+      // switcher.
+      'kgplain'
+    )
+
+    render(<ConnectContent />)
+
+    const section = screen.getByTestId('roboledger-section')
+    expect(section.textContent).toContain(
+      'claude mcp add --transport http roboledger https://api.robosystems.ai/v1/mcp/roboledger'
+    )
+    expect(section.textContent).toContain(
+      '"roboledger": { "url": "https://api.robosystems.ai/v1/mcp/roboledger" }'
+    )
+    // Sign-in only, and not the SEC plugin's note.
+    expect(section.textContent).not.toContain('X-API-Key')
+    expect(section.textContent).not.toContain('SEC filings')
+    expect(
+      screen.getByTestId('universal-section').compareDocumentPosition(section) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
+  })
+
+  test.each([
+    [
+      'a shared repository',
+      {
+        graphId: 'sec',
+        graphName: 'SEC Repository',
+        isRepository: true,
+        schemaExtensions: ['roboledger'],
+      },
+    ],
+    [
+      'a subgraph',
+      {
+        graphId: 'kg1a2b3c_dev',
+        graphName: 'Dev',
+        isSubgraph: true,
+        schemaExtensions: ['roboledger'],
+      },
+    ],
+    [
+      'a graph without RoboLedger',
+      {
+        graphId: 'kg1a2b3c',
+        graphName: 'Acme Holdings',
+        schemaExtensions: ['roboinvestor'],
+      },
+    ],
+  ])('withholds the RoboLedger address for %s', (_label, graph) => {
+    setGraphs([graph], graph.graphId)
+
+    render(<ConnectContent />)
+
+    expect(screen.queryByTestId('roboledger-section')).toBeNull()
+  })
+
   test('no longer tells the user to hand-edit the id into the URL', () => {
     setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
 
