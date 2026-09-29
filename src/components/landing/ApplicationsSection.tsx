@@ -118,6 +118,18 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
+                        <a
+                          href="https://roboledger.ai/quickbooks-mcp"
+                          className="text-secondary-300 hover:text-secondary-200 underline-offset-2 hover:underline"
+                        >
+                          QuickBooks MCP server
+                        </a>{' '}
+                        for Claude, ChatGPT, or any MCP client
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-secondary-400 mr-2">•</span>
+                      <span>
                         Chart of accounts, journal entries, and transactions
                       </span>
                     </li>
