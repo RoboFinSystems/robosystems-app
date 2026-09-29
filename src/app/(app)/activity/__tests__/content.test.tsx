@@ -72,6 +72,33 @@ describe('ActivityContent', () => {
     expect(screen.queryByText('Load more')).not.toBeInTheDocument()
   })
 
+  it('shows a dispatched async operation as started, not failed', async () => {
+    mutations.mockResolvedValue(
+      sdkOk({
+        graph_id: 'kg1',
+        entries: [
+          {
+            id: 'oma_4',
+            occurred_at: '2026-09-28T11:00:00Z',
+            surface: 'api',
+            operation_name: 'create-backup',
+            status: 'pending',
+            duration_ms: 12,
+            user_id: 'user_1',
+            operation_id: 'op_bak_1',
+            object_ids: [],
+          },
+        ],
+        next_cursor: null,
+      })
+    )
+    render(<ActivityContent />)
+
+    await screen.findByText('create-backup')
+    expect(screen.getByText('Started')).toBeInTheDocument()
+    expect(screen.queryByText('Failed')).not.toBeInTheDocument()
+  })
+
   it('tells a non-admin the page is for graph admins', async () => {
     mutations.mockResolvedValue(sdkError(403, 'Admin access required'))
     render(<ActivityContent />)

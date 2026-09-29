@@ -296,12 +296,21 @@ export default function ActivityContent() {
                     <TableCell>
                       {entry.status === 'completed' ? (
                         <Badge color="success">Completed</Badge>
-                      ) : (
+                      ) : entry.status === 'failed' ? (
                         <Badge
                           color="failure"
                           title={entry.error_code ?? undefined}
                         >
                           Failed
+                        </Badge>
+                      ) : (
+                        // An async operation records the dispatch; its
+                        // outcome lives on the operation, not this row.
+                        <Badge
+                          color="gray"
+                          title="Started background work; the outcome is on the operation"
+                        >
+                          Started
                         </Badge>
                       )}
                     </TableCell>
