@@ -27,6 +27,33 @@ export const MCP_OAUTH_URL = `${MCP_API_URL}/v1/mcp`
 export const MCP_CONNECTOR_NAME = 'robosystems'
 
 /**
+ * The RoboLedger address — the one the RoboLedger directory listings carry.
+ * Graph-agnostic and OAuth-only like `MCP_OAUTH_URL`, but the consent screen
+ * accepts only a graph `servesRoboLedgerMcp` admits, and the connection serves
+ * the RoboLedger tool profile (no subgraph, admin, or destructive tools).
+ */
+export const MCP_ROBOLEDGER_URL = `${MCP_OAUTH_URL}/roboledger`
+
+export const MCP_ROBOLEDGER_CONNECTOR_NAME = 'roboledger'
+
+/**
+ * Mirrors the API's consent check for `/v1/mcp/roboledger`
+ * (`graph_serves_product`): a top-level tenant graph with the RoboLedger
+ * schema installed. Subgraphs and shared repositories are refused even when
+ * they carry the extension.
+ */
+export const servesRoboLedgerMcp = (graph: {
+  graphId: string
+  isRepository?: boolean
+  isSubgraph?: boolean
+  schemaExtensions?: string[] | null
+}) =>
+  !graph.isRepository &&
+  !graph.isSubgraph &&
+  !isSubgraphId(graph.graphId) &&
+  (graph.schemaExtensions ?? []).includes('roboledger')
+
+/**
  * Per-workspace MCP endpoint — no credential in the URL. Accepts OAuth (the
  * consent screen shows this workspace locked in) as well as an `X-API-Key`
  * header; the `?token=` carriage was retired once OAuth landed.

@@ -41,14 +41,16 @@ export function McpSnippet({
  * The sign-in recipes for one MCP address. Every page that offers an
  * address renders this same set, so the universal URL and a workspace URL
  * read as the same kind of thing — only the address and connector name
- * differ.
+ * differ (and the ChatGPT note, where the plugin it names is the wrong one).
  */
 export function McpSignInSnippets({
   url,
   name,
+  chatgptNote,
 }: {
   url: string
   name: string
+  chatgptNote?: ReactNode
 }) {
   return (
     <>
@@ -64,20 +66,22 @@ export function McpSignInSnippets({
         copyLabel="Connector URL"
         code={url}
         note={
-          <>
-            A custom connector serves every tool of the graph you pick,
-            RoboLedger included. Or install the{' '}
-            <a
-              href={CHATGPT_PLUGIN_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary-600 dark:text-primary-400 hover:underline"
-            >
-              RoboSystems plugin
-            </a>{' '}
-            from the ChatGPT plugin directory — no setup, the SEC filings read
-            surface.
-          </>
+          chatgptNote ?? (
+            <>
+              A custom connector serves every tool of the graph you pick,
+              RoboLedger included. Or install the{' '}
+              <a
+                href={CHATGPT_PLUGIN_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary-600 dark:text-primary-400 hover:underline"
+              >
+                RoboSystems plugin
+              </a>{' '}
+              from the ChatGPT plugin directory — no setup, the SEC filings read
+              surface.
+            </>
+          )
         }
       />
 

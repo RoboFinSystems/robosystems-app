@@ -8,8 +8,11 @@ import {
   MCP_API_URL,
   MCP_CONNECTOR_NAME,
   MCP_OAUTH_URL,
+  MCP_ROBOLEDGER_CONNECTOR_NAME,
+  MCP_ROBOLEDGER_URL,
   mcpEndpointFor,
   parentGraphIdOf,
+  servesRoboLedgerMcp,
 } from '@/lib/mcp'
 import { listSubgraphs } from '@robosystems/client'
 import type { McpConnectorUrl } from '@robosystems/core'
@@ -40,8 +43,9 @@ interface Workspace {
 /**
  * What a connection can *do* follows the graph it reaches. Schema and query
  * tools come with every graph; each schema extension installed on the graph
- * adds its application's tools to that same connection — there is no second
- * URL, key, or sign-in for RoboLedger or RoboInvestor. Names mirror the
+ * adds its application's tools to that same connection, so no second URL, key,
+ * or sign-in is needed. (`/v1/mcp/roboledger` is a narrower profile for the
+ * directory listings, not a requirement — see `RoboLedgerSection`.) Names mirror the
  * extension catalog the API serves (`getAvailableExtensions`); the MCP server
  * gates the tools on the same `schemaExtensions` shown here.
  */
@@ -91,7 +95,7 @@ function ConnectionScope({
 }
 
 /**
- * The graph-agnostic address. It is the one every public listing carries
+ * The graph-agnostic address. It is the one the RoboSystems listings carry
  * (MCP registry, Claude and ChatGPT directories, the bridge README), so it
  * leads here too.
  * It takes only a sign-in — the consent screen is where the graph is chosen —
@@ -130,12 +134,51 @@ function UniversalSection() {
   )
 }
 
+/**
+ * The RoboLedger address, the one its directory listings carry. It is
+ * graph-agnostic like the universal one, so it follows whether the user has an
+ * eligible graph at all, not the switcher. It serves a narrower tool set than
+ * the universal address, so it is offered beside it, never as an upgrade.
+ */
+function RoboLedgerSection() {
+  return (
+    <Card>
+      <section className="space-y-4" data-testid="roboledger-section">
+        <div className="space-y-1">
+          <h3 className="font-heading text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+            RoboLedger only
+          </h3>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            The address the RoboLedger connector in the Claude and ChatGPT
+            directories uses. Sign in the same way, but the consent screen only
+            offers graphs running RoboLedger, and the connection carries the
+            ledger and close tools without subgraph, backup, or other
+            administration tools — the set meant for a chat client.
+          </p>
+        </div>
+
+        <McpSignInSnippets
+          url={MCP_ROBOLEDGER_URL}
+          name={MCP_ROBOLEDGER_CONNECTOR_NAME}
+          chatgptNote="Serves the RoboLedger tool set for the graph you pick."
+        />
+
+        <p className="text-xs text-zinc-500 dark:text-zinc-500">
+          Sign-in only, like the address above: an API key is rejected, and a
+          subgraph cannot be connected here.
+        </p>
+      </section>
+    </Card>
+  )
+}
+
 function ConnectWorkspace() {
   const { state: graphState } = useGraphContext()
   const { graphs, currentGraphId, isLoading } = graphState
   const searchParams = useSearchParams()
 
   const currentGraph = graphs.find((g) => g.graphId === currentGraphId)
+  const hasRoboLedgerGraph = graphs.some(servesRoboLedgerMcp)
   const isRepository = currentGraph?.isRepository ?? false
 
   const [subgraphs, setSubgraphs] = useState<Workspace[]>([])
@@ -285,6 +328,8 @@ function ConnectWorkspace() {
       ) : (
         <>
           <UniversalSection />
+
+          {hasRoboLedgerGraph && <RoboLedgerSection />}
 
           {!currentGraph || !workspace ? (
             <EmptyState
