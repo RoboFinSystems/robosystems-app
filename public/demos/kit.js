@@ -44,11 +44,44 @@ const NAV = {
   ],
 }
 
+// The sidebar since the console moved into the bottom drawer: no Console item,
+// and Activity under Usage on a graph. A demo that passes `drawer` gets this
+// one; the demos drawn on a Console page still use NAV.
+const NAV_WITH_DRAWER = {
+  repo: NAV.repo.filter(([k]) => k !== 'console'),
+  graph: NAV.graph
+    .filter(([k]) => k !== 'console')
+    .flatMap((item) =>
+      item[0] === 'usage' ? [item, ['activity', 'Activity']] : [item]
+    ),
+}
+
+const svg = (d, cls = '') =>
+  `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`
+
+/*
+ * The console drawer, as the app draws it on every page: a bar along the
+ * bottom (Console, Ctrl+`, a chevron) that opens into the console panel.
+ * `body` is the panel's content. Closed it is the bar alone; a demo opens it
+ * by setting #dw's height.
+ */
+const drawerHtml = (
+  body
+) => `<div class="rs-dw" id="dw"><div class="grip" id="dwg"></div>
+  <div class="bar"><span class="dwt" id="dwt">${svg('M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z')}<b>Console</b><em>Ctrl+\`</em>
+    <span class="chev" id="dwc">${svg('M5 15l7-7 7 7', 'up')}${svg('M19 9l-7 7-7-7', 'down')}</span></span>
+    <span class="max" id="dwm">${svg('M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4')}</span></div>
+  <div class="dwb">${body}</div></div>`
+
 export const ICON = '/images/logos/robosystems-icon.png'
 export const tile = (size, radius) =>
   `<span class="tile" style="width:${size}px;height:${size}px;border-radius:${radius}px"><img src="${ICON}" alt=""></span>`
 
-/* The RoboSystems app window: top bar with the graph selector, sidebar, and `main`. */
+/*
+ * The RoboSystems app window: top bar with the graph selector, sidebar, and
+ * `main`. `drawer` (the console panel's content) adds the console drawer and
+ * the sidebar that goes with it.
+ */
 export function appChrome({
   active,
   main,
@@ -56,8 +89,9 @@ export function appChrome({
   graph = 'SEC Repository',
   org = 'Northwind Research',
   id = '',
+  drawer,
 }) {
-  const items = NAV[nav]
+  const items = (drawer === undefined ? NAV : NAV_WITH_DRAWER)[nav]
     .map(
       ([k, label]) =>
         `<div class="nv${k === active ? ' on' : ''}" data-k="${k}">${label}</div>`
@@ -66,7 +100,7 @@ export function appChrome({
   return `<div class="rs-app"${id ? ` id="${id}"` : ''}>
     <div class="rs-top">${tile(36, 10)}<span class="wm">RoboSystems</span><span class="gs"><i>${nav === 'repo' ? 'Repository' : 'Graph'}</i>${graph}<b>▾</b></span></div>
     <div class="rs-side"><div class="org">${org}</div><div class="nvs"><div class="pill"></div>${items}</div></div>
-    <div class="rs-main" data-loop>${main}</div>
+    <div class="rs-main" data-loop>${main}</div>${drawer === undefined ? '' : drawerHtml(drawer)}
   </div>`
 }
 
@@ -163,6 +197,22 @@ tr.tot td { font-weight: 700; }
 .dt table td { background: #030712; font: 16px var(--mono); padding: 9px 16px; }
 .foot { font-size: 13px; color: #4b5563; margin-top: 8px; }
 
+/* the console drawer: gray-950 with a gray-800 rule, as ConsoleDrawer draws it */
+.rs-dw { position: absolute; left: 200px; right: 0; bottom: 0; height: 40px; z-index: 20; display: flex;
+  flex-direction: column; background: #030712; border-top: 1px solid var(--line); box-shadow: 0 -18px 40px rgba(0,0,0,.55); }
+.rs-dw .grip { height: 4px; flex-shrink: 0; background: var(--line); opacity: 0; }
+.rs-dw .bar { height: 36px; flex-shrink: 0; display: flex; align-items: center; color: #9ca3af; font-size: 14px; }
+.rs-dw .dwt { flex: 1; height: 100%; display: flex; align-items: center; gap: 10px; padding: 0 14px; }
+.rs-dw .dwt b { font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
+.rs-dw .dwt em { font-style: normal; color: #4b5563; }
+.rs-dw svg { width: 18px; height: 18px; flex-shrink: 0; }
+.rs-dw .chev { margin-left: auto; position: relative; width: 18px; height: 18px; }
+.rs-dw .chev svg { position: absolute; inset: 0; }
+.rs-dw .chev .down { opacity: 0; }
+.rs-dw .max { height: 100%; display: flex; align-items: center; padding: 0 14px; opacity: 0; }
+.rs-dw .dwb { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+.rs-dw .term { border: 0; border-radius: 0; }
+
 /* a chat in the viewer's own MCP client */
 .ub { align-self: flex-end; max-width: 540px; background: #13233f; border: 1px solid #1f3b66;
   border-radius: 22px 22px 6px 22px; padding: 16px 22px; font-size: 26px; line-height: 1.35; min-height: 66px; }
@@ -179,6 +229,8 @@ export const PHONE_APP_CSS = `
 .rs-side { display: none; }
 .rs-main { left: 0; padding: 20px 22px; }
 .rs-top { height: 58px; } .rs-main { top: 58px; }
+.rs-dw { left: 0; } .rs-dw .bar { font-size: 17px; } .rs-dw svg { width: 21px; height: 21px; }
+.rs-dw .chev { width: 21px; height: 21px; }
 .rs-top .wm { font-size: 20px; } .rs-top .gs { margin-left: auto; font-size: 15px; padding: 6px 12px; }
 .rs-top .gs i { display: none; }
 .vh { margin-bottom: 16px; } .vh h2 { font-size: 26px; } .vh p { font-size: 14px; }
