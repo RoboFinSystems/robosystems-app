@@ -1,22 +1,26 @@
 /*
- * Platform: one account, many graphs, and the console on each. The graph
- * selector moves from Driftline Coffee Roasters through a shared repository
- * and two other tenant graphs and back, each landing on its Dashboard as the
- * app draws it: a repository shows no metrics (its size is platform-managed)
- * and a shorter sidebar. Back on Driftline, the Console quick action opens the
- * drawer from the bar along the bottom, and the console does its three things:
- * a plain question answered with the generated Cypher and the rows, a /search
- * over the graph's documents, and a /recall of what the team saved to memory.
- * Closing the drawer returns to the opening frame.
+ * Platform: one account, many graphs, and one console that follows the graph
+ * you pick. The selector goes from Driftline Coffee Roasters to a RoboInvestor
+ * fund graph and on to the shared SEC repository, each landing on its
+ * Dashboard as the app draws it: a repository shows no metrics (its size is
+ * platform-managed) and a shorter sidebar. On SEC the Console quick action
+ * opens the drawer from the bar along the bottom and compares the public
+ * coffee roasters' gross margins. With the drawer still open the selector goes
+ * back to Driftline; the console resets for the new graph, as the app's does,
+ * and answers from the company's own books: who owes the most, then a /recall
+ * of what the team saved about that account. Closing the drawer returns to
+ * the opening frame.
  *
  * SEC EDGAR Filings and Driftline carry their production figures (Driftline:
  * 5,238 nodes, 12,338 relationships, created 2026-09-01); Meridian Ventures
- * Fund I and Coffee Sector Research, their counts, dates and every graph id
- * are illustrative. Driftline's receivables are $153,333.33 at 2026-08-31 with
- * $128,000 from Summit Markets (the split across the three café accounts is
- * illustrative, as on roboledger.ai); the policy passage and the memory are
- * quoted from the documents and memories its demo seeds. Timings, credits and
- * scores are illustrative.
+ * Fund I and Coffee Sector Research (listed in the menu, not visited), their
+ * counts, dates and every graph id are illustrative. Peer margins are from the
+ * latest two 10-Ks of Coffee Holding (JVA, FY ended 2025-10-31), Farmer Bros
+ * (FARM, 2025-06-30) and Westrock Coffee (WEST, 2025-12-31), as in the hero.
+ * Driftline's receivables are $153,333.33 at 2026-08-31 with $128,000 from
+ * Summit Markets (the split across the three café accounts is illustrative,
+ * as on roboledger.ai); the memory is quoted from the ones its demo seeds.
+ * Timings, credits and scores are illustrative.
  */
 import {
   appChrome,
@@ -74,10 +78,10 @@ const GRAPHS = [
   },
 ]
 
-// the order the selector visits them: out from Driftline and back to it, where
-// the console runs, so the loop wraps on the screen it opened with
-const ORDER = [1, 0, 2, 3, 1]
-const SWITCH = [3.6, 7.4, 11.2, 15.0] // when each selection lands
+// the order the selector visits them: out from Driftline and back to it, so
+// the loop wraps on the screen it opened with
+const ORDER = [1, 2, 0, 1]
+const SWITCH = [3.6, 7.4, 15.8] // when each selection lands
 // the sections a shared repository does not have
 const GRAPH_ONLY = [
   'documents',
@@ -88,17 +92,44 @@ const GRAPH_ONLY = [
   'activity',
 ]
 
-// the console: the Console card is pressed, the drawer opens, three exchanges
-// ([type at, send at, result at]), then the bar's chevron closes it
-const PRESS = 16.5
+// the console: SEC's Console card opens the drawer, one exchange there, the
+// switch back to Driftline resets it, two exchanges there, then the bar's
+// chevron closes it. Each exchange is [type at, send at, result at].
+const PRESS = 8.7
 const OPENED = PRESS + 0.5
+const RESET = SWITCH[2] + 0.1
 const T = [
-  [17.4, 18.5, 19.0],
-  [22.2, 23.2, 23.6],
-  [25.6, 26.4, 26.8],
+  [9.5, 11.2, 11.7],
+  [17.0, 18.1, 18.6],
+  [22.0, 22.7, 23.1],
 ]
-const CLOSE = 29.5
-const TOTAL = 31.0
+const CLOSE = 25.9
+const TOTAL = 27.4
+
+const Q = [
+  'Compare gross margins for coffee roasters JVA, FARM and WEST',
+  'Which customers owe us the most?',
+  '/recall Summit Markets',
+]
+
+const PEER_CYPHER = `MATCH (e:Entity)-[:ENTITY_HAS_REPORT]->(:Report)
+      -[:REPORT_HAS_FACT]->(f:Fact {has_dimensions: false}),
+      (f)-[:FACT_HAS_ELEMENT]->(el:Element),
+      (f)-[:FACT_HAS_PERIOD]->(p:Period {duration_type: 'annual'})
+WHERE e.ticker IN ['JVA', 'FARM', 'WEST']
+  AND el.canonical_concept IN ['revenue', 'gross_profit']
+RETURN e.ticker, p.end_date, el.canonical_concept, f.value`
+
+const MARGINS = [
+  ['JVA', '2025-10-31', '20.4%', '16.0%'],
+  ['FARM', '2025-06-30', '39.3%', '43.5%'],
+  ['WEST', '2025-12-31', '18.1%', '12.7%'],
+]
+
+const OWED_CYPHER = `MATCH (e:Event)-[:EVENT_INVOLVES_AGENT]->(a:Agent)
+WHERE a.agent_type = 'customer' AND e.event_type = 'invoice'
+RETURN a.name AS customer, sum(e.open_amount) AS owed
+ORDER BY owed DESC`
 
 const OWED = [
   ['Summit Markets', '128,000.00'],
@@ -107,16 +138,7 @@ const OWED = [
   ['Cascadia Coffee Bars', '7,773.33'],
 ]
 
-const CYPHER = `MATCH (e:Event)-[:EVENT_INVOLVES_AGENT]->(a:Agent)
-WHERE a.agent_type = 'customer' AND e.event_type = 'invoice'
-RETURN a.name AS customer, sum(e.open_amount) AS owed
-ORDER BY owed DESC`
-
-const Q = [
-  'Which customers owe us the most?',
-  '/search receivables past 60 days',
-  '/recall Summit Markets',
-]
+const RULE = '═'.repeat(48)
 
 const row = (label, value) =>
   `<div class="ir"><span>${label}</span><span>${value}</span></div>`
@@ -157,27 +179,43 @@ const menu = `<div class="dd" id="dd"><div class="ddh">Graph / Repository</div>
   ${GRAPHS.map((g, i) => `<div class="ddr" id="dr${i}"><span>${g.name}</span><em>${g.repo ? 'Repository' : g.ext.includes('roboinvestor') ? 'RoboInvestor' : g.ext.includes('roboledger') ? 'RoboLedger' : 'Custom'}</em></div>`).join('')}
   <div class="ddf"><span>+ Create Graph</span><span>Manage Graphs</span></div></div>`
 
-// the console panel: no page header in the drawer, the terminal fills it
-const panel = `<div class="term" id="term"><div class="feed" id="feed">
-    <div class="ex" id="x0">
-      <div class="meta">09:12 - USER</div><div class="m m-user" id="u0"></div>
-      <div class="rs" id="r0"><div class="meta">09:12 - RESULT</div>
+const user = (i, time) =>
+  `<div class="meta">${time} - USER</div><div class="m m-user" id="u${i}"></div>`
+
+// the console panel: no page header in the drawer, the terminal fills it. One
+// feed per graph, since switching graphs clears the console.
+const panel = `<div class="term" id="term">
+  <div class="feed" id="fs">
+    <div class="ex" id="x0">${user(0, '09:11')}
+      <div class="rs" id="r0"><div class="meta">09:11 - RESULT</div>
+        <div class="m m-res">Farmer Bros is highest at <b>43.5%</b>, up from 39.3%. Coffee Holding and Westrock are in the teens, and both fell.</div>
+        <div class="cy"><div class="cyh"><span>GENERATED CYPHER</span><span>Run</span></div><pre>${PEER_CYPHER}</pre></div>
+        <div class="dt"><div class="dth"><span>3 rows</span><span>Copy JSON</span><span>Download CSV</span></div>
+          <table><tr><th>ticker</th><th>fiscal_year_end</th><th class="n">gross_margin_prior</th><th class="n">gross_margin</th></tr>
+          ${MARGINS.map((r, i) => `<tr id="m${i}"><td>${r[0]}</td><td>${r[1]}</td><td class="n">${r[2]}</td><td class="n">${r[3]}</td></tr>`).join('')}
+          </table></div>
+        <div class="foot">Query completed in 412ms · Rows returned: 3 · Credits used: 0.6</div></div>
+    </div>
+  </div>
+  <div class="feed" id="fd">
+    <div class="ex" id="bn"><div class="meta">09:12 - SYSTEM</div>
+      <div class="m m-sys">${RULE}
+Graph context changed: sec → ${GRAPHS[1].id}
+${RULE}
+
+Console has been reset for the new graph context.
+All queries will now execute against: ${GRAPHS[1].id}</div></div>
+    <div class="ex" id="x1">${user(1, '09:12')}
+      <div class="rs" id="r1"><div class="meta">09:12 - RESULT</div>
         <div class="m m-res">Summit Markets holds <b>$128,000 of the $153,333</b> in receivables, 83.5% of the total.</div>
-        <div class="cy"><div class="cyh"><span>GENERATED CYPHER</span><span>Run</span></div><pre>${CYPHER}</pre></div>
+        <div class="cy"><div class="cyh"><span>GENERATED CYPHER</span><span>Run</span></div><pre>${OWED_CYPHER}</pre></div>
         <div class="dt"><div class="dth"><span>4 rows</span><span>Copy JSON</span><span>Download CSV</span></div>
           <table><tr><th>customer</th><th class="n">owed</th></tr>
           ${OWED.map((r, i) => `<tr id="o${i}"><td>${r[0]}</td><td class="n">${r[1]}</td></tr>`).join('')}
           </table></div>
         <div class="foot">Query completed in 296ms · Rows returned: 4 · Credits used: 0.4</div></div>
     </div>
-    <div class="ex" id="x1">
-      <div class="meta">09:13 - USER</div><div class="m m-user" id="u1"></div>
-      <div class="rs" id="r1"><div class="meta">09:13 - RESULT</div>
-        <div class="hitline"><span class="badge b-info">0.89</span><span class="badge b-mute">Uploaded</span><span class="src">Revenue Recognition Policy / Wholesale Accounts Receivable</span></div>
-        <div class="m m-res quote">“Receivables that age past 60 days, or that concentrate in a single large account, are a working-capital and credit risk — <b>review the AR aging by customer every close</b>.”</div></div>
-    </div>
-    <div class="ex" id="x2">
-      <div class="meta">09:13 - USER</div><div class="m m-user" id="u2"></div>
+    <div class="ex" id="x2">${user(2, '09:13')}
       <div class="rs" id="r2"><div class="meta">09:13 - RESULT</div>
         <div class="hitline"><span class="badge b-info">0.93</span><span class="badge b-good">fact</span><span class="badge b-ind">mcp</span><span class="badge b-purple">summit-markets</span><span class="badge b-purple">credit-risk</span></div>
         <div class="m m-res quote mem">“Summit Markets is the largest wholesale account and pays slowly — net-30 terms but <b>balances routinely age past 60 days</b>, and Summit is a concentrated share of total AR.”</div></div>
@@ -218,8 +256,8 @@ h3 { font: 700 17px var(--display); margin-bottom: 10px; }
 .feed { position: absolute; left: 20px; right: 20px; top: 16px; }
 .ex { margin-bottom: 18px; }
 .rs { opacity: 0; }
+.term .m-sys { white-space: pre; font-size: 15px; }
 .hitline { display: flex; align-items: center; gap: 8px; margin: 4px 0 10px; flex-wrap: wrap; }
-.src { font-size: 15px; color: #cbd5e1; margin-left: 4px; }
 .quote { border-left: 3px solid var(--b400); padding-left: 14px; }
 .quote.mem { border-left-color: var(--i400); }
 .cy pre { font-size: 14px; }
@@ -240,7 +278,7 @@ function setup(ctx) {
   const items = GRAPH_ONLY.map((k) => root.querySelector(`.nv[data-k="${k}"]`))
   const ex = [0, 1, 2].map((i) => $('x' + i))
 
-  const switches = (t, cur) => {
+  const switches = (t, cur, drive) => {
     let k = 0
     SWITCH.forEach((s) => (k += t >= s ? 1 : 0))
     const now = ORDER[k]
@@ -277,7 +315,7 @@ function setup(ctx) {
     const dd = $('dd')
     if (next === undefined) {
       dd.style.opacity = 0
-      return false
+      return
     }
     const target = $('dr' + ORDER[j + 1])
     const open =
@@ -289,6 +327,7 @@ function setup(ctx) {
       const on = i === ORDER[j + 1] ? seg(t, next - 0.4, next - 0.2) : 0
       r.style.background = `rgba(59,122,245,${0.25 * on})`
     })
+    if (!drive) return
     if (t < next - 0.85)
       pointer(ctx, cur, gs, t, next - 1.6, next - 1.1, { out: 0.3 })
     else {
@@ -302,10 +341,24 @@ function setup(ctx) {
         out: 0.5,
       })
     }
-    return true
   }
 
-  const console_ = (t, cur, driving) => {
+  // how far the feed has scrolled: it follows the output as the app's does,
+  // to the new command when it is sent and to the end of its answer once the
+  // result is in, never past the top
+  const follow = (t, feed, frames) => {
+    const vh = $('term').offsetHeight
+    let y = 0
+    frames.forEach(([at, el]) => {
+      if (t < at) return
+      const bottom = el.offsetTop + el.offsetHeight
+      const want = Math.max(0, 16 + bottom + 12 - vh)
+      y += (want - y) * eo(seg(t, at, at + 0.5))
+    })
+    feed.style.transform = `translateY(${-y}px)`
+  }
+
+  const console_ = (t, cur, drive) => {
     // the drawer: the bar alone, then stretched to the app's limit, 80% of the
     // window (which keeps the page's header in view), then closed again
     const full = Math.round(stage.offsetHeight * 0.8)
@@ -318,10 +371,10 @@ function setup(ctx) {
     root.querySelector('#dwc .up').style.opacity = 1 - o
     root.querySelector('#dwc .down').style.opacity = o
 
-    // the pointer presses the Console card, then the chevron that closes it
-    if (!driving) {
-      if (t < PRESS + 0.8)
-        pointer(ctx, cur, $('qc1'), t, PRESS - 0.6, PRESS, {
+    // the pointer presses SEC's Console card, later the chevron that closes it
+    if (drive) {
+      if (t < CLOSE - 2)
+        pointer(ctx, cur, $('qc0'), t, PRESS - 0.6, PRESS, {
           from: [320, -200],
           out: 0.5,
         })
@@ -347,38 +400,51 @@ function setup(ctx) {
       // before the answer lands, the user line carries a spinner
       $('u' + i).textContent = Q[i] + (sent && t < x[2] ? `  ${spin(t)}` : '')
     })
-    OWED.forEach((_, i) =>
+    MARGINS.forEach((_, i) =>
       rise(
-        $('o' + i),
+        $('m' + i),
         eo(seg(t, T[0][2] + 0.3 + i * 0.12, T[0][2] + 0.6 + i * 0.12)),
         8
       )
     )
-    // the feed follows the output: once the rows are in it scrolls just far
-    // enough to show the first answer's footer, then each new exchange rises
-    // to the top of the terminal
-    const at = (i) => ex[i].offsetTop
-    const y0 = Math.max(
-      0,
-      16 + at(0) + ex[0].offsetHeight + 12 - $('term').offsetHeight
+    OWED.forEach((_, i) =>
+      rise(
+        $('o' + i),
+        eo(seg(t, T[1][2] + 0.3 + i * 0.12, T[1][2] + 0.6 + i * 0.12)),
+        8
+      )
     )
-    let y = y0 * eo(seg(t, T[0][2] + 0.9, T[0][2] + 1.4))
-    if (t >= T[1][1]) y = y0 + (at(1) - y0) * eo(seg(t, T[1][1], T[1][1] + 0.5))
-    if (t >= T[2][1])
-      y = at(1) + (at(2) - at(1)) * eo(seg(t, T[2][1], T[2][1] + 0.5))
-    $('feed').style.transform = `translateY(${-y}px)`
 
-    ctx.ring(
-      $('hl'),
-      $('o0'),
-      t < T[1][1] ? eo(seg(t, T[0][2] + 1.2, T[0][2] + 1.6)) : 0
-    )
+    // the switch back to Driftline clears the console and prints its banner
+    const reset = t >= RESET
+    $('fs').style.display = reset ? 'none' : 'block'
+    $('fd').style.display = reset ? 'block' : 'none'
+    $('bn').style.display = reset ? 'block' : 'none'
+    rise($('bn'), eo(seg(t, RESET, RESET + 0.3)), 10)
+    if (!reset) follow(t, $('fs'), [[T[0][2] + 0.9, ex[0]]])
+    else
+      follow(t, $('fd'), [
+        [T[1][1], ex[1].querySelector('.m-user')],
+        [T[1][2] + 0.9, ex[1]],
+        [T[2][1], ex[2]],
+      ])
+
+    // the ring marks the row each answer turns on, and lets go before the
+    // selector moves or the next command lands
+    const peer =
+      eo(seg(t, T[0][2] + 1.2, T[0][2] + 1.6)) *
+      (1 - seg(t, SWITCH[2] - 1.8, SWITCH[2] - 1.5))
+    const owed = t < T[2][1] ? eo(seg(t, T[1][2] + 1.2, T[1][2] + 1.6)) : 0
+    if (t < RESET) ctx.ring($('hl'), $('m1'), peer)
+    else ctx.ring($('hl'), $('o0'), owed)
   }
 
   return (t) => {
     const cur = $('cur')
-    const driving = switches(t, cur)
-    console_(t, cur, driving)
+    // the console owns the pointer around its two presses; the selector the rest
+    const consoleTurn = (t > PRESS - 0.9 && t < PRESS + 0.7) || t > CLOSE - 0.9
+    switches(t, cur, !consoleTurn)
+    console_(t, cur, consoleTurn)
   }
 }
 
@@ -394,12 +460,12 @@ h3 { font-size: 21px; }
 .dd { width: 460px; left: auto; right: 0; }
 .ddh { font-size: 14px; } .ddr { font-size: 20px; } .ddr em { font-size: 14px; } .ddf { font-size: 17px; }
 .term .meta { font-size: 14px; }
-.term .m { font-size: 20px; } .term .m-res { font-size: 22px; }
-.cy .cyh { font-size: 14px; } .cy pre { font-size: 14px; white-space: pre-wrap; }
+.term .m { font-size: 20px; } .term .m-res { font-size: 22px; } .term .m-sys { font-size: 14px; }
+.cy .cyh { font-size: 14px; } .cy pre { font-size: 13px; white-space: pre-wrap; }
 .dt .dth { font-size: 15px; }
-.dt table th { font-size: 15px; padding: 9px 12px; } .dt table td { font-size: 19px; padding: 10px 12px; }
+.dt table th { font-size: 13px; padding: 9px 10px; } .dt table td { font-size: 18px; padding: 10px 10px; }
 .foot { font-size: 14px; }
-.hitline .badge { font-size: 16px; } .src { font-size: 18px; }
+.hitline .badge { font-size: 16px; }
 .prompt { font-size: 19px; padding: 12px 16px; }
 `
 
@@ -407,13 +473,14 @@ export default {
   width: 1200,
   height: 820,
   total: TOTAL,
-  poster: 20.8,
+  poster: 13.4,
   css,
   html:
     appChrome({
       active: 'dashboard',
       nav: 'graph',
       graph: '',
+      org: 'Northwind Capital',
       main: GRAPHS.map(dash).join(''),
       drawer: panel,
     }) + CURSOR.replace('class="cursor"', 'class="cursor" id="cur"'),

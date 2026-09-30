@@ -64,7 +64,7 @@ export default function PlatformContent() {
                 name="graphs"
                 aspect={1200 / 820}
                 phoneAspect={720 / 1000}
-                label="The RoboSystems graph selector moves from a RoboLedger company graph to the shared SEC repository, a RoboInvestor fund graph and a custom research graph, each opening on its dashboard with its own metrics, schema extensions and sidebar. Back on the company graph, the console opens from the bar along the bottom and answers which customers owe the most with its generated Cypher and rows, searches the graph's policy documents, and recalls a saved memory about the largest account."
+                label="The RoboSystems graph selector moves from a RoboLedger company graph to a RoboInvestor fund graph and the shared SEC repository, each opening on its dashboard with its own metrics, schema extensions and sidebar. On the SEC repository the console opens from the bar along the bottom and compares gross margins for three public coffee roasters from their 10-Ks; switching back to the company graph resets the console, which then answers which customers owe the most with its generated Cypher and rows and recalls a saved memory about the largest account."
                 className="rounded-2xl border border-gray-800 bg-black shadow-2xl"
               />
             </div>
