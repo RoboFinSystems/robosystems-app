@@ -1,4 +1,4 @@
-import { CHATGPT_PLUGIN_URL } from '@/lib/site'
+import { CHATGPT_PLUGIN_URL, CLAUDE_CONNECTOR_URL } from '@/lib/site'
 import Link from 'next/link'
 
 const CHECK_ICON = (
@@ -37,14 +37,23 @@ export default function RepositoryPricing({
         and can answer complex queries in natural language.
       </p>
       <p className="mx-auto mb-10 max-w-2xl text-center text-sm text-gray-500">
-        Already in ChatGPT?{' '}
+        Already in Claude or ChatGPT? RoboSystems is listed in{' '}
+        <a
+          href={CLAUDE_CONNECTOR_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-green-400 underline decoration-green-500/40 underline-offset-4 transition-colors hover:text-green-300"
+        >
+          Claude&apos;s connector directory
+        </a>{' '}
+        and{' '}
         <a
           href={CHATGPT_PLUGIN_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="text-green-400 underline decoration-green-500/40 underline-offset-4 transition-colors hover:text-green-300"
         >
-          RoboSystems is published in the plugin directory
+          ChatGPT&apos;s plugin directory
         </a>
         , so a subscription works in the chat you already use.
       </p>

@@ -82,14 +82,20 @@ function ConnectionScope({
 
   const names = apps.map((app) => app.name).join(' and ')
 
+  // A repository carries a product's schema for its read tools, but it is not
+  // a RoboLedger graph (`/v1/mcp/roboledger` refuses it), so it isn't named.
+  if (isRepository)
+    return (
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        A shared repository is read-only, so this connection carries its
+        statement, analysis, and query tools without the write tools.
+      </p>
+    )
+
   return (
     <p className="text-sm text-zinc-600 dark:text-zinc-400">
-      Runs <span className="font-medium">{names}</span>
-      {isRepository
-        ? ' — a shared repository is read-only, so this connection carries its statement, analysis, and query tools without the write tools.'
-        : `, so this same connection also drives ${apps
-            .map((app) => app.does)
-            .join(', plus ')}.`}
+      Runs <span className="font-medium">{names}</span>, so this same connection
+      also drives {apps.map((app) => app.does).join(', plus ')}.
     </p>
   )
 }
@@ -151,15 +157,17 @@ function RoboLedgerSection() {
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
             The address the RoboLedger connector in the Claude and ChatGPT
             directories uses. Sign in the same way, but the consent screen only
-            offers graphs running RoboLedger, and the connection carries the
-            ledger and close tools without subgraph, backup, or other
-            administration tools — the set meant for a chat client.
+            offers your own graphs running RoboLedger (never a shared
+            repository), and the connection carries the ledger and close tools
+            without subgraph, backup, or other administration tools — the set
+            meant for a chat client.
           </p>
         </div>
 
         <McpSignInSnippets
           url={MCP_ROBOLEDGER_URL}
           name={MCP_ROBOLEDGER_CONNECTOR_NAME}
+          claudeNote="Claude detects the sign-in on its own. Leave the OAuth client fields blank."
           chatgptNote="Serves the RoboLedger tool set for the graph you pick."
         />
 
@@ -329,7 +337,9 @@ function ConnectWorkspace() {
         <>
           <UniversalSection />
 
-          {hasRoboLedgerGraph && <RoboLedgerSection />}
+          {/* Hidden while a repository is selected: beside its workspace card
+              it reads as a way to reach the repository, which it is not. */}
+          {hasRoboLedgerGraph && !isRepository && <RoboLedgerSection />}
 
           {!currentGraph || !workspace ? (
             <EmptyState

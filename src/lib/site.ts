@@ -22,6 +22,11 @@ export const SITE_DESCRIPTION =
 export const CHATGPT_PLUGIN_URL =
   'https://chatgpt.com/plugins/plugin_asdk_app_6a8f6d7d50d081918787990d4cab45ca'
 
+// The same surface in Claude's connector directory, listed as "RoboSystems SEC"
+// (`/v1/graphs/sec/mcp`). The RoboLedger connector is a separate listing.
+export const CLAUDE_CONNECTOR_URL =
+  'https://claude.ai/directory/robosystems-sec'
+
 export const OG_IMAGE = {
   url: '/images/og-preview.png',
   width: 1200,

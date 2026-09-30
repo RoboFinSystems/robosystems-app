@@ -1,7 +1,7 @@
 'use client'
 
 import { CopyButton } from '@/components/CopyableId'
-import { CHATGPT_PLUGIN_URL } from '@/lib/site'
+import { CHATGPT_PLUGIN_URL, CLAUDE_CONNECTOR_URL } from '@/lib/site'
 import type { ReactNode } from 'react'
 
 /**
@@ -41,15 +41,18 @@ export function McpSnippet({
  * The sign-in recipes for one MCP address. Every page that offers an
  * address renders this same set, so the universal URL and a workspace URL
  * read as the same kind of thing — only the address and connector name
- * differ (and the ChatGPT note, where the plugin it names is the wrong one).
+ * differ (and the client notes, where the SEC listing they name is the wrong
+ * one).
  */
 export function McpSignInSnippets({
   url,
   name,
+  claudeNote,
   chatgptNote,
 }: {
   url: string
   name: string
+  claudeNote?: ReactNode
   chatgptNote?: ReactNode
 }) {
   return (
@@ -58,7 +61,23 @@ export function McpSignInSnippets({
         heading="Claude (claude.ai / Desktop) — Settings → Connectors → Add custom connector"
         copyLabel="Connector URL"
         code={url}
-        note="Claude detects the sign-in on its own. Leave the OAuth client fields blank."
+        note={
+          claudeNote ?? (
+            <>
+              Claude detects the sign-in on its own. Leave the OAuth client
+              fields blank. For SEC filings alone, add{' '}
+              <a
+                href={CLAUDE_CONNECTOR_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary-600 dark:text-primary-400 hover:underline"
+              >
+                RoboSystems SEC
+              </a>{' '}
+              from Claude&apos;s connector directory instead.
+            </>
+          )
+        }
       />
 
       <McpSnippet
