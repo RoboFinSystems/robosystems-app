@@ -63,8 +63,8 @@ export default function PlatformContent() {
               <LiveDemo
                 name="graphs"
                 aspect={1200 / 820}
-                phoneAspect={720 / 880}
-                label="The RoboSystems graph selector moves between the shared SEC repository, a RoboLedger company graph, a RoboInvestor fund graph and a custom research graph, each opening on its dashboard with its own metrics, schema extensions and sidebar."
+                phoneAspect={720 / 1000}
+                label="The RoboSystems graph selector moves from a RoboLedger company graph to the shared SEC repository, a RoboInvestor fund graph and a custom research graph, each opening on its dashboard with its own metrics, schema extensions and sidebar. Back on the company graph, the console opens from the bar along the bottom and answers which customers owe the most with its generated Cypher and rows, searches the graph's policy documents, and recalls a saved memory about the largest account."
                 className="rounded-2xl border border-gray-800 bg-black shadow-2xl"
               />
             </div>
@@ -88,17 +88,7 @@ export default function PlatformContent() {
               </p>
             </div>
 
-            <div className="mx-auto max-w-6xl">
-              <LiveDemo
-                name="console"
-                aspect={1200 / 820}
-                phoneAspect={720 / 1120}
-                label="The RoboSystems Console on a company ledger graph answers which customers owe the most with its generated Cypher and rows, searches the graph's policy documents, and recalls a saved memory about the largest account."
-                className="rounded-2xl border border-gray-800 bg-black shadow-2xl"
-              />
-            </div>
-
-            <div className="mt-12 grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-3">
               <div className="group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-cyan-950/20 p-6 transition-all hover:border-cyan-500/50">
                 <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-500/20">
                   <svg
