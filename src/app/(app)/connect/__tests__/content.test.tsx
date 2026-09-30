@@ -543,6 +543,59 @@ describe('ConnectContent', () => {
     expect(screen.queryByTestId('roboledger-section')).toBeNull()
   })
 
+  test('keeps the RoboLedger address away from a selected shared repository', () => {
+    // The address refuses repositories at consent, so beside the SEC
+    // workspace it would read as a way in that does not exist.
+    setGraphs(
+      [
+        {
+          graphId: 'kg1a2b3c',
+          graphName: 'Acme Ledger',
+          schemaExtensions: ['roboledger'],
+        },
+        {
+          graphId: 'sec',
+          graphName: 'SEC Repository',
+          isRepository: true,
+          schemaExtensions: ['roboledger'],
+        },
+      ],
+      'sec'
+    )
+
+    render(<ConnectContent />)
+
+    expect(screen.queryByTestId('roboledger-section')).toBeNull()
+    expect(document.body.textContent).not.toContain('Runs RoboLedger')
+  })
+
+  test('names the SEC listing in Claude’s directory, but not on the RoboLedger address', () => {
+    setGraphs(
+      [
+        {
+          graphId: 'kg1a2b3c',
+          graphName: 'Acme Ledger',
+          schemaExtensions: ['roboledger'],
+        },
+      ],
+      'kg1a2b3c'
+    )
+
+    render(<ConnectContent />)
+
+    const universal = screen.getByTestId('universal-section')
+    expect(
+      universal.querySelector(
+        'a[href="https://claude.ai/directory/robosystems-sec"]'
+      )
+    ).not.toBeNull()
+    expect(
+      screen
+        .getByTestId('roboledger-section')
+        .querySelector('a[href="https://claude.ai/directory/robosystems-sec"]')
+    ).toBeNull()
+  })
+
   test('no longer tells the user to hand-edit the id into the URL', () => {
     setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }], 'kg1a2b3c')
 

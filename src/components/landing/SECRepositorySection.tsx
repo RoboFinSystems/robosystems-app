@@ -1,7 +1,7 @@
 'use client'
 
 import { mcpEndpointFor } from '@/lib/mcp'
-import { CHATGPT_PLUGIN_URL } from '@/lib/site'
+import { CHATGPT_PLUGIN_URL, CLAUDE_CONNECTOR_URL } from '@/lib/site'
 import { LiveDemo } from '@robosystems/core/ui-components'
 import Link from 'next/link'
 import FloatingElementsVariant from './FloatingElementsVariant'
@@ -92,28 +92,52 @@ export default function SECRepositorySection() {
                 Use with Claude, ChatGPT, Grok, or any MCP-compatible AI client,
                 no install required.
               </p>
-              <a
-                href={CHATGPT_PLUGIN_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-secondary-400 hover:text-secondary-300 mt-3 inline-flex items-center gap-1.5 text-sm font-medium transition-colors"
-              >
-                Published in the ChatGPT plugin directory
-                <svg
-                  className="h-3.5 w-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
+              <div className="mt-3 flex flex-col gap-1.5">
+                <a
+                  href={CLAUDE_CONNECTOR_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-secondary-400 hover:text-secondary-300 inline-flex items-center gap-1.5 text-sm font-medium transition-colors"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-              </a>
+                  In Claude&apos;s connector directory
+                  <svg
+                    className="h-3.5 w-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
+                  </svg>
+                </a>
+                <a
+                  href={CHATGPT_PLUGIN_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-secondary-400 hover:text-secondary-300 inline-flex items-center gap-1.5 text-sm font-medium transition-colors"
+                >
+                  In the ChatGPT plugin directory
+                  <svg
+                    className="h-3.5 w-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
+                  </svg>
+                </a>
+              </div>
             </div>
 
             {/* MCP Protocol */}
