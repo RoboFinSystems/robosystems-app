@@ -87,7 +87,7 @@ export function appChrome({
   main,
   nav = 'repo',
   graph = 'SEC Repository',
-  org = 'Northwind Research',
+  org = 'Northwind Capital',
   id = '',
   drawer,
 }) {

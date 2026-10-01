@@ -78,7 +78,7 @@ const html = `
   </div>
 </div>
 <div class="wire" id="wire"><span>public API<br>API key</span></div>
-<div class="win" id="win">${appChrome({ active: 'tables', nav: 'graph', graph: 'Northwind Research', main: lake, drawer: '' })}</div>
+<div class="win" id="win">${appChrome({ active: 'tables', nav: 'graph', graph: 'Northwind Capital', main: lake, drawer: '' })}</div>
 `
 
 const css = `
