@@ -8,7 +8,9 @@
  * (examples/coffee_roaster_demo, FY ended 2026-08-31 and 2025-08-31). Peer
  * margins and quoted passages are from the latest 10-Ks of Coffee Holding
  * (JVA, FY ended 2025-10-31), Farmer Bros (FARM, 2025-06-30) and Westrock
- * Coffee (WEST, 2025-12-31). Search scores and query timings are illustrative.
+ * Coffee (WEST, 2025-12-31). Driftline's graph metrics are its production
+ * figures, as on the platform page. Search scores and query timings are
+ * illustrative.
  */
 import {
   appChrome,
@@ -26,10 +28,11 @@ import {
 } from './kit.js'
 
 // win: the app window a beat lands in. A is the SEC repository, B the
-// company's own graph; beat i shows view v{i}.
+// company's own graph; beat i shows page v{i}, the sidebar item k. The two
+// number beats answer in the console drawer, open over the graph's Dashboard.
 const BEATS = [
   {
-    k: 'console',
+    k: 'dashboard',
     win: 'B',
     q: 'How did our gross margin move this year?',
     tool: 'driftline · build-fact-grid',
@@ -41,7 +44,7 @@ const BEATS = [
     ],
   },
   {
-    k: 'console',
+    k: 'dashboard',
     win: 'A',
     q: 'How does that compare with the public coffee roasters?',
     tool: 'sec · build-fact-grid',
@@ -175,8 +178,47 @@ const chatGroups = BEATS.map(
   </div>`
 ).join('')
 
-const ownView = `<div class="view" id="v0">${pageHeader('Console', 'AI analyst for your accounting ledger')}
-    <div class="term">
+const row = (label, value) =>
+  `<div class="ir"><span>${label}</span><span>${value}</span></div>`
+
+// the Dashboard each graph opens on; the console drawer rises over it
+const dash = (id, name, info, metrics) => `<div class="view" id="${id}">
+    <div class="dh">${pageHeader(name, 'View metrics and manage your graph')}${metrics ? '<span class="btn ghost sm">Members</span>' : '<span class="badge b-info">Shared Repository</span>'}</div>
+    ${
+      metrics
+        ? `<div class="stats">${metrics.map(([l, v]) => `<div class="card"><label>${l}</label><b>${v}</b></div>`).join('')}</div>`
+        : ''
+    }
+    <div class="card info"><h3>${metrics ? 'Graph' : 'Repository'} Information</h3>${info.map(([l, v]) => row(l, v)).join('')}</div>
+  </div>`
+
+const ORG = 'Driftline Coffee Roasters'
+const SEC = 'SEC EDGAR Filings'
+
+const ownDash = dash(
+  'v0',
+  ORG,
+  [
+    ['Graph Type', 'entity'],
+    ['Your Role', '<span class="badge b-good">admin</span>'],
+    ['Schema Extensions', '<span class="badge b-purple">roboledger</span>'],
+    ['Created', 'September 1, 2026'],
+  ],
+  [
+    ['Total Nodes', '5.2K'],
+    ['Relationships', '12.3K'],
+    ['Created', '9/1/2026'],
+  ]
+)
+
+const secDash = dash('v1', SEC, [
+  ['Graph ID', '<code>sec</code>'],
+  ['Graph Type', 'repository'],
+  ['Your Role', '<span class="badge b-info">read</span>'],
+])
+
+// the console drawer's panels: no page header, the terminal fills them
+const ownPanel = `<div class="term">
       <div class="meta">09:40 - USER</div>
       <div class="m m-user">Gross margin for our last two fiscal years</div>
       <div class="meta">09:40 - RESULT</div>
@@ -186,11 +228,9 @@ const ownView = `<div class="view" id="v0">${pageHeader('Console', 'AI analyst f
         ${OWN.map((r, i) => `<tr id="or${i}"><td>${r[0]}</td><td class="n">${r[1]}</td><td class="n">${r[2]}</td><td class="n">${r[3]}</td></tr>`).join('')}
         </table></div>
       <div class="foot" id="cf0">Query completed in 188ms · Rows returned: 2</div>
-    </div><div class="hl" id="hl0"></div>
-  </div>`
+    </div><div class="hl" id="hl0"></div>`
 
-const consoleView = `<div class="view" id="v1">${pageHeader('Console', 'AI financial analyst for 10,000+ public companies')}
-    <div class="term">
+const secPanel = `<div class="term">
       <div class="meta">09:41 - USER</div>
       <div class="m m-user">Compare gross margin for JVA, FARM and WEST over the last two years</div>
       <div class="meta">09:41 - RESULT</div>
@@ -200,9 +240,9 @@ const consoleView = `<div class="view" id="v1">${pageHeader('Console', 'AI finan
         ${MARGINS.map((r, i) => `<tr id="mr${i}"><td>${r[0]}</td><td>${r[1]}</td><td class="n">${r[2]}</td><td class="n">${r[3]}</td></tr>`).join('')}
         </table></div>
       <div class="foot" id="cf">Query completed in 412ms · Rows returned: 3</div>
-    </div><div class="hl" id="hl1"></div>
-  </div>
-  <div class="view" id="v2">${pageHeader('Document Search', 'Search indexed documents and knowledge base content')}
+    </div><div class="hl" id="hl1"></div>`
+
+const searchView = `<div class="view" id="v2">${pageHeader('Document Search', 'Search indexed documents and knowledge base content')}
     <div class="sbar"><span id="sq"></span><span class="btn go">Search</span></div>
     <div class="rmeta" id="rm">Showing 1–3 of 3 results for “gross margin” · 10-K · JVA, FARM, WEST</div>
     ${HITS.map(
@@ -222,8 +262,6 @@ const memoryView = `<div class="view" id="v3">
       <p>${m[5]}</p></div>`
     ).join('')}
   </div>`
-
-const ORG = 'Driftline Coffee Roasters'
 
 const html = `
 <div class="bg"></div><div class="gridbg"></div>
@@ -258,8 +296,8 @@ const html = `
     <div id="chatbody">${chatGroups}</div>
   </div>
   <div id="app">
-    <div class="ch" id="appA">${appChrome({ active: 'console', nav: 'repo', graph: 'SEC Repository', org: ORG, main: consoleView })}</div>
-    <div class="ch" id="appB">${appChrome({ active: 'console', nav: 'graph', graph: ORG, org: ORG, main: ownView + memoryView })}</div>
+    <div class="ch" id="appA">${appChrome({ active: 'dashboard', nav: 'repo', graph: SEC, org: ORG, main: secDash + searchView, drawer: secPanel })}</div>
+    <div class="ch" id="appB">${appChrome({ active: 'dashboard', nav: 'graph', graph: ORG, org: ORG, main: ownDash + memoryView, drawer: ownPanel })}</div>
   </div>
 </div>
 
@@ -320,6 +358,20 @@ const css = `
 .mh { display: flex; align-items: center; justify-content: space-between; }
 .mem { padding: 14px 20px; margin-bottom: 12px; }
 .mem .bgs { margin-top: 0; }
+.dh { display: flex; align-items: flex-start; justify-content: space-between; }
+.btn.sm { font-size: 14px; padding: 7px 14px; }
+.stats { display: flex; gap: 12px; margin-bottom: 16px; }
+.stats .card { flex: 1; padding: 12px 16px; }
+.stats label { display: block; font-size: 13px; color: var(--muted); }
+.stats b { font: 700 24px var(--mono); }
+.info { padding: 14px 18px; }
+.info h3 { font: 700 17px var(--display); margin-bottom: 10px; }
+.ir { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); font-size: 15px; }
+.ir:first-of-type { border-top: 0; }
+.ir span:first-child { color: var(--muted); }
+.ir code { font: 14px var(--mono); }
+.ir .badge { font-size: 13px; padding: 3px 9px; }
+.dwb .term { height: 100%; overflow: hidden; }
 `
 
 const S1 = [0, 3.4],
@@ -425,9 +477,9 @@ function setup(ctx) {
       const vt =
         bt >= 1.2 ? bt - 1.2 : bi === 0 ? 0 : bt + (B[bi] - B[bi - 1]) - 1.2
       const f = vi === 0 ? 1 : eio(seg(vt, 0, 0.45))
-      // Console and Search on the SEC repository sit in window A; the
-      // company's Console and Memory in window B. A beat in the same window
-      // slides the view; a beat in the other window crossfades the windows.
+      // the SEC repository's Dashboard and Search sit in window A, the
+      // company's Dashboard and Memory in window B. A beat in the same window
+      // slides the page; a beat in the other window crossfades the windows.
       const same = vi > 0 && BEATS[vi].win === BEATS[vi - 1].win
       BEATS.forEach((_, n) => {
         const p =
@@ -455,6 +507,23 @@ function setup(ctx) {
         same ? seg(vt, 0, 0.7) : 1,
         $('app' + BEATS[vi].win)
       )
+
+      // the console drawer: the company's opens when its first tool fires and
+      // the windows cross with both open; the repository's closes as Search
+      // slides in. Open is the app's limit, 80% of the window, short of the
+      // page's header on the phone's shorter window.
+      const drawer = (w, o) => {
+        const win = $('app' + w)
+        const h = win.offsetHeight
+        const full = Math.round(h - Math.max(h * 0.2, 132))
+        win.querySelector('.rs-dw').style.height = 40 + (full - 40) * o + 'px'
+        win.querySelector('.grip').style.opacity = o
+        win.querySelector('.max').style.opacity = o
+        win.querySelector('.chev .up').style.opacity = 1 - o
+        win.querySelector('.chev .down').style.opacity = o
+      }
+      drawer('B', vi === 0 ? eio(seg(vt, 0, 0.45)) : vi === 1 ? 1 : 0)
+      drawer('A', vi < 2 ? 1 : vi === 2 ? 1 - f : 0)
 
       // each view builds while it is current and holds its last frame after,
       // so seeking to any time draws the same picture
