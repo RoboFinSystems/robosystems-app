@@ -1,6 +1,7 @@
 /*
- * SEC repository: three questions of one filer in the Console, answered from
- * the numbers and from the narrative. Westrock Coffee (WEST), 10-K for FY2025
+ * SEC repository: three questions of one filer in the console drawer, open
+ * over the repository's Dashboard, answered from the numbers and from the
+ * narrative. Westrock Coffee (WEST), 10-K for FY2025
  * filed 2026-03-10: the income statement, the MD&A passage behind the margin,
  * and net sales by segment. All figures in $ thousands as filed; query timings
  * and search scores are illustrative.
@@ -42,14 +43,19 @@ const table = (head, rows, id) =>
   ${rows.map((r, i) => `<tr id="${id}${i}"${r[3] ? ` class="${r[3]}"` : ''}><td>${r[0]}</td><td class="n">${r[1]}</td><td class="n">${r[2]}</td></tr>`).join('')}
   </table></div>`
 
-// Each exchange: the command typed at the prompt, then what the Console returns.
+// Each exchange: the command typed at the prompt, then what the console returns.
 const Q = [
   "Show Westrock Coffee's income statement from its latest 10-K",
   '/search tariffs passed through to customers',
   'Break net sales out by segment',
 ]
 
-const main = `${pageHeader('Console', 'AI financial analyst for 10,000+ public companies')}
+// the page under the drawer; only its header shows above the open console
+const main = `<div class="dh">${pageHeader('SEC EDGAR Filings', 'View metrics and manage your graph')}<span class="badge b-info">Shared Repository</span></div>`
+
+// the drawer's panel: no page header, the terminal fills it and the prompt sits
+// below. data-loop dissolves it at the wrap, as the page under it does.
+const panel = `<div class="pnl" data-loop>
   <div class="term" id="term"><div class="feed" id="feed">
     <div class="ex" id="x0">
       <div class="meta">10:02 - USER</div><div class="m m-user" id="u0"></div>
@@ -74,12 +80,17 @@ const main = `${pageHeader('Console', 'AI financial analyst for 10,000+ public c
     </div>
   </div></div>
   <div class="prompt"><span>$</span><span id="pr"></span><span class="caret" id="caret"></span></div>
-  <div class="hl" id="hl"></div>`
+  <div class="hl" id="hl"></div></div>`
 
 const css = `
-.rs-main { display: flex; flex-direction: column; }
-.term { position: relative; flex: 1; overflow: hidden; padding: 0 20px; }
-.feed { position: absolute; left: 20px; right: 20px; top: 18px; }
+.dh { display: flex; align-items: flex-start; justify-content: space-between; }
+/* the drawer held open at the app's limit, 80% of the window */
+.rs-dw { height: 80%; }
+.rs-dw .grip, .rs-dw .max, .rs-dw .chev .down { opacity: 1; }
+.rs-dw .chev .up { opacity: 0; }
+.pnl { position: absolute; inset: 0; display: flex; flex-direction: column; }
+.pnl .term { position: relative; flex: 1; min-height: 0; overflow: hidden; padding: 0; }
+.feed { position: absolute; left: 20px; right: 20px; top: 16px; }
 .ex { margin-bottom: 18px; }
 .rs { opacity: 0; }
 .hitline { display: flex; gap: 8px; margin: 4px 0 10px; }
@@ -88,8 +99,8 @@ const css = `
 .dt table td { font-size: 16px; }
 .dt table td:first-child { font-family: var(--body); }
 tr.gp td { color: var(--c300); }
-.prompt { margin-top: 14px; display: flex; align-items: center; gap: 10px; padding: 14px 18px; border: 1px solid var(--line);
-  border-radius: 12px; background: #030712; font: 17px var(--mono); color: #d1d5db; min-height: 54px; }
+.prompt { flex-shrink: 0; margin: 0 20px 16px; display: flex; align-items: center; gap: 10px; padding: 12px 18px;
+  border: 1px solid var(--line); border-radius: 12px; background: #030712; font: 17px var(--mono); color: #d1d5db; min-height: 50px; }
 .prompt span:first-child { color: #4ade80; }
 .caret { width: 9px; height: 20px; background: #4ade80; }
 `
@@ -150,10 +161,11 @@ export default {
   poster: 4.6,
   css,
   html: appChrome({
-    active: 'console',
+    active: 'dashboard',
     nav: 'repo',
-    graph: 'SEC Repository',
+    graph: 'SEC EDGAR Filings',
     main,
+    drawer: panel,
   }),
   setup,
   mobile: { width: 720, height: 1000, css: PHONE_APP_CSS + phoneCss },
