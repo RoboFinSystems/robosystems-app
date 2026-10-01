@@ -235,10 +235,11 @@ const html = `
 
 <div class="scene" id="s2">
   <div class="gchat" id="gc">
+    <div class="ghd"><span class="t">Your AI chat</span><span class="chip"><span class="dot off"></span>Not connected</span></div>
     <div class="ub" style="max-width:720px;margin-left:auto" id="gq"></div>
     <div class="ans" id="ga" style="color:#d1d5db;margin-top:30px"></div>
   </div>
-  <div class="caption" id="c2">It can't see your books. <em>And it's guessing about everyone else.</em></div>
+  <div class="caption" id="c2">Your AI can't see your books. <em id="c2b">And it's guessing about everyone else.</em></div>
 </div>
 
 <div class="scene" id="s3"><div class="center">
@@ -283,10 +284,14 @@ const css = `
 .eyebrow { font: 600 24px var(--display); letter-spacing: .32em; color: var(--c300); text-transform: uppercase; }
 .big { font: 800 118px/1.04 var(--display); letter-spacing: -.01em; }
 .wd { display: inline-block; }
-.caption { position: absolute; left: 0; right: 0; bottom: 110px; text-align: center; font-size: 46px; font-weight: 600; }
-.caption em { font-style: normal; color: var(--c300); }
+.caption { position: absolute; left: 0; right: 0; bottom: 80px; text-align: center; font-size: 46px; font-weight: 600; }
+.caption em { font-style: normal; color: var(--c300); display: block; margin-top: 8px; }
 .gchat { position: absolute; left: 410px; top: 200px; width: 1100px; height: 480px; background: #0b0e14; border: 1px solid var(--line); border-radius: 24px; padding: 44px; display: flex; flex-direction: column; }
 .gchat .ub, .gchat .ans { font-size: 32px; }
+.ghd { display: flex; align-items: center; justify-content: space-between; padding-bottom: 22px; margin-bottom: 30px; border-bottom: 1px solid var(--line); }
+.ghd .t { font-size: 22px; color: var(--muted); }
+.ghd .chip { margin-right: 0; color: var(--muted); }
+.dot.off { background: var(--bad); }
 .flow { display: flex; align-items: center; margin-top: 70px; }
 .node { padding: 22px 34px; border-radius: 18px; border: 1px solid var(--line); background: var(--card); font-size: 30px; font-weight: 600; display: flex; align-items: center; gap: 16px; }
 .wire { width: 130px; height: 3px; background: linear-gradient(90deg, var(--c500), var(--i500)); transform-origin: left; }
@@ -318,12 +323,12 @@ const css = `
 `
 
 const S1 = [0, 3.4],
-  S2 = [3.4, 8.2],
-  S3 = [8.2, 11.8]
-const B = [11.8, 16.4, 21.0, 25.6]
-const S4 = [11.8, 30.2],
-  S5 = [30.2, 34.8]
-const TOTAL = 34.8
+  S2 = [3.4, 10.0],
+  S3 = [10.0, 13.6]
+const B = [13.6, 18.2, 22.8, 27.4]
+const S4 = [13.6, 32.0],
+  S5 = [32.0, 36.6]
+const TOTAL = 36.6
 
 function win(el, t, [a, b], fi = 0.45, fo = 0.4) {
   const v =
@@ -357,20 +362,22 @@ function setup(ctx) {
     )
 
     lt = win($('s2'), t, S2)
-    rise($('gc'), eo(seg(lt, 0, 0.5)), 30)
+    // the claim first, then the exchange that proves it, then the second half
+    rise($('c2'), eo(seg(lt, 0.1, 0.6)), 20)
+    rise($('gc'), eo(seg(lt, 0.7, 1.2)), 30)
     $('gq').textContent = typed(
       'How does our gross margin compare with other roasters?',
       lt,
-      0.5,
+      1.2,
       40
     )
     $('ga').textContent = typed(
       "I don't have your financials. Roasters usually run somewhere around 20 to 40 percent.",
       lt,
-      2.0,
+      2.8,
       70
     )
-    rise($('c2'), eo(seg(lt, 3.3, 3.8)), 20)
+    rise($('c2b'), eo(seg(lt, 4.2, 4.7)), 20)
 
     lt = win($('s3'), t, S3)
     blurIn($('t1'), seg(lt, 0.1, 0.7))
@@ -504,6 +511,7 @@ const phoneCss = `
 .caption { font-size: 34px; bottom: 90px; padding: 0 36px; line-height: 1.25; }
 .gchat { left: 24px; top: 190px; width: 672px; height: 560px; padding: 30px; }
 .gchat .ub, .gchat .ans { font-size: 28px; }
+.ghd { padding-bottom: 16px; margin-bottom: 22px; } .ghd .t { font-size: 18px; }
 #s3 .big { font-size: 52px !important; }
 .flow { flex-direction: column; margin-top: 50px; }
 .wire { width: 3px; height: 34px; }
@@ -539,7 +547,7 @@ export default {
   width: 1920,
   height: 1080,
   total: TOTAL,
-  poster: 20.2,
+  poster: 22.0,
   css,
   html,
   setup,
