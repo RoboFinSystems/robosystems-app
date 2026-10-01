@@ -99,20 +99,21 @@ export default function OpenSourceSection() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
                     />
                   </svg>
                   <div className="min-w-0 flex-1">
-                    <strong className="text-white">Semantic Sovereignty</strong>
+                    <strong className="text-white">It&apos;s Yours</strong>
                     <p className="mt-1 text-sm break-words">
-                      Own what your numbers mean. Definitions, taxonomies, and
-                      calculation logic are open, inspectable artifacts—because
-                      a black box in your own cloud is still a black box.{' '}
+                      Fork the repository and you own the software: nobody can
+                      reprice it, take it away, or shut it down. Stay close to
+                      the main line and every fix, integration and reporting
+                      update comes with it.{' '}
                       <Link
-                        href="/blog/semantic-sovereignty"
+                        href="/about"
                         className="text-secondary-400 hover:text-secondary-300"
                       >
-                        Read the essay
+                        Why we build it this way
                       </Link>
                     </p>
                   </div>
@@ -128,14 +129,21 @@ export default function OpenSourceSection() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
                   <div className="min-w-0 flex-1">
-                    <strong className="text-white">Community Innovation</strong>
+                    <strong className="text-white">Semantic Sovereignty</strong>
                     <p className="mt-1 text-sm break-words">
-                      Accelerate development with contributions from developers
-                      worldwide.
+                      Own what your numbers mean. Definitions, taxonomies, and
+                      calculation logic are open, inspectable artifacts—because
+                      a black box in your own cloud is still a black box.{' '}
+                      <Link
+                        href="/blog/semantic-sovereignty"
+                        className="text-secondary-400 hover:text-secondary-300"
+                      >
+                        Read the essay
+                      </Link>
                     </p>
                   </div>
                 </li>
@@ -236,9 +244,9 @@ export default function OpenSourceSection() {
                 <li className="flex items-start">
                   <span className="text-accent-400 mr-2">•</span>
                   <span>
-                    <strong className="text-white">AI Support Agents</strong>
-                    —ongoing maintenance and optimization of your knowledge
-                    graph
+                    <strong className="text-white">Ongoing Support</strong>
+                    —upgrades, account mapping and new reports as your business
+                    changes
                   </span>
                 </li>
                 <li className="flex items-start">
@@ -334,40 +342,11 @@ export default function OpenSourceSection() {
               <div className="space-y-4 overflow-x-hidden">
                 {/* SDKs */}
                 <div className="rounded-lg bg-zinc-800/50 p-3 sm:p-4">
-                  <h4 className="mb-2 font-semibold text-white">
-                    MCP Client and Developer Tools
-                  </h4>
+                  <h4 className="mb-2 font-semibold text-white">Client SDKs</h4>
                   <p className="mb-3 text-sm break-words text-gray-400">
-                    Official packages for integrating with RoboSystems.
+                    Official clients for the RoboSystems API.
                   </p>
                   <div className="space-y-3">
-                    {/* MCP Tools */}
-                    <div>
-                      <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                        <a
-                          href="https://www.npmjs.com/package/@robosystems/mcp"
-                          className="inline-flex items-center gap-2 rounded-md bg-zinc-700 px-3 py-1.5 text-sm text-white transition-colors hover:bg-zinc-600"
-                        >
-                          <svg
-                            className="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                            />
-                          </svg>
-                          @robosystems/mcp
-                        </a>
-                        <span className="self-start text-xs text-gray-500 sm:self-auto">
-                          MCP stdio bridge
-                        </span>
-                      </div>
-                    </div>
                     {/* Typescript Client */}
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                       <a
