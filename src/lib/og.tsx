@@ -2,7 +2,7 @@
 // (Next file conventions: opengraph-image.tsx / twitter-image.tsx → ImageResponse/Satori).
 // Used for blog posts/index, which have no per-item share image of their own. Uses the
 // built-in default font (no TTF needed). Brand gradient from the cross-app brand map in
-// src/lib/core/auth-core/config.ts (robosystems = cyan → blue → indigo).
+// @robosystems/core auth-core/config.ts (robosystems = cyan → blue → indigo).
 
 import { ImageResponse } from 'next/og'
 
