@@ -58,7 +58,7 @@ export function McpSignInSnippets({
   return (
     <>
       <McpSnippet
-        heading="Claude (claude.ai / Desktop) — Settings → Connectors → Add custom connector"
+        heading="Claude (claude.ai / Desktop) — Customize → Connectors → Add custom connector"
         copyLabel="Connector URL"
         code={url}
         note={
@@ -81,7 +81,7 @@ export function McpSignInSnippets({
       />
 
       <McpSnippet
-        heading="ChatGPT — Settings → Connectors → Create (developer mode)"
+        heading="ChatGPT — developer mode, then create an app"
         copyLabel="Connector URL"
         code={url}
         note={
