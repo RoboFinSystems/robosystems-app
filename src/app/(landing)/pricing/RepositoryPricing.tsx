@@ -85,7 +85,7 @@ export default function RepositoryPricing({
               </li>
               <li className="flex items-start text-gray-300">
                 {CHECK_ICON}
-                Unlimited MCP tool access
+                MCP access from Claude, ChatGPT, or any MCP client
               </li>
               <li className="flex items-start text-gray-300">
                 {CHECK_ICON}
