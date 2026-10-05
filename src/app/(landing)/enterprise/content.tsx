@@ -172,7 +172,7 @@ const IDENTITY: Array<{ title: string; body: string; scope: string }> = [
 
 const SECURITY: string[] = [
   'Encryption in transit and at rest; every graph on its own graph-database instance, and ledger data in its own schema.',
-  'Tenant isolation is tested, not asserted: an authenticated harness provisions two tenants against a live deployment and fires a cross-tenant and privilege-escalation matrix at it — REST, Cypher, GraphQL, MCP, both extension surfaces, both directions.',
+  'Tenant isolation is tested, not asserted: an authenticated harness provisions two tenants on the full stack and fires a cross-tenant and privilege-escalation matrix at it — REST, Cypher, GraphQL, MCP, both extension surfaces, both directions. The cross-tenant boundary has also been probed in production, with real tenants.',
   'A pinned supply chain: every CI action pinned to a commit, release deployments dispatch-only, provenance certified per pull request. Dedicated Deployments run a byte-identical, tag-pinned mirror of the public repository.',
   'Security incidents affecting your data: notice within 72 hours. Security releases: applied fleet-wide.',
   'SOC 2 Type II compliance is in progress with an independent CPA firm; the report will be available to customers under NDA once the audit is complete. Its scope is the environments we operate — the managed platform, and a Dedicated Deployment for as long as we operate it — never a self-hosted one.',
