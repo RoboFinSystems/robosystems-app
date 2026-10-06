@@ -44,8 +44,8 @@ interface Workspace {
  * What a connection can *do* follows the graph it reaches. Schema and query
  * tools come with every graph; each schema extension installed on the graph
  * adds its application's tools to that same connection, so no second URL, key,
- * or sign-in is needed. (`/v1/mcp/roboledger` is a narrower profile for the
- * directory listings, not a requirement — see `RoboLedgerSection`.) Names mirror the
+ * or sign-in is needed. (`/v1/mcp/roboledger` is a narrower profile for chat
+ * clients, not a requirement — see `RoboLedgerSection`.) Names mirror the
  * extension catalog the API serves (`getAvailableExtensions`); the MCP server
  * gates the tools on the same `schemaExtensions` shown here.
  */
@@ -101,9 +101,9 @@ function ConnectionScope({
 }
 
 /**
- * The graph-agnostic address. It is the one the RoboSystems listings carry
- * (MCP registry, Claude and ChatGPT directories, the bridge README), so it
- * leads here too.
+ * The graph-agnostic address. It is the one the MCP registry listing and the
+ * bridge README carry (the Claude and ChatGPT directory listings are the SEC
+ * repository's own address), so it leads here too.
  * It takes only a sign-in — the consent screen is where the graph is chosen —
  * and a grant names exactly one graph, the same as a workspace URL.
  */
@@ -141,7 +141,7 @@ function UniversalSection() {
 }
 
 /**
- * The RoboLedger address, the one its directory listings carry. It is
+ * The RoboLedger address, added by hand as a custom connector. It is
  * graph-agnostic like the universal one, so it follows whether the user has an
  * eligible graph at all, not the switcher. It serves a narrower tool set than
  * the universal address, so it is offered beside it, never as an upgrade.
@@ -155,9 +155,9 @@ function RoboLedgerSection() {
             RoboLedger only
           </h3>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            The address the RoboLedger connector in the Claude and ChatGPT
-            directories uses. Sign in the same way, but the consent screen only
-            offers your own graphs running RoboLedger (never a shared
+            Add it by hand as a custom connector; it works the same way in
+            Claude and ChatGPT. Sign in the same way, but the consent screen
+            only offers your own graphs running RoboLedger (never a shared
             repository), and the connection carries the ledger and close tools
             without subgraph, backup, or other administration tools — the set
             meant for a chat client.
