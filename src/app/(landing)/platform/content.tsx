@@ -83,8 +83,9 @@ export default function PlatformContent() {
                 Every graph comes with an AI analyst. Ask in plain English and
                 it generates the Cypher, runs it, and answers with a narrative
                 backed by the data and the query behind it&mdash;or drop into
-                direct Cypher yourself. Document search and semantic memory are
-                built into the same console.
+                direct Cypher yourself, which is always free. On your own graphs
+                it can make changes too, and document search and semantic memory
+                are built into the same console.
               </p>
             </div>
 
@@ -133,12 +134,14 @@ export default function PlatformContent() {
                   </svg>
                 </div>
                 <h3 className="mb-2 text-lg font-semibold text-white">
-                  Real-Time Execution
+                  Changes with /do
                 </h3>
                 <p className="text-sm text-gray-400">
-                  Monitor query execution with live progress updates, streaming
-                  results, and per-query timing, row counts, and credit usage.
-                  Direct database queries are always free.
+                  Start a request with /do and it builds metrics and forecasts,
+                  drafts reports, and on a ledger sorts bank-feed lines and
+                  drafts the month&apos;s schedule entries, then lists every
+                  change. Changes run on a stronger model than questions, and
+                  nothing it drafts posts without a person.
                 </p>
               </div>
 
