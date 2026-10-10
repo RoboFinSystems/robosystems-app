@@ -211,7 +211,8 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        AI Console — ask about your books in plain English
+                        AI Console — ask about your books, or have it draft and
+                        sort the routine work for you to review
                       </span>
                     </li>
                     <li className="flex items-start">
