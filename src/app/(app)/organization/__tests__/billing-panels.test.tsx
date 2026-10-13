@@ -99,6 +99,39 @@ describe('SubscriptionsTab', () => {
   })
 })
 
+describe("SubscriptionsTab, a member's repository seat", () => {
+  beforeEach(() => vi.clearAllMocks())
+
+  it("cancels the member's seat, not the owner's", async () => {
+    vi.mocked(SDK.cancelRepositorySubscription).mockResolvedValue(sdkOk({}))
+    render(
+      <SubscriptionsTab
+        subscriptions={[
+          sub({
+            id: 'sub_member',
+            resource_type: 'repository',
+            resource_id: 'sec',
+            user_id: 'user_member',
+          }),
+        ]}
+        graphs={graphs}
+        offerings={{}}
+        router={{ push: vi.fn() }}
+        onRefresh={vi.fn()}
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: /Cancel Subscription/ }))
+    fireEvent.click(
+      await screen.findByRole('button', { name: /Cancel at Period End/ })
+    )
+    await waitFor(() =>
+      expect(SDK.cancelRepositorySubscription).toHaveBeenCalled()
+    )
+    const [call] = vi.mocked(SDK.cancelRepositorySubscription).mock.calls[0]
+    expect(call.body?.user_id).toBe('user_member')
+  })
+})
+
 describe('SubscriptionsTab tier change, leaving the page', () => {
   it('does not report a failure when watching stops because the page was left', async () => {
     const { POLLING_CANCELLED } =

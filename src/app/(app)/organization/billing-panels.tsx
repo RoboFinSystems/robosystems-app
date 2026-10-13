@@ -609,6 +609,9 @@ export function SubscriptionsTab({
         const response = await SDK.cancelRepositorySubscription({
           path: { graph_id: subscriptionToCancel.resource_id },
           body: {
+            // Seats are per member: the row names whose seat this is, and
+            // without it the API cancels the caller's own.
+            user_id: subscriptionToCancel.user_id ?? undefined,
             immediate: mode === 'immediate',
             confirm:
               mode === 'immediate'
