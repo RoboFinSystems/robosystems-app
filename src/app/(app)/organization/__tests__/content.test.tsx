@@ -46,6 +46,7 @@ vi.mock('@robosystems/core', async () => {
       isLoading: false,
     }),
     useApiError: () => ({ handleApiError: vi.fn() }),
+    useUser: () => ({ user: { id: 'user_owner' } }),
     useToast: () => ({
       showSuccess: vi.fn(),
       showError: vi.fn(),

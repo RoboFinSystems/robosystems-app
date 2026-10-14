@@ -10,6 +10,7 @@ import {
   useOrg,
   useServiceOfferings,
   useToast,
+  useUser,
 } from '@robosystems/core'
 import {
   fetchGraphTiers,
@@ -496,8 +497,12 @@ export function SubscriptionsTab({
   onRefresh: () => void
 }) {
   const { currentOrg } = useOrg()
+  const { user } = useUser()
   const { showSuccess, showError } = useToast()
   const [showCancelModal, setShowCancelModal] = useState(false)
+  // Repository seats are per member; an owner or admin is listed every one.
+  const isMySeat = (sub: SDK.GraphSubscriptionResponse) =>
+    !sub.user_id || sub.user_id === user?.id
   const [subscriptionToCancel, setSubscriptionToCancel] =
     useState<SDK.GraphSubscriptionResponse | null>(null)
   const [cancelling, setCancelling] = useState(false)
@@ -609,6 +614,9 @@ export function SubscriptionsTab({
         const response = await SDK.cancelRepositorySubscription({
           path: { graph_id: subscriptionToCancel.resource_id },
           body: {
+            // Seats are per member: the row names whose seat this is, and
+            // without it the API cancels the caller's own.
+            user_id: subscriptionToCancel.user_id ?? undefined,
             immediate: mode === 'immediate',
             confirm:
               mode === 'immediate'
@@ -897,7 +905,8 @@ export function SubscriptionsTab({
                         {sub.resource_id.toUpperCase()}
                       </h3>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {sub.plan_display_name}
+                        {sub.plan_display_name} ·{' '}
+                        {isMySeat(sub) ? 'Your seat' : "A member's seat"}
                       </p>
                     </div>
                     {getSubscriptionBadge(sub)}
@@ -915,17 +924,20 @@ export function SubscriptionsTab({
                     </span>
                   </div>
                   <div className="space-y-2">
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        color="gray"
-                        onClick={() => router.push('/repositories/browse')}
-                        className="flex-1"
-                      >
-                        <HiSwitchHorizontal className="mr-2 h-4 w-4" />
-                        Change Plan
-                      </Button>
-                    </div>
+                    {/* Browse changes the viewer's own seat, never a member's. */}
+                    {isMySeat(sub) && (
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          color="gray"
+                          onClick={() => router.push('/repositories/browse')}
+                          className="flex-1"
+                        >
+                          <HiSwitchHorizontal className="mr-2 h-4 w-4" />
+                          Change Plan
+                        </Button>
+                      </div>
+                    )}
                     <Button
                       size="sm"
                       color="gray"

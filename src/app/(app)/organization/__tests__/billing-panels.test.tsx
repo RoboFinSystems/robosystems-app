@@ -14,6 +14,7 @@ vi.mock('@robosystems/core', async () => {
     useOrg: () => ({ currentOrg: { id: 'org_1', role: 'owner' } }),
     useServiceOfferings: () => ({ offerings: {}, isLoading: false }),
     useApiError: () => ({ handleApiError: vi.fn() }),
+    useUser: () => ({ user: { id: 'user_owner' } }),
     useToast: () => ({
       showSuccess: vi.fn(),
       showError,
@@ -96,6 +97,69 @@ describe('SubscriptionsTab', () => {
     fireEvent.click(screen.getByRole('button', { name: /Confirm Change/ }))
     await waitFor(() => expect(SDK.changeTier).toHaveBeenCalled())
     await waitFor(() => expect(onRefresh).toHaveBeenCalled())
+  })
+})
+
+describe("SubscriptionsTab, a member's repository seat", () => {
+  beforeEach(() => vi.clearAllMocks())
+
+  it("cancels the member's seat, not the owner's", async () => {
+    vi.mocked(SDK.cancelRepositorySubscription).mockResolvedValue(sdkOk({}))
+    render(
+      <SubscriptionsTab
+        subscriptions={[
+          sub({
+            id: 'sub_member',
+            resource_type: 'repository',
+            resource_id: 'sec',
+            user_id: 'user_member',
+          }),
+        ]}
+        graphs={graphs}
+        offerings={{}}
+        router={{ push: vi.fn() }}
+        onRefresh={vi.fn()}
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: /Cancel Subscription/ }))
+    fireEvent.click(
+      await screen.findByRole('button', { name: /Cancel at Period End/ })
+    )
+    await waitFor(() =>
+      expect(SDK.cancelRepositorySubscription).toHaveBeenCalled()
+    )
+    const [call] = vi.mocked(SDK.cancelRepositorySubscription).mock.calls[0]
+    expect(call.body?.user_id).toBe('user_member')
+  })
+
+  it("says whose seat each is, and changes plans only on the viewer's own", () => {
+    render(
+      <SubscriptionsTab
+        subscriptions={[
+          sub({
+            id: 'sub_mine',
+            resource_type: 'repository',
+            resource_id: 'sec',
+            user_id: 'user_owner',
+          }),
+          sub({
+            id: 'sub_member',
+            resource_type: 'repository',
+            resource_id: 'sec',
+            user_id: 'user_member',
+          }),
+        ]}
+        graphs={graphs}
+        offerings={{}}
+        router={{ push: vi.fn() }}
+        onRefresh={vi.fn()}
+      />
+    )
+    expect(screen.getByText(/Your seat/)).toBeInTheDocument()
+    expect(screen.getByText(/A member's seat/)).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: /Change Plan/ })).toHaveLength(
+      1
+    )
   })
 })
 

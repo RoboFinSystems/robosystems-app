@@ -32,6 +32,7 @@ export function SharedRepositoriesContent() {
       const response = await cancelRepositorySubscription({
         path: { graph_id: subToCancel.resource_id },
         body: {
+          user_id: subToCancel.user_id ?? undefined,
           immediate: mode === 'immediate',
           confirm: mode === 'immediate' ? subToCancel.resource_id : undefined,
         },
