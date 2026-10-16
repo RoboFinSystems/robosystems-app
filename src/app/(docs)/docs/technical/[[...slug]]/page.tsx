@@ -14,7 +14,8 @@ import { publicPageMetadata } from '@/lib/site'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
-// The wiki, rendered at robosystems.ai/docs/technical. The index page is the wiki's Home,
+// The technical docs (docs/technical/ in the robosystems repo), rendered at
+// robosystems.ai/docs/technical. The index page is their Home.md,
 // opened by the get-started section that replaced the /open-source page.
 
 export const revalidate = 300

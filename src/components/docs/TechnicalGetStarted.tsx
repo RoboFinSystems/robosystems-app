@@ -6,8 +6,8 @@ import Link from 'next/link'
 // technical docs are written for the hosted platform (docs-surfaces D8), so this leads the
 // same way: an account and key, a first request, an MCP client, the client libraries. The
 // self-hosting topics the old page taught (run the stack, load SEC filings, deploy to AWS)
-// follow, each in the shortest runnable form, and every topic hands off to the wiki page
-// that owns the detail. It is app code rather than wiki text for one reason: the API and
+// follow, each in the shortest runnable form, and every topic hands off to the technical
+// page that owns the detail. It is app code rather than docs text for one reason: the API and
 // MCP addresses come from @/lib/mcp, so a staging build shows staging URLs. Everything
 // else here is a command or a link, which keeps it from drifting the way the old page's
 // prose did. No real company is named; a ticker is a placeholder.
