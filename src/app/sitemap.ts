@@ -34,8 +34,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  // Guides and technical docs from the docs catalog; lastmod is each page's last commit
-  // in the robosystems repo (guides) or the wiki (technical).
+  // Guides and technical docs from the docs catalog; lastmod is each page's last change
+  // in the robosystems repo.
   const catalog = await getDocsCatalog().catch(() => null)
   const docsNavPages = (['product', 'technical'] as const).flatMap((layer) =>
     catalog ? (getDocsNav(catalog, DOCS_SITE, layer)?.ordered ?? []) : []

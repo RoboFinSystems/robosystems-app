@@ -73,8 +73,8 @@ const nextConfig = {
       // at /docs/extensions, so reads (GraphQL) and writes (named operations) are
       // documented as one thing instead of as unrelated tags.
       //
-      // permanent: true — these are the canonical homes now, and the wiki already
-      // publishes links to /docs/graphql. The GraphQL tag's two HTTP operations no
+      // permanent: true — these are the canonical homes now, and the technical docs
+      // already link to /docs/graphql. The GraphQL tag's two HTTP operations no
       // longer have pages of their own: they render on the GraphQL page itself, which
       // is where anyone following an old operation link wants to land anyway.
       {
