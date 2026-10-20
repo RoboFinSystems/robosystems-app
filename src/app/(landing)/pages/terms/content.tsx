@@ -651,9 +651,10 @@ export default function TermsOfService() {
               credit-based usage pricing
             </li>
             <li>
-              <strong>Shared Repository Subscriptions:</strong>{' '}
-              Organization-level monthly subscriptions for access to curated
-              data repositories, shared by all members of your organization
+              <strong>Shared Repository Subscriptions:</strong> Monthly
+              subscriptions for access to curated data repositories, purchased
+              by a member and billed to your organization; access, credits and
+              rate limits belong to the subscribing member
             </li>
             <li>
               <strong>AI Credit System: </strong>Only AI operations (agent
