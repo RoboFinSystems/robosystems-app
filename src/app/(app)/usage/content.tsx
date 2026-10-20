@@ -55,16 +55,16 @@ interface GraphLimits {
   subscription_tier: string
   graph_tier: string
   is_shared_repository: boolean
+  // Null on a shared repository: no storage of the tenant's own applies.
   storage: {
     current_usage_gb: number
     max_storage_gb: number
     approaching_limit: boolean
-  }
+  } | null
   instance?: {
     items?: StorageItem[]
   }
   queries: {
-    concurrent_queries: number
     max_rows_per_query: number
     max_timeout_seconds: number
     chunk_size: number
@@ -536,15 +536,13 @@ export function UsageContent() {
   const transientBytes = (data.graphLimits?.instance?.items ?? [])
     .filter((item) => item.type === 'transient')
     .reduce((sum, item) => sum + item.bytes, 0)
-  const durableUsageGb = data.graphLimits
-    ? Math.max(
-        data.graphLimits.storage.current_usage_gb - transientBytes / 1024 ** 3,
-        0
-      )
+  const storage = data.graphLimits?.storage
+  const durableUsageGb = storage
+    ? Math.max(storage.current_usage_gb - transientBytes / 1024 ** 3, 0)
     : 0
   const storageUsagePct =
-    data.graphLimits && data.graphLimits.storage.max_storage_gb > 0
-      ? (durableUsageGb / data.graphLimits.storage.max_storage_gb) * 100
+    storage && storage.max_storage_gb > 0
+      ? (durableUsageGb / storage.max_storage_gb) * 100
       : 0
 
   return (
@@ -654,7 +652,7 @@ export function UsageContent() {
       )}
 
       {/* Storage Usage - Only for user graphs, not repositories */}
-      {!isRepository && data.graphLimits && (
+      {!isRepository && storage && (
         <Card>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -668,8 +666,7 @@ export function UsageContent() {
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">
                   {formatStorage(durableUsageGb)} of{' '}
-                  {formatNumber(data.graphLimits.storage.max_storage_gb)} GB
-                  used
+                  {formatNumber(storage.max_storage_gb)} GB used
                 </span>
                 <span className="font-medium text-gray-900 dark:text-white">
                   {storageUsagePct.toFixed(1)}%
@@ -678,9 +675,7 @@ export function UsageContent() {
               <Progress
                 progress={storageUsagePct}
                 size="lg"
-                color={
-                  data.graphLimits.storage.approaching_limit ? 'yellow' : 'blue'
-                }
+                color={storage.approaching_limit ? 'yellow' : 'blue'}
               />
             </div>
 
@@ -715,7 +710,7 @@ export function UsageContent() {
               )
             })()}
 
-            {data.graphLimits.storage.approaching_limit && (
+            {storage.approaching_limit && (
               <Alert color="warning" icon={HiExclamationCircle}>
                 <span className="font-medium">Approaching storage limit</span>
                 <p className="mt-1 text-sm">
@@ -918,14 +913,6 @@ export function UsageContent() {
                   </span>
                   <span className="font-medium text-gray-900 dark:text-white">
                     {data.graphLimits.queries.max_timeout_seconds}s
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Concurrent
-                  </span>
-                  <span className="font-medium text-gray-900 dark:text-white">
-                    {data.graphLimits.queries.concurrent_queries}
                   </span>
                 </div>
               </div>

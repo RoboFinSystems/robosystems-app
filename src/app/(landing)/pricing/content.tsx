@@ -124,8 +124,9 @@ export default function PricingContent() {
                   <p className="text-gray-400">
                     Yes, you can cancel at any time and your subscription
                     remains active until the end of the current billing period.
-                    To change graph tiers, create a new graph on the desired
-                    tier and migrate your data.
+                    To change a graph&apos;s tier, upgrade it from your
+                    organization&apos;s billing page; the graph moves to the new
+                    instance with its data.
                   </p>
                 </div>
                 <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700">
