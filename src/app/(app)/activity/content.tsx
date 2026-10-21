@@ -23,7 +23,7 @@ import {
   TableHeadCell,
   TableRow,
 } from 'flowbite-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { HiClock } from 'react-icons/hi'
 
 type Surface = 'api' | 'mcp' | 'operator'
@@ -74,6 +74,10 @@ export default function ActivityContent() {
   const [run, setRun] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
+  // The graph the page is on right now, readable after an await: a page
+  // fetched for a graph the user has since left must not be appended.
+  const graphIdRef = useRef(graphId)
+  graphIdRef.current = graphId
   const [forbidden, setForbidden] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -144,14 +148,17 @@ export default function ActivityContent() {
 
   const loadMore = async () => {
     if (!nextCursor) return
+    const requestGraphId = graphId
     setLoadingMore(true)
     try {
       const page = await fetchPage(nextCursor)
+      if (graphIdRef.current !== requestGraphId) return
       if (page) {
         setEntries((prev) => [...prev, ...page.entries])
         setNextCursor(page.next_cursor ?? null)
       }
     } catch {
+      if (graphIdRef.current !== requestGraphId) return
       setError('Could not load more activity.')
     } finally {
       setLoadingMore(false)
