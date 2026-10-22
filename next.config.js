@@ -32,6 +32,8 @@ export const SERVER_ACTION_ALLOWED_ORIGINS = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Stops `next dev` writing AGENTS.md whenever it detects an AI agent.
+  agentRules: false,
   // Server Actions POST to the page route and Next rejects the request unless
   // the browser `Origin` matches the `Host`/`x-forwarded-host` it sees. In prod
   // the app runs on App Runner behind CloudFront, whose origin is the raw
