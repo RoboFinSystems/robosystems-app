@@ -3,6 +3,9 @@ import { listGraphMembers, listGraphMutations } from '@robosystems/client'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+// Mutable so a test can switch the graph under a request in flight.
+const graph = vi.hoisted(() => ({ currentGraphId: 'kg1' }))
+
 vi.mock('@robosystems/core', async () => {
   const actual =
     await vi.importActual<Record<string, unknown>>('@robosystems/core')
@@ -11,7 +14,9 @@ vi.mock('@robosystems/core', async () => {
     PageLayout: ({ children }: { children: React.ReactNode }) => (
       <div>{children}</div>
     ),
-    useGraphContext: () => ({ state: { currentGraphId: 'kg1' } }),
+    useGraphContext: () => ({
+      state: { currentGraphId: graph.currentGraphId },
+    }),
   }
 })
 
@@ -50,6 +55,7 @@ const ENTRIES = [
 
 describe('ActivityContent', () => {
   beforeEach(() => {
+    graph.currentGraphId = 'kg1'
     mutations.mockReset()
     members.mockReset()
     members.mockResolvedValue(
@@ -162,5 +168,35 @@ describe('ActivityContent', () => {
       })
     )
     expect(screen.queryByText('Load more')).not.toBeInTheDocument()
+  })
+
+  it('drops a next page that lands after the graph was switched', async () => {
+    let releaseOldPage: (value: unknown) => void = () => {}
+    mutations
+      .mockResolvedValueOnce(
+        sdkOk({ graph_id: 'kg1', entries: [ENTRIES[0]], next_cursor: 'c1' })
+      )
+      .mockImplementationOnce(
+        () => new Promise((resolve) => (releaseOldPage = resolve))
+      )
+      .mockResolvedValueOnce(
+        sdkOk({ graph_id: 'kg2', entries: [], next_cursor: null })
+      )
+    const { rerender } = render(<ActivityContent />)
+
+    fireEvent.click(await screen.findByText('Load more'))
+
+    graph.currentGraphId = 'kg2'
+    rerender(<ActivityContent />)
+    await waitFor(() => expect(mutations).toHaveBeenCalledTimes(3))
+    releaseOldPage(
+      sdkOk({ graph_id: 'kg1', entries: [ENTRIES[1]], next_cursor: null })
+    )
+
+    await waitFor(() =>
+      expect(screen.queryByText('Load more')).not.toBeInTheDocument()
+    )
+    expect(screen.queryByText('create-agent')).not.toBeInTheDocument()
+    expect(screen.queryByText('remember')).not.toBeInTheDocument()
   })
 })
