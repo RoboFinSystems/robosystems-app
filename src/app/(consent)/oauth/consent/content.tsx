@@ -162,6 +162,12 @@ export function ConsentContent() {
       null)
     : null
 
+  // A fixed graph the user cannot read: Allow could only fail, so the page
+  // says what would let them in instead.
+  const fixedGraphBlocked =
+    pending?.graph_access === 'subscription_required' ||
+    pending?.graph_access === 'denied'
+
   const decide = async (approved: boolean) => {
     if (!pending || !isValidRequestId(requestId)) return
     setSubmitting(approved ? 'approve' : 'deny')
@@ -254,18 +260,48 @@ export function ConsentContent() {
                     : 'Choose the graph to connect'}
               </h2>
               {pending.graph_id ? (
-                <div
-                  className="flex items-center gap-2 rounded-lg border border-zinc-200 px-3 py-2 text-sm dark:border-zinc-800"
-                  data-testid="fixed-graph"
-                >
-                  <HiLockClosed className="h-4 w-4 text-zinc-500" aria-hidden />
-                  <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                    {fixedGraph?.graphName ?? pending.graph_id}
-                  </span>
-                  <span className="font-mono text-xs text-zinc-500">
-                    {pending.graph_id}
-                  </span>
-                </div>
+                <>
+                  <div
+                    className="flex items-center gap-2 rounded-lg border border-zinc-200 px-3 py-2 text-sm dark:border-zinc-800"
+                    data-testid="fixed-graph"
+                  >
+                    <HiLockClosed
+                      className="h-4 w-4 text-zinc-500"
+                      aria-hidden
+                    />
+                    <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                      {fixedGraph?.graphName ?? pending.graph_id}
+                    </span>
+                    <span className="font-mono text-xs text-zinc-500">
+                      {pending.graph_id}
+                    </span>
+                  </div>
+                  {pending.graph_access === 'subscription_required' && (
+                    <Alert
+                      color="info"
+                      data-testid="fixed-graph-subscription-required"
+                    >
+                      <span className="font-medium">
+                        {pending.graph_id.toUpperCase()} needs a subscription.
+                      </span>{' '}
+                      Subscribe, then go back to {pending.client_name} and
+                      connect again.{' '}
+                      <Link
+                        href="/repositories/browse"
+                        className="font-medium underline underline-offset-4"
+                        data-testid="subscribe"
+                      >
+                        See plans
+                      </Link>
+                    </Alert>
+                  )}
+                  {pending.graph_access === 'denied' && (
+                    <Alert color="warning" data-testid="fixed-graph-denied">
+                      You don&apos;t have access to this graph. Ask its owner to
+                      add you, then connect again from {pending.client_name}.
+                    </Alert>
+                  )}
+                </>
               ) : graphState.isLoading ? (
                 <div className="flex items-center gap-2 text-sm text-zinc-500">
                   <Spinner size="sm" aria-label="Loading graphs" /> Loading your
@@ -375,7 +411,9 @@ export function ConsentContent() {
               </Button>
               <Button
                 onClick={() => decide(true)}
-                disabled={submitting !== null || !selectedGraphId}
+                disabled={
+                  submitting !== null || !selectedGraphId || fixedGraphBlocked
+                }
                 data-testid="approve"
               >
                 <HiShieldCheck className="mr-2 h-4 w-4" aria-hidden />
