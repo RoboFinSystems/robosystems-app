@@ -1,7 +1,11 @@
 'use client'
 
-import type { MutationAuditEntry } from '@robosystems/client'
-import { listGraphMembers, listGraphMutations } from '@robosystems/client'
+import type { MutationAuditEntry, OperatorRunDetail } from '@robosystems/client'
+import {
+  getOperatorRun,
+  listGraphMembers,
+  listGraphMutations,
+} from '@robosystems/client'
 import {
   EmptyState,
   LoadingState,
@@ -72,6 +76,9 @@ export default function ActivityContent() {
   const [surface, setSurface] = useState<Surface | 'all'>('all')
   const [period, setPeriod] = useState<Period>('7')
   const [run, setRun] = useState<string | null>(null)
+  // The run behind the selected `run` filter: its question and answer, read
+  // from the record that outlives the operation itself.
+  const [runDetail, setRunDetail] = useState<OperatorRunDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   // The graph the page is on right now, readable after an await: a page
@@ -123,6 +130,32 @@ export default function ActivityContent() {
       cancelled = true
     }
   }, [fetchPage])
+
+  // The selected run's record, shown above the changes it made.
+  useEffect(() => {
+    if (!graphId || !run) {
+      setRunDetail(null)
+      return
+    }
+    let cancelled = false
+    void (async () => {
+      try {
+        const detail = unwrapSdk(
+          await getOperatorRun({
+            path: { graph_id: graphId, operation_id: run },
+          })
+        )
+        if (!cancelled) setRunDetail(detail ?? null)
+      } catch {
+        // A run older than the record, or one the reader may not see: the
+        // changes still list below without it.
+        if (!cancelled) setRunDetail(null)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [graphId, run])
 
   // Names for the "who" column; the same admin gate as the log itself.
   useEffect(() => {
@@ -238,6 +271,8 @@ export default function ActivityContent() {
         </div>
       </Card>
 
+      {run && runDetail && <RunCard run={runDetail} />}
+
       {loading ? (
         <LoadingState message="Loading activity…" />
       ) : error ? (
@@ -339,5 +374,66 @@ export default function ActivityContent() {
         </Card>
       )}
     </PageLayout>
+  )
+}
+
+const RUN_STATUS_COLORS: Record<OperatorRunDetail['status'], string> = {
+  completed: 'success',
+  failed: 'failure',
+  cancelled: 'warning',
+}
+
+function clip(text: string, max: number): string {
+  return text.length > max ? `${text.slice(0, max)}…` : text
+}
+
+/** What the selected AI run was asked and what it answered. */
+function RunCard({ run }: { run: OperatorRunDetail }) {
+  const seconds = (run.duration_ms / 1000).toFixed(1)
+  return (
+    <Card>
+      <div className="flex flex-wrap items-center gap-2">
+        <Badge color="purple">AI operator</Badge>
+        <span className="font-medium text-gray-900 dark:text-white">
+          {run.operator_type} run
+        </span>
+        <Badge color={RUN_STATUS_COLORS[run.status]}>{run.status}</Badge>
+        <span className="text-sm text-gray-500 dark:text-gray-400">
+          {new Date(run.started_at).toLocaleString()} · {seconds}s
+          {run.credits_consumed > 0
+            ? ` · ${run.credits_consumed.toFixed(1)} credits`
+            : ''}
+          {run.call_count > 0
+            ? ` · ${run.call_count} model ${run.call_count === 1 ? 'call' : 'calls'}`
+            : ''}
+        </span>
+      </div>
+      <dl className="grid gap-3 text-sm sm:grid-cols-[6rem_1fr]">
+        <dt className="font-medium text-gray-700 dark:text-gray-300">Asked</dt>
+        <dd className="whitespace-pre-wrap text-gray-900 dark:text-white">
+          {clip(run.question, 600)}
+        </dd>
+        <dt className="font-medium text-gray-700 dark:text-gray-300">
+          {run.status === 'failed' ? 'Failed' : 'Answered'}
+        </dt>
+        <dd className="whitespace-pre-wrap text-gray-900 dark:text-white">
+          {run.status === 'failed'
+            ? run.error || 'The run failed.'
+            : run.answer
+              ? clip(run.answer, 1200)
+              : 'No answer was reached.'}
+        </dd>
+        {run.tools_called.length > 0 && (
+          <>
+            <dt className="font-medium text-gray-700 dark:text-gray-300">
+              Tools
+            </dt>
+            <dd className="text-gray-900 dark:text-white">
+              {run.tools_called.join(', ')}
+            </dd>
+          </>
+        )}
+      </dl>
+    </Card>
   )
 }
