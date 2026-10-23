@@ -35,6 +35,12 @@ export interface PendingAuthorization {
    * the general routes.
    */
   product?: string | null
+  /**
+   * Whether the user can read the URL-fixed graph: 'subscription_required'
+   * for a shared repository they do not subscribe to. Null or absent on the
+   * graph-agnostic route (and from an API that predates the field).
+   */
+  graph_access?: 'granted' | 'subscription_required' | 'denied' | null
   scope: string
 }
 

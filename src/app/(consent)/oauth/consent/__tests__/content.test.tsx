@@ -297,6 +297,52 @@ describe('ConsentContent', () => {
     })
   })
 
+  test('a fixed repository the user does not subscribe to offers the plans, not Allow', async () => {
+    setGraphs([{ graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }])
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse(200, {
+        ...PENDING,
+        client_name: 'ChatGPT',
+        is_trusted: true,
+        resource: 'http://localhost:8000/v1/graphs/sec/mcp',
+        graph_id: 'sec',
+        graph_access: 'subscription_required',
+      })
+    )
+    render(<ConsentContent />)
+    await screen.findByTestId('fixed-graph')
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'SEC needs a subscription. Subscribe, then go back to ChatGPT and connect again.'
+    )
+    expect(screen.getByTestId('subscribe')).toHaveAttribute(
+      'href',
+      '/repositories/browse'
+    )
+    expect(screen.getByTestId('approve')).toBeDisabled()
+    expect(screen.getByTestId('deny')).toBeEnabled()
+  })
+
+  test('a fixed graph the user cannot read says so and disables Allow', async () => {
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse(200, {
+        ...PENDING,
+        is_trusted: true,
+        resource: 'http://localhost:8000/v1/graphs/kg5q6r7s/mcp',
+        graph_id: 'kg5q6r7s',
+        graph_access: 'denied',
+      })
+    )
+    render(<ConsentContent />)
+    await screen.findByTestId('fixed-graph')
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      "You don't have access to this graph."
+    )
+    expect(screen.queryByTestId('subscribe')).not.toBeInTheDocument()
+    expect(screen.getByTestId('approve')).toBeDisabled()
+  })
+
   test('an expired request explains itself', async () => {
     fetchMock.mockResolvedValueOnce(jsonResponse(404, { detail: 'gone' }))
     render(<ConsentContent />)
