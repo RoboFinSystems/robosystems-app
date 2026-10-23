@@ -1,5 +1,9 @@
 import { sdkError, sdkOk } from '@/test-utils/sdk'
-import { listGraphMembers, listGraphMutations } from '@robosystems/client'
+import {
+  getOperatorRun,
+  listGraphMembers,
+  listGraphMutations,
+} from '@robosystems/client'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -24,6 +28,7 @@ import ActivityContent from '../content'
 
 const mutations = vi.mocked(listGraphMutations)
 const members = vi.mocked(listGraphMembers)
+const runDetail = vi.mocked(getOperatorRun)
 
 const ENTRIES = [
   {
@@ -53,11 +58,36 @@ const ENTRIES = [
   },
 ]
 
+const SHOW_RUN = 'Show every change from this run'
+
+const RUN = {
+  operation_id: 'op_run_1',
+  thread_id: 'thr_1',
+  user_id: 'user_1',
+  operator_type: 'author',
+  mode: 'standard',
+  status: 'completed',
+  question: 'Remember that July closed late.',
+  answer: 'Noted: July closed late.',
+  error: null,
+  credits_consumed: 12.5,
+  call_count: 3,
+  tools_called: ['remember'],
+  write_count: 1,
+  started_at: '2026-09-28T09:59:56Z',
+  finished_at: '2026-09-28T10:00:00Z',
+  duration_ms: 4200,
+  history: [],
+  transcript: [],
+  result: {},
+}
+
 describe('ActivityContent', () => {
   beforeEach(() => {
     graph.currentGraphId = 'kg1'
     mutations.mockReset()
     members.mockReset()
+    runDetail.mockReset()
     members.mockResolvedValue(
       sdkOk({ members: [{ user_id: 'user_1', name: 'Joey French' }] })
     )
@@ -198,5 +228,66 @@ describe('ActivityContent', () => {
     )
     expect(screen.queryByText('create-agent')).not.toBeInTheDocument()
     expect(screen.queryByText('remember')).not.toBeInTheDocument()
+  })
+
+  it("shows the selected run's question and answer above its changes", async () => {
+    mutations.mockResolvedValue(
+      sdkOk({ graph_id: 'kg1', entries: ENTRIES, next_cursor: null })
+    )
+    runDetail.mockResolvedValue(sdkOk(RUN))
+    render(<ActivityContent />)
+
+    fireEvent.click(await screen.findByText('author run'))
+
+    expect(
+      await screen.findByText('Remember that July closed late.')
+    ).toBeInTheDocument()
+    expect(screen.getByText('Noted: July closed late.')).toBeInTheDocument()
+    expect(
+      screen.getByText(/4\.2s · 12\.5 credits · 3 model calls/)
+    ).toBeInTheDocument()
+    expect(runDetail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: { graph_id: 'kg1', operation_id: 'op_run_1' },
+      })
+    )
+  })
+
+  it('lists the changes without a card when the run has no record', async () => {
+    mutations.mockResolvedValue(
+      sdkOk({ graph_id: 'kg1', entries: ENTRIES, next_cursor: null })
+    )
+    runDetail.mockResolvedValue(sdkError(404, 'Run not found'))
+    render(<ActivityContent />)
+
+    fireEvent.click(await screen.findByText('author run'))
+
+    await waitFor(() => expect(runDetail).toHaveBeenCalled())
+    expect(screen.getByText('Showing one AI run · clear')).toBeInTheDocument()
+    expect(screen.queryByText('Asked')).not.toBeInTheDocument()
+  })
+
+  it("drops the previous run's card while the next record loads", async () => {
+    const entries = [
+      ENTRIES[0],
+      { ...ENTRIES[0], id: 'oma_5', operation_id: 'op_run_2' },
+    ]
+    mutations.mockResolvedValue(
+      sdkOk({ graph_id: 'kg1', entries, next_cursor: null })
+    )
+    runDetail
+      .mockResolvedValueOnce(sdkOk(RUN))
+      .mockImplementationOnce(() => new Promise(() => {}))
+    render(<ActivityContent />)
+
+    fireEvent.click((await screen.findAllByTitle(SHOW_RUN))[0])
+    await screen.findByText('Remember that July closed late.')
+
+    fireEvent.click(screen.getAllByTitle(SHOW_RUN)[1])
+
+    await waitFor(() => expect(runDetail).toHaveBeenCalledTimes(2))
+    expect(
+      screen.queryByText('Remember that July closed late.')
+    ).not.toBeInTheDocument()
   })
 })

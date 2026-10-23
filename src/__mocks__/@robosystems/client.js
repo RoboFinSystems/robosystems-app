@@ -193,6 +193,7 @@ export const getCheckoutStatus = vi.fn()
 // Graph membership
 export const listGraphMembers = vi.fn()
 export const listGraphMutations = vi.fn()
+export const getOperatorRun = vi.fn()
 export const addGraphMember = vi.fn()
 export const updateGraphMemberRole = vi.fn()
 export const removeGraphMember = vi.fn()

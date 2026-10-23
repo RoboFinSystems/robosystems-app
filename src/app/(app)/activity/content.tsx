@@ -133,10 +133,10 @@ export default function ActivityContent() {
 
   // The selected run's record, shown above the changes it made.
   useEffect(() => {
-    if (!graphId || !run) {
-      setRunDetail(null)
-      return
-    }
+    // Cleared first: the previous run's card must not sit above the next
+    // run's changes while its record loads.
+    setRunDetail(null)
+    if (!graphId || !run) return
     let cancelled = false
     void (async () => {
       try {
