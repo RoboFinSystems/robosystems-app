@@ -95,7 +95,7 @@ export default function CancelSubscriptionModal({
   const isGraph = resourceType === 'graph'
   const destructiveLabel = isGraph ? 'Delete Graph Now' : 'Cancel Now'
   const destructiveExplain = isGraph
-    ? 'Subscription is canceled immediately. The graph database is torn down within ~10 minutes — data cannot be recovered without a backup. On a card-billed plan, the unused part of this billing period is credited to your organization’s account balance and applied to its next invoice.'
+    ? 'Subscription is canceled immediately. The graph database is torn down within ~10 minutes — data cannot be recovered without a backup. The unused part of this billing period is credited, not refunded: to your organization’s account balance on a card-billed plan, or on this period’s invoice on an invoiced plan.'
     : 'Subscription is canceled immediately. Access to the repository ends now; remaining paid time is forfeited.'
 
   return (
