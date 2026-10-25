@@ -132,7 +132,7 @@ describe('SignInForm (login home fork)', () => {
     ).not.toBeNull()
   })
 
-  it('without the product app’s nonce hash, sends the browser to start a bound bridge there', async () => {
+  it('without the product app’s nonce hash, mints an unbound handoff for an app that predates the binding', async () => {
     fakeLocation('?return_to=roboledger%3A%2Freports%2Fx')
     mockedGetCurrentAuthUser.mockResolvedValue({
       data: { user: mockUser },
@@ -142,11 +142,19 @@ describe('SignInForm (login home fork)', () => {
     render(<SignInForm apiUrl="http://localhost:8000" />)
 
     await waitFor(() => {
-      expect(String(window.location.href)).toBe(
-        'https://roboledger.ai/login?return_to=%2Freports%2Fx'
+      expect(String(window.location.href)).toContain(
+        'https://roboledger.ai/login?session_id=sess-1'
       )
     })
-    expect(mockedSsoTokenExchange).not.toHaveBeenCalled()
+    // Nothing to bind to, so the exchange carries no hash; a target that does
+    // bind strips a handoff it never asked for and starts its own bridge.
+    expect(mockedSsoTokenExchange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.not.objectContaining({
+          browser_nonce_hash: expect.anything(),
+        }),
+      })
+    )
   })
 
   it('lands an authenticated visit with a local return_to on that path', async () => {
