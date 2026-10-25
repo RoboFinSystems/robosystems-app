@@ -49,6 +49,18 @@ export function parseDestination(
   return { kind: 'app', app: parsed.app, path }
 }
 
+const NONCE_HASH_PATTERN = /^[0-9a-f]{64}$/
+
+/**
+ * The hash of the nonce the product app minted when it sent the browser here
+ * (`?nonce_hash=`). Passed into the bridge, it binds the handoff to that
+ * browser; anything but a SHA-256 hex digest is ignored and the bridge runs
+ * through the product app's own login instead.
+ */
+export function parseNonceHash(raw: string | null | undefined): string | null {
+  return raw && NONCE_HASH_PATTERN.test(raw) ? raw : null
+}
+
 const BRIDGE_MARKER_PREFIX = 'bridge_attempt:'
 const BRIDGE_MARKER_TTL_MS = 60 * 1000
 

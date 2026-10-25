@@ -3,6 +3,7 @@ import {
   loginPathWith,
   markBridgeAttempt,
   parseDestination,
+  parseNonceHash,
   shouldSuppressAutoBridge,
 } from '../return-to'
 
@@ -110,5 +111,25 @@ describe('loginPathWith', () => {
 
   it('falls back to the bare login path', () => {
     expect(loginPathWith(null)).toBe('/login')
+  })
+})
+
+describe('parseNonceHash', () => {
+  const hash = 'ab'.repeat(32)
+
+  it('accepts a SHA-256 hex digest', () => {
+    expect(parseNonceHash(hash)).toBe(hash)
+  })
+
+  it.each([
+    null,
+    undefined,
+    '',
+    hash.slice(1),
+    hash + 'a',
+    hash.toUpperCase(),
+    '../x',
+  ])('ignores %j', (raw) => {
+    expect(parseNonceHash(raw)).toBeNull()
   })
 })
