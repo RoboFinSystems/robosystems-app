@@ -41,6 +41,8 @@ const mockUser = {
 }
 
 const originalLocation = window.location
+// The hash of the nonce the product app minted when it sent the browser here.
+const NONCE_HASH = 'ab'.repeat(32)
 
 function fakeLocation(search: string) {
   delete (window as { location?: Location }).location
@@ -103,7 +105,9 @@ describe('SignInForm (login home fork)', () => {
   })
 
   it('silently bridges an authenticated visit with a cross-app return_to', async () => {
-    fakeLocation('?return_to=roboledger%3A%2Freports%2Fx')
+    fakeLocation(
+      `?return_to=roboledger%3A%2Freports%2Fx&nonce_hash=${NONCE_HASH}`
+    )
     mockedGetCurrentAuthUser.mockResolvedValue({
       data: { user: mockUser },
     } as never)
@@ -117,9 +121,40 @@ describe('SignInForm (login home fork)', () => {
       )
     })
     expect(String(window.location.href)).toContain('returnUrl=%2Freports%2Fx')
+    // The handoff is bound to the browser that minted the nonce.
+    expect(mockedSsoTokenExchange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.objectContaining({ browser_nonce_hash: NONCE_HASH }),
+      })
+    )
     expect(
       sessionStorage.getItem('bridge_attempt:roboledger:/reports/x')
     ).not.toBeNull()
+  })
+
+  it('without the product app’s nonce hash, mints an unbound handoff for an app that predates the binding', async () => {
+    fakeLocation('?return_to=roboledger%3A%2Freports%2Fx')
+    mockedGetCurrentAuthUser.mockResolvedValue({
+      data: { user: mockUser },
+    } as never)
+    mockBridgeEndpoints()
+
+    render(<SignInForm apiUrl="http://localhost:8000" />)
+
+    await waitFor(() => {
+      expect(String(window.location.href)).toContain(
+        'https://roboledger.ai/login?session_id=sess-1'
+      )
+    })
+    // Nothing to bind to, so the exchange carries no hash; a target that does
+    // bind strips a handoff it never asked for and starts its own bridge.
+    expect(mockedSsoTokenExchange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.not.objectContaining({
+          browser_nonce_hash: expect.anything(),
+        }),
+      })
+    )
   })
 
   it('lands an authenticated visit with a local return_to on that path', async () => {
@@ -137,7 +172,9 @@ describe('SignInForm (login home fork)', () => {
   })
 
   it('downgrades to a manual interstitial after a failed bridge', async () => {
-    fakeLocation('?return_to=roboledger&reason=bridge_failed')
+    fakeLocation(
+      `?return_to=roboledger&reason=bridge_failed&nonce_hash=${NONCE_HASH}`
+    )
     mockedGetCurrentAuthUser.mockResolvedValue({
       data: { user: mockUser },
     } as never)
@@ -175,7 +212,7 @@ describe('SignInForm (login home fork)', () => {
   })
 
   it('bridges onward after a manual sign-in with a cross-app return_to', async () => {
-    fakeLocation('?return_to=roboledger')
+    fakeLocation(`?return_to=roboledger&nonce_hash=${NONCE_HASH}`)
     mockedGetCurrentAuthUser.mockRejectedValue(new Error('unauthorized'))
     mockedLoginUser.mockResolvedValue({
       data: { user: mockUser, message: 'ok' },

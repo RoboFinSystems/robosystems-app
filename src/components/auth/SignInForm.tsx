@@ -15,6 +15,7 @@ import { PlatformIdentityHeader } from './PlatformIdentityHeader'
 import {
   markBridgeAttempt,
   parseDestination,
+  parseNonceHash,
   shouldSuppressAutoBridge,
   useCarriedAuthParams,
 } from './return-to'
@@ -77,6 +78,12 @@ export const SIGN_IN_NOTICES: Record<string, string> = {
   session_invalid: 'Your session is no longer valid. Please sign in again.',
   bridge_failed: "Automatic sign-in didn't complete. Sign in to continue.",
 }
+
+/** The product app's nonce hash, read at bridge time; see `parseNonceHash`. */
+const bridgeNonceHash = (): string | undefined =>
+  parseNonceHash(
+    new URLSearchParams(window.location.search).get('nonce_hash')
+  ) ?? undefined
 
 interface BridgeInterstitial {
   user: AuthUser
@@ -156,7 +163,9 @@ export function SignInForm({
     setRedirecting(true)
     if (destination?.kind === 'app' && rawReturnTo) {
       markBridgeAttempt(rawReturnTo)
-      await navigateToApp(destination.app, destination.path ?? undefined)
+      await navigateToApp(destination.app, destination.path ?? undefined, {
+        nonceHash: bridgeNonceHash(),
+      })
       return
     }
     window.location.href =
@@ -315,7 +324,8 @@ export function SignInForm({
     markBridgeAttempt(interstitial.returnTo)
     await navigateToApp(
       interstitial.targetApp,
-      interstitial.targetPath ?? undefined
+      interstitial.targetPath ?? undefined,
+      { nonceHash: bridgeNonceHash() }
     )
   }
 
