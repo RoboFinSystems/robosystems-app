@@ -95,7 +95,7 @@ npm run format:check # Check code formatting
 
 ## Important Notes
 
-- Requires Node.js 24.x (specified in package.json engines)
+- Requires Node.js 26.x (specified in package.json engines)
 - RoboSystems API URL configuration required
 - Always run `npm run test:all` before commits
 - Format code before submitting PRs
