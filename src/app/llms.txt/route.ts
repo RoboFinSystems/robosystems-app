@@ -1,8 +1,8 @@
 import { getAllPosts } from '@/lib/blog'
-import { orBuildFallback } from '@/lib/build-phase'
 import type { DocsPage } from '@/lib/docs'
 import { DOCS_SITE, getDocsCatalog, getDocsNav } from '@/lib/docs'
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/lib/site'
+import { orBuildFallback } from '@robosystems/core/docs/catalog'
 
 // llms.txt (llmstxt.org): a plain-markdown map of the site for language models. Built from
 // the same docs and blog catalogs as the sitemap, so it cannot list a page that is gone.

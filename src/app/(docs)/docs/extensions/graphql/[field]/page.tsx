@@ -1,6 +1,5 @@
 import { ApiShell } from '@/components/docs/api/ApiShell'
 import { CodeBlock } from '@/components/docs/api/CodeBlock'
-import { DocsMarkdown } from '@/components/docs/DocsMarkdown'
 import { InlineMarkdown } from '@/components/docs/InlineMarkdown'
 import { PROSE } from '@/components/docs/prose'
 import {
@@ -24,6 +23,7 @@ import {
   summarize,
 } from '@/lib/openapi'
 import { publicPageMetadata } from '@/lib/site'
+import { DocsMarkdown } from '@robosystems/core/docs/DocsMarkdown'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'

@@ -4,7 +4,6 @@ import { MethodBadge } from '@/components/docs/api/MethodBadge'
 import { ParameterTable } from '@/components/docs/api/ParameterTable'
 import { SchemaFields } from '@/components/docs/api/SchemaFields'
 import { DocsJsonLd } from '@/components/docs/DocsJsonLd'
-import { DocsMarkdown } from '@/components/docs/DocsMarkdown'
 import { InlineMarkdown } from '@/components/docs/InlineMarkdown'
 import { PROSE } from '@/components/docs/prose'
 import {
@@ -29,6 +28,7 @@ import {
   hasExampleBody,
   schemaFields,
 } from '@/lib/openapi-schema'
+import { DocsMarkdown } from '@robosystems/core/docs/DocsMarkdown'
 import Link from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 

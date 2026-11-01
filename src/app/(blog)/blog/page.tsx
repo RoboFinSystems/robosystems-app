@@ -4,7 +4,7 @@ import {
   BlogListJsonLd,
 } from '@/components/blog/BlogJsonLd'
 import { getAllPosts } from '@/lib/blog'
-import { orBuildFallback } from '@/lib/build-phase'
+import { orBuildFallback } from '@robosystems/core/docs/catalog'
 import { format } from 'date-fns'
 import type { Metadata } from 'next'
 import Link from 'next/link'

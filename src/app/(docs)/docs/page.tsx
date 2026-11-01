@@ -1,6 +1,6 @@
-import { orBuildFallback } from '@/lib/build-phase'
 import { DOCS_SITE, getDocsCatalog, getDocsNav } from '@/lib/docs'
 import { publicPageMetadata } from '@/lib/site'
+import { orBuildFallback } from '@robosystems/core/docs/catalog'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 

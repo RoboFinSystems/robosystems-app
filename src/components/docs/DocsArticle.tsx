@@ -6,10 +6,10 @@ import {
   type DocsPage,
   type TocHeading,
 } from '@/lib/docs'
+import { DocsMarkdown } from '@robosystems/core/docs/DocsMarkdown'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { DocsJsonLd, type Crumb } from './DocsJsonLd'
-import { DocsMarkdown } from './DocsMarkdown'
 import { PROSE } from './prose'
 
 function formatDate(iso: string): string {
