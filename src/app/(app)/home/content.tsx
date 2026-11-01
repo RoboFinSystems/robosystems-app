@@ -207,10 +207,14 @@ export default function AllGraphsHomePage() {
             <div className="w-full">
               <Table>
                 <TableHead>
-                  <TableHeadCell>Graph / Repository</TableHeadCell>
-                  <TableHeadCell>Type & Extensions</TableHeadCell>
-                  <TableHeadCell>Created</TableHeadCell>
-                  <TableHeadCell className="text-right">Actions</TableHeadCell>
+                  <tr>
+                    <TableHeadCell>Graph / Repository</TableHeadCell>
+                    <TableHeadCell>Type & Extensions</TableHeadCell>
+                    <TableHeadCell>Created</TableHeadCell>
+                    <TableHeadCell className="text-right">
+                      Actions
+                    </TableHeadCell>
+                  </tr>
                 </TableHead>
                 <TableBody className="divide-y divide-gray-200 dark:divide-gray-700">
                   {graphs.map((graph) => {

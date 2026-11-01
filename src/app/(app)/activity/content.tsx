@@ -292,15 +292,17 @@ export default function ActivityContent() {
           <div className="overflow-x-auto">
             <Table>
               <TableHead>
-                <TableRow>
-                  <TableHeadCell>Time</TableHeadCell>
-                  <TableHeadCell>Source</TableHeadCell>
-                  <TableHeadCell>Change</TableHeadCell>
-                  <TableHeadCell>Who</TableHeadCell>
-                  <TableHeadCell>Via</TableHeadCell>
-                  <TableHeadCell>Result</TableHeadCell>
-                  <TableHeadCell>Objects</TableHeadCell>
-                </TableRow>
+                <tr>
+                  <TableRow>
+                    <TableHeadCell>Time</TableHeadCell>
+                    <TableHeadCell>Source</TableHeadCell>
+                    <TableHeadCell>Change</TableHeadCell>
+                    <TableHeadCell>Who</TableHeadCell>
+                    <TableHeadCell>Via</TableHeadCell>
+                    <TableHeadCell>Result</TableHeadCell>
+                    <TableHeadCell>Objects</TableHeadCell>
+                  </TableRow>
+                </tr>
               </TableHead>
               <TableBody className="divide-y">
                 {entries.map((entry) => (
