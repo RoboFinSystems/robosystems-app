@@ -6,12 +6,12 @@ RoboSystems App is the web interface for the RoboSystems financial intelligence 
 - **Document Search**: Full-text and semantic search across SEC filings, uploaded documents, and connected sources
 - **AI Console**: Natural language and Cypher query terminal with streaming results and MCP integration
 - **AI Memory**: Browse, edit, and curate the per-graph semantic memory store behind remember/recall
-- **Schema Explorer**: Inspect node labels, relationships, constraints, and indexes
+- **Schema Explorer**: Inspect node labels, relationships, and properties
 - **Subgraph Workspaces**: Create isolated environments for development, testing, and collaboration
 - **Data Lake**: DuckDB staging tables for data validation and bulk ingestion
 - **Shared Repository Access**: Subscribe to and query SEC XBRL filings and public financial data
-- **Research**: Public equity research pages built from SEC filings, every figure traceable to a filing
-- **Backup Management**: Create, download, and restore graph database backups
+- **Docs**: Public guides, technical docs, and the API reference
+- **Backup Management**: Create and download graph database backups
 - **Billing & Usage**: Manage subscriptions, view invoices, and track credit usage
 - **Organization Management**: Manage team members and organization settings
 
