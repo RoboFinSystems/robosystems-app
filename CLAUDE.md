@@ -37,16 +37,18 @@ npm run format:check # Check code formatting
 
 **API Routes:**
 
-- `/api/utilities/health` - Health check endpoint for App Runner
+- `/api/utilities/health` - Health check endpoint
 - `/api/contact` - Contact form submission via SNS (with rate limiting and CAPTCHA)
 - `/api/support` - Support request submission via SNS
 - `/api/session/sidebar` - Sidebar state management
 
 **Route Structure:**
 
-- `(app)` route group: Authenticated pages (home, dashboard, console, memory, graphs, schema, tables, subgraphs, backups, repositories, documents, search, library, billing, usage, organization, settings, checkout)
-- `(landing)` route group: Public pages (login, register, auth, pricing, platform, open-source, legal pages)
-- `(blog)` route group: Blog posts and public equity research pages (`/research`, `/research/[ticker]`)
+- `(app)` route group: Authenticated pages (home, dashboard, activity, console, memory, graphs, schema, tables, subgraphs, backups, connect, repositories, documents, search, usage, organization, settings, checkout); `/billing` is a redirect kept for Stripe's portal
+- `(landing)` route group: Public pages (login, logout, register, auth, pricing, platform, about, enterprise, legal pages)
+- `(blog)` route group: Blog posts. The research pages moved to roboinvestor.ai, and `/research` redirects there
+- `(docs)` route group: Public docs
+- `(consent)` route group: OAuth consent
 - API routes follow RESTful patterns with proper session validation
 
 ## Key Development Patterns
@@ -80,8 +82,8 @@ npm run format:check # Check code formatting
 
 ## Deployment
 
-- Deployed on AWS App Runner behind CloudFront
-- **Release notes**: `tag-release.yml` auto-generates the changelog from changes since the last tag (via the Claude API). For milestone releases, commit curated notes to `.github/release-notes/v<version>.md` _before_ dispatching `create-release.yml` — when that file exists at the tagged ref it replaces the generated changelog (and the stats section is skipped)
+- Deployed on AWS App Runner or ECS Express Mode (the `APP_COMPUTE` GitHub variable) behind CloudFront
+- **Release notes**: `tag-release.yml` (the reusable workflow in `robosystems`) auto-generates the changelog from changes since the last tag (via the Claude API). For milestone releases, commit curated notes to `.github/release-notes/v<version>.md` _before_ dispatching `create-release.yml` — when that file exists at the tagged ref it replaces the generated changelog (and the stats section is skipped)
 - Environment variables needed:
   - `NEXT_PUBLIC_ROBOSYSTEMS_API_URL` - RoboSystems API endpoint
   - `SNS_CONTACT_TOPIC_ARN` - SNS topic for contact and support forms
@@ -102,7 +104,7 @@ npm run format:check # Check code formatting
 
 ## Core Library (npm Package)
 
-Shared components are consumed from the [`@robosystems/core`](https://www.npmjs.com/package/@robosystems/core) npm package (repo: `RoboFinSystems/robosystems-core`), shared across all RoboSystems frontend apps (robosystems-app, roboledger-app, roboinvestor-app). Import from `@robosystems/core` or its subpaths (e.g. `@robosystems/core/ui-components`).
+Shared components are consumed from the [`@robosystems/core`](https://www.npmjs.com/package/@robosystems/core) npm package (repo: `RoboFinSystems/robosystems-core`), shared across all RoboSystems frontend apps (robosystems-app, roboledger-app, roboinvestor-app). Import from `@robosystems/core` or its subpaths (e.g. `@robosystems/core/ui`, `@robosystems/core/ui-components`).
 
 ### Working with Core
 
@@ -116,11 +118,13 @@ Shared components are consumed from the [`@robosystems/core`](https://www.npmjs.
 - **auth-components/**: Login, register, password reset forms
 - **auth-core/**: Session management and JWT handling
 - **components/**: Graph creation wizard and shared components
+- **ui/**: UI primitives (Button, Modal, Table, ...)
 - **ui-components/**: Layout, forms, chat, and settings components
 - **contexts/**: Graph, organization, entity, service-offerings, and sidebar contexts
 - **task-monitoring/**: SSE-based background job tracking
 - **hooks/**: Shared React hooks
-- **theme/**: theme customization
+- **styles/**: Palette and form CSS
+- **docs/**: Docs rendering
 
 <!-- BEGIN:nextjs-agent-rules -->
 
