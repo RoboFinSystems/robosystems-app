@@ -1,6 +1,6 @@
 import { BLOG_DESCRIPTION } from '@/components/blog/BlogJsonLd'
 import { getAllPosts } from '@/lib/blog'
-import { orBuildFallback } from '@/lib/build-phase'
+import { orBuildFallback } from '@robosystems/core/docs/catalog'
 
 // RSS 2.0 for the robosystems.ai lane: readers, aggregators and search engines pick new
 // posts up from here without waiting on a sitemap recrawl. Same catalog and cadence as

@@ -1,6 +1,5 @@
 import { ApiShell } from '@/components/docs/api/ApiShell'
 import { MethodBadge } from '@/components/docs/api/MethodBadge'
-import { DocsMarkdown } from '@/components/docs/DocsMarkdown'
 import { PROSE } from '@/components/docs/prose'
 import {
   API_BASE_PATH,
@@ -10,6 +9,7 @@ import {
   requireApiCatalog,
 } from '@/lib/openapi'
 import { publicPageMetadata } from '@/lib/site'
+import { DocsMarkdown } from '@robosystems/core/docs/DocsMarkdown'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
