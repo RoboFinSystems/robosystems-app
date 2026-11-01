@@ -1,4 +1,3 @@
-import { customTheme } from '@robosystems/core'
 import {
   fetchGraphCapacity,
   fetchGraphTiers,
@@ -7,7 +6,7 @@ import {
   type GraphTier,
   type TierCapacity,
 } from '@robosystems/core/lib/graph-tiers'
-import { Alert, Badge, Button, Card, Spinner } from 'flowbite-react'
+import { Alert, Badge, Button, Card, Spinner } from '@robosystems/core/ui'
 import { useEffect, useState } from 'react'
 import { HiCheckCircle, HiInformationCircle } from 'react-icons/hi'
 import type { TierRequestTarget } from '../TierRequestForm'
@@ -50,7 +49,7 @@ export function TierSelectionStep({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   // The target outlives the open flag so the modal stays mounted across a
-  // close and Flowbite drives the transition off `show`, the way
+  // close and the Modal drives the transition off `show`, the way
   // GraphLimitModal does.
   const [requestTarget, setRequestTarget] = useState<TierRequestTarget | null>(
     null
@@ -128,7 +127,7 @@ export function TierSelectionStep({
 
   if (error) {
     return (
-      <Alert theme={customTheme.alert} color="failure">
+      <Alert color="failure">
         <p className="font-semibold">Failed to load tier configurations</p>
         <p className="text-sm">{error}</p>
       </Alert>
@@ -137,7 +136,7 @@ export function TierSelectionStep({
 
   if (tiers.length === 0) {
     return (
-      <Alert theme={customTheme.alert} color="warning">
+      <Alert color="warning">
         <p>No tier configurations available. Please contact support.</p>
       </Alert>
     )
@@ -180,7 +179,6 @@ export function TierSelectionStep({
           return (
             <Card
               key={tier.tier}
-              theme={customTheme.card}
               className={`relative transition-all ${
                 isAtCapacity ? 'cursor-not-allowed' : 'cursor-pointer'
               } ${

@@ -1,8 +1,7 @@
 'use client'
 
 import { useOrg, useUser } from '@robosystems/core'
-import { customTheme } from '@robosystems/core/theme'
-import { Modal } from 'flowbite-react'
+import { Modal } from '@robosystems/core/ui'
 import TierRequestForm, { type TierRequestTarget } from './TierRequestForm'
 
 interface TierRequestModalProps {
@@ -34,7 +33,7 @@ export default function TierRequestModal({
     : `Standard is the starting point. Larger tiers are set up on request for bigger ledgers, more entities, and heavier usage. Tell us what you're bringing in and we'll get ${target.displayName} provisioned for you.`
 
   return (
-    <Modal show={isOpen} onClose={onClose} size="2xl" theme={customTheme.modal}>
+    <Modal show={isOpen} onClose={onClose} size="2xl">
       <div className="relative rounded-lg border border-gray-700 bg-gradient-to-br from-zinc-900 to-zinc-800">
         <button
           onClick={onClose}

@@ -1,5 +1,3 @@
-import withFlowbiteReact from 'flowbite-react/plugin/nextjs'
-
 // Blog posts that moved to roboledger.ai (site-content-surfaces, decided 2026-09-02). The
 // content machine flags them `site: roboledger`, which drops them from this app's /blog list
 // and sitemap on the next reindex; the redirect keeps the old URL and its backlinks pointing
@@ -164,4 +162,4 @@ const nextConfig = {
   },
 }
 
-export default withFlowbiteReact(nextConfig)
+export default nextConfig

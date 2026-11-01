@@ -4,7 +4,7 @@ import { EditorModal } from '@/components/editor/EditorModal'
 import { MarkdownEditor } from '@/components/editor/MarkdownEditor'
 import type { DocumentDetailResponse } from '@robosystems/client'
 import { CategoryInput, TagInput } from '@robosystems/core'
-import { Label, TextInput } from 'flowbite-react'
+import { Label, TextInput } from '@robosystems/core/ui'
 import { useRef, useState } from 'react'
 
 export interface DocumentFormValues {

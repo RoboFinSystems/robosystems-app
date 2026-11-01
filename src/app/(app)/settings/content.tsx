@@ -12,7 +12,7 @@ import {
 } from '@robosystems/core'
 import { useAuth } from '@robosystems/core/auth-components'
 import { useToast } from '@robosystems/core/hooks/use-toast'
-import { Button } from 'flowbite-react'
+import { Button } from '@robosystems/core/ui'
 import type { FC } from 'react'
 import { useState } from 'react'
 import { HiCog, HiMail } from 'react-icons/hi'

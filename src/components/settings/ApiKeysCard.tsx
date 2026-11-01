@@ -13,8 +13,8 @@ import {
   GraphContext,
   SettingsCard,
 } from '@robosystems/core'
+import { Button, Spinner } from '@robosystems/core/ui'
 import { ConfirmModal } from '@robosystems/core/ui-components'
-import { Button, Spinner } from 'flowbite-react'
 import type { ComponentProps, FC } from 'react'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { HiKey } from 'react-icons/hi'

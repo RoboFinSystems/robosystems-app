@@ -12,7 +12,7 @@ import {
   useIsRepository,
 } from '@robosystems/core'
 import { useToast } from '@robosystems/core/hooks/use-toast'
-import { Button, Card, Label } from 'flowbite-react'
+import { Button, Card, Label } from '@robosystems/core/ui'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { HiExclamation, HiLightBulb, HiPlus, HiTrash } from 'react-icons/hi'
 

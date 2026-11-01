@@ -1,4 +1,4 @@
-import { Badge } from 'flowbite-react'
+import { Badge } from '@robosystems/core/ui'
 
 // Freeform in the API; these presets cover the common values.
 export const TYPE_FILTER_OPTIONS = ['note', 'fact', 'preference']

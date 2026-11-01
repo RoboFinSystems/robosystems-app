@@ -1,5 +1,10 @@
-import { customTheme } from '@robosystems/core'
-import { Alert, Label, Textarea, TextInput, ToggleSwitch } from 'flowbite-react'
+import {
+  Alert,
+  Label,
+  Textarea,
+  TextInput,
+  ToggleSwitch,
+} from '@robosystems/core/ui'
 import { HiInformationCircle } from 'react-icons/hi'
 import type { EntityCreate } from '../types'
 
@@ -91,7 +96,6 @@ export function EntityInfoStep({
           <div>
             <Label htmlFor="graphName">Graph Name *</Label>
             <TextInput
-              theme={customTheme.textInput}
               id="graphName"
               type="text"
               placeholder="e.g., My Entity Graph"
@@ -108,7 +112,6 @@ export function EntityInfoStep({
             <Label htmlFor="entityDescription">Description (Optional)</Label>
             <Textarea
               id="entityDescription"
-              theme={customTheme.textarea}
               placeholder="Describe the purpose of this graph database..."
               value={entityDescription}
               onChange={(e) => onUpdate({ entityDescription: e.target.value })}
@@ -121,7 +124,6 @@ export function EntityInfoStep({
             <TextInput
               id="entityTags"
               type="text"
-              theme={customTheme.textInput}
               placeholder="e.g., analytics, customers, production"
               value={entityTags.join(', ')}
               onChange={(e) =>
@@ -143,7 +145,6 @@ export function EntityInfoStep({
           <div>
             <Label htmlFor="entityName">Entity Name *</Label>
             <TextInput
-              theme={customTheme.textInput}
               id="entityName"
               type="text"
               placeholder="e.g., Acme Corporation"
@@ -161,7 +162,6 @@ export function EntityInfoStep({
             <Label htmlFor="entityDescription">Description (Optional)</Label>
             <Textarea
               id="entityDescription"
-              theme={customTheme.textarea}
               placeholder="Describe the purpose of this entity graph..."
               value={entityDescription}
               onChange={(e) => onUpdate({ entityDescription: e.target.value })}
@@ -174,7 +174,6 @@ export function EntityInfoStep({
             <TextInput
               id="entityTags"
               type="text"
-              theme={customTheme.textInput}
               placeholder="e.g., consulting, professional-services, production"
               value={entityTags.join(', ')}
               onChange={(e) =>

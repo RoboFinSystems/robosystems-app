@@ -18,7 +18,7 @@ vi.mock('@robosystems/core', () => ({
     cancelOperation: vi.fn(),
   }),
 }))
-vi.mock('flowbite-react', () => ({
+vi.mock('@robosystems/core/ui', () => ({
   Alert: ({ children }: { children: React.ReactNode }) => (
     <div role="alert">{children}</div>
   ),

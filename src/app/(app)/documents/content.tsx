@@ -22,7 +22,14 @@ import {
   useIsRepository,
 } from '@robosystems/core'
 import { useToast } from '@robosystems/core/hooks/use-toast'
-import { Badge, Button, Card, Label, Spinner, Tooltip } from 'flowbite-react'
+import {
+  Badge,
+  Button,
+  Card,
+  Label,
+  Spinner,
+  Tooltip,
+} from '@robosystems/core/ui'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   HiArrowLeft,

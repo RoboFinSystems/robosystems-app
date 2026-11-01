@@ -11,7 +11,14 @@ import {
   type PendingAuthorization,
 } from '@/lib/oauth-consent'
 import { useGraphContext } from '@robosystems/core'
-import { Alert, Button, Card, Label, Radio, Spinner } from 'flowbite-react'
+import {
+  Alert,
+  Button,
+  Card,
+  Label,
+  Radio,
+  Spinner,
+} from '@robosystems/core/ui'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'

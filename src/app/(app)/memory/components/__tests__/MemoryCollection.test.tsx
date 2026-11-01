@@ -5,7 +5,7 @@ import { MemoryCollection } from '../MemoryCollection'
 
 // Stub the core search bar + empty state, and MemoryCard, so the test drives
 // the collection's orchestration (browse ↔ recall, filters, show-all,
-// pagination) rather than presentational internals. Real flowbite renders
+// pagination) rather than presentational internals. The real UI layer renders
 // the Select/Card/Button in jsdom.
 vi.mock('@robosystems/core', () => ({
   SearchBar: ({

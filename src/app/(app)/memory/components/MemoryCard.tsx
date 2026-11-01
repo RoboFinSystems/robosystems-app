@@ -2,7 +2,7 @@
 
 import type { MemoryRecord } from '@robosystems/client'
 import { MarkdownProse } from '@robosystems/core'
-import { Badge, Button, Card, Tooltip } from 'flowbite-react'
+import { Badge, Button, Card, Tooltip } from '@robosystems/core/ui'
 import { HiChevronDown, HiChevronUp, HiPencil, HiTrash } from 'react-icons/hi'
 
 import { formatDate, SourceBadge, TypeBadge } from './memory-badges'

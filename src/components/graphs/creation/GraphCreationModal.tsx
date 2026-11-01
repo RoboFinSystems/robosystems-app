@@ -1,7 +1,6 @@
 'use client'
 
-import { customTheme } from '@robosystems/core'
-import { Button, Modal } from 'flowbite-react'
+import { Button, Modal } from '@robosystems/core/ui'
 import { useState } from 'react'
 import { HiPlus } from 'react-icons/hi'
 import { GraphCreationWizard } from './GraphCreationWizard'
@@ -43,7 +42,6 @@ export function GraphCreationModal({
   return (
     <>
       <Button
-        theme={customTheme.button}
         color={buttonColor}
         size={buttonSize}
         onClick={() => setIsOpen(true)}
@@ -52,12 +50,7 @@ export function GraphCreationModal({
         {buttonText}
       </Button>
 
-      <Modal
-        theme={customTheme.modal}
-        show={isOpen}
-        onClose={handleCancel}
-        size={modalSize}
-      >
+      <Modal show={isOpen} onClose={handleCancel} size={modalSize}>
         <div className="flex items-center justify-between rounded-t-lg border-b border-gray-200 p-5 dark:border-gray-700">
           <h3 className="text-xl font-medium text-gray-900 dark:text-white">
             Create New Knowledge Graph

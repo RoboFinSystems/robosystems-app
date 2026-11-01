@@ -39,11 +39,9 @@
     "@aws-sdk/client-sns": "^3.1145.0",
     "@monaco-editor/react": "^4.7.0",
     "@robosystems/client": "^2.34.1",
-    "@robosystems/core": "^0.17.1",
+    "@robosystems/core": "^0.18.1",
     "@simplewebauthn/browser": "14.0.0",
     "date-fns": "^4.1.0",
-    "flowbite": "^3.1",
-    "flowbite-react": "^0.12.5",
     "github-slugger": "^2.0.0",
     "lru-cache": "^11.5.3",
     "next": "^16.4.2",
@@ -57,10 +55,9 @@
     "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3"
   },
-  "//overrides": "Every entry is load-bearing; verify with npm audit before removing any. dompurify is forced to ^3.3.0 because monaco-editor depends on exactly 3.4.8, which carries GHSA-55q2-fjhq-7xh7 (XSS), GHSA-cmwh-pvxp-8882, GHSA-c2j3-45gr-mqc4 and GHSA-vxr8-fq34-vvx9; the override hoists it to 3.4.x latest. REMOVE once monaco-editor depends on dompurify > 3.4.12. deepmerge-ts is forced to ^8 to clear GHSA-ggr8-5vv4-36mx; it reaches us only through flowbite-react, which pins 7.1.5 exactly, and npm's only other remedy is downgrading flowbite-react. REMOVE once flowbite-react ships a release depending on deepmerge-ts 8. postcss-selector-parser is forced to ^6.1.5 to clear GHSA-rj75-hqrm-r3gf; it reaches us only through @tailwindcss/typography, which pins 6.0.10 exactly (6.1.5 is the same major, and the plugin runs only at build time). REMOVE once @tailwindcss/typography depends on postcss-selector-parser >= 6.1.5.",
+  "//overrides": "Every entry is load-bearing; verify with npm audit before removing any. dompurify is forced to ^3.3.0 because monaco-editor depends on exactly 3.4.8, which carries GHSA-55q2-fjhq-7xh7 (XSS), GHSA-cmwh-pvxp-8882, GHSA-c2j3-45gr-mqc4 and GHSA-vxr8-fq34-vvx9; the override hoists it to 3.4.x latest. REMOVE once monaco-editor depends on dompurify > 3.4.12. postcss-selector-parser is forced to ^6.1.5 to clear GHSA-rj75-hqrm-r3gf; it reaches us only through @tailwindcss/typography, which pins 6.0.10 exactly (6.1.5 is the same major, and the plugin runs only at build time). REMOVE once @tailwindcss/typography depends on postcss-selector-parser >= 6.1.5.",
   "overrides": {
     "dompurify": "^3.3.0",
-    "deepmerge-ts": "^8.0.1",
     "postcss-selector-parser": "^6.1.5"
   },
   "devDependencies": {

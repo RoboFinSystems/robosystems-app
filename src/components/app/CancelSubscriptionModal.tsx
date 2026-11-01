@@ -1,6 +1,5 @@
 'use client'
 
-import { customTheme } from '@robosystems/core'
 import {
   Alert,
   Button,
@@ -10,7 +9,7 @@ import {
   ModalHeader,
   Radio,
   TextInput,
-} from 'flowbite-react'
+} from '@robosystems/core/ui'
 import { useEffect, useState } from 'react'
 import { HiExclamationCircle, HiInformationCircle } from 'react-icons/hi'
 
@@ -99,12 +98,7 @@ export default function CancelSubscriptionModal({
     : 'Subscription is canceled immediately. Access to the repository ends now; remaining paid time is forfeited.'
 
   return (
-    <Modal
-      show={show}
-      onClose={handleClose}
-      size="lg"
-      theme={customTheme.modal}
-    >
+    <Modal show={show} onClose={handleClose} size="lg">
       <ModalHeader>
         {isGraph ? 'Delete Graph' : 'Cancel Repository Subscription'}
       </ModalHeader>
@@ -227,7 +221,6 @@ export default function CancelSubscriptionModal({
             color="gray"
             onClick={handleClose}
             disabled={loading}
-            theme={customTheme.button}
             className="flex-1"
           >
             Keep Subscription
@@ -236,7 +229,6 @@ export default function CancelSubscriptionModal({
             color="failure"
             onClick={handleSubmit}
             disabled={submitDisabled}
-            theme={customTheme.button}
             className="flex-1"
           >
             {loading

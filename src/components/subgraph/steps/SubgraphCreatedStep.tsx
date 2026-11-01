@@ -2,8 +2,7 @@
 
 import { CopyButton } from '@/components/CopyableId'
 import { mcpEndpointFor } from '@/lib/mcp'
-import { customTheme } from '@robosystems/core/theme'
-import { Card } from 'flowbite-react'
+import { Card } from '@robosystems/core/ui'
 import { HiCheckCircle } from 'react-icons/hi'
 
 interface SubgraphCreatedStepProps {
@@ -43,7 +42,7 @@ export function SubgraphCreatedStep({
         </div>
       </div>
 
-      <Card theme={customTheme.card}>
+      <Card>
         <div className="space-y-4">
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-3">

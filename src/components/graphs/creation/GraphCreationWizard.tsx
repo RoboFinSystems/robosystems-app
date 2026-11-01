@@ -1,7 +1,7 @@
 'use client'
 
-import { customTheme, useGraphCreation, useOrg } from '@robosystems/core'
-import { Alert, Button, Card, Progress, Spinner } from 'flowbite-react'
+import { useGraphCreation, useOrg } from '@robosystems/core'
+import { Alert, Button, Card, Progress, Spinner } from '@robosystems/core/ui'
 import { useState } from 'react'
 import { HiArrowLeft, HiArrowRight, HiCheck } from 'react-icons/hi'
 import { EntityInfoStep } from './steps/EntityInfoStep'
@@ -342,7 +342,7 @@ export function GraphCreationWizard({
   // Show creation progress when operation is running
   if (graphCreation.isLoading) {
     return (
-      <Card theme={customTheme.card} className={className}>
+      <Card className={className}>
         <div className="space-y-6">
           <div className="text-center">
             <h3 className="font-heading mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -355,14 +355,12 @@ export function GraphCreationWizard({
 
           <Progress
             progress={Math.round(graphCreation.progress || 0)}
-            theme={customTheme.progress}
             size="lg"
             labelProgress
           />
 
           <div className="flex justify-center">
             <Button
-              theme={customTheme.button}
               onClick={() => graphCreation.cancelOperation()}
               color="gray"
               size="sm"
@@ -378,14 +376,13 @@ export function GraphCreationWizard({
   // Show error state
   if (graphCreation.error) {
     return (
-      <Card theme={customTheme.card} className={className}>
-        <Alert theme={customTheme.alert} color="failure">
+      <Card className={className}>
+        <Alert color="failure">
           <div className="space-y-2">
             <p className="font-semibold">Graph Creation Failed</p>
             <p>{graphCreation.error}</p>
             <div className="mt-4 flex gap-2">
               <Button
-                theme={customTheme.button}
                 onClick={() => graphCreation.reset()}
                 size="sm"
                 color="gray"
@@ -393,13 +390,7 @@ export function GraphCreationWizard({
                 Try Again
               </Button>
               {onCancel && (
-                <Button
-                  theme={customTheme.button}
-                  onClick={onCancel}
-                  size="sm"
-                  color="gray"
-                  outline
-                >
+                <Button onClick={onCancel} size="sm" color="gray" outline>
                   Cancel
                 </Button>
               )}
@@ -413,7 +404,7 @@ export function GraphCreationWizard({
   // Show success state
   if (graphCreation.result && graphCreation.status === 'completed') {
     return (
-      <Card theme={customTheme.card} className={className}>
+      <Card className={className}>
         <div className="space-y-4 text-center">
           <div className="flex justify-center">
             <div className="rounded-full bg-green-100 p-3 dark:bg-green-900/30">
@@ -442,7 +433,7 @@ export function GraphCreationWizard({
 
   // Show wizard steps
   return (
-    <Card theme={customTheme.card} className={className}>
+    <Card className={className}>
       <div className="space-y-6">
         {/* Progress indicator */}
         <div className="mb-6 flex items-center justify-between">
@@ -492,21 +483,12 @@ export function GraphCreationWizard({
           {renderStepContent()}
         </div>
 
-        {createError && (
-          <Alert theme={customTheme.alert} color="failure">
-            {createError}
-          </Alert>
-        )}
+        {createError && <Alert color="failure">{createError}</Alert>}
 
         {/* Navigation buttons */}
         <div className="flex justify-between">
           {currentStep > 0 ? (
-            <Button
-              theme={customTheme.button}
-              onClick={handleBack}
-              color="gray"
-              outline
-            >
+            <Button onClick={handleBack} color="gray" outline>
               <HiArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>
@@ -516,7 +498,6 @@ export function GraphCreationWizard({
           <div>
             {currentStep < steps.length - 1 ? (
               <Button
-                theme={customTheme.button}
                 onClick={handleNext}
                 color="primary"
                 disabled={
@@ -528,7 +509,6 @@ export function GraphCreationWizard({
               </Button>
             ) : (
               <Button
-                theme={customTheme.button}
                 onClick={handleCreate}
                 color="success"
                 disabled={graphCreation.isLoading}

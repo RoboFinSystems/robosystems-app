@@ -1,8 +1,7 @@
 'use client'
 
 import { SUBGRAPH_NAME_MAX_LENGTH } from '@/lib/mcp'
-import { customTheme } from '@robosystems/core/theme'
-import { Alert, Label, Textarea, TextInput } from 'flowbite-react'
+import { Alert, Label, Textarea, TextInput } from '@robosystems/core/ui'
 import { HiInformationCircle } from 'react-icons/hi'
 
 interface SubgraphFormData {
@@ -56,7 +55,7 @@ export function SubgraphInfoStep({
   return (
     <div className="space-y-6">
       {/* Info Alert */}
-      <Alert color="info" icon={HiInformationCircle} theme={customTheme.alert}>
+      <Alert color="info" icon={HiInformationCircle}>
         <div>
           <span className="font-medium">Subgraph Configuration</span>
           <div className="mt-2 text-sm">
@@ -93,7 +92,6 @@ export function SubgraphInfoStep({
           value={formData.name}
           onChange={handleNameChange}
           color={errors.name ? 'failure' : undefined}
-          theme={customTheme.textInput}
           maxLength={SUBGRAPH_NAME_MAX_LENGTH}
           required
         />
@@ -132,7 +130,6 @@ export function SubgraphInfoStep({
           value={formData.displayName}
           onChange={handleDisplayNameChange}
           color={errors.displayName ? 'failure' : undefined}
-          theme={customTheme.textInput}
           required
         />
         {errors.displayName && (
@@ -157,7 +154,6 @@ export function SubgraphInfoStep({
           onChange={handleDescriptionChange}
           rows={4}
           color={errors.description ? 'failure' : undefined}
-          theme={customTheme.textarea}
         />
         {errors.description && (
           <p className="text-sm text-red-600 dark:text-red-400">
