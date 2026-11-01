@@ -43,7 +43,6 @@
     "@robosystems/core": "^0.20.0",
     "@simplewebauthn/browser": "14.0.0",
     "date-fns": "^4.1.0",
-    "github-slugger": "^2.0.0",
     "lru-cache": "^11.5.3",
     "next": "^16.4.2",
     "react": "^19",
