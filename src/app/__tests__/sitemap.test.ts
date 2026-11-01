@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mockGetAllPosts = vi.fn()
 const mockGetDocsCatalog = vi.fn()
@@ -123,8 +123,13 @@ const posts = [
 // A lastmod is a real date or absent. A date stamped at request time teaches Bing and
 // Google to ignore the field on every entry, including the posts whose dates are true.
 describe('sitemap', () => {
+  beforeEach(() => {
+    mockGetDocsCatalog.mockResolvedValue(null)
+  })
+
   afterEach(() => {
     vi.clearAllMocks()
+    vi.unstubAllEnvs()
   })
 
   it('sends no lastmod for the homepage or the static pages', async () => {
@@ -157,7 +162,8 @@ describe('sitemap', () => {
     )
   })
 
-  it('sends no lastmod for the hub when the catalog is unreachable', async () => {
+  it('sends no lastmod for the hub when a build cannot read the catalog', async () => {
+    vi.stubEnv('NEXT_PHASE', 'phase-production-build')
     mockGetAllPosts.mockRejectedValue(new Error('catalog down'))
     const hub = (await sitemap()).find(
       (e) => e.url === 'https://robosystems.ai/blog'
@@ -190,7 +196,17 @@ describe('sitemap', () => {
     )
   })
 
-  it('still lists the static pages when the docs catalog is unreachable', async () => {
+  it('throws at runtime when a catalog fails, so the last good sitemap is kept', async () => {
+    mockGetAllPosts.mockRejectedValue(new Error('blog down'))
+    await expect(sitemap()).rejects.toThrow('blog down')
+
+    mockGetAllPosts.mockResolvedValue(posts)
+    mockGetDocsCatalog.mockRejectedValue(new Error('docs down'))
+    await expect(sitemap()).rejects.toThrow('docs down')
+  })
+
+  it('still lists the static pages when a build cannot read the docs catalog', async () => {
+    vi.stubEnv('NEXT_PHASE', 'phase-production-build')
     mockGetAllPosts.mockResolvedValue(posts)
     mockGetDocsCatalog.mockRejectedValue(new Error('catalog unreachable'))
     const urls = (await sitemap()).map((e) => e.url)
