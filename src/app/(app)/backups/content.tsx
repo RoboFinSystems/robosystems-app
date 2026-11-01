@@ -579,16 +579,18 @@ export default function BackupManagementContent() {
         <Card>
           <Table>
             <TableHead>
-              <TableHeadCell>
-                {isRepository ? 'Published' : 'Created'}
-              </TableHeadCell>
-              {Object.keys(graphIdToName).length > 1 && (
-                <TableHeadCell>Source</TableHeadCell>
-              )}
-              <TableHeadCell>Status</TableHeadCell>
-              <TableHeadCell>Origin</TableHeadCell>
-              <TableHeadCell>Size</TableHeadCell>
-              <TableHeadCell>Actions</TableHeadCell>
+              <tr>
+                <TableHeadCell>
+                  {isRepository ? 'Published' : 'Created'}
+                </TableHeadCell>
+                {Object.keys(graphIdToName).length > 1 && (
+                  <TableHeadCell>Source</TableHeadCell>
+                )}
+                <TableHeadCell>Status</TableHeadCell>
+                <TableHeadCell>Origin</TableHeadCell>
+                <TableHeadCell>Size</TableHeadCell>
+                <TableHeadCell>Actions</TableHeadCell>
+              </tr>
             </TableHead>
             <TableBody className="divide-y">
               {backups.map((backup) => (

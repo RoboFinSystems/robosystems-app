@@ -1166,13 +1166,15 @@ export function InvoicesTab({
       <div className="overflow-x-auto">
         <Table>
           <TableHead>
-            <TableHeadCell>Invoice</TableHeadCell>
-            <TableHeadCell>Date</TableHeadCell>
-            <TableHeadCell>Amount</TableHeadCell>
-            <TableHeadCell>Status</TableHeadCell>
-            <TableHeadCell>
-              <span className="sr-only">Actions</span>
-            </TableHeadCell>
+            <tr>
+              <TableHeadCell>Invoice</TableHeadCell>
+              <TableHeadCell>Date</TableHeadCell>
+              <TableHeadCell>Amount</TableHeadCell>
+              <TableHeadCell>Status</TableHeadCell>
+              <TableHeadCell>
+                <span className="sr-only">Actions</span>
+              </TableHeadCell>
+            </tr>
           </TableHead>
           <TableBody className="divide-y">
             {invoices.map((invoice) => (

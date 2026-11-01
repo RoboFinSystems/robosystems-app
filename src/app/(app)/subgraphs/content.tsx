@@ -306,10 +306,14 @@ export function SubgraphsContent() {
             <div className="w-full">
               <Table>
                 <TableHead>
-                  <TableHeadCell>Subgraph</TableHeadCell>
-                  <TableHeadCell>Size</TableHeadCell>
-                  <TableHeadCell>Created</TableHeadCell>
-                  <TableHeadCell className="text-right">Actions</TableHeadCell>
+                  <tr>
+                    <TableHeadCell>Subgraph</TableHeadCell>
+                    <TableHeadCell>Size</TableHeadCell>
+                    <TableHeadCell>Created</TableHeadCell>
+                    <TableHeadCell className="text-right">
+                      Actions
+                    </TableHeadCell>
+                  </tr>
                 </TableHead>
                 <TableBody className="divide-y divide-gray-200 dark:divide-gray-700">
                   {subgraphs.map((subgraph) => (
