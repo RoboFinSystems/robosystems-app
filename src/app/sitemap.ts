@@ -1,5 +1,11 @@
 import { getAllPosts } from '@/lib/blog'
-import { DOCS_SITE, getDocsCatalog, getDocsNav, latestUpdate } from '@/lib/docs'
+import {
+  DOCS_SITE,
+  getDocsCatalog,
+  getDocsNav,
+  latestUpdate,
+  orBuildFallback,
+} from '@/lib/docs'
 import { GRAPHQL_BASE_PATH, getGraphqlCatalog } from '@/lib/graphql'
 import {
   API_BASE_PATH,
@@ -26,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://robosystems.ai'
 
   // Get all blog posts (from the S3 catalog)
-  const posts = await getAllPosts().catch(() => [])
+  const posts = await orBuildFallback(getAllPosts(), [])
   const blogPosts = posts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: new Date(post.date),
@@ -36,7 +42,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Guides and technical docs from the docs catalog; lastmod is each page's last change
   // in the robosystems repo.
-  const catalog = await getDocsCatalog().catch(() => null)
+  const catalog = await orBuildFallback(getDocsCatalog(), null)
   const docsNavPages = (['product', 'technical'] as const).flatMap((layer) =>
     catalog ? (getDocsNav(catalog, DOCS_SITE, layer)?.ordered ?? []) : []
   )
