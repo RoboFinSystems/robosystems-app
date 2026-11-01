@@ -6,14 +6,6 @@ import {
   TierSelectionStep,
 } from '../steps/TierSelectionStep'
 
-// Mock the theme
-vi.mock('@robosystems/core', () => ({
-  customTheme: {
-    alert: {},
-    card: {},
-  },
-}))
-
 // The request modal has its own tests; here it only needs to report what
 // the step handed it.
 vi.mock('../TierRequestModal', () => ({

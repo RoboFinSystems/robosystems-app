@@ -5,7 +5,6 @@ const createGenericGraph = vi.fn()
 const createEntityGraph = vi.fn()
 
 vi.mock('@robosystems/core', () => ({
-  customTheme: {},
   useOrg: () => ({ currentOrg: { id: 'org_1' } }),
   useGraphCreation: () => ({
     isLoading: false,
