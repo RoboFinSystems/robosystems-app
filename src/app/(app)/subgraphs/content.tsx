@@ -35,7 +35,7 @@ import {
   TableHeadCell,
   TableRow,
   Tooltip,
-} from 'flowbite-react'
+} from '@robosystems/core/ui'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import {

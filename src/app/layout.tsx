@@ -1,9 +1,9 @@
 import { CloudflareAnalytics } from '@/components/analytics/CloudflareAnalytics'
 import { OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE } from '@/lib/site'
 import { organizationJsonLd } from '@/lib/structured-data'
-import { AuthProvider, customTheme } from '@robosystems/core'
+import { AuthProvider } from '@robosystems/core'
 import { SessionWarningDialog } from '@robosystems/core/auth-components/SessionWarningDialog'
-import { ThemeModeScript, ThemeProvider } from 'flowbite-react'
+import { ThemeModeScript } from '@robosystems/core/ui'
 import type { Metadata, Viewport } from 'next'
 import { twMerge } from 'tailwind-merge'
 
@@ -85,12 +85,10 @@ export default function RootLayout({
         className={twMerge('bg-zinc-50 font-sans dark:bg-black')}
         suppressHydrationWarning
       >
-        <ThemeProvider theme={customTheme}>
-          <AuthProvider>
-            <SessionWarningDialog />
-            {children}
-          </AuthProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          <SessionWarningDialog />
+          {children}
+        </AuthProvider>
         <CloudflareAnalytics />
       </body>
     </html>

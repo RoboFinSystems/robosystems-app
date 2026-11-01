@@ -40,7 +40,7 @@ vi.mock('react-icons/hi', () => ({
   HiTerminal: () => <span>Icon</span>,
 }))
 
-vi.mock('flowbite-react', () => ({
+vi.mock('@robosystems/core/ui', () => ({
   Button: ({ children, onClick, disabled }: any) => (
     <button onClick={onClick} disabled={disabled}>
       {children}

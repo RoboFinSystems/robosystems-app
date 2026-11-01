@@ -14,7 +14,6 @@ import {
   useToast,
 } from '@robosystems/core'
 import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
-import { format } from 'date-fns'
 import {
   Alert,
   Badge,
@@ -29,7 +28,8 @@ import {
   Spinner,
   Tabs,
   TextInput,
-} from 'flowbite-react'
+} from '@robosystems/core/ui'
+import { format } from 'date-fns'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import {

@@ -6,7 +6,7 @@ import {
   TurnstileWidget,
   type TurnstileWidgetRef,
 } from '@robosystems/core/auth-components/TurnstileWidget'
-import { Button, Label, TextInput, Textarea } from 'flowbite-react'
+import { Button, Label, TextInput, Textarea } from '@robosystems/core/ui'
 import { useRef, useState } from 'react'
 
 /** The tier a prospect is asking for, as the picker knows it. */

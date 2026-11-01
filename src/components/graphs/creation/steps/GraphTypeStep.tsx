@@ -1,5 +1,4 @@
-import { customTheme } from '@robosystems/core'
-import { Card } from 'flowbite-react'
+import { Card } from '@robosystems/core/ui'
 import { HiDatabase, HiOfficeBuilding } from 'react-icons/hi'
 
 interface GraphTypeStepProps {
@@ -14,7 +13,6 @@ export function GraphTypeStep({
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <Card
-        theme={customTheme.card}
         className={`cursor-pointer transition-all ${
           selectedType === 'entity'
             ? 'ring-2 ring-blue-500 dark:ring-blue-400'
@@ -37,7 +35,6 @@ export function GraphTypeStep({
       </Card>
 
       <Card
-        theme={customTheme.card}
         className={`cursor-pointer transition-all ${
           selectedType === 'generic'
             ? 'ring-2 ring-orange-500 dark:ring-orange-400'

@@ -1,4 +1,4 @@
-import { customTheme as realTheme } from '@robosystems/core/theme/flowbite-theme'
+import { themeDefaults } from '@robosystems/core/ui'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -481,7 +481,7 @@ describe('TierSelectionStep', () => {
     // returns 'info', which the button theme has never defined.
     it('maps every tier color onto a color the button theme defines', () => {
       for (const buttonColor of Object.values(TIER_BUTTON_COLOR)) {
-        expect(realTheme.button.color).toHaveProperty(buttonColor)
+        expect(themeDefaults.button.color).toHaveProperty(buttonColor)
       }
     })
   })

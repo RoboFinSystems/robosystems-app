@@ -12,7 +12,7 @@ import {
   ModalHeader,
   Select,
   Spinner,
-} from 'flowbite-react'
+} from '@robosystems/core/ui'
 import { useCallback, useEffect, useState } from 'react'
 import { HiExclamationCircle, HiTrash, HiUsers } from 'react-icons/hi'
 

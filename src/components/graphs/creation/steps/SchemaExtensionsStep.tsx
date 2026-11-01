@@ -1,8 +1,7 @@
 import type { AvailableExtension } from '@robosystems/client'
 import { getAvailableExtensions } from '@robosystems/client'
-import { customTheme } from '@robosystems/core'
 import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
-import { Alert, Badge, Card, Checkbox, Spinner } from 'flowbite-react'
+import { Alert, Badge, Card, Checkbox, Spinner } from '@robosystems/core/ui'
 import { useEffect, useState } from 'react'
 import { HiCheckCircle, HiExclamationCircle } from 'react-icons/hi'
 
@@ -112,7 +111,6 @@ export function SchemaExtensionsStep({
           return (
             <Card
               key={extension.name}
-              theme={customTheme.card}
               className={`cursor-pointer transition-all ${
                 isSelected
                   ? 'ring-primary-500 dark:ring-primary-400 ring-2'
@@ -124,7 +122,6 @@ export function SchemaExtensionsStep({
             >
               <div className="flex flex-1 items-start">
                 <Checkbox
-                  theme={customTheme.checkbox}
                   checked={isSelected}
                   disabled={isRequired}
                   onChange={() => handleToggleExtension(extension.name)}

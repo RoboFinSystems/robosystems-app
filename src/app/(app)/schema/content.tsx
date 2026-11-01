@@ -9,7 +9,7 @@ import {
   StatCard,
   useGraphContext,
 } from '@robosystems/core'
-import { Alert, Badge, Card, Tabs, TextInput } from 'flowbite-react'
+import { Alert, Badge, Card, Tabs, TextInput } from '@robosystems/core/ui'
 import { useEffect, useRef, useState } from 'react'
 import {
   HiCode,

@@ -7,7 +7,7 @@ import {
   useGraphContext,
   useToast,
 } from '@robosystems/core'
-import { Alert, Button, Card, Progress, Spinner } from 'flowbite-react'
+import { Alert, Button, Card, Progress, Spinner } from '@robosystems/core/ui'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {

@@ -1,7 +1,6 @@
 'use client'
 
-import { customTheme } from '@robosystems/core'
-import { Button } from 'flowbite-react'
+import { Button } from '@robosystems/core/ui'
 import { useRouter } from 'next/navigation'
 import { HiArrowLeft } from 'react-icons/hi'
 import { GraphCreationWizard } from './GraphCreationWizard'
@@ -39,13 +38,7 @@ export function GraphCreationPage({
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-4">
-              <Button
-                theme={customTheme.button}
-                color="gray"
-                size="sm"
-                outline
-                onClick={handleCancel}
-              >
+              <Button color="gray" size="sm" outline onClick={handleCancel}>
                 <HiArrowLeft className="mr-2 h-4 w-4" />
                 Back
               </Button>

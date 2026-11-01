@@ -18,7 +18,7 @@ import {
   useToast,
 } from '@robosystems/core'
 import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
-import { Button, Card, Spinner } from 'flowbite-react'
+import { Button, Card, Spinner } from '@robosystems/core/ui'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import {

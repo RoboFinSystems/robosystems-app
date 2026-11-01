@@ -19,7 +19,6 @@ import {
 import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import { useTaskMonitoring } from '@robosystems/core/task-monitoring/hooks'
 import { POLLING_CANCELLED } from '@robosystems/core/task-monitoring/taskMonitor'
-import { format } from 'date-fns'
 import {
   Alert,
   Badge,
@@ -36,7 +35,8 @@ import {
   TableHead,
   TableHeadCell,
   TableRow,
-} from 'flowbite-react'
+} from '@robosystems/core/ui'
+import { format } from 'date-fns'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   HiArrowUp,

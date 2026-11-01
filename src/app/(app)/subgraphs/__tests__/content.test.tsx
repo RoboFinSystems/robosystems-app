@@ -65,7 +65,7 @@ vi.mock('react-icons/hi', () => ({
   HiTrash: () => <span>Icon</span>,
 }))
 
-vi.mock('flowbite-react', () => ({
+vi.mock('@robosystems/core/ui', () => ({
   Alert: ({ children }: any) => <div role="alert">{children}</div>,
   Badge: ({ children }: any) => <span>{children}</span>,
   Button: ({ children, onClick, disabled, ...props }: any) => (

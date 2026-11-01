@@ -27,7 +27,7 @@ import {
   Spinner,
   Tabs,
   TextInput,
-} from 'flowbite-react'
+} from '@robosystems/core/ui'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   HiChip,

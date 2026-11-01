@@ -1,9 +1,8 @@
-import { customTheme } from '@robosystems/core'
 import {
   fetchGraphTiers,
   type GraphTier,
 } from '@robosystems/core/lib/graph-tiers'
-import { Alert, Badge, Card } from 'flowbite-react'
+import { Alert, Badge, Card } from '@robosystems/core/ui'
 import { useEffect, useState } from 'react'
 import { HiCheckCircle, HiExclamationCircle } from 'react-icons/hi'
 import type { GraphFormData } from '../types'
@@ -54,14 +53,14 @@ export function ReviewStep({ formData, showTier }: ReviewStepProps) {
       </Alert>
 
       {error && (
-        <Alert theme={customTheme.alert} color="failure">
+        <Alert color="failure">
           <p className="font-semibold">Failed to load tier information</p>
           <p className="text-sm">{error}</p>
         </Alert>
       )}
 
       <div className="space-y-4">
-        <Card theme={customTheme.card}>
+        <Card>
           <div className="space-y-4">
             <h4 className="flex items-center text-lg font-semibold text-gray-900 dark:text-white">
               <HiCheckCircle className="mr-2 h-5 w-5 text-green-500" />
@@ -206,7 +205,7 @@ export function ReviewStep({ formData, showTier }: ReviewStepProps) {
         </Card>
 
         {showTier && tierInfo && (
-          <Card theme={customTheme.card}>
+          <Card>
             <div className="space-y-4">
               <h4 className="flex items-center text-lg font-semibold text-gray-900 dark:text-white">
                 <HiCheckCircle className="mr-2 h-5 w-5 text-green-500" />
@@ -247,7 +246,7 @@ export function ReviewStep({ formData, showTier }: ReviewStepProps) {
 
         {formData.entityDetails &&
           Object.keys(formData.entityDetails).length > 0 && (
-            <Card theme={customTheme.card}>
+            <Card>
               <div className="space-y-4">
                 <h4 className="flex items-center text-lg font-semibold text-gray-900 dark:text-white">
                   <HiCheckCircle className="mr-2 h-5 w-5 text-green-500" />

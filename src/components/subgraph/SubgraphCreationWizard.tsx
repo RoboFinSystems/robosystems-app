@@ -8,8 +8,7 @@ import {
 import { client, createSubgraph } from '@robosystems/client'
 import { useToast } from '@robosystems/core'
 import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
-import { customTheme } from '@robosystems/core/theme'
-import { Alert, Button, Card, Progress } from 'flowbite-react'
+import { Alert, Button, Card, Progress } from '@robosystems/core/ui'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import {
@@ -184,7 +183,7 @@ export function SubgraphCreationWizard({
 
   return (
     <div className={className}>
-      <Card theme={customTheme.card} className="overflow-hidden">
+      <Card className="overflow-hidden">
         {/* Progress Header */}
         <div className="border-b border-gray-200 p-6 dark:border-gray-700">
           <div className="mb-4">
@@ -196,12 +195,7 @@ export function SubgraphCreationWizard({
               </span>
               <span>{Math.round(progress)}% complete</span>
             </div>
-            <Progress
-              progress={progress}
-              size="sm"
-              className="mt-2"
-              theme={customTheme.progress}
-            />
+            <Progress progress={progress} size="sm" className="mt-2" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -238,15 +232,10 @@ export function SubgraphCreationWizard({
         <div className="flex items-center justify-between border-t border-gray-200 p-6 dark:border-gray-700">
           {isComplete ? (
             <>
-              <Button
-                color="gray"
-                theme={customTheme.button}
-                onClick={() => onSuccess(createdSubgraphId)}
-              >
+              <Button color="gray" onClick={() => onSuccess(createdSubgraphId)}>
                 Done
               </Button>
               <Button
-                theme={customTheme.button}
                 onClick={() =>
                   router.push(
                     `/connect?workspace=${encodeURIComponent(createdSubgraphId)}`
@@ -263,7 +252,6 @@ export function SubgraphCreationWizard({
                 <Button
                   color="gray"
                   onClick={currentStep === 0 ? onCancel : handlePrevious}
-                  theme={customTheme.button}
                   disabled={isCreating}
                 >
                   {currentStep === 0 ? (
@@ -279,20 +267,12 @@ export function SubgraphCreationWizard({
 
               <div className="flex space-x-3">
                 {currentStep < steps.length - 1 ? (
-                  <Button
-                    onClick={handleNext}
-                    theme={customTheme.button}
-                    disabled={isCreating}
-                  >
+                  <Button onClick={handleNext} disabled={isCreating}>
                     Next
                     <HiArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 ) : (
-                  <Button
-                    onClick={handleCreate}
-                    theme={customTheme.button}
-                    disabled={isCreating}
-                  >
+                  <Button onClick={handleCreate} disabled={isCreating}>
                     {isCreating ? (
                       <>Creating...</>
                     ) : (
@@ -311,12 +291,7 @@ export function SubgraphCreationWizard({
 
       {/* Info Alert */}
       {!isComplete && (
-        <Alert
-          color="info"
-          icon={HiInformationCircle}
-          className="mt-6"
-          theme={customTheme.alert}
-        >
+        <Alert color="info" icon={HiInformationCircle} className="mt-6">
           <span className="font-medium">About Subgraphs:</span> Subgraphs are
           isolated graph environments within your main graph. Use them for AI
           memory and knowledge graphs, data workspaces with fork and publish

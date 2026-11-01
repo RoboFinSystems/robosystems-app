@@ -26,7 +26,7 @@ import {
   TableHead,
   TableHeadCell,
   TableRow,
-} from 'flowbite-react'
+} from '@robosystems/core/ui'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { HiClock } from 'react-icons/hi'
 

@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { EditorModal } from '../EditorModal'
 
-// Rendered with the real flowbite Modal and core ConfirmModal — queries
+// Rendered with the real core Modal and ConfirmModal — queries
 // work across the portal.
 
 function renderModal(props: Partial<React.ComponentProps<typeof EditorModal>>) {

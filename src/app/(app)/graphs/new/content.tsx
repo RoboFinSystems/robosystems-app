@@ -8,7 +8,7 @@ import {
   useUser,
   useUserLimits,
 } from '@robosystems/core'
-import { Spinner } from 'flowbite-react'
+import { Spinner } from '@robosystems/core/ui'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 

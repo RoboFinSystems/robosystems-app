@@ -21,7 +21,7 @@ import {
   TableHead,
   TableHeadCell,
   TableRow,
-} from 'flowbite-react'
+} from '@robosystems/core/ui'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {

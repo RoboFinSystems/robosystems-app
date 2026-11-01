@@ -2,8 +2,7 @@
 
 import { CopyableId } from '@/components/CopyableId'
 import { subgraphIdFor } from '@/lib/mcp'
-import { customTheme } from '@robosystems/core/theme'
-import { Card } from 'flowbite-react'
+import { Card } from '@robosystems/core/ui'
 import { HiChip, HiInformationCircle } from 'react-icons/hi'
 
 interface SubgraphFormData {
@@ -26,7 +25,7 @@ export function SubgraphReviewStep({
   return (
     <div className="space-y-6">
       {/* Summary Card */}
-      <Card theme={customTheme.card}>
+      <Card>
         <div className="flex items-start space-x-4">
           <div className="flex-shrink-0">
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900">

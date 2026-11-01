@@ -1,5 +1,4 @@
-import { customTheme } from '@robosystems/core'
-import { Label, Radio, Textarea, TextInput } from 'flowbite-react'
+import { Label, Radio, Textarea, TextInput } from '@robosystems/core/ui'
 
 interface GenericGraphStepProps {
   graphName: string
@@ -45,7 +44,6 @@ export function GenericGraphStep({
           <TextInput
             id="graphName"
             type="text"
-            theme={customTheme.textInput}
             placeholder="e.g., Customer Analytics Graph"
             value={graphName}
             onChange={(e) => onGraphNameChange(e.target.value)}
@@ -60,7 +58,6 @@ export function GenericGraphStep({
           <Label htmlFor="description">Description (Optional)</Label>
           <Textarea
             id="description"
-            theme={customTheme.textarea}
             placeholder="Describe the purpose of this graph database..."
             value={description}
             onChange={(e) => onDescriptionChange(e.target.value)}
@@ -73,7 +70,6 @@ export function GenericGraphStep({
           <TextInput
             id="tags"
             type="text"
-            theme={customTheme.textInput}
             placeholder="e.g., analytics, customers, production"
             value={tags.join(', ')}
             onChange={(e) =>
@@ -171,7 +167,6 @@ export function GenericGraphStep({
             <Label htmlFor="customSchema">Schema Definition (JSON)</Label>
             <Textarea
               id="customSchema"
-              theme={customTheme.textarea}
               placeholder={`{
   "name": "MyCustomSchema",
   "version": "1.0",

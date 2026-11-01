@@ -1,7 +1,6 @@
 'use client'
 
-import { customTheme } from '@robosystems/core/theme'
-import { Modal } from 'flowbite-react'
+import { Modal } from '@robosystems/core/ui'
 import GraphLimitForm from './GraphLimitForm'
 
 interface GraphLimitModalProps {
@@ -20,7 +19,7 @@ export default function GraphLimitModal({
   orgId,
 }: GraphLimitModalProps) {
   return (
-    <Modal show={isOpen} onClose={onClose} size="2xl" theme={customTheme.modal}>
+    <Modal show={isOpen} onClose={onClose} size="2xl">
       <div className="relative rounded-lg border border-gray-700 bg-gradient-to-br from-zinc-900 to-zinc-800">
         {/* Close button */}
         <button

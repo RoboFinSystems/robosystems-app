@@ -39,7 +39,7 @@ import {
   TableRow,
   TextInput,
   Tooltip,
-} from 'flowbite-react'
+} from '@robosystems/core/ui'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   HiDatabase,

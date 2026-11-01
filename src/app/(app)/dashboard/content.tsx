@@ -15,7 +15,7 @@ import {
   useOrg,
 } from '@robosystems/core'
 import { isApiError, unwrapSdk } from '@robosystems/core/lib/sdk-errors'
-import { Alert, Badge, Button, Card } from 'flowbite-react'
+import { Alert, Badge, Button, Card } from '@robosystems/core/ui'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import {

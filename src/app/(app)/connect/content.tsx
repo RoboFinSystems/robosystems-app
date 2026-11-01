@@ -23,7 +23,7 @@ import {
   PageLayout,
   useGraphContext,
 } from '@robosystems/core'
-import { Badge, Card, Label, Select } from 'flowbite-react'
+import { Badge, Card, Label, Select } from '@robosystems/core/ui'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useRef, useState } from 'react'

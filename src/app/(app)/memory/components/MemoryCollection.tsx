@@ -3,7 +3,7 @@
 import type { MemoryRecord, SearchHit } from '@robosystems/client'
 import { getMemory, listMemories, recallMemory } from '@robosystems/client'
 import { EmptyState, SearchBar } from '@robosystems/core'
-import { Button, Card, Select, Spinner } from 'flowbite-react'
+import { Button, Card, Select, Spinner } from '@robosystems/core/ui'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   HiChevronDown,

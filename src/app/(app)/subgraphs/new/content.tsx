@@ -2,7 +2,7 @@
 
 import { SubgraphCreationWizard } from '@/components/subgraph/SubgraphCreationWizard'
 import { useGraphContext } from '@robosystems/core'
-import { Button } from 'flowbite-react'
+import { Button } from '@robosystems/core/ui'
 import { useRouter } from 'next/navigation'
 import { HiArrowLeft } from 'react-icons/hi'
 

@@ -8,7 +8,7 @@ import {
   ModalFooter,
   ModalHeader,
   Spinner,
-} from 'flowbite-react'
+} from '@robosystems/core/ui'
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import { HiSave } from 'react-icons/hi'
@@ -17,7 +17,7 @@ export interface EditorModalProps {
   show: boolean
   /** Header title, e.g. "New Memory" / "Edit Document". */
   title: string
-  /** flowbite Modal size — '3xl' (memory) / '7xl' (documents). */
+  /** Modal size — '3xl' (memory) / '7xl' (documents). */
   size?: string
   /**
    * Close request. When `dirty`, the shell intercepts it with a discard

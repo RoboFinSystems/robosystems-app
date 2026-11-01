@@ -34,7 +34,7 @@ vi.mock('react-icons/hi', () => ({
   HiSparkles: () => <span>Icon</span>,
 }))
 
-vi.mock('flowbite-react', () => ({
+vi.mock('@robosystems/core/ui', () => ({
   Badge: ({ children }: any) => <span>{children}</span>,
   Card: ({ children }: any) => <div>{children}</div>,
   Label: ({ children, htmlFor }: any) => (

@@ -6,8 +6,8 @@ import {
   type OAuthGrantInfo,
 } from '@robosystems/client'
 import { EmptyState, SettingsCard } from '@robosystems/core'
+import { Button, Spinner } from '@robosystems/core/ui'
 import { ConfirmModal } from '@robosystems/core/ui-components'
-import { Button, Spinner } from 'flowbite-react'
 import type { FC } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { HiPuzzle } from 'react-icons/hi'
