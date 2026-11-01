@@ -19,14 +19,6 @@ vi.mock('../GraphCreationWizard', () => ({
   ),
 }))
 
-// Mock the theme
-vi.mock('@robosystems/core', () => ({
-  customTheme: {
-    button: {},
-    modal: {},
-  },
-}))
-
 describe('GraphCreationModal', () => {
   const mockOnSuccess = vi.fn()
   const mockOnCancel = vi.fn()

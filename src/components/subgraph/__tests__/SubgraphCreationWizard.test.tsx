@@ -11,8 +11,6 @@ vi.mock('@robosystems/core', () => ({
   useToast: () => ({ showSuccess: vi.fn(), showError, showInfo: vi.fn() }),
 }))
 
-vi.mock('@robosystems/core/theme', () => ({ customTheme: {} }))
-
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockPush }),
 }))

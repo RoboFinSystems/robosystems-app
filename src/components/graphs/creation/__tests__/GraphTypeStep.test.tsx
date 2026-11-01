@@ -2,13 +2,6 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { GraphTypeStep } from '../steps/GraphTypeStep'
 
-// Mock the theme
-vi.mock('@robosystems/core', () => ({
-  customTheme: {
-    card: {},
-  },
-}))
-
 describe('GraphTypeStep', () => {
   const mockOnTypeChange = vi.fn()
 

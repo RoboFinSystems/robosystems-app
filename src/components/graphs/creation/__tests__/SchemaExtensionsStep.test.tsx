@@ -3,14 +3,6 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { SchemaExtensionsStep } from '../steps/SchemaExtensionsStep'
 
-vi.mock('@robosystems/core', () => ({
-  customTheme: {
-    alert: {},
-    card: {},
-    checkbox: {},
-  },
-}))
-
 const mockExtensions = [
   { name: 'roboledger', description: 'Accounting schema' },
   { name: 'roboinvestor', description: 'Portfolio schema' },
