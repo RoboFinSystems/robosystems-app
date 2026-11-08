@@ -673,7 +673,7 @@ export default function BackupManagementContent() {
           <div className="space-y-4">
             <div>
               <Label>Backup Format</Label>
-              <TextInput value="Full Database (.lbug)" disabled />
+              <TextInput value="Full Database (.lbdb)" disabled />
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 Complete database backup
               </p>

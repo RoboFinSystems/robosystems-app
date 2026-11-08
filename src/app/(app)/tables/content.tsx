@@ -1,7 +1,6 @@
 'use client'
 
 import { GuideLink } from '@/components/docs/GuideLink'
-import { normalizeLocalUrl } from '@/lib/utils'
 import Editor from '@monaco-editor/react'
 import * as SDK from '@robosystems/client'
 import {
@@ -335,7 +334,7 @@ export function TablesContent() {
         throw new Error('Failed to get upload URL')
       }
 
-      const uploadUrl = normalizeLocalUrl(uploadData.upload_url)
+      const uploadUrl = uploadData.upload_url
       const fileId = uploadData.file_id
 
       // Step 2: Upload to S3

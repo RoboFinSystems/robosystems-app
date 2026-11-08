@@ -36,8 +36,6 @@ vi.mock('@monaco-editor/react', () => ({
   ),
 }))
 
-vi.mock('@/lib/utils', () => ({ normalizeLocalUrl: (u: string) => u }))
-
 vi.mock('react-icons/hi', () => ({
   HiChip: () => <span>Icon</span>,
   HiCloudUpload: () => <span>Icon</span>,
