@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { getPostBySlug, withoutLeadingTitle } from '../blog'
+import { getPostBySlug, withoutLeadingTitle, youtubeId } from '../blog'
 
 const catalog = {
   posts: [
@@ -63,5 +63,26 @@ describe('withoutLeadingTitle', () => {
 
   it('removes only the first heading, not a later H1', () => {
     expect(withoutLeadingTitle('Intro\n\n# Later')).toBe('Intro\n\n# Later')
+  })
+})
+
+describe('youtubeId', () => {
+  it('reads an id from a bare id or any link to the video', () => {
+    for (const value of [
+      'twydr672bGo',
+      'https://youtu.be/twydr672bGo',
+      'https://www.youtube.com/watch?v=twydr672bGo',
+      'https://www.youtube.com/watch?feature=share&v=twydr672bGo&t=4',
+      'https://www.youtube.com/embed/twydr672bGo',
+    ]) {
+      expect(youtubeId(value)).toBe('twydr672bGo')
+    }
+  })
+
+  it('gives nothing for a missing value or a link that is not a video', () => {
+    expect(youtubeId(undefined)).toBeUndefined()
+    expect(youtubeId('')).toBeUndefined()
+    expect(youtubeId('https://example.com/watch?v=twydr672bGo')).toBeUndefined()
+    expect(youtubeId('https://www.youtube.com/@robosystems')).toBeUndefined()
   })
 })

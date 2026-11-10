@@ -162,6 +162,21 @@ export default async function BlogPostPage({
         </div>
       </div>
 
+      {post.youtubeId && (
+        <div className="mx-auto max-w-4xl px-4 pt-8 sm:px-6 lg:px-8">
+          <div className="aspect-video overflow-hidden rounded-xl border border-gray-800 bg-black">
+            <iframe
+              src={`https://www.youtube.com/embed/${post.youtubeId}`}
+              title={post.title}
+              loading="lazy"
+              allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="h-full w-full"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Narration — "Listen to this story" */}
       {post.narrationUrl && (
         <div className="mx-auto max-w-4xl px-4 pt-8 sm:px-6 lg:px-8">
