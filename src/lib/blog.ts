@@ -27,6 +27,7 @@ export interface BlogPost {
   readingTime?: string
   canonicalUrl?: string
   narrationUrl?: string
+  youtubeId?: string
   content?: string // raw markdown body; only populated by getPostBySlug
 }
 
@@ -42,6 +43,7 @@ interface CatalogEntry {
   keywords?: string[]
   reading_time_minutes?: number
   canonical_url?: string
+  youtube?: string
   assets?: { body?: string; narration_mp3?: string }
 }
 
@@ -61,6 +63,7 @@ function toPost(e: CatalogEntry): BlogPost {
       : undefined,
     canonicalUrl: e.canonical_url,
     narrationUrl: e.assets?.narration_mp3,
+    youtubeId: youtubeId(e.youtube),
   }
 }
 
@@ -117,6 +120,17 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
  * title as the page's H1, so a body that opens with one showed two (three posts did,
  * 2026-09-16). Only a first non-blank line at heading level 1 is removed.
  */
+// A post's `youtube` front matter is a video id or any YouTube link to it.
+export function youtubeId(value?: string): string | undefined {
+  if (!value) return undefined
+  const m = value
+    .trim()
+    .match(
+      /^(?:https?:\/\/(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)))?([\w-]{11})(?:[?&#].*)?$/
+    )
+  return m?.[1]
+}
+
 export function withoutLeadingTitle(markdown: string): string {
   return markdown.replace(/^\s*#[ \t][^\n]*\n?/, '')
 }
