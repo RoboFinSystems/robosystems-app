@@ -3,6 +3,7 @@
 import CancelSubscriptionModal, {
   type CancelMode,
 } from '@/components/app/CancelSubscriptionModal'
+import TrialBanner from '@/components/app/TrialBanner'
 import {
   cancelRepositorySubscription,
   type GraphSubscriptionResponse,
@@ -66,6 +67,7 @@ export function SharedRepositoriesContent() {
 
   return (
     <PageLayout>
+      <TrialBanner key={`trial-${refreshKey}`} />
       <ActiveSubscriptions
         key={refreshKey}
         onOpenConsole={() => openConsoleDrawer()}

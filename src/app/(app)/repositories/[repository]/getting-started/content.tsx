@@ -1,5 +1,6 @@
 'use client'
 
+import TrialBanner from '@/components/app/TrialBanner'
 import { GuideLink } from '@/components/docs/GuideLink'
 import { McpSignInSnippets, McpSnippet } from '@/components/mcp/McpSnippets'
 import {
@@ -177,6 +178,8 @@ export function ApiKeysContent({ repository }: ApiKeysContentProps) {
           repoOffering?.description || 'Curated graph database ready to query'
         }
       />
+
+      <TrialBanner repository={repository} />
 
       {/* What's Included */}
       <Card>

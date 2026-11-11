@@ -2,6 +2,9 @@ import { render, screen } from '@testing-library/react'
 import { describe, expect, test, vi } from 'vitest'
 import { ApiKeysContent } from '../content'
 
+// The trial banner has its own tests; here it is out of the way.
+vi.mock('@/components/app/TrialBanner', () => ({ default: () => null }))
+
 vi.mock('@robosystems/client/sdk', () => ({
   createUserApiKey: vi.fn(),
 }))
