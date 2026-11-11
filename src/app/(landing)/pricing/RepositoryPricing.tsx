@@ -17,6 +17,8 @@ const CHECK_ICON = (
   </svg>
 )
 
+const TRIAL_DAYS = 14
+
 interface RepositoryPricingProps {
   isAuthenticated: boolean
   onContactSales: () => void
@@ -57,6 +59,20 @@ export default function RepositoryPricing({
         </a>
         , so a subscription works in the chat you already use.
       </p>
+      {/* The trial's terms mirror the SEC manifest (`trial_days`) and the
+          trial limits row in the API; change them together. */}
+      <div className="mx-auto mb-10 max-w-3xl rounded-xl border border-green-500/40 bg-green-500/10 px-5 py-4 text-center">
+        <p className="font-medium text-white">
+          Start with a {TRIAL_DAYS}-day free trial on either plan
+        </p>
+        <p className="mt-1 text-sm text-gray-300">
+          The trial opens the analysis tools over MCP and the API at trial rate
+          limits. Raw Cypher queries, the AI agent and your monthly credits open
+          with the first payment. A card is required, your plan starts when the
+          trial ends, and you can cancel any time before then and keep the rest
+          of the trial.
+        </p>
+      </div>
       <div className="mx-auto grid max-w-3xl gap-6 sm:gap-8 md:grid-cols-2">
         {/* Starter */}
         <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-green-500/30 bg-linear-to-br from-green-900/50 to-green-900/20 p-4 transition-all duration-300 hover:border-green-500/50 sm:p-6 md:p-8">
@@ -70,6 +86,9 @@ export default function RepositoryPricing({
                 <span className="text-4xl font-bold text-white">$29</span>
                 <span className="text-gray-400">/month</span>
               </div>
+              <p className="mb-2 text-sm font-medium text-green-300">
+                after a {TRIAL_DAYS}-day free trial
+              </p>
               <p className="text-gray-400">
                 SEC repository access for individuals
               </p>
@@ -101,7 +120,7 @@ export default function RepositoryPricing({
                 href={isAuthenticated ? '/repositories/browse' : '/register'}
                 className="block w-full rounded-lg bg-green-500/80 py-3 text-center font-medium text-white transition-all duration-300 hover:bg-green-600/80"
               >
-                {isAuthenticated ? 'Browse Repositories' : 'Get Started'}
+                {isAuthenticated ? 'Browse Repositories' : 'Start Free Trial'}
               </Link>
               <button
                 onClick={onContactSales}
@@ -132,6 +151,9 @@ export default function RepositoryPricing({
                 <span className="text-4xl font-bold text-white">$99</span>
                 <span className="text-gray-400">/month</span>
               </div>
+              <p className="mb-2 text-sm font-medium text-green-300">
+                after a {TRIAL_DAYS}-day free trial
+              </p>
               <p className="text-gray-400">
                 Higher throughput for production workloads
               </p>
@@ -159,7 +181,7 @@ export default function RepositoryPricing({
                 href={isAuthenticated ? '/repositories/browse' : '/register'}
                 className="block w-full rounded-lg bg-green-600 py-3 text-center font-medium text-white transition-all duration-300 hover:bg-green-700"
               >
-                {isAuthenticated ? 'Browse Repositories' : 'Get Started'}
+                {isAuthenticated ? 'Browse Repositories' : 'Start Free Trial'}
               </Link>
               <button
                 onClick={onContactSales}

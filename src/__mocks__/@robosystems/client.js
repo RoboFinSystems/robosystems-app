@@ -187,6 +187,7 @@ export const listOrgInvoices = vi.fn()
 export const cancelOrgSubscription = vi.fn()
 export const createPortalSession = vi.fn()
 export const cancelRepositorySubscription = vi.fn()
+export const endRepositorySubscriptionTrial = vi.fn()
 export const changeTier = vi.fn()
 export const getCheckoutStatus = vi.fn()
 
