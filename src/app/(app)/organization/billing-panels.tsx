@@ -17,6 +17,7 @@ import {
   type GraphTier,
 } from '@robosystems/core/lib/graph-tiers'
 import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
+import { utcDate } from '@robosystems/core/lib/utc-date'
 import { useTaskMonitoring } from '@robosystems/core/task-monitoring/hooks'
 import { POLLING_CANCELLED } from '@robosystems/core/task-monitoring/taskMonitor'
 import {
@@ -84,15 +85,6 @@ const PAYMENT_FAILED_STATUSES = new Set(['past_due', 'unpaid'])
 function isOnTrial(s: SDK.GraphSubscriptionResponse): boolean {
   if (s.status !== 'active' && s.status !== 'canceled') return false
   return !!s.trial_ends_at && utcDate(s.trial_ends_at) > new Date()
-}
-
-/**
- * The API writes UTC timestamps with no zone, which `new Date` reads as local
- * time. That is hours off, enough to show a trial that ended a moment ago as
- * still running.
- */
-function utcDate(value: string): Date {
-  return new Date(/(Z|[+-]\d\d:?\d\d)$/.test(value) ? value : `${value}Z`)
 }
 
 /**
@@ -995,7 +987,7 @@ export function SubscriptionsTab({
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       {sub.status === 'canceled'
                         ? `The trial covers the analysis tools and runs to ${format(utcDate(sub.trial_ends_at!), 'MMM d, yyyy')}. Nothing will be charged.`
-                        : `The trial covers the analysis tools. Raw queries, the AI analyst and your monthly credits open with the first charge of $${(sub.base_price_cents / 100).toFixed(2)} on ${format(utcDate(sub.trial_ends_at!), 'MMM d, yyyy')}.`}
+                        : `The trial opens the analysis tools at lower rate limits than the plan. The plan's limits, raw queries, the AI analyst and your monthly credits open with the first charge of $${(sub.base_price_cents / 100).toFixed(2)} on ${format(utcDate(sub.trial_ends_at!), 'MMM d, yyyy')}, or today if you start the plan now.`}
                     </p>
                   )}
                   <div className="space-y-2">
