@@ -78,6 +78,24 @@ function isListedSubscription(s: SDK.GraphSubscriptionResponse): boolean {
 const PAYMENT_FAILED_STATUSES = new Set(['past_due', 'unpaid'])
 
 /**
+ * A free trial still running. `trial_ends_at` is kept after the trial is over,
+ * so the date has to be ahead; a canceled trial keeps running to that date.
+ */
+function isOnTrial(s: SDK.GraphSubscriptionResponse): boolean {
+  if (s.status !== 'active' && s.status !== 'canceled') return false
+  return !!s.trial_ends_at && utcDate(s.trial_ends_at) > new Date()
+}
+
+/**
+ * The API writes UTC timestamps with no zone, which `new Date` reads as local
+ * time. That is hours off, enough to show a trial that ended a moment ago as
+ * still running.
+ */
+function utcDate(value: string): Date {
+  return new Date(/(Z|[+-]\d\d:?\d\d)$/.test(value) ? value : `${value}Z`)
+}
+
+/**
  * Billing data for the organization page's Billing / Subscriptions / Invoices
  * tabs — one fetch shared by all three.
  *
@@ -506,6 +524,9 @@ export function SubscriptionsTab({
   const [subscriptionToCancel, setSubscriptionToCancel] =
     useState<SDK.GraphSubscriptionResponse | null>(null)
   const [cancelling, setCancelling] = useState(false)
+  const [subscriptionToStart, setSubscriptionToStart] =
+    useState<SDK.GraphSubscriptionResponse | null>(null)
+  const [startingPlan, setStartingPlan] = useState(false)
 
   // Upgrade state
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
@@ -539,6 +560,18 @@ export function SubscriptionsTab({
   const getSubscriptionBadge = (
     subscription: SDK.GraphSubscriptionResponse
   ) => {
+    if (subscription.status === 'active' && isOnTrial(subscription)) {
+      return (
+        <Badge color="info" className="text-center">
+          <div className="flex flex-col">
+            <span>Free trial</span>
+            <span className="text-xs">
+              Ends {format(utcDate(subscription.trial_ends_at!), 'MMM d')}
+            </span>
+          </div>
+        </Badge>
+      )
+    }
     if (subscription.status === 'active') {
       return <Badge color="success">Active</Badge>
     }
@@ -676,6 +709,41 @@ export function SubscriptionsTab({
       )
     } finally {
       setCancelling(false)
+    }
+  }
+
+  const handleStartPlanConfirm = async () => {
+    if (!subscriptionToStart) return
+
+    try {
+      setStartingPlan(true)
+      const response = await SDK.endRepositorySubscriptionTrial({
+        path: { graph_id: subscriptionToStart.resource_id },
+      })
+      if (response.error) {
+        const error: unknown = response.error
+        throw new Error(
+          typeof error === 'object' && error !== null && 'detail' in error
+            ? String((error as { detail: unknown }).detail)
+            : 'Failed to start the plan'
+        )
+      }
+      // The charge settles after this returns; a declined card shows on the
+      // row as a failed payment once the list reloads.
+      showSuccess(
+        'Trial ended. Your plan opens as soon as the first payment confirms.'
+      )
+      setSubscriptionToStart(null)
+      onRefresh()
+    } catch (error) {
+      console.error('Failed to end trial:', error)
+      showError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to start the plan. Please try again.'
+      )
+    } finally {
+      setStartingPlan(false)
     }
   }
 
@@ -923,7 +991,27 @@ export function SubscriptionsTab({
                         : 'N/A'}
                     </span>
                   </div>
+                  {isOnTrial(sub) && (
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {sub.status === 'canceled'
+                        ? `The trial covers the analysis tools and runs to ${format(utcDate(sub.trial_ends_at!), 'MMM d, yyyy')}. Nothing will be charged.`
+                        : `The trial covers the analysis tools. Raw queries, the AI analyst and your monthly credits open with the first charge of $${(sub.base_price_cents / 100).toFixed(2)} on ${format(utcDate(sub.trial_ends_at!), 'MMM d, yyyy')}.`}
+                    </p>
+                  )}
                   <div className="space-y-2">
+                    {isMySeat(sub) &&
+                      sub.status === 'active' &&
+                      isOnTrial(sub) && (
+                        <Button
+                          size="sm"
+                          color="blue"
+                          onClick={() => setSubscriptionToStart(sub)}
+                          className="w-full"
+                        >
+                          <HiArrowUp className="mr-2 h-4 w-4" />
+                          Start Plan Now
+                        </Button>
+                      )}
                     {/* Browse changes the viewer's own seat, never a member's. */}
                     {isMySeat(sub) && (
                       <div className="flex gap-2">
@@ -957,6 +1045,54 @@ export function SubscriptionsTab({
           </div>
         </div>
       )}
+
+      {/* Start Plan Now (end a trial early) */}
+      <Modal
+        show={!!subscriptionToStart}
+        onClose={() => !startingPlan && setSubscriptionToStart(null)}
+        size="md"
+      >
+        <ModalHeader>Start your plan now</ModalHeader>
+        <ModalBody>
+          {subscriptionToStart && (
+            <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+              <p>
+                This ends your free trial of{' '}
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {subscriptionToStart.plan_display_name}
+                </span>{' '}
+                today. Your card is charged $
+                {(subscriptionToStart.base_price_cents / 100).toFixed(2)} now,
+                and again at each renewal.
+              </p>
+              <p>
+                Raw queries, the AI analyst and your monthly credits open once
+                the payment confirms.
+              </p>
+            </div>
+          )}
+        </ModalBody>
+        <ModalFooter>
+          <div className="flex w-full gap-3">
+            <Button
+              onClick={() => setSubscriptionToStart(null)}
+              disabled={startingPlan}
+              color="gray"
+              className="flex-1"
+            >
+              Keep Trial
+            </Button>
+            <Button
+              onClick={handleStartPlanConfirm}
+              disabled={startingPlan}
+              color="blue"
+              className="flex-1"
+            >
+              {startingPlan ? 'Processing...' : 'Start Plan and Pay'}
+            </Button>
+          </div>
+        </ModalFooter>
+      </Modal>
 
       {/* Upgrade Tier Modal */}
       <Modal

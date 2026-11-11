@@ -163,6 +163,96 @@ describe("SubscriptionsTab, a member's repository seat", () => {
   })
 })
 
+describe('SubscriptionsTab, a repository seat on its free trial', () => {
+  beforeEach(() => vi.clearAllMocks())
+
+  const trialEnd = new Date(Date.now() + 10 * 86_400_000).toISOString()
+  const trial = (overrides: Partial<SDK.GraphSubscriptionResponse> = {}) =>
+    sub({
+      id: 'sub_trial',
+      resource_type: 'repository',
+      resource_id: 'sec',
+      user_id: 'user_owner',
+      plan_display_name: 'SEC EDGAR Filings - Starter',
+      base_price_cents: 2900,
+      trial_ends_at: trialEnd,
+      current_period_end: trialEnd,
+      ...overrides,
+    })
+
+  const renderTab = (
+    subscription: SDK.GraphSubscriptionResponse,
+    onRefresh = vi.fn()
+  ) =>
+    render(
+      <SubscriptionsTab
+        subscriptions={[subscription]}
+        graphs={graphs}
+        offerings={{}}
+        router={{ push: vi.fn() }}
+        onRefresh={onRefresh}
+      />
+    )
+
+  it('shows the trial, what it covers and the first charge', () => {
+    renderTab(trial())
+    expect(screen.getByText('Free trial')).toBeInTheDocument()
+    expect(screen.queryByText('Active')).not.toBeInTheDocument()
+    expect(screen.getByText(/first charge of \$29\.00/)).toBeInTheDocument()
+  })
+
+  it('starts the plan only after the charge is confirmed', async () => {
+    vi.mocked(SDK.endRepositorySubscriptionTrial).mockResolvedValue(sdkOk({}))
+    const onRefresh = vi.fn()
+    renderTab(trial(), onRefresh)
+
+    fireEvent.click(screen.getByRole('button', { name: /Start Plan Now/ }))
+    expect(SDK.endRepositorySubscriptionTrial).not.toHaveBeenCalled()
+    fireEvent.click(
+      await screen.findByRole('button', { name: /Start Plan and Pay/ })
+    )
+
+    await waitFor(() => expect(onRefresh).toHaveBeenCalled())
+    const [call] = vi.mocked(SDK.endRepositorySubscriptionTrial).mock.calls[0]
+    expect(call.path.graph_id).toBe('sec')
+  })
+
+  it("offers no early start on a canceled trial or a member's seat", () => {
+    const { unmount } = renderTab(trial({ status: 'canceled' }))
+    expect(
+      screen.queryByRole('button', { name: /Start Plan Now/ })
+    ).not.toBeInTheDocument()
+    expect(screen.getByText(/Nothing will be charged/)).toBeInTheDocument()
+    unmount()
+
+    renderTab(trial({ user_id: 'user_member' }))
+    expect(
+      screen.queryByRole('button', { name: /Start Plan Now/ })
+    ).not.toBeInTheDocument()
+  })
+
+  it('reads the zone-less UTC stamp of a trial ended a moment ago as over', () => {
+    // What the API writes: UTC, no zone. Read as local time it would sit
+    // hours ahead in any zone west of Greenwich.
+    const justEnded = new Date(Date.now() - 60_000).toISOString().slice(0, -1)
+    renderTab(trial({ trial_ends_at: justEnded, current_period_end: null }))
+    expect(screen.getByText('Active')).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /Start Plan Now/ })
+    ).not.toBeInTheDocument()
+  })
+
+  it('reads a finished trial as an ordinary subscription', () => {
+    renderTab(
+      trial({ trial_ends_at: '2026-01-15T00:00:00Z', current_period_end: null })
+    )
+    expect(screen.getByText('Active')).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /Start Plan Now/ })
+    ).not.toBeInTheDocument()
+  })
+})
+
 describe('SubscriptionsTab tier change, leaving the page', () => {
   it('does not report a failure when watching stops because the page was left', async () => {
     const { POLLING_CANCELLED } =
