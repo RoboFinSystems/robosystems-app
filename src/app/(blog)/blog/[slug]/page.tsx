@@ -215,8 +215,8 @@ export default async function BlogPostPage({
             <h3 className="font-bold text-white">{post.author}</h3>
             <p className="mt-1 text-gray-400">
               RoboSystems, the open-source knowledge graph for finance, is built
-              by a CPA and former Workiva XBRL engineer. Our own companies&apos;
-              books are kept on it.
+              by an inactive CPA and ex-Workiva knowledge engineer. Our own
+              companies&apos; books are kept on it.
             </p>
           </div>
         </div>
