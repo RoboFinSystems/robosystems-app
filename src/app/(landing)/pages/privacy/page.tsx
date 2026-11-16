@@ -4,7 +4,7 @@ import PrivacyPolicy from './content'
 export const metadata: Metadata = {
   title: 'Privacy Policy | RoboSystems',
   description:
-    'How RoboSystems collects, uses, and protects your data across the financial intelligence platform.',
+    'How RoboSystems collects, uses, and protects your data across the RoboSystems platform.',
   alternates: { canonical: 'https://robosystems.ai/pages/privacy' },
 }
 

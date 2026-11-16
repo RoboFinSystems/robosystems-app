@@ -62,6 +62,27 @@ describe('AboutContent', () => {
     expect(screen.queryByText(/not raising/i)).not.toBeInTheDocument()
   })
 
+  it('states RoboInvestor by what it does today and what is next', () => {
+    render(<AboutContent />)
+
+    expect(
+      screen.getByText(/Equity research on public companies/)
+    ).toBeInTheDocument()
+    expect(screen.getByText(/Building next: /)).toBeInTheDocument()
+    expect(screen.queryByText(/Early, and we say so/)).not.toBeInTheDocument()
+  })
+
+  it('leads with booking, and offers the contact form as the other way in', () => {
+    render(<AboutContent />)
+
+    expect(
+      screen.getByRole('link', { name: 'Book 20 minutes' })
+    ).toHaveAttribute('href', '/book')
+    expect(
+      screen.getByText(/Thursday or Friday afternoon not good\?/)
+    ).toBeInTheDocument()
+  })
+
   it('opens the contact modal', () => {
     render(<AboutContent />)
 

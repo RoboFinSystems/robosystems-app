@@ -7,11 +7,12 @@ interface DedicatedDeploymentProps {
 }
 
 const POINTS = [
-  'Account-level isolation in an AWS account dedicated to you, operated by us',
+  'A segregated AWS account, run by RFS under our SOC 2 program',
   'SSO (OIDC) and SCIM provisioning from your identity provider',
   'AWS at cost, plus an operations fee and an annual platform fee',
-  'Transferable to your own ownership — Account Transfer terms in the MSA from day one',
+  'Transferable to your own ownership: Account Transfer terms in the MSA from day one',
   'SEC repository access included through a managed-platform account',
+  'Frontier models; open weights are a self-host option',
 ]
 
 const CHECK = (
@@ -32,7 +33,7 @@ const CHECK = (
 )
 
 /**
- * The fourth "tier" on the pricing page — deliberately a full-width band
+ * The fourth "tier" on the pricing page: deliberately a full-width band
  * rather than a fourth column, because it is not priced per graph and has no
  * number to show. Pricing structure only (public in MSA Schedule B.4); the
  * quote is per engagement.
@@ -47,7 +48,7 @@ export default function DedicatedDeployment({
         <div className="relative grid gap-8 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <div className="mb-3 inline-block rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-medium tracking-wide text-cyan-400 uppercase">
-              Your own AWS account
+              Segregated AWS account
             </div>
             <h3 className="font-heading mb-2 text-2xl font-bold text-white">
               Dedicated Deployment
@@ -57,11 +58,8 @@ export default function DedicatedDeployment({
               <span className="ml-2 text-gray-400">quoted per engagement</span>
             </div>
             <p className="text-gray-400">
-              The whole platform provisioned into an AWS account dedicated to
-              your organization, which we operate for you. For firms running
-              many entities or clients, and for anyone with identity,
-              procurement or isolation requirements a shared platform can&apos;t
-              meet.
+              The whole platform in a segregated AWS account, run by us under
+              our SOC 2 program and handed over when you say.
             </p>
           </div>
           <div className="lg:col-span-3">

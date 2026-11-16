@@ -71,7 +71,7 @@ export default function SchemaArchitecture() {
     {
       name: 'RoboInvestor',
       description: 'Investment portfolio & securities extension',
-      // Portfolio/Security/Position only — Trade, Benchmark, and MarketData are
+      // Portfolio/Security/Position only: Trade, Benchmark, and MarketData are
       // declared in the schema but sit in the backend's _UNMATERIALIZED_TABLES
       // set, so their tables never get created. Listing them here read as
       // shipped and contradicted the roadmap in FinancialServices.
@@ -84,7 +84,7 @@ export default function SchemaArchitecture() {
     {
       name: 'RoboLedger App',
       description:
-        'Complete accounting close platform — sync your books, map to US-GAAP, close the period, and publish XBRL-native financial reports',
+        'The general ledger built on RoboSystems, a full accounting system in its own right: close, consolidation, schedules, bank feeds, reconciliations and forecasting, every number traced to the entry',
       app: 'roboledger' as const,
     },
     {
@@ -94,7 +94,7 @@ export default function SchemaArchitecture() {
     },
     {
       name: 'AI Agents',
-      description: 'Claude, ChatGPT, Grok, or any MCP client',
+      description: 'Claude, ChatGPT or any MCP client',
       icon: McpLogo,
     },
   ]
@@ -111,7 +111,7 @@ export default function SchemaArchitecture() {
           <p className="mx-auto max-w-3xl text-gray-400">
             Unify disparate financial data sources into a cohesive, queryable
             knowledge graph with hybrid semantic search, persistent AI memory,
-            and domain extensions that power advanced analytics and AI-native
+            and domain extensions that power advanced analytics and AI
             applications
           </p>
         </div>
@@ -320,8 +320,8 @@ export default function SchemaArchitecture() {
             </h3>
             <p className="text-sm text-gray-400">
               Each graph runs on its own graph-database instance, and its ledger
-              in its own database schema&mdash;your data never mixes with
-              another organization&apos;s
+              in its own database schema, so your data never mixes with another
+              organization&apos;s
             </p>
           </div>
           <div className="group rounded-xl border border-gray-800 bg-gradient-to-br from-green-500/10 to-zinc-900 p-6 transition-all hover:border-green-500/50">

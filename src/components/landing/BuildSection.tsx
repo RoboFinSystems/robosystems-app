@@ -10,7 +10,7 @@ import FloatingElementsVariant from './FloatingElementsVariant'
 /**
  * The three write lanes an integration can use, in the order the API docs
  * present them. `send` is what the integration is responsible for; `enforced`
- * is what the platform guarantees on the way in — the reason to write through
+ * is what the platform guarantees on the way in: the reason to write through
  * the envelope rather than at a database.
  */
 const LANES = [
@@ -19,7 +19,7 @@ const LANES = [
     name: 'Ledger',
     border: 'border-secondary-500/30 hover:border-secondary-500/50',
     label: 'text-secondary-400',
-    send: 'Business events from any system you run — invoices, payments, payroll — landed in an inbox for approval.',
+    send: 'Business events from any system you run (invoices, payments, payroll) landed in an inbox for approval.',
     enforced: [
       'Double-entry balance',
       'Capture, then approve',
@@ -32,7 +32,7 @@ const LANES = [
     name: 'Semantic facts',
     border: 'border-primary-500/30 hover:border-primary-500/50',
     label: 'text-primary-400',
-    send: 'A custom vocabulary, then observed values per period — usage counts, operational KPIs.',
+    send: 'A custom vocabulary, then observed values per period: usage counts, operational KPIs.',
     enforced: [
       'Typed concepts',
       'Presentation structure',
@@ -164,11 +164,8 @@ export default function BuildSection() {
               </p>
             </div>
 
-            {/* Plaid */}
+            {/* Plaid (live since 2026-10-08) */}
             <div className="border-secondary-500/40 hover:border-secondary-500/70 shadow-secondary-500/10 relative rounded-xl border bg-zinc-900/50 p-6 shadow-lg transition-all duration-300">
-              <span className="bg-secondary-500/20 text-secondary-300 absolute top-4 right-4 rounded-full px-2 py-1 text-xs font-medium">
-                Coming Soon
-              </span>
               <div className="mb-4 flex items-center gap-4">
                 <div className="bg-primary-600 flex h-12 w-12 items-center justify-center rounded-lg">
                   <svg
@@ -192,7 +189,7 @@ export default function BuildSection() {
               </div>
               <p className="text-sm text-gray-400">
                 Link bank and card accounts at other institutions. Transactions
-                flow into the same inbox&mdash;nothing posts to the ledger until
+                flow into the same inbox, and nothing posts to the ledger until
                 you approve it.
               </p>
             </div>
@@ -209,7 +206,7 @@ export default function BuildSection() {
               Connect any source without touching the platform. An integration
               is a small program in its own repository that writes to
               RoboSystems through the public API with an API key. It never runs
-              inside the platform&mdash;so it survives every release, runs
+              inside the platform, so it survives every release, runs
               identically against the managed cloud or a self-hosted deployment,
               and your source credentials stay on your side.
             </p>
@@ -259,8 +256,8 @@ export default function BuildSection() {
 
           <p className="text-center text-sm text-gray-400">
             Nothing to stand up: the template ships a GitHub Actions schedule
-            and a Claude Code setup&mdash;fill in collect and transform, set two
-            repo secrets, and it runs.
+            and a Claude Code setup: fill in collect and transform, set two repo
+            secrets, and it runs.
           </p>
         </div>
 
@@ -314,8 +311,7 @@ export default function BuildSection() {
                 <h4 className="font-semibold text-white">MCP Endpoint</h4>
               </div>
               <p className="mb-4 text-sm text-gray-400">
-                Every graph is a remote MCP server &mdash; one URL, sign in, no
-                install
+                Every graph is a remote MCP server: one URL, sign in, no install
               </p>
               <code className="block rounded-sm bg-zinc-800 p-2 text-xs break-all text-gray-300">
                 {MCP_OAUTH_URL}

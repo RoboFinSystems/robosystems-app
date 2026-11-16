@@ -5,6 +5,7 @@ import {
   getPostSlugs,
   withoutLeadingTitle,
 } from '@/lib/blog'
+import { BOOK_PATH } from '@/lib/site'
 import { format } from 'date-fns'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -177,7 +178,7 @@ export default async function BlogPostPage({
         </div>
       )}
 
-      {/* Narration — "Listen to this story" */}
+      {/* Narration: "Listen to this story" */}
       {post.narrationUrl && (
         <div className="mx-auto max-w-4xl px-4 pt-8 sm:px-6 lg:px-8">
           <div className="rounded-xl border border-gray-800 bg-gray-900/50 p-4">
@@ -213,8 +214,9 @@ export default async function BlogPostPage({
           <div>
             <h3 className="font-bold text-white">{post.author}</h3>
             <p className="mt-1 text-gray-400">
-              Contributing to the future of graph databases and AI-powered
-              business intelligence.
+              RoboSystems, the open-source knowledge graph for finance, is built
+              by a CPA and former Workiva XBRL engineer. Our own companies&apos;
+              books are kept on it.
             </p>
           </div>
         </div>
@@ -224,32 +226,27 @@ export default async function BlogPostPage({
       <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="rounded-xl border border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 via-blue-500/10 to-purple-500/10 p-8 text-center">
           <h3 className="mb-4 text-2xl font-bold text-white">
-            Ready to Build Your Knowledge Graph?
+            Finance AI that ties to the books
           </h3>
           <p className="mb-6 text-gray-300">
-            Experience the power of graph databases with RoboSystems.
+            Talk it through in 20 minutes, or read the code first.
           </p>
-          <Link
-            href="https://github.com/RoboFinSystems/robosystems"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 text-lg font-semibold text-white transition-all hover:from-cyan-400 hover:to-blue-500 hover:shadow-lg hover:shadow-cyan-500/25"
-          >
-            <span>Get Started on GitHub</span>
-            <svg
-              className="h-5 w-5 transition-transform group-hover:translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <a
+              href={BOOK_PATH}
+              className="rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 text-lg font-semibold text-white transition-all hover:from-cyan-400 hover:to-blue-500 hover:shadow-lg hover:shadow-cyan-500/25"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
-          </Link>
+              Book 20 minutes
+            </a>
+            <a
+              href="https://github.com/RoboFinSystems/robosystems"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-gray-600 px-8 py-4 text-lg font-semibold text-white transition-all hover:border-gray-500 hover:bg-white/5"
+            >
+              Read the code
+            </a>
+          </div>
         </div>
       </div>
 

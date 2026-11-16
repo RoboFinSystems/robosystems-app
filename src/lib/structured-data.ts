@@ -18,7 +18,7 @@ export const organizationJsonLd = {
   url: 'https://robosystems.ai',
   logo: 'https://robosystems.ai/images/logos/robosystems-icon.png',
   description:
-    'Open-source financial intelligence platform powered by knowledge graphs and AI agents',
+    "The open-source knowledge graph for finance: your general ledger and public companies' XBRL filings as traceable data for AI agents.",
   sameAs: [
     'https://github.com/RoboFinSystems',
     'https://x.com/robofinsystems',
@@ -45,7 +45,7 @@ export const softwareJsonLd = {
   name: 'RoboSystems',
   applicationCategory: 'FinanceApplication',
   operatingSystem: 'Web',
-  // The software itself is free (Apache 2.0, self-hostable); the managed
+  // The software itself is free (Apache 2.0 and MIT, self-hostable); the managed
   // plans on /pricing run $29–$599/month. A bare price of 0 read as "the
   // service is free", so state the range.
   offers: {
@@ -55,15 +55,16 @@ export const softwareJsonLd = {
     priceCurrency: 'USD',
   },
   description:
-    'Financial intelligence platform with knowledge graphs, AI agents, and SEC XBRL data for business analysis',
+    "Finance AI that ties to the books: an open-source knowledge graph holding your general ledger and 8,000+ public companies' XBRL filings, served to your AI over MCP.",
   screenshot: 'https://robosystems.ai/images/og-preview.png',
   featureList: [
     'Knowledge graph database',
     'AI agent integration',
     'SEC XBRL repository',
     'Document search',
-    'AI memory',
-    'QuickBooks sync',
+    'Semantic memory',
+    'General ledger (RoboLedger)',
+    'Graphs from your own schema',
     'Open source',
   ],
   softwareVersion: '1.0',

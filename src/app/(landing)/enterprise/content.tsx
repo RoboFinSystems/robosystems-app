@@ -1,20 +1,23 @@
 'use client'
 
+import DeploymentSection from '@/components/landing/DeploymentSection'
+import EmailForATime from '@/components/landing/EmailForATime'
 import FloatingElementsVariant from '@/components/landing/FloatingElementsVariant'
 import Footer from '@/components/landing/Footer'
 import Header from '@/components/landing/Header'
 import SalesContactModal from '@/components/landing/SalesContactModal'
+import { BOOK_PATH } from '@/lib/site'
 import Link from 'next/link'
 import { useState } from 'react'
 
 /**
- * Deployment options — the three delivery modes side by side.
+ * Deployment options: the three delivery modes side by side.
  *
  * Copy discipline (engagement model §9): SSO/SCIM are claimed as verified
  * against Okta and scoped to Dedicated Deployments; SOC 2 Type II is stated
- * as *in progress* — never as a completed audit or "certified" — with scope
+ * as *in progress* (never as a completed audit or "certified"), with scope
  * described and linked to the MSA and Trust Center; the no-lock-in claim
- * rests on backups, the public API and Account Transfer — not on
+ * rests on backups, the public API and Account Transfer, not on
  * "everything is readable over GraphQL", which awaits its audit.
  */
 
@@ -53,24 +56,24 @@ const MODES: Mode[] = [
       {
         label: 'Paper',
         value:
-          'The public Terms — or our hosted MSA plus a one-page Order Form when procurement asks',
+          'The public Terms, or our hosted MSA plus a one-page Order Form when procurement asks',
       },
     ],
   },
   {
     name: 'Dedicated Deployment',
-    tagline: 'Your own AWS account · operated by us',
-    body: 'The same platform, provisioned into an AWS account dedicated to your organization inside our cloud organization, off the same assembly line as our own production. Account-level isolation. Sign in from your identity provider and provision users from it. Read-only visibility into the account, always.',
+    tagline: 'A segregated AWS account · run by us',
+    body: 'The same platform in a segregated AWS account, run by us under our SOC 2 program and handed over when you say. Frontier models only. Sign in from your identity provider and provision users from it. Read-only visibility into the account, always.',
     facts: [
       {
         label: 'Price',
         value:
-          'AWS at cost, plus an operations fee and an annual platform fee — quoted per engagement',
+          'AWS at cost, plus an operations fee and an annual platform fee, quoted per engagement',
       },
       {
         label: 'Paper',
         value:
-          'MSA + Order Form, Schedule B — or an AWS Marketplace private offer, Schedule C',
+          'MSA + Order Form, Schedule B, or an AWS Marketplace private offer, Schedule C',
       },
     ],
     featured: true,
@@ -78,7 +81,7 @@ const MODES: Mode[] = [
   {
     name: 'Self-Hosted',
     tagline: 'Your account · your operation',
-    body: 'Clone the Apache-2.0 repository and bootstrap it into your own AWS account. You hold the root, the data, and the audit. Support, advisory and integration work are available from Harbinger FinLab — through the public API, with a key you issue and can revoke, never from inside your account.',
+    body: "Run it on a box you own, on bare metal, or in your own AWS account; the code is Apache 2.0 and MIT. It's the one route where an open-weight model is an option, on your own hardware, and it doesn't yet match a frontier model. You hold the root, the data and the audit. Harbinger FinLab can help set it up on a screenshare you control, with keys you issue and can revoke.",
     facts: [
       { label: 'Price', value: 'Free to run. Services priced per engagement' },
       {
@@ -94,7 +97,7 @@ const COMPARISON: Array<{ row: string; m: string; d: string; s: string }> = [
   {
     row: 'Who owns the AWS account',
     m: 'RoboSystems',
-    d: 'RoboSystems — an account dedicated to you',
+    d: 'RoboSystems: a segregated account for you',
     s: 'You',
   },
   {
@@ -107,7 +110,7 @@ const COMPARISON: Array<{ row: string; m: string; d: string; s: string }> = [
     row: 'Who holds your data',
     m: 'RoboSystems',
     d: 'RoboSystems, in your account only',
-    s: 'You — we never hold it',
+    s: 'You: we never hold it',
   },
   {
     row: 'Isolation',
@@ -119,7 +122,7 @@ const COMPARISON: Array<{ row: string; m: string; d: string; s: string }> = [
     row: 'How you sign in',
     m: 'Email and password, with passkeys as a second factor',
     d: 'Your identity provider (OIDC SSO) with SCIM provisioning; passkeys',
-    s: 'Whatever you configure — the same software',
+    s: 'Whatever you configure: the same software',
   },
   {
     row: 'SEC repository',
@@ -131,26 +134,32 @@ const COMPARISON: Array<{ row: string; m: string; d: string; s: string }> = [
     row: 'Contract',
     m: 'Terms of Service, or MSA + Order Form',
     d: 'MSA + Order Form (Schedule B), or an AWS Marketplace private offer (Schedule C)',
-    s: 'Apache 2.0; services via Harbinger FinLab',
+    s: 'Apache 2.0 and MIT; services via Harbinger FinLab',
   },
   {
     row: 'Attestation',
     m: 'SOC 2 Type II compliance in progress; the managed platform is inside the scope of the examination',
     d: 'Inside that scope for as long as we operate it',
-    s: 'Your audit. You inherit the control design in the code and infrastructure — not our report',
+    s: 'Your audit. You inherit the control design in the code and infrastructure, not our report',
   },
   {
     row: 'Leaving',
     m: 'Download backups; query your graphs through the public API and MCP',
-    d: 'Account Transfer to your own ownership — a priced engagement, terms in the MSA from day one',
+    d: 'Account Transfer to your own ownership: a priced engagement, terms in the MSA from day one',
     s: 'Nothing to leave',
+  },
+  {
+    row: 'AI models',
+    m: 'Frontier models',
+    d: 'Frontier models',
+    s: 'Your choice, including an open-weight model on your own hardware',
   },
 ]
 
 const IDENTITY: Array<{ title: string; body: string; scope: string }> = [
   {
     title: 'Single sign-on',
-    body: "Sign in from your identity provider over OIDC. Identities link once to an account we provisioned — deactivate someone at your IdP and they're refused, valid token or not. Verified end-to-end against Okta; any OIDC-compliant provider.",
+    body: "Sign in from your identity provider over OIDC. Identities link once to an account we provisioned: deactivate someone at your IdP and they're refused, valid token or not. Verified end-to-end against Okta; any OIDC-compliant provider.",
     scope: 'Dedicated Deployments',
   },
   {
@@ -172,16 +181,16 @@ const IDENTITY: Array<{ title: string; body: string; scope: string }> = [
 
 const SECURITY: string[] = [
   'Encryption in transit and at rest; every graph on its own graph-database instance, and ledger data in its own schema.',
-  'Tenant isolation is tested, not asserted: an authenticated harness provisions two tenants on the full stack and fires a cross-tenant and privilege-escalation matrix at it — REST, Cypher, GraphQL, MCP, both extension surfaces, both directions. The cross-tenant boundary has also been probed in production, with real tenants.',
+  'Tenant isolation is tested, not asserted: an authenticated harness provisions two tenants on the full stack and fires a cross-tenant and privilege-escalation matrix at it (REST, Cypher, GraphQL, MCP, both extension surfaces, both directions). The cross-tenant boundary has also been probed in production, with our own tenants.',
   'A pinned supply chain: every CI action pinned to a commit, release deployments dispatch-only, provenance certified per pull request. Dedicated Deployments run a byte-identical, tag-pinned mirror of the public repository.',
   'Security incidents affecting your data: notice within 72 hours. Security releases: applied fleet-wide.',
-  'SOC 2 Type II compliance is in progress with an independent CPA firm; the report will be available to customers under NDA once the audit is complete. Its scope is the environments we operate — the managed platform, and a Dedicated Deployment for as long as we operate it — never a self-hosted one.',
+  'SOC 2 Type II compliance is in progress with an independent CPA firm; the report will be available under NDA once the audit is complete. Its scope is the environments we operate (the managed platform, and a Dedicated Deployment for as long as we operate it), never a self-hosted one.',
 ]
 
 const BUYING: Array<{ title: string; body: string }> = [
   {
     title: 'Managed',
-    body: 'Sign up; the public Terms govern. Need paper? The MSA is public — a one-page Order Form incorporates it.',
+    body: 'Sign up; the public Terms govern. Need paper? The MSA is public, and a one-page Order Form incorporates it.',
   },
   {
     title: 'Dedicated',
@@ -225,11 +234,10 @@ export default function EnterpriseContent() {
                 One platform. Three ways to run it.
               </h1>
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
-                Start on the managed platform in minutes. Move to an AWS account
-                dedicated to you&mdash;provisioned and operated by us&mdash;when
-                you outgrow it. Take the whole thing in-house whenever you want.
-                Same open-source software, same public API, and integrations
-                that never notice the move.
+                Start on the managed platform in minutes. Move to a segregated
+                AWS account, run by us under our SOC 2 program, when you need
+                one. Or run it yourself. Same open-source software, same public
+                API.
               </p>
               <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <button onClick={openContact} className={primaryButton}>
@@ -250,10 +258,9 @@ export default function EnterpriseContent() {
             <div className="mb-12 text-center">
               <h2 className={sectionHeading}>Pick where it runs</h2>
               <p className={sectionLede}>
-                The three modes are a ladder, not a menu. Most customers land on
-                the managed platform, move to a Dedicated Deployment when their
-                scale, identity or procurement requirements call for one, and
-                keep the option to take the account with them.
+                The three modes are a ladder, not a menu. Start managed, move to
+                Dedicated when scale, identity or procurement call for it, and
+                keep the option to take the account with you.
               </p>
             </div>
             <div className="mx-auto grid max-w-6xl gap-6 sm:gap-8 lg:grid-cols-3">
@@ -266,13 +273,6 @@ export default function EnterpriseContent() {
                       : 'border border-cyan-500/30'
                   }`}
                 >
-                  {mode.featured && (
-                    <div className="absolute -top-1 -right-1 z-10">
-                      <div className="rounded-bl-lg bg-cyan-600 px-3 py-1 text-xs font-semibold text-white">
-                        NEW
-                      </div>
-                    </div>
-                  )}
                   <div className="mb-1 text-sm font-medium text-cyan-400">
                     {mode.tagline}
                   </div>
@@ -320,10 +320,10 @@ export default function EnterpriseContent() {
               ))}
             </div>
             <p className="mx-auto mt-8 max-w-3xl text-center text-sm text-gray-500">
-              Running many entities or clients? Start the conversation
-              early&mdash;every graph beyond your first is a routine lift on the
-              managed platform, and at scale a Dedicated Deployment is usually
-              the better fit.
+              Running many entities or clients? Start the conversation early:
+              every graph beyond your first is a routine lift on the managed
+              platform, and at scale a Dedicated Deployment is usually the
+              better fit.
             </p>
           </div>
         </section>
@@ -429,7 +429,7 @@ export default function EnterpriseContent() {
                   The managed platform and every Dedicated Deployment come off
                   the same assembly line and run the same controls. What we
                   claim about them is stated in the contract you sign and on the
-                  Trust Center&mdash;not only here&mdash;and we say &ldquo;in
+                  Trust Center, not only here, and we say &ldquo;in
                   progress&rdquo; until the auditor says otherwise.
                 </p>
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col">
@@ -472,14 +472,16 @@ export default function EnterpriseContent() {
               Every backup is a downloadable archive. Every graph is a remote
               MCP server and a public API. And a Dedicated Deployment can be
               transferred to your own AWS account through the{' '}
-              <span className="text-white">Account Transfer engagement</span>
-              &mdash;terms in the MSA on day one, never negotiated under renewal
+              <span className="text-white">Account Transfer engagement</span>:
+              terms in the MSA on day one, never negotiated under renewal
               pressure. You leave with the entire running system, in an account
               you own, still working; your integrations never notice, because
               they only ever spoke the public API.
             </p>
           </div>
         </section>
+
+        <DeploymentSection />
 
         {/* How buying works + CTA */}
         <section className="relative bg-black py-16 sm:py-20">
@@ -501,13 +503,17 @@ export default function EnterpriseContent() {
               ))}
             </div>
             <div className="mt-14 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <button onClick={openContact} className={primaryButton}>
+              <a href={BOOK_PATH} className={primaryButton + ' text-center'}>
+                Book 20 minutes
+              </a>
+              <button onClick={openContact} className={secondaryButton}>
                 Talk to us about a Dedicated Deployment
               </button>
               <Link href="/pages/msa" className={secondaryButton}>
                 Read the MSA
               </Link>
             </div>
+            <EmailForATime className="mt-6 text-center text-sm text-gray-400" />
           </div>
         </section>
       </main>

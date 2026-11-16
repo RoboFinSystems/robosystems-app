@@ -1,24 +1,26 @@
 'use client'
 
+import { BOOK_PATH } from '@/lib/site'
 import Link from 'next/link'
-import { useState } from 'react'
-import ContactModal from './ContactModal'
 import FloatingElementsVariant from './FloatingElementsVariant'
 
 export default function OpenSourceSection() {
-  const [showEnterpriseContact, setShowEnterpriseContact] = useState(false)
   return (
     <section id="opensource" className="relative bg-black py-16 sm:py-24">
       <FloatingElementsVariant variant="opensource" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-            Open Source Foundation
+            Run it your way
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            RoboSystems is committed to open source. Fork and self-host the
-            entire platform, contribute to development, or use our managed
-            service for hassle-free AI-powered financial analysis tools.
+            Let us run it, or run it in a segregated AWS account we operate
+            under our SOC 2 program and hand over when you say. Both run
+            frontier models. Or self-host on a box you own, on bare metal, or in
+            your own AWS, where an open-weight model is an option, with help
+            from Harbinger FinLab if you want it. Open source (Apache 2.0 and
+            MIT): you keep the code and the data whatever happens to any vendor,
+            including us. Nothing held hostage.
           </p>
         </div>
 
@@ -43,12 +45,12 @@ export default function OpenSourceSection() {
                 RoboSystems GitHub
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                The heart of the RoboSystems ecosystem - our main repository
-                contains the complete knowledge graph platform including the API
-                server, semantic data processing, infrastructure templates, and
-                deployment workflows. Everything you need to run your own
-                financial knowledge graph - locally or in your cloud
-                infrastructure.
+                Three kinds of graph on one platform: your ledger, the public
+                filings, and graphs you model yourself, from your own schema,
+                loaded from Parquet and queried with Cypher. The main repository
+                holds all of it: the API server, the infrastructure templates
+                and the deployment workflows, to run locally or in your own
+                cloud.
               </p>
               <div className="flex flex-wrap justify-center gap-4 md:justify-start">
                 <a
@@ -72,7 +74,7 @@ export default function OpenSourceSection() {
                   href="https://github.com/RoboFinSystems/robosystems/fork"
                   className="border-secondary-600 text-secondary-400 hover:bg-secondary-600/10 inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 font-medium transition-all duration-300"
                 >
-                  🍴 Fork & Contribute
+                  Fork &amp; Contribute
                 </a>
               </div>
             </div>
@@ -136,7 +138,7 @@ export default function OpenSourceSection() {
                     <strong className="text-white">Semantic Sovereignty</strong>
                     <p className="mt-1 text-sm break-words">
                       Own what your numbers mean. Definitions, taxonomies, and
-                      calculation logic are open, inspectable artifacts—because
+                      calculation logic are open, inspectable artifacts, because
                       a black box in your own cloud is still a black box.{' '}
                       <Link
                         href="/blog/semantic-sovereignty"
@@ -187,18 +189,20 @@ export default function OpenSourceSection() {
                   </svg>
                   <div className="min-w-0 flex-1">
                     <strong className="text-white">
-                      Foundation Technology
+                      One ontology underneath
                     </strong>
                     <p className="mt-1 text-sm break-words">
-                      Following XBRL and Arelle's footsteps in creating open
-                      financial standards for the AI age.
+                      The RoboSystems graph model, labelled in XBRL&apos;s
+                      standard terms wherever XBRL has one. Every graph runs on
+                      it in LadybugDB, and reports leave as a holon (RDF), XBRL
+                      2.1 or Tavi.
                     </p>
                   </div>
                 </li>
               </ul>
             </div>
 
-            {/* Enterprise Services */}
+            {/* Three ways to run it */}
             <div className="group to-accent-950/20 hover:border-accent-500/50 overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 p-4 transition-all sm:p-6 md:p-8">
               <div className="mb-4 flex items-center gap-3">
                 <div className="bg-accent-500/20 flex h-10 w-10 items-center justify-center rounded-lg">
@@ -217,66 +221,84 @@ export default function OpenSourceSection() {
                   </svg>
                 </div>
                 <h3 className="font-heading text-xl font-semibold text-white">
-                  Enterprise Services
+                  Three ways to run it
                 </h3>
               </div>
               <p className="mb-4 text-sm text-gray-300">
-                The platform is open source. We help you succeed with it.
+                Point its AI at Claude, ChatGPT or any MCP client, or, when you
+                host it yourself, an open-weight model on your own hardware.
               </p>
 
               <ul className="mb-4 space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="text-accent-400 mr-2">•</span>
                   <span>
-                    <strong className="text-white">Custom Integrations</strong>
-                    —connect your ERP, banking, or proprietary data sources
+                    <strong className="text-white">Managed by us</strong>: from
+                    $99 a graph.{' '}
+                    <Link
+                      href="/pricing"
+                      className="text-accent-400 hover:text-accent-300"
+                    >
+                      Pricing
+                    </Link>
                   </span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-accent-400 mr-2">•</span>
                   <span>
-                    <strong className="text-white">
-                      Implementation Support
-                    </strong>
-                    —deployment, training, and onboarding for your team
+                    <strong className="text-white">Dedicated</strong>: a
+                    segregated AWS account, quoted per engagement.{' '}
+                    <Link
+                      href="/enterprise"
+                      className="text-accent-400 hover:text-accent-300"
+                    >
+                      Deployment options
+                    </Link>
                   </span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-accent-400 mr-2">•</span>
                   <span>
-                    <strong className="text-white">Ongoing Support</strong>
-                    —upgrades, account mapping and new reports as your business
-                    changes
+                    <strong className="text-white">Self-host</strong>: free. See{' '}
+                    <Link
+                      href="/docs/technical/self-hosting-on-a-server"
+                      className="text-accent-400 hover:text-accent-300"
+                    >
+                      Self-Hosting on a Server
+                    </Link>{' '}
+                    and the{' '}
+                    <Link
+                      href="/docs/technical/bootstrap-guide"
+                      className="text-accent-400 hover:text-accent-300"
+                    >
+                      Bootstrap Guide
+                    </Link>
+                    .
                   </span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-accent-400 mr-2">•</span>
                   <span>
-                    <strong className="text-white">Dedicated Deployment</strong>
-                    —your own AWS account, operated by us, with SSO and SCIM
+                    <strong className="text-white">Self-host help</strong>:{' '}
+                    <a
+                      href="https://harbinger.finance"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent-400 hover:text-accent-300"
+                    >
+                      Harbinger FinLab
+                    </a>{' '}
+                    sets it up with you, on a screenshare you control.
                   </span>
                 </li>
               </ul>
 
-              <button
-                onClick={() => setShowEnterpriseContact(true)}
+              <a
+                href={BOOK_PATH}
                 className="bg-accent-600 hover:bg-accent-700 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
               >
-                Contact Us
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
-              </button>
+                Book 20 minutes
+              </a>
             </div>
           </div>
 
@@ -305,7 +327,7 @@ export default function OpenSourceSection() {
                 </h3>
               </div>
               <p className="mb-4 text-sm text-gray-300">
-                Deploy your own instance with secure GitHub OIDC—no AWS
+                Deploy your own instance with secure GitHub OIDC, with no AWS
                 credentials stored in GitHub. Full CloudFormation templates and
                 GitHub Actions workflows included.
               </p>
@@ -420,170 +442,7 @@ just start
             </div>
           </div>
         </div>
-
-        {/* Community & Contribution */}
-        <div className="to-accent-950/20 mt-8 rounded-2xl border border-gray-800 bg-linear-to-r from-zinc-900 p-4 sm:mt-12 sm:p-6 md:p-8">
-          <div className="mx-auto max-w-4xl">
-            <h3 className="font-heading mb-4 text-center text-xl font-semibold text-white sm:mb-6 sm:text-2xl">
-              Join the RoboSystems Community
-            </h3>
-            <p className="mb-8 text-center text-gray-300">
-              Be part of building the future of financial AI infrastructure
-            </p>
-
-            <div className="mb-6 grid gap-4 sm:mb-8 sm:gap-6 md:grid-cols-2">
-              <div className="group rounded-lg border-2 border-gray-800 bg-linear-to-br from-zinc-900 to-green-950/20 p-4 transition-all hover:border-green-500/50 sm:p-6">
-                <h4 className="mb-3 flex items-center gap-2 font-semibold text-white">
-                  <svg
-                    className="text-secondary-400 h-5 w-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                  Development & Contribution
-                </h4>
-                <ul className="space-y-2 text-sm text-gray-300">
-                  <li className="flex items-start">
-                    <span className="mr-1 flex-shrink-0">•</span>
-                    <span className="break-words">
-                      Track our roadmap and upcoming features
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-1 flex-shrink-0">•</span>
-                    <span className="break-words">
-                      Submit pull requests and contribute code
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-1 flex-shrink-0">•</span>
-                    <span className="break-words">
-                      Review source code and architecture
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-1 flex-shrink-0">•</span>
-                    <span className="break-words">
-                      Fork and customize for your needs
-                    </span>
-                  </li>
-                </ul>
-              </div>
-              <div className="group rounded-lg border-2 border-gray-800 bg-linear-to-br from-zinc-900 to-indigo-950/20 p-4 transition-all hover:border-indigo-500/50 sm:p-6">
-                <h4 className="mb-3 font-semibold text-white">
-                  🤝 Community Support
-                </h4>
-                <ul className="space-y-2 text-sm text-gray-300">
-                  <li className="flex items-start">
-                    <span className="mr-1 flex-shrink-0">•</span>
-                    <span className="break-words">
-                      Report bugs and request features
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-1 flex-shrink-0">•</span>
-                    <span className="break-words">
-                      Join discussions on architecture decisions
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-1 flex-shrink-0">•</span>
-                    <span className="break-words">
-                      Share your implementations and use cases
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-1 flex-shrink-0">•</span>
-                    <span className="break-words">
-                      Get help from maintainers and community
-                    </span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-4">
-              <a
-                href="https://github.com/orgs/RoboFinSystems/projects/3"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-secondary-600 hover:bg-secondary-700 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium text-white transition-all duration-300"
-              >
-                <svg
-                  className="h-5 w-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-                  />
-                </svg>
-                Roadmap
-              </a>
-              <a
-                href="https://github.com/RoboFinSystems/robosystems/discussions"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 font-medium text-white transition-all duration-300 hover:bg-indigo-700"
-              >
-                <svg
-                  className="h-5 w-5"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                GitHub Discussions
-              </a>
-              <a
-                href="https://github.com/RoboFinSystems/robosystems/issues"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg bg-zinc-700 px-6 py-3 font-medium text-white transition-all duration-300 hover:bg-zinc-600"
-              >
-                <svg
-                  className="h-5 w-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                Report Issues
-              </a>
-            </div>
-          </div>
-        </div>
       </div>
-
-      {/* Contact Modal */}
-      <ContactModal
-        isOpen={showEnterpriseContact}
-        onClose={() => setShowEnterpriseContact(false)}
-        title="Enterprise Services"
-        description="Tell us about your project and we'll help you build your knowledge graph."
-        formType="enterprise_sales"
-      />
     </section>
   )
 }

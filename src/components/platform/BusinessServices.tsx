@@ -6,28 +6,30 @@ export default function BusinessServices() {
       title: 'Data Integrations',
       icon: 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1',
       color: 'cyan',
-      highlight: 'QuickBooks · Documents',
+      highlight: 'QuickBooks · Bank feeds · Documents',
       description:
-        'Connect your accounting data and documents into the RoboLedger schema for a unified financial picture.',
+        'Bring your books, bank feeds and documents into RoboLedger, the general ledger built on RoboSystems.',
       features: [
-        'QuickBooks OAuth — chart of accounts, journal entries, and transactions',
-        'US-GAAP taxonomy — AI auto-mapping for the chart of accounts',
-        'Document uploads — policies, contracts, and workpapers with hybrid semantic search',
+        'QuickBooks over OAuth: chart of accounts, journal entries, and transactions',
+        'Bank feeds through Plaid: transactions land in the inbox for approval',
+        'Any other ledger through the API or a file',
+        'US-GAAP taxonomy: AI auto-mapping for the chart of accounts',
+        'Document uploads: policies, contracts, and workpapers with hybrid semantic search',
       ],
     },
   ]
 
   const dataManagementServices = [
     {
-      title: 'RoboLedger Application',
+      title: 'RoboLedger, the general ledger built on RoboSystems',
       icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
       gradient: 'from-indigo-600 to-blue-600',
       capabilities: [
-        'AI-triaged transaction inbox — preview what posts before it hits the GL',
+        'AI-triaged transaction inbox: preview what posts before it hits the GL',
         'US-GAAP auto-mapping with confidence scores',
         'Live statements from the ledger, plus a guided period close',
-        'Report Creator — Tavi and XBRL 2.1 export',
-        'Plan — statements and assumptions across the actuals/forecast seam',
+        'Report Creator: XBRL 2.1 export',
+        'Plan: statements and assumptions across the actuals/forecast seam',
       ],
     },
     {
@@ -37,7 +39,7 @@ export default function BusinessServices() {
       capabilities: [
         'Ask questions about your books in plain English',
         'Narrative answers with the data and generated Cypher',
-        'MCP integration for Claude, ChatGPT, Grok, and any MCP client',
+        'MCP integration for Claude, ChatGPT or any MCP client',
       ],
     },
   ]
@@ -48,7 +50,7 @@ export default function BusinessServices() {
   const workflowSteps = [
     {
       title: 'Connect',
-      description: 'QuickBooks via OAuth, plus your own documents',
+      description: 'QuickBooks via OAuth, bank feeds, and your own documents',
       bg: 'to-cyan-950/20',
       border: 'hover:border-cyan-500/30',
       badge: 'bg-cyan-500/20 text-cyan-400',
@@ -64,7 +66,7 @@ export default function BusinessServices() {
     {
       title: 'Review Ledger',
       description:
-        'Transactions, trial balance, and live statements — no close required',
+        'Transactions, trial balance, and live statements: no close required',
       bg: 'to-fuchsia-950/20',
       border: 'hover:border-fuchsia-500/30',
       badge: 'bg-fuchsia-500/20 text-fuchsia-400',
@@ -90,17 +92,17 @@ export default function BusinessServices() {
     {
       title: 'Reports as Structured Data',
       description:
-        'RoboLedger creates XBRL-native financial reports — inherently queryable, comparable across periods, and ready to publish to stakeholders.',
+        'RoboLedger creates XBRL-native financial reports: queryable, comparable across periods, and ready to publish to stakeholders.',
     },
     {
-      title: 'AI-Native Close Workflow',
+      title: 'AI in the Close Workflow',
       description:
-        'From an AI-triaged transaction inbox to GAAP auto-mapping to guided period close — AI handles the mechanical work at machine speed so humans can focus on judgment.',
+        'From an AI-triaged transaction inbox to GAAP auto-mapping to guided period close, the AI drafts the mechanical work and your people approve it.',
     },
     {
       title: 'Close, Then Plan',
       description:
-        'The closed months feed the forecast directly. Statements and a scenario’s assumptions sit in one grid spanning the actuals/forecast seam — the plan is driven by the ledger, not a spreadsheet copied out of it.',
+        'The closed months feed the forecast directly. Statements and a scenario’s assumptions sit in one grid spanning the actuals/forecast seam: the plan is driven by the ledger, not a spreadsheet copied out of it.',
     },
   ]
 
@@ -113,10 +115,10 @@ export default function BusinessServices() {
             Accounting Data Integration & Management
           </h2>
           <p className="mx-auto max-w-3xl text-gray-400">
-            Powered by the RoboLedger schema extension — unifying QuickBooks and
-            your documents into a queryable knowledge graph for full-cycle
-            ledger management, period close, AI-native financial reporting, and
-            forward planning
+            RoboLedger, the general ledger built on RoboSystems, brings
+            QuickBooks, bank feeds and your documents into a queryable knowledge
+            graph for the full cycle: ledger management, period close, financial
+            reporting and forward planning
           </p>
         </div>
 

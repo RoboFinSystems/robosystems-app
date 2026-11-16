@@ -6,7 +6,7 @@ import ContactModal from './ContactModal'
 export default function Footer() {
   return (
     <LandingFooter
-      tagline="Open-source knowledge graph platform for financial and operational intelligence. Transform your data into a semantic layer that AI agents can understand and reason over."
+      tagline="The open-source knowledge graph for finance. Your general ledger and public companies' filings as traceable data for your AI, on your infrastructure, with the model you choose."
       productLinks={[
         { label: 'Platform', href: '/platform' },
         { label: 'Enterprise', href: '/enterprise' },

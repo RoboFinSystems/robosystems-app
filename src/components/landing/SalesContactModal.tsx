@@ -5,7 +5,7 @@ import ContactModal from './ContactModal'
 /**
  * The one contact modal every sales entry point opens.
  *
- * "Contact Sales" used to open the developer/integration modal — a Dedicated
+ * "Contact Sales" used to open the developer/integration modal: a Dedicated
  * Deployment buyer was asked which systems they needed to integrate and told
  * the integration team would reply. This keeps the sales copy in one place so
  * the pricing page, the deployment-options page and the homepage all ask the
@@ -18,7 +18,7 @@ const VARIANTS: Record<
   { title: string; description: string }
 > = {
   sales: {
-    title: 'Talk to sales',
+    title: 'Talk to us',
     description:
       'Questions about plans, procurement, or a Dedicated Deployment? Tell us a little about your organization and we will come back with answers, not a sales deck.',
   },

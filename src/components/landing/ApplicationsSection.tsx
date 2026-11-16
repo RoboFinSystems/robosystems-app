@@ -14,12 +14,10 @@ export default function ApplicationsSection() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-            Applications Powered by RoboSystems
+            What&apos;s built on it
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            Purpose-built applications that leverage the RoboSystems platform to
-            deliver intelligent financial reporting, document search, and
-            investment research capabilities.
+            Products that run on the same platform and the same public API.
           </p>
         </div>
 
@@ -61,12 +59,9 @@ export default function ApplicationsSection() {
                 </div>
               </div>
               <p className="mt-6 text-center text-sm text-gray-400">
-                RoboLedger syncs QuickBooks into the RoboLedger schema for full
-                ledger management, period close, AI-native financial reporting,
-                and forward planning. RoboInvestor manages investment portfolios
-                and provides access to the SEC Shared Repository for securities
-                research. Both expose MCP tools, so any AI assistant can run
-                natural language queries against the knowledge graph.
+                RoboLedger keeps the books in the ledger graph. RoboInvestor
+                tracks positions beside the SEC repository. Both expose MCP
+                tools.
               </p>
             </div>
           </div>
@@ -94,15 +89,16 @@ export default function ApplicationsSection() {
                   <h3 className="font-heading text-xl font-bold text-white sm:text-2xl">
                     RoboLedger
                   </h3>
-                  <p className="text-gray-400">AI-Native Financial Reporting</p>
+                  <p className="text-gray-400">
+                    The general ledger built on RoboSystems
+                  </p>
                 </div>
               </Link>
 
               <p className="mb-6 text-gray-300">
-                A complete accounting close platform — connect your data
-                sources, let AI triage every transaction, close the books,
-                generate XBRL-compliant financial reports, and plan the months
-                ahead off the same ledger.
+                A full accounting system in its own right: close, consolidation,
+                schedules, bank feeds, reconciliations and forecasting, every
+                number traced to the entry.
               </p>
 
               <div className="mb-8 space-y-4">
@@ -148,7 +144,7 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Event-driven inbox — AI pre-classifies, you approve
+                        Event-driven inbox: AI pre-classifies, you approve
                       </span>
                     </li>
                     <li className="flex items-start">
@@ -161,22 +157,21 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Live Balance Sheet, Income Statement, and Cash Flow — no
+                        Live Balance Sheet, Income Statement, and Cash Flow: no
                         close required
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Guided period close — fiscal calendar, depreciation and
+                        Guided period close: fiscal calendar, depreciation and
                         prepaid schedules, rule-engine gating
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Report Creator — Tavi and XBRL 2.1 export with publish
-                        lists
+                        Report Creator: XBRL 2.1 export with publish lists
                       </span>
                     </li>
                   </ul>
@@ -190,13 +185,13 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Plan — actuals and forecast in one monthly grid
+                        Plan: actuals and forecast in one monthly grid
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Block Explorer — any number down to the facts and rules
+                        Block Explorer: any number down to the facts and rules
                         behind it
                       </span>
                     </li>
@@ -211,14 +206,14 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        AI Console — ask about your books, or have it draft and
+                        AI Console: ask about your books, or have it draft and
                         sort the routine work for you to review
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Your AI assistant drives the close over MCP — author
+                        Your AI assistant drives the close over MCP: author
                         scenarios, define metrics, write handler rules
                       </span>
                     </li>
@@ -261,6 +256,13 @@ export default function ApplicationsSection() {
                 </div>
               </Link>
 
+              <p className="mb-4 text-sm text-green-300/80">
+                Equity research on public companies, your fund&apos;s positions
+                with their terms, and the reports portfolio companies share from
+                RoboLedger. Building next: positions linked to the ledger,
+                brokerage sync and portfolio analytics.
+              </p>
+
               <p className="mb-6 text-gray-300">
                 Track public and private positions in one book, research any
                 public company against the SEC knowledge graph, and read equity
@@ -290,7 +292,7 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        Cross-graph linking — a holding connects to its
+                        Cross-graph linking: a holding connects to its
                         issuer&apos;s own graph
                       </span>
                     </li>
@@ -311,8 +313,8 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        AI-powered deep research — plain-English questions
-                        become graph queries
+                        AI-powered deep research: plain-English questions become
+                        graph queries
                       </span>
                     </li>
                     <li className="flex items-start">
@@ -331,7 +333,7 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        MCP tools for Claude, ChatGPT, Grok, and any MCP client
+                        MCP tools for Claude, ChatGPT or any MCP client
                       </span>
                     </li>
                   </ul>
@@ -355,18 +357,24 @@ export default function ApplicationsSection() {
                         Narrated video brief alongside the written report
                       </span>
                     </li>
-                    <li className="flex items-start">
-                      <span className="mr-2 text-green-400">•</span>
-                      <span>
-                        Quarterly continuing coverage with full report history
-                      </span>
-                    </li>
                   </ul>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <p className="mt-10 text-center text-sm text-gray-400">
+          <a
+            href="https://xbrlkit.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-white underline decoration-gray-600 underline-offset-4 hover:decoration-gray-400"
+          >
+            xbrlkit
+          </a>
+          : a free reader for XBRL reports, local, with its own MCP server.
+        </p>
       </div>
     </section>
   )

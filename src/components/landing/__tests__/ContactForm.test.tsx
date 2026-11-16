@@ -12,7 +12,7 @@ describe('ContactForm copy by intent', () => {
       'Tell us about your integration needs'
     )
     expect(copyForFormType('enterprise_sales').success).toBe(
-      'Our integration team will get back to you within 24 hours.'
+      "We'll reply within one business day."
     )
   })
 
@@ -23,6 +23,13 @@ describe('ContactForm copy by intent', () => {
       expect(copy.placeholder).toMatch(/identity provider/i)
       expect(copy.success).not.toMatch(/integration team/i)
     }
+  })
+
+  it('asks a visitor the booking hours do not suit for times, not integrations', () => {
+    const copy = copyForFormType('meeting')
+    expect(copy.messageLabel).toBe('What would you like to talk through?')
+    expect(copy.placeholder).toMatch(/times that suit you/)
+    expect(copy.success).not.toMatch(/integration team/i)
   })
 
   it('keeps the neutral wording for legal inquiries', () => {

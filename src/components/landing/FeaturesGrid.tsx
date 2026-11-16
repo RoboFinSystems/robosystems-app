@@ -11,21 +11,112 @@ export default function FeaturesGrid() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-            How We Deliver It
+            Three kinds of graph, one platform
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            A modern stack purpose-built for financial
-            intelligence&mdash;knowledge graph, document search, and AI memory
-            in one platform.
+            One ontology underneath: the RoboSystems graph model, labelled in
+            XBRL&apos;s standard terms wherever XBRL has one. Your AI reaches
+            all of it over MCP, and every answer opens to its entries or its
+            tagged facts.
           </p>
         </div>
 
         <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {/* LadybugDB Engine */}
+          {/* Your ledger */}
           <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-orange-950/20 p-5 transition-all duration-300 hover:border-orange-500/50 sm:p-6 md:p-8">
             <div className="absolute inset-0 bg-linear-to-br from-orange-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             <div className="relative">
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/20 sm:mb-6 sm:h-14 sm:w-14">
+                <svg
+                  className="h-7 w-7 text-orange-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  />
+                </svg>
+              </div>
+              <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
+                Your ledger
+              </h3>
+              <p className="mb-4 text-sm text-gray-300 sm:text-base">
+                RoboLedger&apos;s books mapped onto the ontology, with the
+                fiscal calendar and the close rules.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li className="flex items-start">
+                  <span className="mr-2 text-orange-400">•</span>
+                  Chart of accounts mapped to XBRL concepts
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-orange-400">•</span>
+                  Period close, schedules and reconciliations
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-orange-400">•</span>
+                  Every entity of the group in one graph
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-orange-400">•</span>
+                  Every number traced to its entry
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* The public record */}
+          <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-emerald-950/20 p-5 transition-all duration-300 hover:border-emerald-500/50 sm:p-6 md:p-8">
+            <div className="absolute inset-0 bg-linear-to-br from-emerald-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="relative">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/20 sm:mb-6 sm:h-14 sm:w-14">
+                <svg
+                  className="h-7 w-7 text-emerald-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+              <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
+                The public record
+              </h3>
+              <p className="mb-4 text-sm text-gray-300 sm:text-base">
+                8,000+ SEC filers&apos; XBRL filings in the same schema as your
+                ledger, with search across MD&amp;A, risk factors and notes.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li className="flex items-start">
+                  <span className="mr-2 text-emerald-400">•</span>
+                  Full-text and semantic search with hybrid scoring
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-emerald-400">•</span>
+                  Search MD&amp;A, risk factors, and iXBRL disclosures
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-emerald-400">•</span>
+                  Statements rendered from the XBRL, not PDF scans
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Your own graphs */}
+          <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-green-950/20 p-5 transition-all duration-300 hover:border-green-500/50 sm:p-6 md:p-8">
+            <div className="absolute inset-0 bg-linear-to-br from-green-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="relative">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/20 sm:mb-6 sm:h-14 sm:w-14">
                 <svg
                   className="h-7 w-7"
                   xmlns="http://www.w3.org/2000/svg"
@@ -70,131 +161,42 @@ export default function FeaturesGrid() {
                 </svg>
               </div>
               <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
+                Your own graphs
+              </h3>
+              <p className="mb-4 text-sm text-gray-300 sm:text-base">
+                Bring a schema, load Parquet, query with Cypher.{' '}
                 <a
                   href="https://ladybugdb.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="transition-colors hover:text-orange-300"
                 >
-                  LadybugDB Engine
-                </a>
-              </h3>
-              <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Purpose-built graph database optimized for analytical workloads
-                and AI-native applications.
+                  LadybugDB
+                </a>{' '}
+                underneath.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
-                  <span className="mr-2 text-orange-400">•</span>
-                  Columnar storage for fast aggregations
+                  <span className="mr-2 text-green-400">•</span>
+                  Your own node and relationship types
                 </li>
                 <li className="flex items-start">
-                  <span className="mr-2 text-orange-400">•</span>
+                  <span className="mr-2 text-green-400">•</span>
                   DuckDB staging for data validation
                 </li>
                 <li className="flex items-start">
-                  <span className="mr-2 text-orange-400">•</span>
+                  <span className="mr-2 text-green-400">•</span>
+                  Columnar storage for fast aggregations
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-green-400">•</span>
                   LanceDB vector indexes for semantic search
                 </li>
-                <li className="flex items-start">
-                  <span className="mr-2 text-orange-400">•</span>
-                  Subgraph workspaces for AI memory and isolation
-                </li>
               </ul>
             </div>
           </div>
 
-          {/* Document Search */}
-          <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-emerald-950/20 p-5 transition-all duration-300 hover:border-emerald-500/50 sm:p-6 md:p-8">
-            <div className="absolute inset-0 bg-linear-to-br from-emerald-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-            <div className="relative">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/20 sm:mb-6 sm:h-14 sm:w-14">
-                <svg
-                  className="h-7 w-7 text-emerald-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
-                Document Search
-              </h3>
-              <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Hybrid search across your documents and public filings, powered
-                by OpenSearch.
-              </p>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li className="flex items-start">
-                  <span className="mr-2 text-emerald-400">•</span>
-                  Full-text and semantic search with hybrid scoring
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2 text-emerald-400">•</span>
-                  Search across structured and unstructured data
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2 text-emerald-400">•</span>
-                  Search MD&A, risk factors, and iXBRL disclosures
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Open Source */}
-          <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-green-950/20 p-5 transition-all duration-300 hover:border-green-500/50 sm:p-6 md:p-8">
-            <div className="absolute inset-0 bg-linear-to-br from-green-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-            <div className="relative">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/20 sm:mb-6 sm:h-14 sm:w-14">
-                <svg
-                  className="h-7 w-7 text-green-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                  />
-                </svg>
-              </div>
-              <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
-                Open Source
-              </h3>
-              <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Fork, deploy, and extend. Complete infrastructure automation
-                with Docker, CloudFormation, and GitHub Actions.
-              </p>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li className="flex items-start">
-                  <span className="mr-2 text-green-400">•</span>
-                  TypeScript, Python, and MCP clients
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2 text-green-400">•</span>
-                  Docker development environment
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2 text-green-400">•</span>
-                  One-command AWS deployment
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2 text-green-400">•</span>
-                  GitHub OIDC — no stored credentials
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* MCP Protocol */}
+          {/* Subgraphs and memory */}
           <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-indigo-950/20 p-5 transition-all duration-300 hover:border-indigo-500/50 sm:p-6 md:p-8">
             <div className="absolute inset-0 bg-linear-to-br from-indigo-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             <div className="relative">
@@ -214,24 +216,21 @@ export default function FeaturesGrid() {
                 </svg>
               </div>
               <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
-                MCP Protocol
+                Subgraphs and memory
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Native integration with AI agents through the Model Context
-                Protocol standard.
+                A subgraph is a workspace beside your graph where your AI adds
+                node and relationship types and writes Cypher over MCP. Semantic
+                memory carries its work between sessions.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="mr-2 text-indigo-400">•</span>
-                  Works with Claude, ChatGPT, Grok, and any MCP client
+                  Works with Claude, ChatGPT or any MCP client
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-indigo-400">•</span>
                   Schema introspection and typed GraphQL reads
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2 text-indigo-400">•</span>
-                  Cypher queries from natural language
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-indigo-400">•</span>
@@ -264,8 +263,8 @@ export default function FeaturesGrid() {
                 API & SDKs
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Platform REST API — Extensions GraphQL for reads, CQRS
-                operations for writes.
+                The platform REST API: GraphQL for reads, named operations for
+                writes.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
@@ -311,8 +310,9 @@ export default function FeaturesGrid() {
                 Security & Isolation
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                A dedicated graph-database instance per subscription, or your
-                own AWS account on a Dedicated Deployment.
+                A dedicated graph-database instance per subscription, or a
+                Dedicated Deployment: a segregated AWS account RoboSystems runs,
+                transferable to you.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">

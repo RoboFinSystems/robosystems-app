@@ -7,6 +7,6 @@ export const alt = 'RoboSystems Blog'
 export default function Image() {
   return renderOgImage({
     eyebrow: 'RoboSystems Blog',
-    title: 'Insights on graph databases, AI, and financial intelligence',
+    title: 'Finance AI that ties to the books',
   })
 }

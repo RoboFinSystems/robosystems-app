@@ -41,6 +41,17 @@ describe('Header', () => {
     expect(hrefsOf('Open app')).toEqual([])
   })
 
+  it('leads with Book 20 minutes for every visitor, desktop and mobile', () => {
+    for (const session of [signedOut, signedIn]) {
+      mockUseOptionalAuth.mockReturnValue(session)
+      const { unmount } = render(<Header />)
+      openMobileMenu()
+
+      expect(hrefsOf('Book 20 minutes')).toEqual(['/book', '/book'])
+      unmount()
+    }
+  })
+
   it('offers Open app instead of Login and Register to a signed-in visitor', () => {
     mockUseOptionalAuth.mockReturnValue(signedIn)
     render(<Header />)

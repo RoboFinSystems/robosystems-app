@@ -1,6 +1,8 @@
 # RoboSystems App
 
-RoboSystems App is the web interface for the RoboSystems financial intelligence platform — unifying structured data, document search, and AI-powered insights in one application.
+Part of RoboSystems, the open-source knowledge graph for finance.
+
+This app is robosystems.ai: the public site, the docs and the blog, and the signed-in console where you create graphs, query them, search documents and manage subscriptions.
 
 - **Knowledge Graph Management**: Create and manage multiple isolated graph databases with tiered infrastructure
 - **Document Search**: Full-text and semantic search across SEC filings, uploaded documents, and connected sources
@@ -85,7 +87,7 @@ npm install @robosystems/core@latest
 
 - Fork this repo (and the [robosystems](https://github.com/RoboFinSystems/robosystems) backend)
 - AWS account with IAM Identity Center (SSO)
-- Run `just bootstrap` in the backend repo — it deploys OIDC and sets this
+- Run `just bootstrap` in the backend repo: it deploys OIDC and sets this
   repository's `AWS_ROLE_ARN`, `AWS_ACCOUNT_ID` and `AWS_REGION`
 - Run `npm run setup:gha` here to configure the remaining deployment variables
 

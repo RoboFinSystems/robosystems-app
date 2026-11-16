@@ -2,10 +2,10 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'RoboSystems | Financial Intelligence Platform',
+    name: 'RoboSystems: the open-source knowledge graph for finance',
     short_name: 'RoboSystems',
     description:
-      'Your company, the companies around it, and public SEC filings in one knowledge graph, with document search and AI memory over MCP.',
+      "Finance AI that ties to the books: your general ledger and public companies' XBRL filings as traceable data for your AI, over MCP.",
     start_url: '/',
     display: 'standalone',
     background_color: '#000000',

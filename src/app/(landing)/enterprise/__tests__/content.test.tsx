@@ -15,6 +15,9 @@ vi.mock('@/components/landing/SalesContactModal', () => ({
   default: ({ isOpen, variant }: { isOpen: boolean; variant: string }) =>
     isOpen ? <div data-testid="sales-modal">{variant}</div> : null,
 }))
+vi.mock('@/components/landing/ContactModal', () => ({
+  default: () => null,
+}))
 vi.mock('next/link', () => ({
   default: ({
     children,
@@ -93,6 +96,17 @@ describe('EnterpriseContent', () => {
     expect(
       screen.getByRole('link', { name: 'Bootstrap guide' })
     ).toHaveAttribute('href', '/docs/technical/bootstrap-guide')
+  })
+
+  it('offers the Finance AI Deployment and Book 20 minutes before the Dedicated ask', () => {
+    render(<EnterpriseContent />)
+
+    expect(
+      screen.getByRole('heading', { name: 'The Finance AI Deployment' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getAllByRole('link', { name: 'Book 20 minutes' })[0]
+    ).toHaveAttribute('href', '/book')
   })
 
   it('links procurement to the hosted MSA and the Trust Center', () => {
