@@ -30,7 +30,6 @@ interface Tier {
   maxSubgraphs: number
   storageGb: number
   backupRetentionDays: number
-  featured?: boolean
   /** Set up for the customer on request rather than self-served. */
   provisionedOnRequest?: boolean
 }
@@ -38,7 +37,7 @@ interface Tier {
 /**
  * Rendered immediately, then reconciled against /v1/offering below.
  *
- * These are a display fallback, never the source of truth — billing reads
+ * These are a display fallback, never the source of truth: billing reads
  * `base_price_cents` in the API's billing config. Keeping them means the
  * pricing page still renders if the API is unreachable, which matters more
  * here than on an authenticated surface.
@@ -88,8 +87,8 @@ function tierFeatures(tier: Tier): string[] {
     // false on three axes: rate limits apply (60/min), the connection pool is
     // an LRU ceiling rather than a concurrency guarantee, and LadybugDB is
     // single-writer per database. What IS true and never needs retracting is
-    // that database operations cost no credits — only AI does.
-    'Queries and MCP tools included — credits are for AI only',
+    // that database operations cost no credits; only AI does.
+    'Queries and MCP tools included: credits are for AI only',
   ]
 }
 
@@ -98,8 +97,8 @@ function tierFeatures(tier: Tier): string[] {
  *
  * `??` is wrong here: it falls back on null/undefined but not on 0, so an API
  * reporting `max_subgraphs: 0` would override a correct fallback of 10. None of
- * these fields has a meaningful zero — a priced tier always has storage, a
- * retention window and at least one subgraph — so zero means "no data", the
+ * these fields has a meaningful zero (a priced tier always has storage, a
+ * retention window and at least one subgraph), so zero means "no data", the
  * same as absent.
  */
 function positive(live: number | undefined, fallback: number): number {
@@ -181,12 +180,11 @@ export default function GraphPricing({
     // supplies its own padding. RepositoryPricing below carries the gap.
     <div>
       <div className="mb-10 text-center">
-        {/* "Managed Platform", not "Dedicated Graphs": the word dedicated now
-            names the Dedicated Deployment (a customer's own AWS account, MSA
-            Schedule B). The per-graph isolation claim lives in each tier's
-            description instead. */}
+        {/* Not "Dedicated Graphs": the word dedicated names the Dedicated
+            Deployment (a segregated AWS account, MSA Schedule B). The per-graph
+            isolation claim lives in each tier's description instead. */}
         <div className="mb-4 inline-block rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 text-sm font-medium text-cyan-400">
-          Managed Platform
+          Managed by RFS · frontier models
         </div>
         <h2 className="mb-3 text-3xl font-bold text-white">
           Graph Subscriptions
@@ -211,7 +209,9 @@ export default function GraphPricing({
           >
             RoboInvestor
           </a>{' '}
-          for its portfolio, or both; a custom graph runs a schema you define.{' '}
+          for its portfolio, or both; a custom graph runs a schema you define.
+          Point its AI at Claude, ChatGPT or any MCP client. Managed graphs run
+          frontier models; an open-weight model is a self-host option.{' '}
           <Link
             href="/docs/guides/graphs-tiers-and-credits"
             className="text-cyan-400 hover:text-cyan-300"
@@ -224,20 +224,9 @@ export default function GraphPricing({
         {tiers.map((tier) => (
           <div
             key={tier.id}
-            className={`group relative flex flex-col overflow-hidden rounded-2xl bg-linear-to-br from-cyan-900/50 to-cyan-900/20 p-4 transition-all duration-300 sm:p-6 md:p-8 ${
-              tier.featured
-                ? 'border-2 border-cyan-500 hover:border-cyan-400'
-                : 'border border-cyan-500/30 hover:border-cyan-500/50'
-            }`}
+            className="group relative flex flex-col overflow-hidden rounded-2xl border border-cyan-500/30 bg-linear-to-br from-cyan-900/50 to-cyan-900/20 p-4 transition-all duration-300 hover:border-cyan-500/50 sm:p-6 md:p-8"
           >
             <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-cyan-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-            {tier.featured && (
-              <div className="absolute -top-1 -right-1 z-10">
-                <div className="rounded-bl-lg bg-cyan-600 px-3 py-1 text-xs font-semibold text-white">
-                  MOST POPULAR
-                </div>
-              </div>
-            )}
             <div className="relative flex flex-1 flex-col">
               <div className="mb-8">
                 <h3 className="font-heading mb-2 text-2xl font-bold text-white">
@@ -252,7 +241,7 @@ export default function GraphPricing({
                 <p className="text-gray-400">{tier.description}</p>
                 {tier.provisionedOnRequest && (
                   <p className="mt-3 text-sm text-cyan-300/90">
-                    Provisioned on request — we set it up for you.
+                    Provisioned on request: we set it up for you.
                   </p>
                 )}
               </div>

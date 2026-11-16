@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { MemoryPageContent } from './content'
 
 export const metadata: Metadata = {
-  title: 'Memory | Financial Intelligence Platform',
+  title: 'Memory | RoboSystems',
   description: 'View, search, and manage the semantic memory of your graph',
 }
 

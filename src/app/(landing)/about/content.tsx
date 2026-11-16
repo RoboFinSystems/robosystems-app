@@ -1,9 +1,11 @@
 'use client'
 
 import ContactModal from '@/components/landing/ContactModal'
+import EmailForATime from '@/components/landing/EmailForATime'
 import FloatingElementsVariant from '@/components/landing/FloatingElementsVariant'
 import Footer from '@/components/landing/Footer'
 import Header from '@/components/landing/Header'
+import { BOOK_PATH } from '@/lib/site'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -39,7 +41,7 @@ const PRODUCTS: Array<{ name: string; href: string; body: string }> = [
   {
     name: 'RoboLedger',
     href: 'https://roboledger.ai',
-    body: 'Books, reporting, planning and the month-end close, on top of QuickBooks.',
+    body: 'The general ledger built on RoboSystems: close, consolidation, schedules, bank feeds, reconciliations and forecasting.',
   },
   {
     name: 'RoboInvestor',
@@ -83,13 +85,14 @@ export default function AboutContent() {
                 About
               </div>
               <h1 className="font-heading mb-6 text-4xl font-bold text-white sm:text-5xl md:text-6xl">
-                Financial reporting, open all the way down
+                The open-source knowledge graph for finance
               </h1>
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
-                RoboSystems gives small and growing businesses financial
-                reporting, planning and analysis on one structured reporting
-                model, reachable from Claude, ChatGPT or any MCP client. The
-                platform is open source, and we run our own books on it.
+                RoboSystems gives your AI agents your general ledger and public
+                companies&apos; filings as structured, traceable data, on your
+                infrastructure, with the model you choose. It&apos;s built by a
+                CPA and former Workiva XBRL engineer, and our own
+                companies&apos; books are kept on it.
               </p>
             </div>
           </div>
@@ -103,12 +106,9 @@ export default function AboutContent() {
               <h2 className={sectionHeading}>Why we&apos;re building it</h2>
               <div className="mx-auto max-w-3xl space-y-4 text-gray-400">
                 <p>
-                  Small businesses have been priced out of good financial
-                  tooling. Reporting, planning and analysis software has cost
-                  tens of thousands of dollars a year, sold by venture-backed
-                  companies that can shut down overnight when growth
-                  doesn&apos;t satisfy their investors. When they go, the
-                  customer&apos;s data and workflows go with them.
+                  Finance teams are being asked to put AI on their books, and
+                  the AI gets numbers wrong, can&apos;t trace them, or
+                  isn&apos;t allowed near the ledger at all.
                 </p>
                 <p>
                   RoboSystems has no outside investors. It&apos;s owned by the
@@ -180,9 +180,8 @@ export default function AboutContent() {
               <div className="lg:col-span-2">
                 <h2 className={sectionHeading}>Who builds it</h2>
                 <p className="text-gray-400">
-                  An AI-native company, built on its own product. The roadmap is
-                  pulled by what running a real business on the platform demands
-                  next.
+                  A company that runs on its own product. The roadmap is pulled
+                  by what running a real business on the platform demands next.
                 </p>
               </div>
               <div className="rounded-2xl border border-gray-800 bg-zinc-900 p-6 sm:p-8 lg:col-span-3">
@@ -268,10 +267,11 @@ export default function AboutContent() {
               >
                 Harbinger FinLab
               </a>{' '}
-              is an affiliated company under the same ownership: the
-              implementation and training practice that puts RoboLedger on a
-              client&apos;s books, teaches the people who own them to run it,
-              and then leaves the graph.
+              is an affiliated company under the same ownership, the
+              technology-services firm that runs the Finance AI Pilot:
+              RoboSystems in your cloud, on your books, in two to three weeks.
+              Your people approve every entry; Harbinger never signs in to your
+              books.
             </p>
           </div>
         </section>
@@ -322,9 +322,12 @@ export default function AboutContent() {
               </a>
             </div>
             <div className="mt-14 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <a href={BOOK_PATH} className={primaryButton + ' text-center'}>
+                Book 20 minutes
+              </a>
               <button
                 onClick={() => setShowContact(true)}
-                className={primaryButton}
+                className={secondaryButton}
               >
                 Talk to us
               </button>
@@ -337,6 +340,7 @@ export default function AboutContent() {
                 Read the code
               </a>
             </div>
+            <EmailForATime className="mt-6 text-center text-sm text-gray-400" />
           </div>
         </section>
       </main>

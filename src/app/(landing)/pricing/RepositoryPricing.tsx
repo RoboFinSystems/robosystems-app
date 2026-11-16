@@ -34,9 +34,9 @@ export default function RepositoryPricing({
         SEC Shared Repository
       </h2>
       <p className="mx-auto mb-10 max-w-2xl text-center text-gray-400">
-        Access 75,000+ SEC filings from 8,000+ public companies, 2024 onward,
-        through an intelligent AI agent that understands financial relationships
-        and can answer complex queries in natural language.
+        75,000+ XBRL filings from 8,000+ public companies, 2024 onward, in the
+        same schema as your ledger. Ask in plain English from Claude, ChatGPT or
+        any MCP client.
       </p>
       <p className="mx-auto mb-10 max-w-2xl text-center text-sm text-gray-500">
         Already in Claude or ChatGPT? RoboSystems is listed in{' '}
@@ -133,16 +133,11 @@ export default function RepositoryPricing({
           </div>
         </div>
 
-        {/* Advanced — name must match the manifest plan name the app and
+        {/* Advanced: the name must match the manifest plan name the app and
             Stripe use ("Advanced"); it read "Pro" here until 2026-08-15, so a
             buyer evaluated one tier name and purchased a differently-named one. */}
         <div className="group relative flex flex-col overflow-hidden rounded-2xl border-2 border-green-500 bg-linear-to-br from-green-900/50 to-green-900/20 p-4 transition-all duration-300 hover:border-green-400 sm:p-6 md:p-8">
           <div className="absolute inset-0 bg-linear-to-br from-green-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-          <div className="absolute -top-1 -right-1 z-10">
-            <div className="rounded-bl-lg bg-green-600 px-3 py-1 text-xs font-semibold text-white">
-              MOST POPULAR
-            </div>
-          </div>
           <div className="relative flex flex-1 flex-col">
             <div className="mb-8">
               <h3 className="font-heading mb-2 text-2xl font-bold text-white">

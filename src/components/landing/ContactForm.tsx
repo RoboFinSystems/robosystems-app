@@ -23,28 +23,36 @@ interface FormCopy {
  * Field and confirmation copy by intent. The default is the developer /
  * integration ask the modal was built for; `sales` covers every "Contact
  * Sales" and Dedicated Deployment entry point, so a buyer is asked about
- * their organization rather than which systems they need to integrate.
+ * their organization rather than which systems they need to integrate; `meeting` is the
+ * way in for someone the public booking hours don't suit.
  */
-const FORM_COPY: Record<'default' | 'inquiry' | 'sales', FormCopy> = {
-  default: {
-    messageLabel: 'Tell us about your integration needs',
-    placeholder:
-      'What systems do you need to integrate? What data needs to flow between them?',
-    success: 'Our integration team will get back to you within 24 hours.',
-  },
-  inquiry: {
-    messageLabel: 'Your Message',
-    placeholder: 'Please describe your question or concern...',
-    success:
-      "We'll review your message and get back to you as soon as possible.",
-  },
-  sales: {
-    messageLabel: 'Tell us about your organization',
-    placeholder:
-      'How many entities or clients? Which identity provider? Any residency, procurement, or isolation requirements?',
-    success: "Thanks — we'll get back to you within one business day.",
-  },
-}
+const FORM_COPY: Record<'default' | 'inquiry' | 'sales' | 'meeting', FormCopy> =
+  {
+    default: {
+      messageLabel: 'Tell us about your integration needs',
+      placeholder:
+        'What systems do you need to integrate? What data needs to flow between them?',
+      success: 'Our integration team will get back to you within 24 hours.',
+    },
+    inquiry: {
+      messageLabel: 'Your Message',
+      placeholder: 'Please describe your question or concern...',
+      success:
+        "We'll review your message and get back to you as soon as possible.",
+    },
+    sales: {
+      messageLabel: 'Tell us about your organization',
+      placeholder:
+        'How many entities or clients? Which identity provider? Any residency, procurement, or isolation requirements?',
+      success: "Thanks, we'll get back to you within one business day.",
+    },
+    meeting: {
+      messageLabel: 'What would you like to talk through?',
+      placeholder:
+        'Which job you have, and a few days and times that suit you (with your time zone).',
+      success: "Thanks, we'll reply by email to find a time.",
+    },
+  }
 
 export function copyForFormType(formType: string): FormCopy {
   if (formType === 'terms-inquiry' || formType === 'privacy-inquiry') {
@@ -52,6 +60,9 @@ export function copyForFormType(formType: string): FormCopy {
   }
   if (formType === 'sales' || formType === 'dedicated_deployment') {
     return FORM_COPY.sales
+  }
+  if (formType === 'meeting') {
+    return FORM_COPY.meeting
   }
   return FORM_COPY.default
 }

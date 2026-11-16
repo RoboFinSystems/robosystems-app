@@ -8,6 +8,7 @@ import Footer from '@/components/landing/Footer'
 import Header from '@/components/landing/Header'
 import HeroSection from '@/components/landing/HeroSection'
 import OpenSourceSection from '@/components/landing/OpenSourceSection'
+import PilotSection from '@/components/landing/PilotSection'
 import ProductOverview from '@/components/landing/ProductOverview'
 import SECRepositorySection from '@/components/landing/SECRepositorySection'
 
@@ -20,10 +21,11 @@ export default function LandingPageContent() {
         <HeroSection />
         <ProductOverview />
         <FeaturesGrid />
+        <OpenSourceSection />
+        <PilotSection />
         <ApplicationsSection />
         <SECRepositorySection />
         <BuildSection />
-        <OpenSourceSection />
         <FinalCTA />
       </main>
 

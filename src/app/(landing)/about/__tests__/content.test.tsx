@@ -62,6 +62,17 @@ describe('AboutContent', () => {
     expect(screen.queryByText(/not raising/i)).not.toBeInTheDocument()
   })
 
+  it('leads with booking, and offers the contact form as the other way in', () => {
+    render(<AboutContent />)
+
+    expect(
+      screen.getByRole('link', { name: 'Book 20 minutes' })
+    ).toHaveAttribute('href', '/book')
+    expect(
+      screen.getByText(/Thursday or Friday afternoon not good\?/)
+    ).toBeInTheDocument()
+  })
+
   it('opens the contact modal', () => {
     render(<AboutContent />)
 

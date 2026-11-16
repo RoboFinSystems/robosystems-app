@@ -35,3 +35,26 @@ describe('server action allowed origins', () => {
     ])
   })
 })
+
+describe('the booking path', () => {
+  it('sends /book to the public scheduler, temporarily, from the URL site.ts names', async () => {
+    const config = await import('../../next.config.js')
+    const { BOOK_PATH, SCHEDULING_URL } = await import('../lib/site')
+    const redirects = await config.default.redirects()
+
+    expect(config.SCHEDULING_URL).toBe(SCHEDULING_URL)
+    expect(redirects).toContainEqual({
+      source: BOOK_PATH,
+      destination: SCHEDULING_URL,
+      permanent: false,
+    })
+  })
+
+  it('points at the public booking page', async () => {
+    const { SCHEDULING_URL } = await import('../lib/site')
+
+    expect(SCHEDULING_URL).toMatch(
+      /^https:\/\/scheduler\.zoom\.us\/[\w-]+\/intro-meeting$/
+    )
+  })
+})

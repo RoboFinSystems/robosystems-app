@@ -1,7 +1,11 @@
 'use client'
 
+import { BOOK_PATH } from '@/lib/site'
 import { LiveDemo } from '@robosystems/core/ui-components'
 import FloatingElementsVariant from './FloatingElementsVariant'
+
+const BOOK_LINK =
+  'text-secondary-400 hover:text-secondary-300 text-sm font-medium transition-colors'
 
 export default function ProductOverview() {
   return (
@@ -11,16 +15,13 @@ export default function ProductOverview() {
         {/* Main Headline */}
         <div className="mb-16 text-center">
           <p className="text-secondary-400 mb-4 text-sm font-semibold tracking-wider uppercase">
-            How It Works
+            What it&apos;s for
           </p>
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-            Every Number, in Context
+            The numbers tie. The books stay put. The filings sit beside them.
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            A figure on its own answers nothing. RoboSystems keeps each fact
-            with the company, report, concept and period it belongs to, the
-            passage that explains it, and what your team decided about it last
-            time&mdash;the three layers your AI reads before it answers.
+            Every number opens to the entries behind it.
           </p>
         </div>
 
@@ -35,14 +36,11 @@ export default function ProductOverview() {
           />
         </div>
 
-        {/* What Context Enables */}
+        {/* The three jobs */}
         <div className="mx-auto max-w-5xl">
-          <h3 className="mb-8 text-center text-lg font-semibold text-gray-300">
-            What This Enables
-          </h3>
           <div className="grid gap-6 md:grid-cols-3">
-            {/* Multi-hop Reasoning */}
-            <div className="group rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
+            {/* The numbers don't tie */}
+            <div className="group flex flex-col rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
               <div className="bg-accent-500/20 mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
                 <svg
                   className="text-accent-400 h-6 w-6"
@@ -59,22 +57,19 @@ export default function ProductOverview() {
                 </svg>
               </div>
               <h4 className="mb-2 font-semibold text-white">
-                Multi-Hop Reasoning
+                The numbers don&apos;t tie
               </h4>
-              <p className="mb-4 text-sm text-gray-400">
-                AI traverses relationships across structured data and documents
-                to answer complex questions spanning multiple sources.
+              <p className="mb-4 flex-1 text-sm text-gray-400">
+                Your finance agent needs the books, not a CSV export: the chart,
+                the calendar, the close rules, every number traced to its entry.
               </p>
-              <div className="rounded-lg bg-black/30 p-3">
-                <p className="text-xs text-gray-500 italic">
-                  &ldquo;What drove the change in gross margin compared to
-                  industry peers last quarter?&rdquo;
-                </p>
-              </div>
+              <a href={BOOK_PATH} className={BOOK_LINK}>
+                Book 20 minutes &rarr;
+              </a>
             </div>
 
-            {/* Semantic Understanding */}
-            <div className="group rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
+            {/* The books can't leave */}
+            <div className="group flex flex-col rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
               <div className="bg-secondary-500/20 mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
                 <svg
                   className="text-secondary-400 h-6 w-6"
@@ -91,23 +86,21 @@ export default function ProductOverview() {
                 </svg>
               </div>
               <h4 className="mb-2 font-semibold text-white">
-                Numbers + Narratives
+                The books can&apos;t leave
               </h4>
-              <p className="mb-4 text-sm text-gray-400">
-                AI doesn&apos;t just know the numbers&mdash;it reads the
-                context. Search risk factors by keyword, find the XBRL tags in
-                those disclosures, then query actual figures across periods.
+              <p className="mb-4 flex-1 text-sm text-gray-400">
+                Client confidentiality, data residency, or a legal team that
+                won&apos;t send the ledger to a vendor&apos;s AI. Run it in your
+                cloud or on your own server, with the model you choose. Your
+                data trains no one&apos;s model.
               </p>
-              <div className="rounded-lg bg-black/30 p-3">
-                <p className="text-xs text-gray-500 italic">
-                  &ldquo;Why did goodwill drop?&rdquo; &rarr; searches
-                  disclosure, finds impairment, queries the fact
-                </p>
-              </div>
+              <a href={BOOK_PATH} className={BOOK_LINK}>
+                Book 20 minutes &rarr;
+              </a>
             </div>
 
-            {/* Institutional Memory */}
-            <div className="group rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
+            {/* The filings and the books live apart */}
+            <div className="group flex flex-col rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-orange-500/20">
                 <svg
                   className="h-6 w-6 text-orange-400"
@@ -124,18 +117,16 @@ export default function ProductOverview() {
                 </svg>
               </div>
               <h4 className="mb-2 font-semibold text-white">
-                Institutional Memory
+                The filings and the books live apart
               </h4>
-              <p className="mb-4 text-sm text-gray-400">
-                The bridge between the two: the graph holds what happened,
-                documents what was disclosed, memory how your team handled it.
+              <p className="mb-4 flex-1 text-sm text-gray-400">
+                Your ledger and 8,000+ public companies&apos; XBRL filings, in
+                one model, with every number traced back to the entry or the
+                tagged fact.
               </p>
-              <div className="rounded-lg bg-black/30 p-3">
-                <p className="text-xs text-gray-500 italic">
-                  &ldquo;How did we classify this vendor last quarter, and
-                  why?&rdquo;
-                </p>
-              </div>
+              <a href={BOOK_PATH} className={BOOK_LINK}>
+                Book 20 minutes &rarr;
+              </a>
             </div>
           </div>
         </div>

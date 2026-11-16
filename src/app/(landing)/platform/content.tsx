@@ -6,6 +6,7 @@ import Header from '@/components/landing/Header'
 import BusinessServices from '@/components/platform/BusinessServices'
 import FinancialServices from '@/components/platform/FinancialServices'
 import SchemaArchitecture from '@/components/platform/SchemaArchitecture'
+import { BOOK_PATH } from '@/lib/site'
 import { LiveDemo } from '@robosystems/core/ui-components'
 import Link from 'next/link'
 
@@ -25,12 +26,14 @@ export default function PlatformContent() {
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <h1 className="font-heading mb-6 text-4xl font-bold text-white sm:text-5xl md:text-6xl">
-                RoboSystems Platform
+                Three kinds of graph, one platform
               </h1>
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
-                A financial intelligence platform that unifies structured data,
-                searchable documents, and AI memory&mdash;where AI doesn&apos;t
-                just retrieve information, it understands meaning and context.
+                Three kinds of graph on one platform: your ledger, the public
+                filings, and graphs you model yourself, from your own schema,
+                loaded from Parquet and queried with Cypher. Underneath is an
+                accounting ontology: XBRL concepts and the rs-gaap taxonomy,
+                serialized as RDF.
               </p>
             </div>
           </div>
@@ -45,8 +48,8 @@ export default function PlatformContent() {
                 Knowledge Graph Management
               </h2>
               <p className="mx-auto max-w-3xl text-gray-400">
-                Connect your financial data sources, maintain semantic
-                relationships, and power AI-native applications. Built on{' '}
+                Connect your sources, keep the relationships between them, and
+                build on top. Built on{' '}
                 <a
                   href="https://ladybugdb.com/"
                   target="_blank"
@@ -54,8 +57,8 @@ export default function PlatformContent() {
                   className="text-orange-400 transition-colors hover:text-orange-300"
                 >
                   LadybugDB
-                </a>{' '}
-                for blazing-fast analytical performance.
+                </a>
+                , a columnar graph database.
               </p>
             </div>
 
@@ -82,10 +85,10 @@ export default function PlatformContent() {
               <p className="mx-auto max-w-3xl text-gray-400">
                 Every graph comes with an AI analyst. Ask in plain English and
                 it generates the Cypher, runs it, and answers with a narrative
-                backed by the data and the query behind it&mdash;or drop into
-                direct Cypher yourself, which is always free. On your own graphs
-                it can make changes too, and document search and semantic memory
-                are built into the same console.
+                backed by the data and the query behind it, or drop into direct
+                Cypher yourself, which is always free. On your own graphs it can
+                make changes too, and document search and semantic memory are
+                built into the same console.
               </p>
             </div>
 
@@ -111,8 +114,8 @@ export default function PlatformContent() {
                 </h3>
                 <p className="text-sm text-gray-400">
                   Ask questions in plain English and an AI analyst answers with
-                  a narrative, the underlying data, and the generated Cypher
-                  &mdash;ready to inspect and re-run. Examples adapt to each
+                  a narrative, the underlying data, and the generated Cypher,
+                  ready to inspect and re-run. Examples adapt to each
                   graph&apos;s schema.
                 </p>
               </div>
@@ -166,7 +169,7 @@ export default function PlatformContent() {
                 </h3>
                 <p className="text-sm text-gray-400">
                   Search your graph&apos;s document knowledge base and recall
-                  semantic memories that persist across sessions&mdash;the same
+                  semantic memories that persist across sessions: the same
                   context available to any AI assistant over MCP.
                 </p>
               </div>
@@ -184,25 +187,32 @@ export default function PlatformContent() {
         <section className="bg-zinc-950 py-16">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
             <h2 className="font-heading mb-4 text-3xl font-bold text-white">
-              Ready to Build Your Knowledge Graph?
+              See it on a demo company in 20 minutes
             </h2>
             <p className="mb-8 text-lg text-gray-400">
-              Transform your financial data into a semantic layer that AI can
-              truly understand
+              Or read the code and the technical docs first.
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link
-                href="/register"
+              <a
+                href={BOOK_PATH}
                 className="rounded-lg bg-linear-to-r from-cyan-500 to-blue-500 px-8 py-3 font-medium text-white shadow-lg shadow-cyan-500/25 transition-all hover:shadow-cyan-500/40"
               >
-                Get Started
-              </Link>
+                Book 20 minutes
+              </a>
               <Link
-                href="/docs/api"
+                href="/docs/technical"
                 className="rounded-lg border border-gray-700 bg-zinc-800 px-8 py-3 font-medium text-white transition-all hover:bg-zinc-700"
               >
-                View API Docs
+                Read the technical docs
               </Link>
+              <a
+                href="https://github.com/RoboFinSystems/robosystems"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg border border-gray-700 px-8 py-3 font-medium text-gray-300 transition-all hover:border-gray-500 hover:text-white"
+              >
+                Read the code
+              </a>
             </div>
           </div>
         </section>

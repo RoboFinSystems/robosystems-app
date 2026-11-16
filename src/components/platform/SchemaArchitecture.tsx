@@ -111,7 +111,7 @@ export default function SchemaArchitecture() {
           <p className="mx-auto max-w-3xl text-gray-400">
             Unify disparate financial data sources into a cohesive, queryable
             knowledge graph with hybrid semantic search, persistent AI memory,
-            and domain extensions that power advanced analytics and AI-native
+            and domain extensions that power advanced analytics and AI
             applications
           </p>
         </div>

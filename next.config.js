@@ -8,6 +8,11 @@ const MOVED_TO_ROBOLEDGER = ['claude-ledger']
 // /research/:ticker page and the YouTube first-comment links that point at them.
 const RESEARCH_ORIGIN = 'https://roboinvestor.ai'
 
+// "Book 20 minutes" links to /book, which forwards to the public scheduler. The same URL is
+// SCHEDULING_URL in src/lib/site.ts (this file can't import TypeScript); a test keeps them equal.
+export const SCHEDULING_URL =
+  'https://scheduler.zoom.us/joey-french-r2dv61/intro-meeting'
+
 // Server Actions compare the browser `Origin` with the host Next sees, which behind
 // CloudFront is App Runner's own. The public hosts are therefore listed explicitly: prod
 // and staging by name (`next start` re-reads this file at boot, and the App Runner
@@ -46,6 +51,12 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // permanent: false, so a browser never caches where the booking page lives.
+      {
+        source: '/book',
+        destination: SCHEDULING_URL,
+        permanent: false,
+      },
       // Billing lives on the Organization page — it is org-scoped, and its
       // Billing / Subscriptions / Invoices tabs sit beside Graphs and Members.
       //

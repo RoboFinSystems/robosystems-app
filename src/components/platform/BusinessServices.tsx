@@ -93,7 +93,7 @@ export default function BusinessServices() {
         'RoboLedger creates XBRL-native financial reports — inherently queryable, comparable across periods, and ready to publish to stakeholders.',
     },
     {
-      title: 'AI-Native Close Workflow',
+      title: 'AI in the Close Workflow',
       description:
         'From an AI-triaged transaction inbox to GAAP auto-mapping to guided period close — AI handles the mechanical work at machine speed so humans can focus on judgment.',
     },
@@ -115,8 +115,8 @@ export default function BusinessServices() {
           <p className="mx-auto max-w-3xl text-gray-400">
             Powered by the RoboLedger schema extension — unifying QuickBooks and
             your documents into a queryable knowledge graph for full-cycle
-            ledger management, period close, AI-native financial reporting, and
-            forward planning
+            ledger management, period close, financial reporting, and forward
+            planning
           </p>
         </div>
 

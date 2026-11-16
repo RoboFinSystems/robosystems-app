@@ -25,6 +25,13 @@ describe('ContactForm copy by intent', () => {
     }
   })
 
+  it('asks a visitor the booking hours do not suit for times, not integrations', () => {
+    const copy = copyForFormType('meeting')
+    expect(copy.messageLabel).toBe('What would you like to talk through?')
+    expect(copy.placeholder).toMatch(/times that suit you/)
+    expect(copy.success).not.toMatch(/integration team/i)
+  })
+
   it('keeps the neutral wording for legal inquiries', () => {
     expect(copyForFormType('terms-inquiry').messageLabel).toBe('Your Message')
     expect(copyForFormType('privacy-inquiry').messageLabel).toBe('Your Message')

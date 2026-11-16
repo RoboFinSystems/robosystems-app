@@ -4,12 +4,18 @@ import FloatingElementsVariant from '@/components/landing/FloatingElementsVarian
 import Footer from '@/components/landing/Footer'
 import Header from '@/components/landing/Header'
 import SalesContactModal from '@/components/landing/SalesContactModal'
+import { BOOK_PATH } from '@/lib/site'
 import { useUser } from '@robosystems/core/hooks'
 import Link from 'next/link'
 import { useState } from 'react'
 import DedicatedDeployment from './DedicatedDeployment'
 import GraphPricing from './GraphPricing'
 import RepositoryPricing from './RepositoryPricing'
+
+const primaryButton =
+  'rounded-lg bg-linear-to-r from-cyan-500 to-blue-500 px-8 py-3 font-medium text-white shadow-lg shadow-cyan-500/25 transition-all hover:shadow-cyan-500/40'
+const secondaryButton =
+  'rounded-lg border border-gray-700 px-8 py-3 font-medium text-gray-300 transition-all hover:border-gray-500 hover:text-white'
 
 export default function PricingContent() {
   const [showContact, setShowContact] = useState(false)
@@ -30,11 +36,13 @@ export default function PricingContent() {
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <h1 className="font-heading mb-6 text-4xl font-bold text-white sm:text-5xl md:text-6xl">
-                Transparent Pricing
+                Run it with us, or run it yourself
               </h1>
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
-                All queries, MCP tool access, and API calls are included in your
-                plan. Credits are only used for AI agent calls.
+                Managed hosting and Dedicated are run by RFS LLC on frontier
+                models. Self-hosting is free under Apache 2.0 and MIT. Queries,
+                MCP tools and API calls are included; credits are only for AI
+                agent calls.
               </p>
             </div>
           </div>
@@ -65,18 +73,18 @@ export default function PricingContent() {
                     What are credits used for?
                   </h4>
                   <p className="text-gray-400">
-                    Credits power AI agent calls — run through AWS Bedrock — on
+                    Credits power AI agent calls (run through AWS Bedrock) on
                     your graph data. Two agents ship today:{' '}
                     <span className="text-gray-300">the Analyst Operator</span>,
-                    which answers a plain-English question from your graph —
-                    live statements, documents, memory, and the Cypher it writes
-                    when nothing curated fits — and shows the query behind it;
-                    and <span className="text-gray-300">account mapping</span>,
+                    which answers a plain-English question from your graph (live
+                    statements, documents, memory, and the Cypher it writes when
+                    nothing curated fits) and shows the query behind it; and{' '}
+                    <span className="text-gray-300">account mapping</span>,
                     which maps your chart of accounts to the US-GAAP taxonomy
                     with confidence scores. Credits are calculated from actual
-                    token usage per call. Everything else — MCP tool access,
+                    token usage per call. Everything else (MCP tool access,
                     database queries, document search, semantic memory, file
-                    uploads, graph materialization, backups, and downloads — is
+                    uploads, graph materialization, backups, and downloads) is
                     included in your plan at no additional credit cost (subject
                     to rate limits by tier).
                   </p>
@@ -91,8 +99,8 @@ export default function PricingContent() {
                     actively building additional agents for deeper entity
                     analysis and automated insight generation across your
                     financial data. As new capabilities launch, they&apos;ll use
-                    the same credit system — more complex agents may consume
-                    more credits per call, but you&apos;ll always have clear
+                    the same credit system. More complex agents may consume more
+                    credits per call, but you&apos;ll always have clear
                     visibility into usage.
                   </p>
                 </div>
@@ -107,12 +115,12 @@ export default function PricingContent() {
                     window (7 days on Standard, 30 on Large, 90 on XLarge)
                     before removing it. You can also take one{' '}
                     <span className="text-gray-300">on demand</span> from the
-                    Backups page or the API — up to 2 a day on Standard, 10 on
+                    Backups page or the API: up to 2 a day on Standard, 10 on
                     Large, and no limit on XLarge. Nightly backups don&apos;t
                     count against that allowance. Every backup is a downloadable
                     archive, so you can always keep your own copy. Graphs
-                    materialized from a connection — your accounting system, or
-                    SEC filings — can also be rebuilt from that source. Creating
+                    materialized from a connection (your accounting system, or
+                    SEC filings) can also be rebuilt from that source. Creating
                     and downloading backups are included in your plan and
                     don&apos;t consume credits.
                   </p>
@@ -136,15 +144,15 @@ export default function PricingContent() {
                   </h4>
                   <p className="text-gray-400">
                     A graph subscription is one graph on its own dedicated
-                    graph-database instance, on our managed platform &mdash;
+                    graph-database instance, on our managed platform:
                     self-serve, priced per graph. A Dedicated Deployment is the
                     whole platform provisioned into an AWS account dedicated to
                     your organization, which we operate for you: account-level
                     isolation, sign-in and user provisioning from your identity
                     provider, and the option to transfer the account to your own
-                    ownership later. Most customers start with a subscription;
-                    firms running many entities, or with procurement, identity
-                    or isolation requirements, move to a Dedicated Deployment.{' '}
+                    ownership later. Start with a subscription; a Dedicated
+                    Deployment fits when procurement, identity or isolation
+                    requirements call for a segregated account.{' '}
                     <Link
                       href="/enterprise"
                       className="text-cyan-400 hover:text-cyan-300"
@@ -158,10 +166,10 @@ export default function PricingContent() {
                     Do you support SSO?
                   </h4>
                   <p className="text-gray-400">
-                    On Dedicated Deployments, yes &mdash; OIDC single sign-on
-                    and SCIM 2.0 user provisioning from your identity provider,
-                    verified against Okta and configured during onboarding. On
-                    the managed platform, sign-in is email and password with
+                    On Dedicated Deployments, yes: OIDC single sign-on and SCIM
+                    2.0 user provisioning from your identity provider, verified
+                    against Okta and configured during onboarding. On the
+                    managed platform, sign-in is email and password with
                     passkeys as a second factor.
                   </p>
                 </div>
@@ -174,25 +182,33 @@ export default function PricingContent() {
         <section className="bg-black py-16">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
             <h2 className="font-heading mb-4 text-3xl font-bold text-white">
-              Ready to Transform Your Financial Data?
+              Not sure which fits?
             </h2>
             <p className="mb-8 text-lg text-gray-400">
               {isAuthenticated
                 ? 'Manage your graphs and subscriptions from your dashboard'
-                : 'Create a free account to start with the SEC repository, or talk to us about a Dedicated Deployment'}
+                : "Book 20 minutes and we'll say which route fits, or start the SEC repository's 14-day trial."}
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link
-                href={isAuthenticated ? '/home' : '/register'}
-                className="rounded-lg bg-linear-to-r from-cyan-500 to-blue-500 px-8 py-3 font-medium text-white shadow-lg shadow-cyan-500/25 transition-all hover:shadow-cyan-500/40"
-              >
-                {isAuthenticated ? 'Go to Dashboard' : 'Get Started'}
-              </Link>
+              {isAuthenticated ? (
+                <Link href="/home" className={primaryButton}>
+                  Go to Dashboard
+                </Link>
+              ) : (
+                <>
+                  <a href={BOOK_PATH} className={primaryButton}>
+                    Book 20 minutes
+                  </a>
+                  <Link href="/register" className={secondaryButton}>
+                    Start the 14-day trial
+                  </Link>
+                </>
+              )}
               <button
                 onClick={() => {
                   setShowContact(true)
                 }}
-                className="rounded-lg border border-gray-700 px-8 py-3 font-medium text-gray-300 transition-all hover:border-gray-500 hover:text-white"
+                className={secondaryButton}
               >
                 Contact Sales
               </button>
@@ -203,7 +219,7 @@ export default function PricingContent() {
 
       <Footer />
 
-      {/* Contact Modal — the sales variant, so "Contact Sales" asks about the
+      {/* Contact Modal: the sales variant, so "Contact Sales" asks about the
           buyer's organization rather than their integration needs. */}
       <SalesContactModal
         isOpen={showContact}

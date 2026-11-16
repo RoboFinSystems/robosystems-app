@@ -36,7 +36,7 @@ export async function GET() {
     '',
     `> ${SITE_DESCRIPTION}`,
     '',
-    'RoboSystems is an open-source (Apache 2.0) platform for financial knowledge graphs, built and operated by RFS LLC. It holds a shared SEC XBRL repository of public-company filings and per-company graphs synced from QuickBooks, and serves both over MCP at https://api.robosystems.ai/v1/mcp, so Claude, ChatGPT, or any MCP client can query them. RoboLedger (https://roboledger.ai) is the ledger product built on it.',
+    "RoboSystems is the open-source knowledge graph for finance (Apache 2.0 and MIT), built and operated by RFS LLC. Three kinds of graph on one platform: ledger graphs (RoboLedger, the general ledger built on it), the SEC shared repository of 8,000+ public companies' XBRL filings, and graphs you model yourself from your own schema, loaded from Parquet and queried with Cypher. Underneath is an accounting ontology: XBRL concepts and the rs-gaap taxonomy, serialized as RDF. It serves them over MCP at https://api.robosystems.ai/v1/mcp, so Claude, ChatGPT, or any MCP client can query them, extend a subgraph beside them, and keep semantic memory across sessions. The Finance AI Pilot, delivered by Harbinger FinLab (https://harbinger.finance), puts it in your cloud, on your books, in two to three weeks.",
     '',
     '## Product',
     link('Platform', `${SITE_URL}/platform`, 'what the platform does'),

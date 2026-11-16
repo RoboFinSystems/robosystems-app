@@ -21,13 +21,13 @@ export default function SECRepositorySection() {
             SEC XBRL Repository
           </p>
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-            Every Public Company. Numbers and Narratives.
+            The public record, 14 days to try
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            Structured XBRL facts in a knowledge graph, plus full-text and
-            semantic search across MD&amp;A, risk factors, and disclosure notes.
-            Subscribe once and your AI agents gain instant access to market
-            intelligence&mdash;no data pipeline setup required.
+            8,000+ public companies&apos; XBRL filings in a knowledge graph, in
+            the same schema as your ledger, with full-text and semantic search
+            across MD&amp;A, risk factors and notes. Connect from Claude,
+            ChatGPT or any MCP client, with nothing to build.
           </p>
         </div>
 
@@ -212,7 +212,7 @@ export default function SECRepositorySection() {
             href="/register"
             className="from-secondary-500 to-primary-500 shadow-secondary-500/25 hover:shadow-secondary-500/40 inline-flex items-center rounded-lg bg-linear-to-r px-8 py-3 text-sm font-semibold text-white shadow-lg transition-all"
           >
-            Get Started
+            Start the 14-day trial
           </Link>
           <Link
             href="/pricing#sec-repository"

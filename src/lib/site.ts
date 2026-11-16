@@ -10,10 +10,18 @@ import type { Metadata } from 'next'
 export const SITE_NAME = 'RoboSystems'
 export const SITE_URL = 'https://robosystems.ai'
 
-export const SITE_TITLE = 'RoboSystems | Financial Intelligence Platform'
+export const SITE_TITLE =
+  'RoboSystems: the open-source knowledge graph for finance'
 
 export const SITE_DESCRIPTION =
-  "One knowledge graph for your company's data, the companies around it, and public SEC filings, with document search and MCP tools for your AI."
+  "Finance AI that ties to the books. Your general ledger and public companies' XBRL filings as traceable data for your AI, on your infrastructure. Open source."
+
+// The public booking page (Thursday and Friday afternoons). Pages link to BOOK_PATH, never
+// to this URL: next.config.js redirects /book here, so the scheduler can change without a
+// copy edit. next.config.js keeps its own copy of the URL, and a test holds the two equal.
+export const SCHEDULING_URL =
+  'https://scheduler.zoom.us/joey-french-r2dv61/intro-meeting'
+export const BOOK_PATH = '/book'
 
 // The published listing in OpenAI's plugin directory (the SEC repository surface). The
 // listing URL is stable across version bumps: an approved version replaces the previous
@@ -31,7 +39,7 @@ export const OG_IMAGE = {
   url: '/images/og-preview.png',
   width: 1200,
   height: 630,
-  alt: 'RoboSystems - Financial Intelligence Platform',
+  alt: 'RoboSystems: the open-source knowledge graph for finance',
 }
 
 /**
