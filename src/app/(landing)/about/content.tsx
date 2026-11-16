@@ -13,7 +13,8 @@ import { useState } from 'react'
 /**
  * Who builds RoboSystems and why. Copy discipline matches /enterprise: SOC 2
  * Type II is "in progress", never completed or certified; RoboInvestor is
- * stated as early. Intercompany arrangements (trademark licence, management
+ * stated as what it does today and what is being built next, and nothing
+ * still to come is claimed as built. Intercompany arrangements (trademark licence, management
  * services, lending) belong in the Terms, not here.
  */
 
@@ -46,7 +47,7 @@ const PRODUCTS: Array<{ name: string; href: string; body: string }> = [
   {
     name: 'RoboInvestor',
     href: 'https://roboinvestor.ai',
-    body: 'Early, and we say so. Portfolio companies share their statements into one investor graph, next to the public market.',
+    body: "Equity research on public companies, your fund's positions with their terms, and the reports portfolio companies share from RoboLedger. Building next: positions linked to the ledger, brokerage sync and portfolio analytics.",
   },
   {
     name: 'xbrlkit',

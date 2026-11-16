@@ -253,11 +253,15 @@ export default function ApplicationsSection() {
                   <p className="text-gray-400">
                     Investment Portfolio & AI Research
                   </p>
-                  <p className="mt-1 text-xs text-green-300/80">
-                    Early, and we say so.
-                  </p>
                 </div>
               </Link>
+
+              <p className="mb-4 text-sm text-green-300/80">
+                Equity research on public companies, your fund&apos;s positions
+                with their terms, and the reports portfolio companies share from
+                RoboLedger. Building next: positions linked to the ledger,
+                brokerage sync and portfolio analytics.
+              </p>
 
               <p className="mb-6 text-gray-300">
                 Track public and private positions in one book, research any
