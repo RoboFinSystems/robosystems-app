@@ -17,7 +17,7 @@ export default function ApplicationsSection() {
             What&apos;s built on it
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            Products that run on the same graph and the same public API.
+            Products that run on the same platform and the same public API.
           </p>
         </div>
 
@@ -333,7 +333,7 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        MCP tools for Claude, ChatGPT, Grok, and any MCP client
+                        MCP tools for Claude, ChatGPT or any MCP client
                       </span>
                     </li>
                   </ul>

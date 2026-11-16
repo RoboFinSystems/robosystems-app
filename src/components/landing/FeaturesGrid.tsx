@@ -226,7 +226,7 @@ export default function FeaturesGrid() {
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="mr-2 text-indigo-400">•</span>
-                  Works with Claude, ChatGPT, Grok, and any MCP client
+                  Works with Claude, ChatGPT or any MCP client
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-indigo-400">•</span>
@@ -310,8 +310,9 @@ export default function FeaturesGrid() {
                 Security & Isolation
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                A dedicated graph-database instance per subscription, or your
-                own AWS account on a Dedicated Deployment.
+                A dedicated graph-database instance per subscription, or a
+                Dedicated Deployment: a segregated AWS account RoboSystems runs,
+                transferable to you.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">

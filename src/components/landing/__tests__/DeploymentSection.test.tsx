@@ -8,7 +8,7 @@ vi.mock('../ContactModal', () => ({
 }))
 
 describe('DeploymentSection', () => {
-  it('names the offer, who delivers it, and the fixed price range', () => {
+  it('names the offer, who delivers it, the fee and what it leaves out', () => {
     render(<DeploymentSection />)
 
     expect(
@@ -21,10 +21,15 @@ describe('DeploymentSection', () => {
       screen.getByText('Delivered by Harbinger FinLab')
     ).toBeInTheDocument()
     expect(
-      screen.getByText('$7,500 to $10,000, fixed by scope')
+      screen.getByText(
+        '$7,500 to $10,000, fixed by scope: half up front, half at handover.'
+      )
     ).toBeInTheDocument()
     expect(
-      screen.getByText('You keep everything we build.')
+      screen.getByText(/^Hosting is separate: from \$99 a month/)
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('You keep everything Harbinger builds.')
     ).toBeInTheDocument()
   })
 
@@ -39,13 +44,27 @@ describe('DeploymentSection', () => {
     ).toHaveAttribute('href', 'https://harbinger.finance/#deployment')
   })
 
-  it('says the offer runs on the deployment the client chooses', () => {
+  it('says where it runs without claiming the hosting for Harbinger', () => {
     render(<DeploymentSection />)
 
     expect(
       screen.getByText(
-        /our managed platform, a Dedicated Deployment, or self-hosted in your own cloud/
+        /the RoboSystems managed platform, a Dedicated Deployment RoboSystems runs, or your own cloud/
       )
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/our managed platform/i)).not.toBeInTheDocument()
+  })
+
+  it('names the ledgers that connect and the partner route', () => {
+    render(<DeploymentSection />)
+
+    expect(
+      screen.getByText(
+        /QuickBooks connects directly; any other ledger comes in through the API or a file/
+      )
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/Integrators and consultancies: deliver the Finance AI/)
     ).toBeInTheDocument()
   })
 

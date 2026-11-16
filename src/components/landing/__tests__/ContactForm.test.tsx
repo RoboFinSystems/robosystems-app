@@ -12,7 +12,7 @@ describe('ContactForm copy by intent', () => {
       'Tell us about your integration needs'
     )
     expect(copyForFormType('enterprise_sales').success).toBe(
-      'Our integration team will get back to you within 24 hours.'
+      "We'll reply within one business day."
     )
   })
 

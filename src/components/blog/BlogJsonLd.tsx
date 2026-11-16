@@ -19,7 +19,7 @@ export const BLOG_FEED = [
 ]
 
 export const BLOG_DESCRIPTION =
-  'Insights on graph databases, AI-powered analytics, and the future of business intelligence'
+  'How we build finance AI that ties to the books: the knowledge graph, the ledger and the public filings.'
 
 /** One JSON-LD block. `</` is escaped so post text can never break out of the script. */
 function JsonLd({ data }: { data: Record<string, unknown> }) {
@@ -72,7 +72,7 @@ export function BlogJsonLd({
       ? {
           '@type': 'AudioObject',
           contentUrl: post.narrationUrl,
-          name: `${post.title} — narration`,
+          name: `${post.title}: narration`,
         }
       : undefined,
   }
@@ -100,7 +100,7 @@ export function BlogJsonLd({
   )
 }
 
-/** ItemList structured data for the `/blog` index — the post hub as a list. */
+/** ItemList structured data for the `/blog` index: the post hub as a list. */
 export function BlogListJsonLd({
   posts,
   baseUrl = ORG.url,

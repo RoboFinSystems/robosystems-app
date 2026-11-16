@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   keywords: [
     'knowledge graph for finance',
     'open source knowledge graph',
-    'accounting ontology',
+    'finance ontology',
     'finance AI',
     'XBRL knowledge graph',
     'SEC EDGAR API',

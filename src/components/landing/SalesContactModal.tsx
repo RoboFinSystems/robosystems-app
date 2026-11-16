@@ -18,7 +18,7 @@ const VARIANTS: Record<
   { title: string; description: string }
 > = {
   sales: {
-    title: 'Talk to sales',
+    title: 'Talk to us',
     description:
       'Questions about plans, procurement, or a Dedicated Deployment? Tell us a little about your organization and we will come back with answers, not a sales deck.',
   },

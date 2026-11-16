@@ -4,7 +4,7 @@ import RegisterForm from './content'
 export const metadata: Metadata = {
   title: 'Create Account | RoboSystems',
   description:
-    'Create a RoboSystems account — build financial knowledge graphs, search SEC filings, and analyze with AI agents via MCP.',
+    'Create a RoboSystems account: build knowledge graphs for finance, search SEC filings, and analyze with AI agents over MCP.',
   alternates: { canonical: 'https://robosystems.ai/register' },
   // Nothing here for search: the form renders client-side and registration completes on
   // the login home. roboledger.ai and roboinvestor.ai noindex theirs too.

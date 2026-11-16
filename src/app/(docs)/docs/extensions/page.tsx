@@ -95,9 +95,9 @@ export default async function ExtensionsHubPage() {
           <strong>Reads and writes are deliberately different shapes.</strong> A
           read is a GraphQL query against one endpoint, and it can never change
           anything. A write is a named operation with its own route, request
-          model and receipt — there is no general-purpose mutation, so nothing
+          model and receipt. There is no general-purpose mutation, so nothing
           changes by accident and every change has a name you can audit. The
-          platform API — graphs, billing, auth, connections — is documented
+          platform API (graphs, billing, auth, connections) is documented
           separately in the <Link href="/docs/api">API reference</Link>.
         </p>
       </div>
@@ -145,7 +145,7 @@ export default async function ExtensionsHubPage() {
           <h2 className="font-heading text-2xl text-white">Analytics</h2>
           <p className="mt-2 text-gray-400">
             Read-only operations that query the materialized graph rather than
-            the operational database — pivots over the XBRL hypercube, statement
+            the operational database: pivots over the XBRL hypercube, statement
             analysis, and the disclosures a report holds.
           </p>
           <ul className="mt-5 grid gap-4 sm:grid-cols-2">

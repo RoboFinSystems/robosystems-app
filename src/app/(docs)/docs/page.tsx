@@ -45,13 +45,13 @@ const GUIDE_DOORS: Door[] = [
   {
     title: 'RoboLedger',
     href: 'https://roboledger.ai/docs',
-    body: 'Connect QuickBooks and work with your books through Claude or ChatGPT: analyze, report, plan, and close the month.',
+    body: 'The general ledger built on RoboSystems: close, consolidate, report and plan from Claude, ChatGPT or any MCP client.',
     external: true,
   },
   {
     title: 'RoboInvestor',
     href: 'https://roboinvestor.ai/docs',
-    body: 'Private-company portfolios, reports shared from RoboLedger, and public-company research. RoboInvestor is in beta.',
+    body: "Equity research on public companies, your fund's positions with their terms, and the reports your portfolio companies share from RoboLedger. Building next: positions linked to the ledger, brokerage sync and portfolio analytics.",
     external: true,
     productSite: 'roboinvestor',
   },

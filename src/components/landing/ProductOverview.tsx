@@ -89,10 +89,11 @@ export default function ProductOverview() {
                 The books can&apos;t leave
               </h4>
               <p className="mb-4 flex-1 text-sm text-gray-400">
-                Client confidentiality, data residency, or a legal team that
-                won&apos;t send the ledger to a vendor&apos;s AI. Run it in your
-                cloud or on your own server, with the model you choose. Your
-                data trains no one&apos;s model.
+                AI on your clients&apos; books without the books leaving your
+                control. Client confidentiality, data residency, or a legal team
+                that won&apos;t send the ledger to a vendor&apos;s AI. Run it in
+                your cloud or on your own server, with the model you choose.
+                Your data trains no one&apos;s model.
               </p>
               <a href={BOOK_PATH} className={BOOK_LINK}>
                 Book 20 minutes &rarr;
@@ -121,7 +122,7 @@ export default function ProductOverview() {
               </h4>
               <p className="mb-4 flex-1 text-sm text-gray-400">
                 Your ledger and 8,000+ public companies&apos; XBRL filings, in
-                one model, with every number traced back to the entry or the
+                one ontology, with every number traced back to the entry or the
                 tagged fact.
               </p>
               <a href={BOOK_PATH} className={BOOK_LINK}>

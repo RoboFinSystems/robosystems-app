@@ -45,12 +45,12 @@ export default function OpenSourceSection() {
                 RoboSystems GitHub
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                The heart of the RoboSystems ecosystem - our main repository
-                contains the complete knowledge graph platform including the API
-                server, semantic data processing, infrastructure templates, and
-                deployment workflows. Everything you need to run your own
-                financial knowledge graph - locally or in your cloud
-                infrastructure.
+                Three kinds of graph on one platform: your ledger, the public
+                filings, and graphs you model yourself, from your own schema,
+                loaded from Parquet and queried with Cypher. The main repository
+                holds all of it: the API server, the infrastructure templates
+                and the deployment workflows, to run locally or in your own
+                cloud.
               </p>
               <div className="flex flex-wrap justify-center gap-4 md:justify-start">
                 <a
@@ -74,7 +74,7 @@ export default function OpenSourceSection() {
                   href="https://github.com/RoboFinSystems/robosystems/fork"
                   className="border-secondary-600 text-secondary-400 hover:bg-secondary-600/10 inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 font-medium transition-all duration-300"
                 >
-                  🍴 Fork & Contribute
+                  Fork &amp; Contribute
                 </a>
               </div>
             </div>
@@ -189,11 +189,13 @@ export default function OpenSourceSection() {
                   </svg>
                   <div className="min-w-0 flex-1">
                     <strong className="text-white">
-                      Foundation Technology
+                      One ontology underneath
                     </strong>
                     <p className="mt-1 text-sm break-words">
-                      Following XBRL and Arelle's footsteps in creating open
-                      financial standards for the AI age.
+                      The RoboSystems graph model, labelled in XBRL&apos;s
+                      standard terms wherever XBRL has one. Every graph runs on
+                      it in LadybugDB, and reports leave as a holon (RDF), XBRL
+                      2.1 or Tavi.
                     </p>
                   </div>
                 </li>

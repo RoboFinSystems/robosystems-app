@@ -32,7 +32,7 @@ const FORM_COPY: Record<'default' | 'inquiry' | 'sales' | 'meeting', FormCopy> =
       messageLabel: 'Tell us about your integration needs',
       placeholder:
         'What systems do you need to integrate? What data needs to flow between them?',
-      success: 'Our integration team will get back to you within 24 hours.',
+      success: "We'll reply within one business day.",
     },
     inquiry: {
       messageLabel: 'Your Message',

@@ -58,8 +58,8 @@ export default async function BlogPage() {
             </span>
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-gray-300">
-            Learn about the latest in graph databases, AI-powered analytics, and
-            transformative business intelligence solutions.
+            How we build finance AI that ties to the books: the knowledge graph,
+            the ledger and the public filings.
           </p>
         </div>
       </div>

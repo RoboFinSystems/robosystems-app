@@ -10,7 +10,7 @@ export default function FinancialServices() {
         'Track investment portfolios with cost basis, holdings, and valuations for both PE/VC and public market positions.',
       currentFeatures: [
         'PE & VC instruments: SAFEs, KISSes, convertible notes, LLC units, LP interests, warrants, options, RSUs',
-        'Portfolios with positions, cost basis, and current valuations — applied as atomic envelopes that roll back on failure',
+        'Portfolios with positions, cost basis, and current valuations, applied as atomic envelopes that roll back on failure',
         'Receive financial reports shared by your portfolio companies on RoboLedger',
       ],
     },
@@ -19,7 +19,7 @@ export default function FinancialServices() {
       icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
       gradient: 'from-cyan-500 to-blue-500',
       description:
-        'AI-powered deep research against 75,000+ XBRL filings from 8,000+ public companies — plain-English questions answered with narrative analysis.',
+        'AI-powered deep research against 75,000+ XBRL filings from 8,000+ public companies: plain-English questions answered with narrative analysis.',
       currentFeatures: [
         '10-K and 10-Q financial statements and fundamentals',
         'Answers backed by the data and the generated Cypher',
@@ -31,9 +31,9 @@ export default function FinancialServices() {
       icon: 'M13 10V3L4 14h7v7l9-11h-7z',
       gradient: 'from-indigo-500 to-purple-500',
       description:
-        'Connect Claude, ChatGPT, Grok, or any other AI assistant to your investment graph over MCP — every portfolio operation is exposed as a tool, so agents read and write.',
+        'Connect Claude, ChatGPT or any MCP client to your investment graph: every portfolio operation is exposed as a tool, so agents read and write.',
       currentFeatures: [
-        'Remote MCP endpoint — one URL and an API key header, no install',
+        'Remote MCP endpoint: one URL and an API key header, no install',
         'Portfolio, position, and security writes as agent-callable tools',
         'GraphQL and REST APIs with Python and TypeScript SDKs',
         'API key management for programmatic access',
@@ -43,17 +43,16 @@ export default function FinancialServices() {
 
   const roadmapServices = [
     {
-      title: 'Brokerage Sync',
-      description:
-        'Connect public market brokerage accounts to sync holdings automatically',
+      title: 'Positions linked to the ledger',
+      description: 'A position tied to the entries that record it in the books',
     },
     {
-      title: 'Market Data',
-      description: 'Historical prices, benchmarks, and corporate actions',
+      title: 'Brokerage sync',
+      description: 'Public-market holdings brought in from a brokerage account',
     },
     {
-      title: 'Performance Analytics',
-      description: 'Portfolio returns, attribution, and risk metrics',
+      title: 'Portfolio analytics',
+      description: 'Returns and exposure across the positions you hold',
     },
   ]
 
@@ -61,12 +60,12 @@ export default function FinancialServices() {
     {
       title: 'The Bridge',
       description:
-        "RoboInvestor connects fund-level investments to underlying company financial and operational data. Your investment in Company X links directly to Company X's SEC filing graph.",
+        "RoboInvestor connects fund-level investments to the companies behind them. A holding links to the issuer's own graph once it shares a report.",
     },
     {
-      title: 'From Founders to PE Firms',
+      title: 'Beside the books',
       description:
-        "Whether you're a founder tracking personal investments alongside your business, or a PE firm managing 20+ portfolio companies, the same knowledge graph connects it all.",
+        'When your portfolio companies keep their books on RoboLedger, they share their reports into your investor graph, next to the public companies you compare them with.',
     },
   ]
 
@@ -80,7 +79,7 @@ export default function FinancialServices() {
           </h2>
           <p className="mx-auto max-w-3xl text-gray-400">
             The RoboInvestor extension tracks investment portfolios and provides
-            AI-powered research against the SEC Shared Repository — connecting
+            AI-powered research against the SEC Shared Repository, connecting
             your private holdings to public company financial data
           </p>
         </div>
@@ -115,11 +114,10 @@ export default function FinancialServices() {
         {/* Roadmap */}
         <div className="mx-auto mb-12 max-w-4xl">
           <h3 className="mb-4 text-center text-sm font-semibold tracking-wider text-gray-500 uppercase">
-            Roadmap: Portfolio Analytics Platform
+            Building next
           </h3>
           <p className="mb-6 text-center text-sm text-gray-500">
-            Expanding RoboInvestor to support personal portfolios, family
-            offices, and institutional investors
+            Not built yet, and named so you know what is coming
           </p>
           <div className="grid gap-4 md:grid-cols-3">
             {roadmapServices.map((service, idx) => (
@@ -151,8 +149,8 @@ export default function FinancialServices() {
                 Track Your Portfolio
               </h4>
               <p className="text-sm text-gray-400">
-                Add portfolios and positions — PE/VC instruments today, public
-                market brokerage sync on the roadmap
+                Add portfolios and positions: PE/VC instruments today, public
+                market brokerage sync building next
               </p>
             </div>
 
@@ -162,7 +160,7 @@ export default function FinancialServices() {
               </div>
               <h4 className="mb-2 font-semibold text-white">Research via AI</h4>
               <p className="text-sm text-gray-400">
-                Ask questions in plain English — the Analyst Operator answers
+                Ask questions in plain English, and the Analyst Operator answers
                 from 8,000+ public company SEC filings
               </p>
             </div>
@@ -175,8 +173,9 @@ export default function FinancialServices() {
                 Connect AI Tools
               </h4>
               <p className="text-sm text-gray-400">
-                Paste your graph's MCP URL into Claude, ChatGPT, or Grok —
-                analyze it and record positions without leaving the chat
+                Paste your graph's MCP URL into Claude, ChatGPT or any MCP
+                client, then analyze it and record positions without leaving the
+                chat
               </p>
             </div>
           </div>

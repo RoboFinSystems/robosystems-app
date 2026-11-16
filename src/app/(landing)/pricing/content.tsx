@@ -1,5 +1,7 @@
 'use client'
 
+import DeploymentSection from '@/components/landing/DeploymentSection'
+import EmailForATime from '@/components/landing/EmailForATime'
 import FloatingElementsVariant from '@/components/landing/FloatingElementsVariant'
 import Footer from '@/components/landing/Footer'
 import Header from '@/components/landing/Header'
@@ -74,11 +76,16 @@ export default function PricingContent() {
                   </h4>
                   <p className="text-gray-400">
                     Credits power AI agent calls (run through AWS Bedrock) on
-                    your graph data. Two agents ship today:{' '}
-                    <span className="text-gray-300">the Analyst Operator</span>,
-                    which answers a plain-English question from your graph (live
-                    statements, documents, memory, and the Cypher it writes when
-                    nothing curated fits) and shows the query behind it; and{' '}
+                    your graph data: the console&apos;s{' '}
+                    <span className="text-gray-300">answers</span> to
+                    plain-English questions (with the data and the query behind
+                    each one), the{' '}
+                    <span className="text-gray-300">
+                      changes it makes with /do
+                    </span>{' '}
+                    (metrics, forecasts and report drafts, and on a ledger,
+                    sorting bank-feed lines and drafting the month&apos;s
+                    schedule entries for a person to approve), and{' '}
                     <span className="text-gray-300">account mapping</span>,
                     which maps your chart of accounts to the US-GAAP taxonomy
                     with confidence scores. Credits are calculated from actual
@@ -87,21 +94,6 @@ export default function PricingContent() {
                     uploads, graph materialization, backups, and downloads) is
                     included in your plan at no additional credit cost (subject
                     to rate limits by tier).
-                  </p>
-                </div>
-                <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700">
-                  <h4 className="mb-2 font-semibold text-white">
-                    What AI capabilities are coming next?
-                  </h4>
-                  <p className="text-gray-400">
-                    Those two agents, hybrid document search, and semantic
-                    memory are the foundation of our AI agent system. We&apos;re
-                    actively building additional agents for deeper entity
-                    analysis and automated insight generation across your
-                    financial data. As new capabilities launch, they&apos;ll use
-                    the same credit system. More complex agents may consume more
-                    credits per call, but you&apos;ll always have clear
-                    visibility into usage.
                   </p>
                 </div>
                 <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700">
@@ -178,6 +170,8 @@ export default function PricingContent() {
           </div>
         </section>
 
+        <DeploymentSection />
+
         {/* CTA Section */}
         <section className="bg-black py-16">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
@@ -213,6 +207,7 @@ export default function PricingContent() {
                 Contact Sales
               </button>
             </div>
+            {!isAuthenticated && <EmailForATime />}
           </div>
         </section>
       </main>

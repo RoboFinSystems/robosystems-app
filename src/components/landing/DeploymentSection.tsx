@@ -3,12 +3,16 @@ import EmailForATime from './EmailForATime'
 
 const DEPLOYMENT_URL = 'https://harbinger.finance/#deployment'
 
+// The fee and what it leaves out are the lock's fee line, said together wherever the price
+// appears. Hosting is always RoboSystems' (speaker-neutral under the Harbinger badge).
 const POINTS = [
   'Variance explanation, close checklist and peer benchmark in your MCP client, every number traced',
-  'Your team runs the deploy with us on a screenshare you control; workflows are built through keys you issue and can revoke',
+  'Your general ledger and the public companies you compare yourselves against, read side by side. QuickBooks connects directly; any other ledger comes in through the API or a file.',
+  'Your team runs the deploy with Harbinger on a screenshare you control; workflows are built through keys you issue and can revoke',
   'Your people approve every entry. Harbinger never signs in to your books.',
-  '$7,500 to $10,000, fixed by scope',
-  'You keep everything we build.',
+  '$7,500 to $10,000, fixed by scope: half up front, half at handover.',
+  'Hosting is separate: from $99 a month on the managed platform, Dedicated quoted, or free to self-host. Peer benchmarks use the SEC repository ($29 or $99 a month, 14-day trial).',
+  'You keep everything Harbinger builds.',
 ]
 
 const CHECK = (
@@ -50,12 +54,10 @@ export default function DeploymentSection() {
                 The Finance AI Deployment
               </h2>
               <p className="text-gray-300">
-                RoboSystems on your books, with three working agent workflows,
-                in two to three weeks, at a fixed fee.
-              </p>
-              <p className="mt-3 text-sm text-gray-400">
-                It runs on the deployment you choose: our managed platform, a
-                Dedicated Deployment, or self-hosted in your own cloud.
+                RoboSystems where you choose (the RoboSystems managed platform,
+                a Dedicated Deployment RoboSystems runs, or your own cloud), on
+                your books, with three working agent workflows, in two to three
+                weeks, at a fixed fee.
               </p>
             </div>
             <div className="lg:col-span-3">
@@ -84,6 +86,11 @@ export default function DeploymentSection() {
                 </a>
               </div>
               <EmailForATime />
+              <p className="mt-6 border-t border-cyan-500/20 pt-4 text-sm text-gray-400">
+                Integrators and consultancies: deliver the Finance AI Deployment
+                for your clients. You keep the services; RoboSystems runs the
+                platform.
+              </p>
             </div>
           </div>
         </div>

@@ -89,8 +89,7 @@ export default function SECRepositorySection() {
                 <h4 className="font-semibold text-white">MCP Clients</h4>
               </div>
               <p className="text-sm text-gray-400">
-                Use with Claude, ChatGPT, Grok, or any MCP-compatible AI client,
-                no install required.
+                Use with Claude, ChatGPT or any MCP client, no install required.
               </p>
               <div className="mt-3 flex flex-col gap-1.5">
                 <a
