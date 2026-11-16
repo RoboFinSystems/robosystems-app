@@ -268,10 +268,11 @@ export default function AboutContent() {
                 Harbinger FinLab
               </a>{' '}
               is an affiliated company under the same ownership, the
-              technology-services firm that runs the Finance AI Pilot:
-              RoboSystems in your cloud, on your books, in two to three weeks.
-              Your people approve every entry; Harbinger never signs in to your
-              books.
+              technology-services firm that runs the Finance AI Deployment:
+              RoboSystems on your books in two to three weeks, on our managed
+              platform, a Dedicated Deployment, or self-hosted in your own
+              cloud. Your people approve every entry; Harbinger never signs in
+              to your books.
             </p>
           </div>
         </section>

@@ -14,6 +14,9 @@ const BANNED: Array<[string, RegExp]> = [
   ['most customers', /most customers/i],
   ['AI-native', /ai-native/i],
   ['financial intelligence', /financial intelligence/i],
+  // The offer was renamed the Finance AI Deployment on 2026-11-16: "pilot" read as
+  // both a proof of concept and a co-pilot.
+  ['Finance AI Pilot', /finance ai pilot/i],
 ]
 
 const src = path.resolve(__dirname, '../../..')
@@ -45,7 +48,7 @@ const files = [
 describe('landing copy guard', () => {
   it('scans the homepage sections and the public marketing pages', () => {
     for (const name of [
-      'PilotSection.tsx',
+      'DeploymentSection.tsx',
       'HeroSection.tsx',
       'GraphPricing.tsx',
       'site.ts',

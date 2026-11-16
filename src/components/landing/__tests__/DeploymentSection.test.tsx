@@ -1,18 +1,21 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import PilotSection from '../PilotSection'
+import DeploymentSection from '../DeploymentSection'
 
 vi.mock('../ContactModal', () => ({
   default: ({ isOpen, title }: { isOpen: boolean; title?: string }) =>
     isOpen ? <div data-testid="contact-modal">{title}</div> : null,
 }))
 
-describe('PilotSection', () => {
+describe('DeploymentSection', () => {
   it('names the offer, who delivers it, and the fixed price range', () => {
-    render(<PilotSection />)
+    render(<DeploymentSection />)
 
     expect(
-      screen.getByRole('heading', { level: 2, name: 'The Finance AI Pilot' })
+      screen.getByRole('heading', {
+        level: 2,
+        name: 'The Finance AI Deployment',
+      })
     ).toBeInTheDocument()
     expect(
       screen.getByText('Delivered by Harbinger FinLab')
@@ -25,20 +28,29 @@ describe('PilotSection', () => {
     ).toBeInTheDocument()
   })
 
-  it('books through /book and links the pilot page', () => {
-    render(<PilotSection />)
+  it('books through /book and links the offer on harbinger.finance', () => {
+    render(<DeploymentSection />)
 
     expect(
       screen.getByRole('link', { name: 'Book 20 minutes' })
     ).toHaveAttribute('href', '/book')
-    expect(screen.getByRole('link', { name: /See the pilot/ })).toHaveAttribute(
-      'href',
-      'https://harbinger.finance'
-    )
+    expect(
+      screen.getByRole('link', { name: /See the deployment/ })
+    ).toHaveAttribute('href', 'https://harbinger.finance/#deployment')
+  })
+
+  it('says the offer runs on the deployment the client chooses', () => {
+    render(<DeploymentSection />)
+
+    expect(
+      screen.getByText(
+        /our managed platform, a Dedicated Deployment, or self-hosted in your own cloud/
+      )
+    ).toBeInTheDocument()
   })
 
   it('offers email when the booking hours do not suit', () => {
-    render(<PilotSection />)
+    render(<DeploymentSection />)
 
     expect(
       screen.getByText(/Thursday or Friday afternoon not good\?/)

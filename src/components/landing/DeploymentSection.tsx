@@ -1,7 +1,7 @@
 import { BOOK_PATH } from '@/lib/site'
 import EmailForATime from './EmailForATime'
 
-const PILOT_URL = 'https://harbinger.finance'
+const DEPLOYMENT_URL = 'https://harbinger.finance/#deployment'
 
 const POINTS = [
   'Variance explanation, close checklist and peer benchmark in your MCP client, every number traced',
@@ -30,12 +30,14 @@ const CHECK = (
 
 /**
  * The offer, on the homepage. A full-width band in the shape of the pricing page's
- * DedicatedDeployment: the pilot is a fixed-fee engagement delivered by Harbinger FinLab,
- * so it states a price range rather than a per-graph price.
+ * DedicatedDeployment: the Finance AI Deployment is a fixed-fee engagement delivered by
+ * Harbinger FinLab, so it states a price range rather than a per-graph price. It is not the
+ * Dedicated Deployment product; it runs on whichever deployment the client picks, so the
+ * copy always names the offer in full and says so.
  */
-export default function PilotSection() {
+export default function DeploymentSection() {
   return (
-    <section id="pilot" className="relative bg-black py-16 sm:py-24">
+    <section id="deployment" className="relative bg-black py-16 sm:py-24">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-2xl border border-cyan-500/30 bg-linear-to-br from-zinc-900 to-cyan-950/30 p-6 sm:p-8 md:p-10">
           <div className="pointer-events-none absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
@@ -45,11 +47,15 @@ export default function PilotSection() {
                 Delivered by Harbinger FinLab
               </div>
               <h2 className="font-heading mb-4 text-3xl font-bold text-white">
-                The Finance AI Pilot
+                The Finance AI Deployment
               </h2>
               <p className="text-gray-300">
-                RoboSystems in your cloud, on your books, with three working
-                agent workflows, in two to three weeks, at a fixed fee.
+                RoboSystems on your books, with three working agent workflows,
+                in two to three weeks, at a fixed fee.
+              </p>
+              <p className="mt-3 text-sm text-gray-400">
+                It runs on the deployment you choose: our managed platform, a
+                Dedicated Deployment, or self-hosted in your own cloud.
               </p>
             </div>
             <div className="lg:col-span-3">
@@ -69,12 +75,12 @@ export default function PilotSection() {
                   Book 20 minutes
                 </a>
                 <a
-                  href={PILOT_URL}
+                  href={DEPLOYMENT_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="rounded-lg border border-cyan-700 px-6 py-3 text-center font-medium text-gray-300 transition-all duration-300 hover:bg-cyan-800/20 hover:text-white"
                 >
-                  See the pilot &rarr;
+                  See the deployment &rarr;
                 </a>
               </div>
               <EmailForATime />
