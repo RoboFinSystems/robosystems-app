@@ -91,8 +91,8 @@ export default function AboutContent() {
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
                 RoboSystems gives your AI agents your general ledger and public
                 companies&apos; filings as structured, traceable data, on your
-                infrastructure, with the model you choose. It&apos;s built by a
-                CPA and former Workiva XBRL engineer, and our own
+                infrastructure, with the model you choose. It&apos;s built by an
+                inactive CPA and ex-Workiva knowledge engineer, and our own
                 companies&apos; books are kept on it.
               </p>
             </div>

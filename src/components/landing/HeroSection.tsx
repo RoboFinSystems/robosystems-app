@@ -64,7 +64,7 @@ export default function HeroSection() {
             you choose.
           </p>
           <p className="mx-auto mt-4 max-w-3xl text-sm text-gray-400 sm:text-base">
-            Built by a CPA and former Workiva XBRL engineer. Our own
+            Built by an inactive CPA and ex-Workiva knowledge engineer. Our own
             companies&apos; books are kept on it.
           </p>
 
