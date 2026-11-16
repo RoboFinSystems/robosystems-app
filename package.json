@@ -44,7 +44,7 @@
     "@simplewebauthn/browser": "14.0.0",
     "date-fns": "^4.1.0",
     "lru-cache": "^11.5.3",
-    "next": "^16.4.2",
+    "next": "^16.4.6",
     "react": "^19",
     "react-dom": "^19",
     "react-icons": "^5",
