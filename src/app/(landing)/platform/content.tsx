@@ -31,9 +31,10 @@ export default function PlatformContent() {
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
                 Three kinds of graph on one platform: your ledger, the public
                 filings, and graphs you model yourself, from your own schema,
-                loaded from Parquet and queried with Cypher. Underneath is an
-                accounting ontology: XBRL concepts and the rs-gaap taxonomy,
-                serialized as RDF.
+                loaded from Parquet and queried with Cypher. One ontology
+                underneath: the RoboSystems graph model, labelled in XBRL&apos;s
+                standard terms wherever XBRL has one. Every graph runs on it in
+                LadybugDB, and reports leave as a holon (RDF), XBRL 2.1 or Tavi.
               </p>
             </div>
           </div>

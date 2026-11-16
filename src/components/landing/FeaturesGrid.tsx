@@ -14,9 +14,10 @@ export default function FeaturesGrid() {
             Three kinds of graph, one platform
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            Underneath is an accounting ontology: XBRL concepts and the rs-gaap
-            taxonomy, serialized as RDF. Your AI reaches all of it over MCP, and
-            every answer opens to its entries or its tagged facts.
+            One ontology underneath: the RoboSystems graph model, labelled in
+            XBRL&apos;s standard terms wherever XBRL has one. Your AI reaches
+            all of it over MCP, and every answer opens to its entries or its
+            tagged facts.
           </p>
         </div>
 
@@ -44,8 +45,8 @@ export default function FeaturesGrid() {
                 Your ledger
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                RoboLedger&apos;s books on an XBRL-shaped chart, with the fiscal
-                calendar and the close rules.
+                RoboLedger&apos;s books mapped onto the ontology, with the
+                fiscal calendar and the close rules.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
