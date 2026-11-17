@@ -264,7 +264,7 @@ export default function ApplicationsSection() {
               </p>
 
               <p className="mb-6 text-gray-300">
-                Track public and private positions in one book, research any
+                Track private-company positions with their terms, research any
                 public company against the SEC knowledge graph, and read equity
                 research generated from the filings.
               </p>
