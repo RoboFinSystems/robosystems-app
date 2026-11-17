@@ -12,10 +12,6 @@ const clientClientsMock = path.resolve(
   srcDir,
   '__mocks__/@robosystems/client-clients.js'
 )
-const clientExtensionsMock = path.resolve(
-  srcDir,
-  '__mocks__/@robosystems/client-extensions.js'
-)
 const clientSdkMock = path.resolve(
   srcDir,
   '__mocks__/@robosystems/client-sdk.js'
@@ -41,7 +37,6 @@ export default defineConfig({
       'react-markdown': reactMarkdownMock,
       '@monaco-editor/react': monacoEditorMock,
       '@robosystems/client/clients': clientClientsMock,
-      '@robosystems/client/extensions': clientExtensionsMock,
       '@robosystems/client/sdk': clientSdkMock,
       '@robosystems/client': clientMock,
     },
