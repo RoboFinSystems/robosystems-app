@@ -16,7 +16,7 @@ export default function TermsOfService() {
           </h1>
 
           <p className="mb-12 text-gray-600 dark:text-gray-400">
-            Last Revision: September 25, 2026
+            Last Revision: November 17, 2026
           </p>
 
           <p className="mt-8 text-2xl font-semibold">
@@ -482,10 +482,11 @@ export default function TermsOfService() {
 
           <p>
             <strong>Shared Repository Access: </strong>Subscriptions to shared
-            data repositories (like SEC data) are purchased at the organization
-            level, and all members of your organization share access under your
-            subscription. Access may not be shared with, or provided to, anyone
-            outside your organization.
+            data repositories (like SEC data) are purchased per user and billed
+            to your organization. Each subscription gives access, and its
+            monthly AI credits and rate limits, to the one user who holds it.
+            Access may not be shared with, or provided to, anyone outside your
+            organization.
           </p>
 
           <p>
@@ -677,18 +678,19 @@ export default function TermsOfService() {
 
           <p>
             <strong>Billing Cycle: </strong>Subscriptions are billed monthly in
-            advance. AI credits are allocated at the beginning of each billing
-            cycle and do not roll over. Database operations remain included
-            throughout your subscription.
+            advance. AI credits are allocated on the first day of each calendar
+            month (UTC), independent of your billing date, and do not roll over.
+            Database operations remain included throughout your subscription.
           </p>
 
           <p>
             <strong>Credit Exhaustion: </strong>If You exhaust your monthly AI
             credit allocation, AI-powered features will be unavailable until
-            your next billing cycle begins or You upgrade your subscription
-            tier. Database operations continue to work even if AI credits are
-            exhausted. Storage is included with your subscription tier, subject
-            to the capacity of your tier's dedicated infrastructure.
+            credits are next allocated on the first day of the following month
+            (UTC) or You upgrade your subscription tier. Database operations
+            continue to work even if AI credits are exhausted. Storage is
+            included with your subscription tier, subject to the capacity of
+            your tier's dedicated infrastructure.
           </p>
 
           <p>
