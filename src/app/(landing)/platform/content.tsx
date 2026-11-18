@@ -29,12 +29,12 @@ export default function PlatformContent() {
                 Three kinds of graph, one platform
               </h1>
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
-                Three kinds of graph on one platform: your ledger, the public
-                filings, and graphs you model yourself, from your own schema,
-                loaded from Parquet and queried with Cypher. One ontology
-                underneath: the RoboSystems graph model, labelled in XBRL&apos;s
-                standard terms wherever XBRL has one. Every graph runs on it in
-                LadybugDB, and reports leave as a holon (RDF), XBRL 2.1 or Tavi.
+                Your ledger and the public filings share the RoboSystems
+                ontology, labelled in XBRL&apos;s standard terms wherever XBRL
+                has one, so your numbers and a public company&apos;s line up.
+                Graphs you model yourself take your own schema instead: define
+                it, load it from Parquet, query it with Cypher. All three run on
+                LadybugDB.
               </p>
             </div>
           </div>
