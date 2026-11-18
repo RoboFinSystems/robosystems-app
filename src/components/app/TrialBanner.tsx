@@ -12,9 +12,10 @@ import { useEffect, useState } from 'react'
 import { HiInformationCircle } from 'react-icons/hi'
 
 /**
- * A repository subscription whose free trial is still running. A canceled
- * trial runs to the same date but converts to nothing, so it is not offered
- * an early start.
+ * A repository subscription whose free trial is still running. A trial
+ * cancelled at its end runs to the same date but converts to nothing, so it is
+ * not offered an early start; one that ended at once (`ends_at` already past)
+ * is not running at all.
  */
 export function runningTrial(
   subscriptions: SDK.GraphSubscriptionResponse[],
@@ -26,7 +27,9 @@ export function runningTrial(
       s.resource_type === 'repository' &&
       (!repository || s.resource_id === repository) &&
       (!s.user_id || s.user_id === userId) &&
-      (s.status === 'active' || s.status === 'canceled') &&
+      (s.status === 'active' ||
+        (s.status === 'canceled' &&
+          (!s.ends_at || utcDate(s.ends_at) > new Date()))) &&
       !!s.trial_ends_at &&
       utcDate(s.trial_ends_at) > new Date()
   )

@@ -15,7 +15,7 @@ vi.mock('@robosystems/core', async () => {
   }
 })
 
-import TrialBanner from '../TrialBanner'
+import TrialBanner, { runningTrial } from '../TrialBanner'
 
 const inDays = (days: number) =>
   new Date(Date.now() + days * 86_400_000).toISOString().slice(0, -1)
@@ -79,6 +79,16 @@ describe('TrialBanner', () => {
       await screen.findByText(/Nothing will be charged/)
     ).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Start Plan Now' })).toBeNull()
+  })
+
+  it('does not count a trial that ended at once as running', () => {
+    const ended = seat({
+      status: 'canceled',
+      ends_at: new Date(Date.now() - 60_000).toISOString(),
+    })
+    const cancelledAtEnd = seat({ status: 'canceled', ends_at: undefined })
+    expect(runningTrial([ended], 'user_me')).toBeUndefined()
+    expect(runningTrial([cancelledAtEnd], 'user_me')).toBe(cancelledAtEnd)
   })
 
   it("renders nothing once the trial is over, for a member's seat, or for another repository", async () => {
