@@ -942,6 +942,7 @@ function OrganizationTabs() {
                 offerings={billing.offerings}
                 router={router}
                 onRefresh={billing.reload}
+                hasPaymentMethod={billing.hasPaymentMethod}
               />
             )}
           </Tabs.Item>

@@ -1,5 +1,6 @@
 'use client'
 
+import TrialBanner from '@/components/app/TrialBanner'
 import type { GraphInfo } from '@robosystems/client'
 import { getGraphs } from '@robosystems/client'
 import {
@@ -198,6 +199,8 @@ export default function AllGraphsHomePage() {
           )
         }
       />
+
+      <TrialBanner />
 
       {/* Graphs List - Mobile Optimized */}
       {graphs.length > 0 ? (

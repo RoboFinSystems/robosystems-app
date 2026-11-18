@@ -1,5 +1,6 @@
 'use client'
 
+import { openBillingPortal } from '@/lib/billing-portal'
 import * as SDK from '@robosystems/client'
 import { useOrg, useUser } from '@robosystems/core'
 import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
@@ -38,14 +39,20 @@ interface TrialBannerProps {
 
 /**
  * Says what a trial is while one is running: what is open, what is held back
- * and how to start the plan without waiting for the trial to end. Renders
- * nothing for a subscriber who is not on a trial.
+ * and what happens when it ends. With a card on file the plan starts by itself
+ * and can start now; a trial taken without a card ends with nothing charged
+ * unless a card is added, so it offers that instead. Renders nothing for a
+ * subscriber who is not on a trial.
  */
 export default function TrialBanner({ repository }: TrialBannerProps) {
   const router = useRouter()
   const { currentOrg } = useOrg()
   const { user } = useUser()
   const [trial, setTrial] = useState<SDK.GraphSubscriptionResponse>()
+  // Unknown until the billing read lands; unknown keeps the card wording.
+  const [hasCard, setHasCard] = useState<boolean>()
+  const [openingPortal, setOpeningPortal] = useState(false)
+  const [portalError, setPortalError] = useState<string>()
 
   useEffect(() => {
     if (!currentOrg?.id) return
@@ -58,6 +65,17 @@ export default function TrialBanner({ repository }: TrialBannerProps) {
       .catch(() => {
         // The banner is an aid; the Subscriptions tab reports a failed read.
       })
+    SDK.getOrgBillingCustomer({ path: { org_id: currentOrg.id } })
+      .then((response) => {
+        if (cancelled) return
+        const customer = unwrapSdk(response)
+        if (customer) {
+          setHasCard(
+            customer.has_payment_method || customer.invoice_billing_enabled
+          )
+        }
+      })
+      .catch(() => {})
     return () => {
       cancelled = true
     }
@@ -68,6 +86,21 @@ export default function TrialBanner({ repository }: TrialBannerProps) {
   const ends = format(utcDate(trial.trial_ends_at), 'MMM d')
   const price = `$${(trial.base_price_cents / 100).toFixed(2)}`
   const canceled = trial.status === 'canceled'
+  const noCard = !canceled && hasCard === false
+
+  const addCard = async () => {
+    if (!currentOrg?.id) return
+    setOpeningPortal(true)
+    setPortalError(undefined)
+    try {
+      await openBillingPortal(currentOrg.id)
+    } catch (error) {
+      setPortalError(
+        error instanceof Error ? error.message : 'Could not open billing.'
+      )
+      setOpeningPortal(false)
+    }
+  }
 
   return (
     <Alert color="info" icon={HiInformationCircle}>
@@ -76,21 +109,42 @@ export default function TrialBanner({ repository }: TrialBannerProps) {
           <p className="font-semibold">
             {canceled
               ? `Your free trial of ${trial.plan_display_name} runs to ${ends}. Nothing will be charged.`
-              : `You are on a free trial of ${trial.plan_display_name} until ${ends}.`}
+              : noCard
+                ? `Your free trial of ${trial.plan_display_name} ends on ${ends}.`
+                : `You are on a free trial of ${trial.plan_display_name} until ${ends}.`}
           </p>
           <p>
             The trial opens the analysis tools over MCP and the API, at lower
             rate limits than the plan. Raw queries, the AI analyst and your
             monthly credits open with the first payment.
           </p>
-          {!canceled && (
+          {noCard && (
+            <p>
+              Add a card to keep your plan ({price} a month); without one the
+              trial ends and nothing is charged.
+            </p>
+          )}
+          {!canceled && !noCard && (
             <p>
               Your plan starts by itself on {ends} ({price}). You do not have to
               wait: starting it now lifts the trial limits at once.
             </p>
           )}
+          {portalError && (
+            <p className="text-red-700 dark:text-red-400">{portalError}</p>
+          )}
         </div>
-        {!canceled && (
+        {noCard && (
+          <Button
+            color="blue"
+            className="shrink-0"
+            onClick={addCard}
+            disabled={openingPortal}
+          >
+            {openingPortal ? 'Opening…' : 'Add a Card'}
+          </Button>
+        )}
+        {!canceled && !noCard && (
           <Button
             color="blue"
             className="shrink-0"

@@ -3,6 +3,7 @@
 import CancelSubscriptionModal, {
   type CancelMode,
 } from '@/components/app/CancelSubscriptionModal'
+import { openBillingPortal } from '@/lib/billing-portal'
 import * as SDK from '@robosystems/client'
 import {
   LoadingState,
@@ -499,12 +500,15 @@ export function SubscriptionsTab({
   graphs,
   router,
   onRefresh,
+  hasPaymentMethod = true,
 }: {
   subscriptions: SDK.GraphSubscriptionResponse[]
   graphs: SDK.GraphInfo[]
   offerings: any
   router: any
   onRefresh: () => void
+  /** A trial taken without a card cannot start its plan until one is added. */
+  hasPaymentMethod?: boolean
 }) {
   const { currentOrg } = useOrg()
   const { user } = useUser()
@@ -701,6 +705,19 @@ export function SubscriptionsTab({
       )
     } finally {
       setCancelling(false)
+    }
+  }
+
+  const handleAddCard = async () => {
+    if (!currentOrg?.id) return
+    try {
+      setStartingPlan(true)
+      await openBillingPortal(currentOrg.id)
+    } catch (error) {
+      showError(
+        error instanceof Error ? error.message : 'Failed to open billing.'
+      )
+      setStartingPlan(false)
     }
   }
 
@@ -1046,7 +1063,23 @@ export function SubscriptionsTab({
       >
         <ModalHeader>Start your plan now</ModalHeader>
         <ModalBody>
-          {subscriptionToStart && (
+          {subscriptionToStart && !hasPaymentMethod && (
+            <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+              <p>
+                No card is on file yet. The plan&apos;s first period of $
+                {(subscriptionToStart.base_price_cents / 100).toFixed(2)} is
+                charged when it starts, so add a card first.
+              </p>
+              <p>
+                Without a card, your free trial of{' '}
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {subscriptionToStart.plan_display_name}
+                </span>{' '}
+                ends on its last day and nothing is charged.
+              </p>
+            </div>
+          )}
+          {subscriptionToStart && hasPaymentMethod && (
             <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
               <p>
                 This ends your free trial of{' '}
@@ -1074,14 +1107,25 @@ export function SubscriptionsTab({
             >
               Keep Trial
             </Button>
-            <Button
-              onClick={handleStartPlanConfirm}
-              disabled={startingPlan}
-              color="blue"
-              className="flex-1"
-            >
-              {startingPlan ? 'Processing...' : 'Start Plan and Pay'}
-            </Button>
+            {hasPaymentMethod ? (
+              <Button
+                onClick={handleStartPlanConfirm}
+                disabled={startingPlan}
+                color="blue"
+                className="flex-1"
+              >
+                {startingPlan ? 'Processing...' : 'Start Plan and Pay'}
+              </Button>
+            ) : (
+              <Button
+                onClick={handleAddCard}
+                disabled={startingPlan}
+                color="blue"
+                className="flex-1"
+              >
+                {startingPlan ? 'Opening...' : 'Add a Card'}
+              </Button>
+            )}
           </div>
         </ModalFooter>
       </Modal>

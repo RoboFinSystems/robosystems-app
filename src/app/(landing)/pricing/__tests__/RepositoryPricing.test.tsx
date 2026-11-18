@@ -22,7 +22,8 @@ describe('RepositoryPricing', () => {
       screen.getByText('Start with a 14-day free trial on either plan')
     ).toBeInTheDocument()
     expect(screen.getAllByText('after a 14-day free trial')).toHaveLength(2)
-    expect(screen.getByText(/A card is required/)).toBeInTheDocument()
+    expect(screen.getByText(/No card is needed to start/)).toBeInTheDocument()
+    expect(screen.queryByText(/A card is required/)).toBeNull()
     for (const link of screen.getAllByRole('link', {
       name: 'Start Free Trial',
     })) {

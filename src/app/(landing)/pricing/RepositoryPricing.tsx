@@ -68,10 +68,10 @@ export default function RepositoryPricing({
         <p className="mt-1 text-sm text-gray-300">
           The trial opens the analysis tools over MCP and the API, at lower rate
           limits than the plan. Raw Cypher queries, the AI agent and your
-          monthly credits open with the first payment. A card is required and
-          your plan starts when the trial ends; you can start it sooner from
-          your organization&apos;s Subscriptions tab, or cancel any time before
-          then and keep the rest of the trial.
+          monthly credits open with the first payment. No card is needed to
+          start: add one before the trial ends and your plan starts when it
+          does, or start it sooner from your organization&apos;s Subscriptions
+          tab. Without a card the trial ends and nothing is charged.
         </p>
       </div>
       <div className="mx-auto grid max-w-3xl gap-6 sm:gap-8 md:grid-cols-2">
