@@ -69,10 +69,20 @@ const IN_FORCE_STATUSES = new Set([
   'provisioning',
 ])
 
+/**
+ * When a canceled subscription's access ends: `ends_at`, which a cancel at
+ * period end sets to the period's end and an immediate or provider-ended one
+ * sets to the moment it ended. The period end is only a fallback.
+ */
+function accessEndsAt(s: SDK.GraphSubscriptionResponse): string | null {
+  return s.ends_at ?? s.current_period_end ?? null
+}
+
 function isListedSubscription(s: SDK.GraphSubscriptionResponse): boolean {
   if (IN_FORCE_STATUSES.has(s.status)) return true
-  if (s.status === 'canceled' && s.current_period_end) {
-    return new Date(s.current_period_end) > new Date()
+  const endsAt = accessEndsAt(s)
+  if (s.status === 'canceled' && endsAt) {
+    return new Date(endsAt) > new Date()
   }
   return false
 }
@@ -599,10 +609,9 @@ export function SubscriptionsTab({
         <Badge color="warning" className="text-center">
           <div className="flex flex-col">
             <span>Cancelling</span>
-            {subscription.current_period_end && (
+            {accessEndsAt(subscription) && (
               <span className="text-xs">
-                Ends{' '}
-                {format(new Date(subscription.current_period_end), 'MMM d')}
+                Ends {format(utcDate(accessEndsAt(subscription)!), 'MMM d')}
               </span>
             )}
           </div>
