@@ -82,7 +82,7 @@ function isListedSubscription(s: SDK.GraphSubscriptionResponse): boolean {
   if (IN_FORCE_STATUSES.has(s.status)) return true
   const endsAt = accessEndsAt(s)
   if (s.status === 'canceled' && endsAt) {
-    return new Date(endsAt) > new Date()
+    return utcDate(endsAt) > new Date()
   }
   return false
 }
@@ -342,7 +342,7 @@ export function OverviewTab({
       (s.status === 'active' ||
         (s.status === 'canceled' &&
           s.ends_at &&
-          new Date(s.ends_at) > new Date()))
+          utcDate(s.ends_at) > new Date()))
   )
 
   return (
