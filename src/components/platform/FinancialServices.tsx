@@ -19,11 +19,11 @@ export default function FinancialServices() {
       icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
       gradient: 'from-cyan-500 to-blue-500',
       description:
-        'AI-powered deep research against 75,000+ XBRL filings from 8,000+ public companies: plain-English questions answered with narrative analysis.',
+        'Plain-English questions answered from 75,000+ XBRL filings from 8,000+ public companies, with narrative analysis.',
       currentFeatures: [
         '10-K and 10-Q financial statements and fundamentals',
         'Answers backed by the data and the generated Cypher',
-        'Peer comparison and industry analysis',
+        'Peer comparison from the filings',
       ],
     },
     {
@@ -33,7 +33,7 @@ export default function FinancialServices() {
       description:
         'Connect Claude, ChatGPT or any MCP client to your investment graph: every portfolio operation is exposed as a tool, so agents read and write.',
       currentFeatures: [
-        'Remote MCP endpoint: one URL and an API key header, no install',
+        'Remote MCP endpoint: one URL, sign in, no install',
         'Portfolio, position, and security writes as agent-callable tools',
         'GraphQL and REST APIs with Python and TypeScript SDKs',
         'API key management for programmatic access',
@@ -79,8 +79,8 @@ export default function FinancialServices() {
           </h2>
           <p className="mx-auto max-w-3xl text-gray-400">
             The RoboInvestor extension tracks investment portfolios and provides
-            AI-powered research against the SEC Shared Repository, connecting
-            your private holdings to public company financial data
+            research against the SEC Shared Repository, connecting your private
+            holdings to public company financial data
           </p>
         </div>
 
@@ -160,8 +160,8 @@ export default function FinancialServices() {
               </div>
               <h4 className="mb-2 font-semibold text-white">Research via AI</h4>
               <p className="text-sm text-gray-400">
-                Ask questions in plain English, and the Analyst Operator answers
-                from 8,000+ public company SEC filings
+                Ask questions in plain English, and the AI analyst answers from
+                8,000+ public company SEC filings
               </p>
             </div>
 

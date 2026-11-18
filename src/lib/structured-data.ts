@@ -67,7 +67,6 @@ export const softwareJsonLd = {
     'Graphs from your own schema',
     'Open source',
   ],
-  softwareVersion: '1.0',
   url: 'https://robosystems.ai',
   publisher: { '@id': ORGANIZATION_ID },
 }

@@ -550,7 +550,7 @@ export default function AllGraphsHomePage() {
                 </div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Access curated, read-only graph databases with pre-loaded
-                  data. Perfect for research and analysis.
+                  data, for research and analysis.
                 </p>
                 <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                   <li className="flex items-start gap-2">

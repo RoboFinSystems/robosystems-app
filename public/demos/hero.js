@@ -244,7 +244,7 @@ const secPanel = `<div class="term">
 
 const searchView = `<div class="view" id="v2">${pageHeader('Document Search', 'Search indexed documents and knowledge base content')}
     <div class="sbar"><span id="sq"></span><span class="btn go">Search</span></div>
-    <div class="rmeta" id="rm">Showing 1–3 of 3 results for “gross margin” · 10-K · JVA, FARM, WEST</div>
+    <div class="rmeta" id="rm">Showing 1 to 3 of 3 results for “gross margin” · 10-K · JVA, FARM, WEST</div>
     ${HITS.map(
       (h, i) => `<div class="hit card" id="h${i}"><b>${h[0]}</b>
       <div class="bgs"><span class="badge b-info">${h[1]}</span><span class="badge b-mute">narrative</span><span class="badge b-purple">${h[2]}</span><span class="badge b-warn">10-K</span><span class="badge b-mute">${h[3]}</span></div>

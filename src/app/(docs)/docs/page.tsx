@@ -124,8 +124,8 @@ export default async function DocsLandingPage() {
           Documentation
         </h1>
         <p className="mt-4 text-lg text-gray-400">
-          RoboSystems is an open-source financial knowledge graph platform, and
-          the platform behind RoboLedger and RoboInvestor. Start with the
+          RoboSystems is the open-source knowledge graph for finance, and the
+          platform behind RoboLedger and RoboInvestor. Start with the
           documentation for what you are doing.
         </p>
       </header>

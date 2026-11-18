@@ -13,7 +13,7 @@ export default function BusinessServices() {
         'QuickBooks over OAuth: chart of accounts, journal entries, and transactions',
         'Bank feeds through Plaid: transactions land in the inbox for approval',
         'Any other ledger through the API or a file',
-        'US-GAAP taxonomy: AI auto-mapping for the chart of accounts',
+        'rs-gaap, the RoboSystems reporting taxonomy: AI mapping for the chart of accounts',
         'Document uploads: policies, contracts, and workpapers with hybrid semantic search',
       ],
     },

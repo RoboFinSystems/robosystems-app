@@ -67,11 +67,13 @@ export default function RepositoryPricing({
         </p>
         <p className="mt-1 text-sm text-gray-300">
           The trial opens the analysis tools over MCP and the API, at lower rate
-          limits than the plan. Raw Cypher queries, the AI agent and your
+          limits than the plan. Raw Cypher queries, the AI analyst and your
           monthly credits open with the first payment. No card is needed to
           start: add one before the trial ends and your plan starts when it
           does, or start it sooner from your organization&apos;s Subscriptions
-          tab. Without a card the trial ends and nothing is charged.
+          tab. Without a card the trial ends and nothing is charged. A verified
+          email address starts it, and it includes one download of the graph a
+          month.
         </p>
       </div>
       <div className="mx-auto grid max-w-3xl gap-6 sm:gap-8 md:grid-cols-2">
@@ -121,13 +123,13 @@ export default function RepositoryPricing({
                 href={isAuthenticated ? '/repositories/browse' : '/register'}
                 className="block w-full rounded-lg bg-green-500/80 py-3 text-center font-medium text-white transition-all duration-300 hover:bg-green-600/80"
               >
-                {isAuthenticated ? 'Browse Repositories' : 'Start Free Trial'}
+                {isAuthenticated ? 'Browse Repositories' : 'Start free trial'}
               </Link>
               <button
                 onClick={onContactSales}
                 className="block w-full rounded-lg border border-green-700 py-3 text-center font-medium text-gray-300 transition-all duration-300 hover:bg-green-800/20 hover:text-white"
               >
-                Contact Sales
+                Talk to us
               </button>
             </div>
           </div>
@@ -177,13 +179,13 @@ export default function RepositoryPricing({
                 href={isAuthenticated ? '/repositories/browse' : '/register'}
                 className="block w-full rounded-lg bg-green-600 py-3 text-center font-medium text-white transition-all duration-300 hover:bg-green-700"
               >
-                {isAuthenticated ? 'Browse Repositories' : 'Start Free Trial'}
+                {isAuthenticated ? 'Browse Repositories' : 'Start free trial'}
               </Link>
               <button
                 onClick={onContactSales}
                 className="block w-full rounded-lg border border-green-500 py-3 text-center font-medium text-gray-300 transition-all duration-300 hover:bg-green-900/20 hover:text-white"
               >
-                Contact Sales
+                Talk to us
               </button>
             </div>
           </div>

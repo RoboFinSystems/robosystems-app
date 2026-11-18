@@ -87,13 +87,14 @@ export default function PricingContent() {
                     sorting bank-feed lines and drafting the month&apos;s
                     schedule entries for a person to approve), and{' '}
                     <span className="text-gray-300">account mapping</span>,
-                    which maps your chart of accounts to the US-GAAP taxonomy
-                    with confidence scores. Credits are calculated from actual
-                    token usage per call. Everything else (MCP tool access,
-                    database queries, document search, semantic memory, file
-                    uploads, graph materialization, backups, and downloads) is
-                    included in your plan at no additional credit cost (subject
-                    to rate limits by tier).
+                    which maps your chart of accounts to rs-gaap, the
+                    RoboSystems reporting taxonomy, with confidence scores.
+                    Credits are calculated from actual token usage per call.
+                    Everything else (MCP tool access, database queries, document
+                    search, semantic memory, file uploads, graph
+                    materialization, backups, and downloads) is included in your
+                    plan at no additional credit cost (subject to rate limits by
+                    tier).
                   </p>
                 </div>
                 <div className="rounded-lg border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700">
@@ -181,7 +182,7 @@ export default function PricingContent() {
             <p className="mb-8 text-lg text-gray-400">
               {isAuthenticated
                 ? 'Manage your graphs and subscriptions from your dashboard'
-                : "Book 20 minutes and we'll say which route fits, or start the SEC repository's 14-day trial."}
+                : "Start the SEC repository's 14-day trial, no card needed, or book 20 minutes and we'll say which route fits."}
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               {isAuthenticated ? (
@@ -190,12 +191,12 @@ export default function PricingContent() {
                 </Link>
               ) : (
                 <>
-                  <a href={BOOK_PATH} className={primaryButton}>
+                  <Link href="/register" className={primaryButton}>
+                    Start free trial
+                  </Link>
+                  <a href={BOOK_PATH} className={secondaryButton}>
                     Book 20 minutes
                   </a>
-                  <Link href="/register" className={secondaryButton}>
-                    Start the 14-day trial
-                  </Link>
                 </>
               )}
               <button
@@ -204,7 +205,7 @@ export default function PricingContent() {
                 }}
                 className={secondaryButton}
               >
-                Contact Sales
+                Talk to us
               </button>
             </div>
             {!isAuthenticated && <EmailForATime />}
@@ -214,7 +215,7 @@ export default function PricingContent() {
 
       <Footer />
 
-      {/* Contact Modal: the sales variant, so "Contact Sales" asks about the
+      {/* Contact Modal: the sales variant, so "Talk to us" asks about the
           buyer's organization rather than their integration needs. */}
       <SalesContactModal
         isOpen={showContact}

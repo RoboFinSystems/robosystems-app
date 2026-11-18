@@ -119,9 +119,9 @@ export default function BuildSection() {
               </div>
               <p className="text-sm text-gray-400">
                 XBRL facts from 8,000+ public companies in a shared graph,
-                full-text and semantic search across the filings, and the
-                Analyst Operator for plain-English questions. Updated daily,
-                nothing to import.
+                full-text and semantic search across the filings, and the AI
+                analyst for plain-English questions. Updated daily, nothing to
+                import.
               </p>
               <Link
                 href="#sec-repository"
@@ -404,7 +404,7 @@ export default function BuildSection() {
               onClick={() => setShowContact(true)}
               className="text-secondary-400 ml-1 hover:underline"
             >
-              Contact our developer team
+              Talk to us about building on RoboSystems
             </button>
           </p>
         </div>

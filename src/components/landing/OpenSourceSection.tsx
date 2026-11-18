@@ -235,7 +235,7 @@ export default function OpenSourceSection() {
                   <span className="text-accent-400 mr-2">•</span>
                   <span>
                     <strong className="text-white">Managed by us</strong>: from
-                    $99 a graph.{' '}
+                    $99 a graph a month.{' '}
                     <Link
                       href="/pricing"
                       className="text-accent-400 hover:text-accent-300"

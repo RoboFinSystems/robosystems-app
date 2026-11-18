@@ -37,7 +37,7 @@ const PRODUCTS: Array<{ name: string; href: string; body: string }> = [
   {
     name: 'RoboSystems',
     href: '/platform',
-    body: 'The platform: a graph per company, the public API, an MCP server on every graph, and the SEC filing repository.',
+    body: 'The platform: ledger graphs, the SEC repository, and graphs you model yourself from your own schema, each with an MCP server.',
   },
   {
     name: 'RoboLedger',
@@ -245,8 +245,7 @@ export default function AboutContent() {
                   <p>
                     Runs all of RoboSystems: engineering and product, sales and
                     go-to-market, finance and accounting, the SOC 2 program and
-                    the board. The company&apos;s own books are kept on the
-                    platform.
+                    the board. Our own companies&apos; books are kept on it.
                   </p>
                 </div>
               </div>
