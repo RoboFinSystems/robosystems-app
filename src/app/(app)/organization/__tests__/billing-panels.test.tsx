@@ -242,6 +242,23 @@ describe('SubscriptionsTab, a repository seat on its free trial', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('drops a trial that ended at once, though its period runs on', () => {
+    // Ended in Stripe: access ends at the moment, not at the trial's end.
+    renderTab(
+      trial({
+        status: 'canceled',
+        ends_at: new Date(Date.now() - 60_000).toISOString(),
+      })
+    )
+    expect(screen.queryByText('Cancelling')).not.toBeInTheDocument()
+    expect(screen.queryByText(/Cancellation Scheduled/)).not.toBeInTheDocument()
+  })
+
+  it('keeps a trial cancelled at its end listed until then', () => {
+    renderTab(trial({ status: 'canceled', ends_at: trialEnd }))
+    expect(screen.getByText('Cancelling')).toBeInTheDocument()
+  })
+
   it('reads a finished trial as an ordinary subscription', () => {
     renderTab(
       trial({ trial_ends_at: '2026-01-15T00:00:00Z', current_period_end: null })
