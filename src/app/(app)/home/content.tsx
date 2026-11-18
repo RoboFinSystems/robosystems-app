@@ -548,12 +548,13 @@ export default function AllGraphsHomePage() {
                     <HiDatabase className="text-secondary-600 dark:text-secondary-400 h-6 w-6" />
                   </div>
                   <h3 className="font-heading text-xl font-bold text-gray-900 dark:text-white">
-                    Subscribe to Repository
+                    Start with the SEC repository
                   </h3>
                 </div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Access curated, read-only graph databases with pre-loaded
-                  data, for research and analysis.
+                  8,000+ public companies&apos; XBRL filings as a read-only
+                  graph. A new account starts with a 14-day free trial, no card
+                  needed.
                 </p>
                 <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                   <li className="flex items-start gap-2">
@@ -576,7 +577,7 @@ export default function AllGraphsHomePage() {
                   color="purple"
                 >
                   <HiGlobeAlt className="mr-2 h-5 w-5" />
-                  Browse Repositories
+                  Start free trial
                 </Button>
               </div>
             </Card>
