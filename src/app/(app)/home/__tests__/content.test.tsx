@@ -8,6 +8,7 @@ const mockSDK = vi.hoisted(() => ({
 }))
 
 vi.mock('@robosystems/client', () => mockSDK)
+vi.mock('@/components/app/TrialBanner', () => ({ default: () => null }))
 
 vi.mock('@robosystems/core', () => ({
   LoadingState: () => <div data-testid="loading" />,

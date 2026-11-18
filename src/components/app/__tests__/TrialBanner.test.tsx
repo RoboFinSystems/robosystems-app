@@ -38,8 +38,22 @@ const seat = (overrides: Partial<SDK.GraphSubscriptionResponse> = {}) =>
 const listing = (rows: SDK.GraphSubscriptionResponse[]) =>
   vi.mocked(SDK.listOrgSubscriptions).mockResolvedValue(sdkOk(rows))
 
+const card = (onFile: boolean) =>
+  vi.mocked(SDK.getOrgBillingCustomer).mockResolvedValue(
+    sdkOk({
+      org_id: 'org_1',
+      has_payment_method: onFile,
+      invoice_billing_enabled: false,
+      payment_methods: [],
+      created_at: '2026-11-01T00:00:00',
+    } as SDK.BillingCustomer)
+  )
+
 describe('TrialBanner', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+    card(true)
+  })
 
   it('says what the trial is and that the wait is optional', async () => {
     listing([seat()])
@@ -85,5 +99,37 @@ describe('TrialBanner', () => {
       expect(SDK.listOrgSubscriptions).toHaveBeenCalledTimes(2)
     )
     expect(other.container).toBeEmptyDOMElement()
+  })
+
+  it('asks for a card when the trial was taken without one', async () => {
+    listing([seat()])
+    card(false)
+    vi.mocked(SDK.createPortalSession).mockResolvedValue(
+      sdkOk({ portal_url: 'https://billing.stripe.com/p/session/x' })
+    )
+    render(<TrialBanner />)
+
+    expect(
+      await screen.findByText(/Add a card to keep your plan/)
+    ).toBeInTheDocument()
+    expect(screen.getByText(/nothing is charged/)).toBeInTheDocument()
+    expect(screen.queryByText(/starts by itself/)).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Start Plan Now' })).toBeNull()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add a Card' }))
+    await waitFor(() =>
+      expect(SDK.createPortalSession).toHaveBeenCalledWith({
+        path: { org_id: 'org_1' },
+      })
+    )
+  })
+
+  it('keeps the start-by-itself wording once a card is on file', async () => {
+    listing([seat()])
+    render(<TrialBanner />)
+
+    expect(await screen.findByText(/starts by itself/)).toBeInTheDocument()
+    await waitFor(() => expect(SDK.getOrgBillingCustomer).toHaveBeenCalled())
+    expect(screen.queryByRole('button', { name: 'Add a Card' })).toBeNull()
   })
 })
