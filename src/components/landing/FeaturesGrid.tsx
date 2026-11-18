@@ -14,10 +14,11 @@ export default function FeaturesGrid() {
             Three kinds of graph, one platform
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            One ontology underneath: the RoboSystems graph model, labelled in
-            XBRL&apos;s standard terms wherever XBRL has one. Your AI reaches
-            all of it over MCP, and every answer opens to its entries or its
-            tagged facts.
+            Your ledger and the public filings share the RoboSystems ontology,
+            labelled in XBRL&apos;s standard terms wherever XBRL has one. A
+            graph you model yourself takes your own schema. Your AI reaches all
+            of it over MCP, and every answer opens to its entries or its tagged
+            facts.
           </p>
         </div>
 

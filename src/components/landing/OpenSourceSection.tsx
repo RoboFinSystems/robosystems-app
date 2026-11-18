@@ -46,11 +46,11 @@ export default function OpenSourceSection() {
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
                 Three kinds of graph on one platform: your ledger, the public
-                filings, and graphs you model yourself, from your own schema,
-                loaded from Parquet and queried with Cypher. The main repository
-                holds all of it: the API server, the infrastructure templates
-                and the deployment workflows, to run locally or in your own
-                cloud.
+                filings, and graphs you model yourself from your own schema,
+                loaded from Parquet. All of it is queried with Cypher. The main
+                repository holds all of it: the API server, the infrastructure
+                templates and the deployment workflows, to run locally or in
+                your own cloud.
               </p>
               <div className="flex flex-wrap justify-center gap-4 md:justify-start">
                 <a
@@ -189,13 +189,14 @@ export default function OpenSourceSection() {
                   </svg>
                   <div className="min-w-0 flex-1">
                     <strong className="text-white">
-                      One ontology underneath
+                      The RoboSystems ontology
                     </strong>
                     <p className="mt-1 text-sm break-words">
-                      The RoboSystems graph model, labelled in XBRL&apos;s
-                      standard terms wherever XBRL has one. Every graph runs on
-                      it in LadybugDB, and reports leave as a holon (RDF), XBRL
-                      2.1 or Tavi.
+                      The graph model your ledger and the public filings share,
+                      labelled in XBRL&apos;s standard terms wherever XBRL has
+                      one. Ledger reports use rs-gaap, the RoboSystems reporting
+                      taxonomy, and leave as XBRL 2.1 or a holon (RDF). A graph
+                      you model yourself takes your own schema.
                     </p>
                   </div>
                 </li>
