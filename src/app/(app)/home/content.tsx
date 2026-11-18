@@ -287,7 +287,9 @@ export default function AllGraphsHomePage() {
                                 (graph.isRepository ? 'repository' : 'generic')}
                               {graph.isSubgraph && ' (subgraph)'}
                             </span>
-                            {graph.schemaExtensions &&
+                            {/* A repository's schema is the platform's, not the customer's extensions. */}
+                            {!graph.isRepository &&
+                              graph.schemaExtensions &&
                               graph.schemaExtensions.length > 0 && (
                                 <div className="flex flex-wrap gap-1">
                                   {graph.schemaExtensions.map((ext) => (
@@ -411,7 +413,8 @@ export default function AllGraphsHomePage() {
                     </div>
 
                     {/* Schema Extensions */}
-                    {graph.schemaExtensions &&
+                    {!graph.isRepository &&
+                      graph.schemaExtensions &&
                       graph.schemaExtensions.length > 0 && (
                         <div className="flex flex-wrap gap-1.5">
                           {graph.schemaExtensions.map((ext) => (

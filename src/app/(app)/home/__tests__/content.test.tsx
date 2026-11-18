@@ -95,6 +95,35 @@ describe('AllGraphsHomePage', () => {
   })
 
   // An API build that predates the status field must not gray out every graph.
+  it("shows a tenant graph's extensions but not a repository's", async () => {
+    mockSDK.getGraphs.mockResolvedValue({
+      data: {
+        graphs: [
+          graph({ schemaExtensions: ['roboledger'] }),
+          graph({
+            graphId: 'sec',
+            graphName: 'SEC EDGAR Filings',
+            isRepository: true,
+            graphType: 'repository',
+            schemaExtensions: ['roboledger'],
+          }),
+        ],
+      },
+    })
+
+    render(<AllGraphsHomePage />)
+
+    await waitFor(() =>
+      expect(screen.getAllByText('SEC EDGAR Filings')).not.toHaveLength(0)
+    )
+    expect(
+      within(rowFor('Live Graph')).getByText('roboledger')
+    ).toBeInTheDocument()
+    expect(
+      within(rowFor('SEC EDGAR Filings')).queryByText('roboledger')
+    ).not.toBeInTheDocument()
+  })
+
   it('treats a missing status as live', async () => {
     mockSDK.getGraphs.mockResolvedValue({
       data: { graphs: [graph({ status: undefined })] },
