@@ -67,9 +67,9 @@ export function SharedRepositoriesContent() {
 
   return (
     <PageLayout>
-      <TrialBanner key={`trial-${refreshKey}`} />
       <ActiveSubscriptions
         key={refreshKey}
+        banner={<TrialBanner />}
         onOpenConsole={() => openConsoleDrawer()}
         onOpenUsage={() => router.push('/usage')}
         onGettingStarted={(repoId) =>
