@@ -3,6 +3,7 @@
 import { McpLogo } from '@/components/mcp/McpLogo'
 import { BOOK_PATH } from '@/lib/site'
 import { LiveDemo } from '@robosystems/core/ui-components'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import ContactModal from './ContactModal'
 import FloatingElementsVariant from './FloatingElementsVariant'
@@ -70,12 +71,18 @@ export default function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="mx-auto mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center md:mt-16">
-            <a
-              href={BOOK_PATH}
+            <Link
+              href="/register"
               className="group from-secondary-500 to-primary-500 shadow-secondary-500/25 hover:shadow-secondary-500/40 relative overflow-hidden rounded-lg bg-linear-to-r px-6 py-3 text-base font-medium text-white shadow-2xl transition-all duration-300 sm:px-8 sm:py-4 sm:text-lg"
             >
-              <span className="relative z-10">Book 20 minutes</span>
+              <span className="relative z-10">Start free trial</span>
               <div className="absolute inset-0 -translate-y-full bg-white/20 transition-transform duration-500 group-hover:translate-y-0"></div>
+            </Link>
+            <a
+              href={BOOK_PATH}
+              className="inline-flex items-center rounded-lg border border-gray-600 px-6 py-3 text-base font-medium text-white transition-all duration-300 hover:border-gray-500 hover:bg-white/5 sm:px-8 sm:py-4 sm:text-lg"
+            >
+              Book 20 minutes
             </a>
             <a
               href="https://github.com/RoboFinSystems/robosystems"

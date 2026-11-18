@@ -41,7 +41,7 @@ describe('Header', () => {
     expect(hrefsOf('Open app')).toEqual([])
   })
 
-  it('leads with Book 20 minutes for every visitor, desktop and mobile', () => {
+  it('offers Book 20 minutes to every visitor, desktop and mobile', () => {
     for (const session of [signedOut, signedIn]) {
       mockUseOptionalAuth.mockReturnValue(session)
       const { unmount } = render(<Header />)
