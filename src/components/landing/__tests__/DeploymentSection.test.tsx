@@ -26,7 +26,10 @@ describe('DeploymentSection', () => {
       )
     ).toBeInTheDocument()
     expect(
-      screen.getByText(/^Hosting is separate: from \$99 a month/)
+      screen.getByText(/^Hosting is separate: from \$99 a graph a month/)
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/\$10,000 adds one data source from another system/)
     ).toBeInTheDocument()
     expect(
       screen.getByText('You keep everything Harbinger builds.')

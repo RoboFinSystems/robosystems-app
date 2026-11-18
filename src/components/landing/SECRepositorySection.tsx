@@ -211,7 +211,7 @@ export default function SECRepositorySection() {
             href="/register"
             className="from-secondary-500 to-primary-500 shadow-secondary-500/25 hover:shadow-secondary-500/40 inline-flex items-center rounded-lg bg-linear-to-r px-8 py-3 text-sm font-semibold text-white shadow-lg transition-all"
           >
-            Start the 14-day trial
+            Start free trial
           </Link>
           <Link
             href="/pricing#sec-repository"

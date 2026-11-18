@@ -52,7 +52,7 @@ const MODES: Mode[] = [
     tagline: 'Self-serve · per graph',
     body: 'Your graphs run on our managed platform, each on its own dedicated graph-database instance. Sign up, connect QuickBooks or the SEC repository, done.',
     facts: [
-      { label: 'Price', value: 'From $99 per graph per month' },
+      { label: 'Price', value: 'From $99 a graph a month' },
       {
         label: 'Paper',
         value:
@@ -182,8 +182,8 @@ const IDENTITY: Array<{ title: string; body: string; scope: string }> = [
 const SECURITY: string[] = [
   'Encryption in transit and at rest; every graph on its own graph-database instance, and ledger data in its own schema.',
   'Tenant isolation is tested, not asserted: an authenticated harness provisions two tenants on the full stack and fires a cross-tenant and privilege-escalation matrix at it (REST, Cypher, GraphQL, MCP, both extension surfaces, both directions). The cross-tenant boundary has also been probed in production, with our own tenants.',
-  'A pinned supply chain: every CI action pinned to a commit, release deployments dispatch-only, provenance certified per pull request. Dedicated Deployments run a byte-identical, tag-pinned mirror of the public repository.',
-  'Security incidents affecting your data: notice within 72 hours. Security releases: applied fleet-wide.',
+  'A pinned supply chain: every CI action pinned to a commit, release deployments dispatch-only, provenance certified per pull request. A Dedicated Deployment runs a byte-identical, tag-pinned mirror of the public repository.',
+  'Security incidents affecting your data: notice within 72 hours. Security releases: applied to every environment we operate.',
   'SOC 2 Type II compliance is in progress with an independent CPA firm; the report will be available under NDA once the audit is complete. Its scope is the environments we operate (the managed platform, and a Dedicated Deployment for as long as we operate it), never a self-hosted one.',
 ]
 
@@ -240,12 +240,15 @@ export default function EnterpriseContent() {
                 API.
               </p>
               <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <button onClick={openContact} className={primaryButton}>
+                <Link href="/register" className={primaryButton}>
+                  Start free trial
+                </Link>
+                <a href={BOOK_PATH} className={secondaryButton}>
+                  Book 20 minutes
+                </a>
+                <button onClick={openContact} className={secondaryButton}>
                   Talk to us about a Dedicated Deployment
                 </button>
-                <Link href="/pricing" className={secondaryButton}>
-                  See pricing
-                </Link>
               </div>
             </div>
           </div>
@@ -322,8 +325,8 @@ export default function EnterpriseContent() {
             <p className="mx-auto mt-8 max-w-3xl text-center text-sm text-gray-500">
               Running many entities or clients? Start the conversation early:
               every graph beyond your first is a routine lift on the managed
-              platform, and at scale a Dedicated Deployment is usually the
-              better fit.
+              platform, and with many graphs a Dedicated Deployment is worth
+              asking about.
             </p>
           </div>
         </section>
@@ -426,11 +429,11 @@ export default function EnterpriseContent() {
                   One security program, every environment we operate
                 </h2>
                 <p className="text-gray-400">
-                  The managed platform and every Dedicated Deployment come off
-                  the same assembly line and run the same controls. What we
-                  claim about them is stated in the contract you sign and on the
-                  Trust Center, not only here, and we say &ldquo;in
-                  progress&rdquo; until the auditor says otherwise.
+                  The managed platform and a Dedicated Deployment are built from
+                  the same templates and run the same controls. What we claim
+                  about them is stated in the contract you sign and on the Trust
+                  Center, not only here, and we say &ldquo;in progress&rdquo;
+                  until the auditor says otherwise.
                 </p>
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col">
                   <a

@@ -11,7 +11,8 @@ const POINTS = [
   'Your team runs the deploy with Harbinger on a screenshare you control; workflows are built through keys you issue and can revoke',
   'Your people approve every entry. Harbinger never signs in to your books.',
   '$7,500 to $10,000, fixed by scope: half up front, half at handover.',
-  'Hosting is separate: from $99 a month on the managed platform, Dedicated quoted, or free to self-host. Peer benchmarks use the SEC repository ($29 or $99 a month, 14-day trial).',
+  '$7,500 sets up the close on your ledger, SEC peer data and three workflows; $10,000 adds one data source from another system, as a graph of its own. A deployment that runs one month-end close alongside yours spans that month-end: four to six weeks.',
+  'Hosting is separate: from $99 a graph a month on the managed platform, Dedicated quoted, or free to self-host. Peer benchmarks use the SEC repository ($29 or $99 a month, 14-day trial).',
   'You keep everything Harbinger builds.',
 ]
 

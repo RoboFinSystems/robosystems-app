@@ -25,7 +25,7 @@ describe('RepositoryPricing', () => {
     expect(screen.getByText(/No card is needed to start/)).toBeInTheDocument()
     expect(screen.queryByText(/A card is required/)).toBeNull()
     for (const link of screen.getAllByRole('link', {
-      name: 'Start Free Trial',
+      name: 'Start free trial',
     })) {
       expect(link).toHaveAttribute('href', '/register')
     }

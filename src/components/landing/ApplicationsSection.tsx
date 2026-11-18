@@ -150,8 +150,8 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        AI auto-maps chart of accounts to US-GAAP with
-                        confidence scores
+                        AI maps your chart of accounts to rs-gaap, the
+                        RoboSystems reporting taxonomy, with confidence scores
                       </span>
                     </li>
                     <li className="flex items-start">
@@ -213,14 +213,14 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Your AI assistant drives the close over MCP: author
-                        scenarios, define metrics, write handler rules
+                        Your AI drafts the close over MCP: scenarios, metrics
+                        and handler rules. Your people approve
                       </span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Push approved entries back to the source system
+                        Nothing writes to QuickBooks until you post an entry
                       </span>
                     </li>
                   </ul>
@@ -251,7 +251,7 @@ export default function ApplicationsSection() {
                     RoboInvestor
                   </h3>
                   <p className="text-gray-400">
-                    Investment Portfolio & AI Research
+                    Equity research and fund positions
                   </p>
                 </div>
               </Link>
@@ -261,12 +261,6 @@ export default function ApplicationsSection() {
                 with their terms, and the reports portfolio companies share from
                 RoboLedger. Building next: positions linked to the ledger,
                 brokerage sync and portfolio analytics.
-              </p>
-
-              <p className="mb-6 text-gray-300">
-                Track private-company positions with their terms, research any
-                public company against the SEC knowledge graph, and read equity
-                research generated from the filings.
               </p>
 
               <div className="mb-8 space-y-4">
@@ -313,8 +307,8 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="mr-2 text-green-400">•</span>
                       <span>
-                        AI-powered deep research: plain-English questions become
-                        graph queries
+                        Plain-English questions answered from the filings, with
+                        the query behind each answer
                       </span>
                     </li>
                     <li className="flex items-start">

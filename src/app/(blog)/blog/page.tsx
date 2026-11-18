@@ -10,7 +10,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 // The hub's title says what the lane is about; "Blog | RoboSystems" told a searcher nothing.
-const TITLE = 'Financial Knowledge Graphs, AI and MCP | RoboSystems Blog'
+const TITLE = 'Knowledge graphs, AI and MCP for finance | RoboSystems Blog'
 const DESCRIPTION = BLOG_DESCRIPTION
 const URL = 'https://robosystems.ai/blog'
 

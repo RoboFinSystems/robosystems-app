@@ -218,7 +218,7 @@ All queries will now execute against: ${GRAPHS[1].id}</div></div>
     <div class="ex" id="x2">${user(2, '09:13')}
       <div class="rs" id="r2"><div class="meta">09:13 - RESULT</div>
         <div class="hitline"><span class="badge b-info">0.93</span><span class="badge b-good">fact</span><span class="badge b-ind">mcp</span><span class="badge b-purple">summit-markets</span><span class="badge b-purple">credit-risk</span></div>
-        <div class="m m-res quote mem">“Summit Markets is the largest wholesale account and pays slowly — net-30 terms but <b>balances routinely age past 60 days</b>, and Summit is a concentrated share of total AR.”</div></div>
+        <div class="m m-res quote mem">“Summit Markets is the largest wholesale account and pays slowly: net-30 terms, but <b>balances routinely age past 60 days</b>, and Summit is a concentrated share of total AR.”</div></div>
     </div>
   </div><div class="hl" id="hl"></div></div>
   <div class="prompt"><span>$</span><span id="pr"></span><span class="caret" id="caret"></span></div>`

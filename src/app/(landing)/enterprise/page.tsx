@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     'SCIM provisioning',
     'passkeys',
     'self-hosted financial platform',
-    'financial knowledge graph enterprise',
+    'knowledge graph for finance',
     'SOC 2 Type II',
   ],
   alternates: { canonical: 'https://robosystems.ai/enterprise' },

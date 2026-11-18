@@ -96,6 +96,9 @@ export default function HeroSection() {
               Read the code
             </a>
           </div>
+          <p className="mx-auto mt-4 max-w-2xl text-sm text-gray-400">
+            14 days on the SEC repository, no card. Graphs start at $99 a month.
+          </p>
 
           <div className="relative mx-auto mt-14 max-w-6xl md:mt-20">
             <LiveDemo

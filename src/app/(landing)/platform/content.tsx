@@ -34,7 +34,9 @@ export default function PlatformContent() {
                 has one, so your numbers and a public company&apos;s line up.
                 Graphs you model yourself take your own schema instead: define
                 it, load it from Parquet, query it with Cypher. All three run on
-                LadybugDB.
+                LadybugDB. Beside any graph, a subgraph is a workspace your AI
+                extends over MCP, and semantic memory carries its work across
+                sessions.
               </p>
             </div>
           </div>
@@ -81,15 +83,15 @@ export default function PlatformContent() {
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center">
               <h2 className="font-heading mb-4 text-3xl font-bold text-white sm:text-4xl">
-                AI-Powered Interactive Console
+                The console
               </h2>
               <p className="mx-auto max-w-3xl text-gray-400">
-                Every graph comes with an AI analyst. Ask in plain English and
-                it generates the Cypher, runs it, and answers with a narrative
-                backed by the data and the query behind it, or drop into direct
-                Cypher yourself, which is always free. On your own graphs it can
-                make changes too, and document search and semantic memory are
-                built into the same console.
+                Every graph you subscribe to comes with an AI analyst. Ask in
+                plain English and it generates the Cypher, runs it, and answers
+                with a narrative backed by the data and the query behind it, or
+                write Cypher yourself, which never costs credits. On your own
+                graphs it can make changes too, and document search and semantic
+                memory are built into the same console.
               </p>
             </div>
 
@@ -194,9 +196,15 @@ export default function PlatformContent() {
               Or read the code and the technical docs first.
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Link
+                href="/register"
+                className="rounded-lg bg-linear-to-r from-cyan-500 to-blue-500 px-8 py-3 font-medium text-white shadow-lg shadow-cyan-500/25 transition-all hover:shadow-cyan-500/40"
+              >
+                Start free trial
+              </Link>
               <a
                 href={BOOK_PATH}
-                className="rounded-lg bg-linear-to-r from-cyan-500 to-blue-500 px-8 py-3 font-medium text-white shadow-lg shadow-cyan-500/25 transition-all hover:shadow-cyan-500/40"
+                className="rounded-lg border border-gray-700 px-8 py-3 font-medium text-white transition-all hover:border-gray-500"
               >
                 Book 20 minutes
               </a>

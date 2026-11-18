@@ -136,7 +136,7 @@ describe('GraphPricing', () => {
     const { rerender } = render(
       <GraphPricing isAuthenticated={false} onContactSales={vi.fn()} />
     )
-    expect(screen.getAllByText('Get Started')[0]).toHaveAttribute(
+    expect(screen.getAllByText('Register')[0]).toHaveAttribute(
       'href',
       '/register'
     )

@@ -211,7 +211,9 @@ export default function GraphPricing({
           </a>{' '}
           for its portfolio, or both; a custom graph runs a schema you define.
           Point its AI at Claude, ChatGPT or any MCP client. Managed graphs run
-          frontier models; an open-weight model is a self-host option.{' '}
+          frontier models; an open-weight model is a self-host option. Graphs
+          have no trial: a card starts the subscription. To try first, use the
+          SEC repository&apos;s 14 days.{' '}
           <Link
             href="/docs/guides/graphs-tiers-and-credits"
             className="text-cyan-400 hover:text-cyan-300"
@@ -258,13 +260,13 @@ export default function GraphPricing({
                   href={isAuthenticated ? '/graphs/new' : '/register'}
                   className="block w-full rounded-lg bg-cyan-500/80 py-3 text-center font-medium text-white transition-all duration-300 hover:bg-cyan-600/80"
                 >
-                  {isAuthenticated ? 'Create Graph' : 'Get Started'}
+                  {isAuthenticated ? 'Create Graph' : 'Register'}
                 </Link>
                 <button
                   onClick={onContactSales}
                   className="block w-full rounded-lg border border-cyan-700 py-3 text-center font-medium text-gray-300 transition-all duration-300 hover:bg-cyan-800/20 hover:text-white"
                 >
-                  Contact Sales
+                  Talk to us
                 </button>
               </div>
             </div>

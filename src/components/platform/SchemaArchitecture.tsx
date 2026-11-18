@@ -11,7 +11,7 @@ export default function SchemaArchitecture() {
       type: 'Accounting',
       icon: '/images/quickbooks.svg',
       useImage: true,
-      features: ['Daily sync', 'Journal entries', 'Chart of accounts'],
+      features: ['On-demand sync', 'Journal entries', 'Chart of accounts'],
       color: 'cyan',
     },
     {
@@ -38,8 +38,8 @@ export default function SchemaArchitecture() {
 
   const schemas = [
     {
-      name: 'Base Schema',
-      description: 'Foundation for all data',
+      name: 'The RoboSystems ontology',
+      description: 'Shared by your ledger and the public filings',
       components: [
         'Entity',
         'Taxonomy',
@@ -109,10 +109,9 @@ export default function SchemaArchitecture() {
             Data Architecture & Search
           </h2>
           <p className="mx-auto max-w-3xl text-gray-400">
-            Unify disparate financial data sources into a cohesive, queryable
-            knowledge graph with hybrid semantic search, persistent AI memory,
-            and domain extensions that power advanced analytics and AI
-            applications
+            Your sources in one graph you can query, with search and memory
+            beside it. A graph you model yourself takes your own schema, loaded
+            from Parquet.
           </p>
         </div>
 
@@ -294,9 +293,8 @@ export default function SchemaArchitecture() {
               Domain Extensions
             </h3>
             <p className="text-sm text-gray-400">
-              Start with the base schema, add RoboLedger or RoboInvestor
-              extensions, then extend with custom nodes and relationships for
-              your domain
+              Ledger and portfolio graphs start from the RoboSystems ontology. A
+              graph you model yourself takes your own schema instead.
             </p>
           </div>
           <div className="group rounded-xl border border-gray-800 bg-gradient-to-br from-purple-500/10 to-zinc-900 p-6 transition-all hover:border-purple-500/50">
