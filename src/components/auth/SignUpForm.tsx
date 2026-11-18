@@ -312,6 +312,13 @@ export function SignUpForm({
               . Create your account to accept.
             </p>
           )}
+          {/* A signup bound for another app (RoboLedger) is not offered the SEC trial. */}
+          {!invitation && !continuesTo && (
+            <p className="mt-2 text-center text-sm text-gray-400">
+              New accounts can try the SEC repository free for 14 days, no card
+              needed.
+            </p>
+          )}
         </div>
         <form
           className={['mt-8 space-y-6', className].filter(Boolean).join(' ')}

@@ -313,7 +313,7 @@ describe('ConsentContent', () => {
     await screen.findByTestId('fixed-graph')
 
     expect(screen.getByRole('alert')).toHaveTextContent(
-      'SEC needs a subscription. Subscribe, then go back to ChatGPT and connect again.'
+      'SEC needs a subscription. A new account starts with a free trial, no card needed, once its email is verified. Start it, then go back to ChatGPT and connect again.'
     )
     expect(screen.getByTestId('subscribe')).toHaveAttribute(
       'href',

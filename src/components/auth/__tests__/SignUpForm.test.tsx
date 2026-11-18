@@ -106,6 +106,22 @@ describe('SignUpForm (login home fork)', () => {
     })
   })
 
+  it('offers the SEC trial on a direct signup, not on one bound for RoboLedger', async () => {
+    fakeLocation('')
+    const { unmount } = render(<SignUpForm apiUrl="http://localhost:8000" />)
+    expect(
+      await screen.findByText(/try the SEC repository free for 14 days/)
+    ).toBeInTheDocument()
+    unmount()
+
+    fakeLocation('?return_to=roboledger')
+    render(<SignUpForm apiUrl="http://localhost:8000" />)
+    await screen.findByText('Create your RoboSystems account')
+    expect(
+      screen.queryByText(/try the SEC repository free for 14 days/)
+    ).not.toBeInTheDocument()
+  })
+
   it('carries return_to and invite through the sign-in toggle', async () => {
     fakeLocation('?return_to=roboledger&invite=tok123')
 

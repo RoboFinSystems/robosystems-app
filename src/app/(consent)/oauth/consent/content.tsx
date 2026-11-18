@@ -291,14 +291,15 @@ export function ConsentContent() {
                       <span className="font-medium">
                         {pending.graph_id.toUpperCase()} needs a subscription.
                       </span>{' '}
-                      Subscribe, then go back to {pending.client_name} and
-                      connect again.{' '}
+                      A new account starts with a free trial, no card needed,
+                      once its email is verified. Start it, then go back to{' '}
+                      {pending.client_name} and connect again.{' '}
                       <Link
                         href="/repositories/browse"
                         className="font-medium underline underline-offset-4"
                         data-testid="subscribe"
                       >
-                        See plans
+                        Start the free trial
                       </Link>
                     </Alert>
                   )}
