@@ -8,10 +8,11 @@ const DEPLOYMENT_URL = 'https://harbinger.finance/#deployment'
 const POINTS = [
   'Variance explanation, close checklist and peer benchmark in your MCP client, every number traced',
   'Your general ledger and the public companies you compare yourselves against, read side by side. QuickBooks connects directly; any other ledger comes in through the API or a file.',
+  'Your books stay in the ledger you close in today, or you keep them on RoboLedger. An ERP is only ever read, and nothing writes to QuickBooks until you post an entry.',
   'Your team runs the deploy with Harbinger on a screenshare you control; workflows are built through keys you issue and can revoke',
   'Your people approve every entry. Harbinger never signs in to your books.',
   '$7,500 to $10,000, fixed by scope: half up front, half at handover.',
-  '$7,500 sets up the close on your ledger, SEC peer data and three workflows; $10,000 adds one data source from another system, as a graph of its own. A deployment that runs one month-end close alongside yours spans that month-end: four to six weeks.',
+  '$7,500 sets up your ledger as a knowledge graph, SEC peer data and three workflows; $10,000 adds one data source from another system, as a graph of its own.',
   'Hosting is separate: from $99 a graph a month on the managed platform, Dedicated quoted, or free to self-host. Peer benchmarks use the SEC repository ($29 or $99 a month, 14-day trial).',
   'You keep everything Harbinger builds.',
 ]

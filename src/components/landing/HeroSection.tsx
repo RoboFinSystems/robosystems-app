@@ -64,6 +64,11 @@ export default function HeroSection() {
             structured, traceable data, on your infrastructure, with the model
             you choose.
           </p>
+          <p className="mx-auto mt-4 max-w-3xl text-base leading-relaxed text-white sm:text-lg md:text-xl">
+            Keep your ERP and your books where they are today, or keep your
+            books on RoboLedger. Either way, your AI works from a knowledge
+            graph of them.
+          </p>
           <p className="mx-auto mt-4 max-w-3xl text-sm text-gray-400 sm:text-base">
             Built by an inactive CPA and ex-Workiva knowledge engineer. Our own
             companies&apos; books are kept on it.
