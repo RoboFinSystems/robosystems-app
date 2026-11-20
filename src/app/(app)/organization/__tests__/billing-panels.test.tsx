@@ -4,6 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const startMonitoring = vi.fn()
+const orgRole = vi.hoisted(() => ({ value: 'owner' }))
 const showError = vi.fn()
 
 vi.mock('@robosystems/core', async () => {
@@ -11,7 +12,7 @@ vi.mock('@robosystems/core', async () => {
     await vi.importActual<Record<string, unknown>>('@robosystems/core')
   return {
     ...actual,
-    useOrg: () => ({ currentOrg: { id: 'org_1', role: 'owner' } }),
+    useOrg: () => ({ currentOrg: { id: 'org_1', role: orgRole.value } }),
     useServiceOfferings: () => ({ offerings: {}, isLoading: false }),
     useApiError: () => ({ handleApiError: vi.fn() }),
     useUser: () => ({ user: { id: 'user_owner' } }),
@@ -61,7 +62,51 @@ const sub = (
 const graphs = [{ graphId: 'kg1', graphName: 'Acme Books' }] as SDK.GraphInfo[]
 
 describe('SubscriptionsTab', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+    orgRole.value = 'owner'
+  })
+
+  const renderRows = (rows: SDK.GraphSubscriptionResponse[]) =>
+    render(
+      <SubscriptionsTab
+        subscriptions={rows}
+        graphs={graphs}
+        offerings={{}}
+        router={{ push: vi.fn() }}
+        onRefresh={vi.fn()}
+      />
+    )
+
+  it('takes back a cancellation scheduled for the end of the period', async () => {
+    const endsAt = new Date(Date.now() + 5 * 86_400_000)
+      .toISOString()
+      .slice(0, -1)
+    vi.mocked(SDK.resumeOrgSubscription).mockResolvedValue(
+      sdkOk(sub({ status: 'active' }))
+    )
+    renderRows([sub({ status: 'canceled', ends_at: endsAt })])
+
+    fireEvent.click(screen.getByRole('button', { name: 'Keep Subscription' }))
+
+    await waitFor(() =>
+      expect(SDK.resumeOrgSubscription).toHaveBeenCalledWith({
+        path: { org_id: 'org_1', subscription_id: 'sub_1' },
+      })
+    )
+  })
+
+  it('shows an admin the graph but not the owner-only actions', () => {
+    orgRole.value = 'admin'
+    renderRows([sub({})])
+
+    expect(screen.getByText('Acme Books')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Change Tier/ })).toBeNull()
+    expect(
+      screen.queryByRole('button', { name: /Cancel Subscription/ })
+    ).toBeNull()
+    expect(screen.getByText(/Only the organization owner/)).toBeInTheDocument()
+  })
 
   it('lists a past_due graph subscription with a payment-failed badge', () => {
     render(

@@ -66,9 +66,30 @@ describe('TrialBanner', () => {
       screen.getByText(/lower rate limits than the plan/)
     ).toBeInTheDocument()
     expect(screen.getByText(/You do not have to wait/)).toBeInTheDocument()
+  })
 
-    fireEvent.click(screen.getByRole('button', { name: 'Start Plan Now' }))
-    expect(push).toHaveBeenCalledWith('/organization?tab=subscriptions')
+  it('starts the plan from the banner, after a confirmation', async () => {
+    listing([seat()])
+    vi.mocked(SDK.endRepositorySubscriptionTrial).mockResolvedValue(
+      sdkOk(seat({ trial_ends_at: undefined }))
+    )
+    render(<TrialBanner />)
+
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Start Plan Now' })
+    )
+    expect(screen.getByText(/\$29\.00 is charged/)).toBeInTheDocument()
+    expect(SDK.endRepositorySubscriptionTrial).not.toHaveBeenCalled()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start Plan and Pay' }))
+
+    await waitFor(() =>
+      expect(SDK.endRepositorySubscriptionTrial).toHaveBeenCalledWith({
+        path: { graph_id: 'sec' },
+      })
+    )
+    expect(await screen.findByText(/Trial ended/)).toBeInTheDocument()
+    expect(push).not.toHaveBeenCalled()
   })
 
   it('offers no early start on a canceled trial', async () => {

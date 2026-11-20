@@ -7,7 +7,6 @@ import { unwrapSdk } from '@robosystems/core/lib/sdk-errors'
 import { utcDate } from '@robosystems/core/lib/utc-date'
 import { Alert, Button } from '@robosystems/core/ui'
 import { format } from 'date-fns'
-import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { HiInformationCircle } from 'react-icons/hi'
 
@@ -48,7 +47,6 @@ interface TrialBannerProps {
  * subscriber who is not on a trial.
  */
 export default function TrialBanner({ repository }: TrialBannerProps) {
-  const router = useRouter()
   const { currentOrg } = useOrg()
   const { user } = useUser()
   const [trial, setTrial] = useState<SDK.GraphSubscriptionResponse>()
@@ -56,6 +54,11 @@ export default function TrialBanner({ repository }: TrialBannerProps) {
   const [hasCard, setHasCard] = useState<boolean>()
   const [openingPortal, setOpeningPortal] = useState(false)
   const [portalError, setPortalError] = useState<string>()
+  // Starting the plan is confirmed here, not on the Subscriptions tab: a member
+  // holds their own seat and has no such tab.
+  const [confirmingStart, setConfirmingStart] = useState(false)
+  const [starting, setStarting] = useState(false)
+  const [started, setStarted] = useState(false)
 
   useEffect(() => {
     if (!currentOrg?.id) return
@@ -84,6 +87,16 @@ export default function TrialBanner({ repository }: TrialBannerProps) {
     }
   }, [currentOrg?.id, user?.id, repository])
 
+  if (started) {
+    return (
+      <Alert color="success" icon={HiInformationCircle}>
+        <p className="text-sm">
+          Trial ended. Your plan opens as soon as the first payment confirms.
+        </p>
+      </Alert>
+    )
+  }
+
   if (!trial?.trial_ends_at) return null
 
   const ends = format(utcDate(trial.trial_ends_at), 'MMM d')
@@ -102,6 +115,32 @@ export default function TrialBanner({ repository }: TrialBannerProps) {
         error instanceof Error ? error.message : 'Could not open billing.'
       )
       setOpeningPortal(false)
+    }
+  }
+
+  const startPlan = async () => {
+    setStarting(true)
+    setPortalError(undefined)
+    try {
+      const response = await SDK.endRepositorySubscriptionTrial({
+        path: { graph_id: trial.resource_id },
+      })
+      if (response.error) {
+        const error: unknown = response.error
+        throw new Error(
+          typeof error === 'object' && error !== null && 'detail' in error
+            ? String((error as { detail: unknown }).detail)
+            : 'Could not start the plan.'
+        )
+      }
+      setStarted(true)
+    } catch (error) {
+      setPortalError(
+        error instanceof Error ? error.message : 'Could not start the plan.'
+      )
+    } finally {
+      setStarting(false)
+      setConfirmingStart(false)
     }
   }
 
@@ -127,10 +166,16 @@ export default function TrialBanner({ repository }: TrialBannerProps) {
               trial ends and nothing is charged.
             </p>
           )}
-          {!canceled && !noCard && (
+          {!canceled && !noCard && !confirmingStart && (
             <p>
               Your plan starts by itself on {ends} ({price}). You do not have to
               wait: starting it now lifts the trial limits at once.
+            </p>
+          )}
+          {confirmingStart && (
+            <p>
+              This ends the trial today: {price} is charged to the card on file
+              now, and again at each renewal.
             </p>
           )}
           {portalError && (
@@ -147,14 +192,28 @@ export default function TrialBanner({ repository }: TrialBannerProps) {
             {openingPortal ? 'Opening…' : 'Add a Card'}
           </Button>
         )}
-        {!canceled && !noCard && (
+        {!canceled && !noCard && !confirmingStart && (
           <Button
             color="blue"
             className="shrink-0"
-            onClick={() => router.push('/organization?tab=subscriptions')}
+            onClick={() => setConfirmingStart(true)}
           >
             Start Plan Now
           </Button>
+        )}
+        {confirmingStart && (
+          <div className="flex shrink-0 gap-2">
+            <Button
+              color="gray"
+              onClick={() => setConfirmingStart(false)}
+              disabled={starting}
+            >
+              Keep Trial
+            </Button>
+            <Button color="blue" onClick={startPlan} disabled={starting}>
+              {starting ? 'Processing…' : 'Start Plan and Pay'}
+            </Button>
+          </div>
         )}
       </div>
     </Alert>

@@ -527,6 +527,9 @@ export function SubscriptionsTab({
   // Repository seats are per member; an owner or admin is listed every one.
   const isMySeat = (sub: SDK.GraphSubscriptionResponse) =>
     !sub.user_id || sub.user_id === user?.id
+  // A graph's tier and its cancellation are the owner's; an admin sees the row.
+  const isOwner = currentOrg?.role === 'owner'
+  const [keepingId, setKeepingId] = useState<string | null>(null)
   const [subscriptionToCancel, setSubscriptionToCancel] =
     useState<SDK.GraphSubscriptionResponse | null>(null)
   const [cancelling, setCancelling] = useState(false)
@@ -699,7 +702,7 @@ export function SubscriptionsTab({
         )
       } else {
         showSuccess(
-          `${resourceLabel} subscription cancelled. Access will remain active until ${subscriptionToCancel.current_period_end ? format(new Date(subscriptionToCancel.current_period_end), 'MMM d, yyyy') : 'the end of the billing period'}.`
+          `${resourceLabel} subscription cancelled. Access will remain active until ${subscriptionToCancel.current_period_end ? format(utcDate(subscriptionToCancel.current_period_end), 'MMM d, yyyy') : 'the end of the billing period'}.`
         )
       }
       setShowCancelModal(false)
@@ -714,6 +717,41 @@ export function SubscriptionsTab({
       )
     } finally {
       setCancelling(false)
+    }
+  }
+
+  // A cancellation scheduled for the end of the period can be taken back until
+  // then; an immediate one is gone from the list already.
+  const isKeepable = (sub: SDK.GraphSubscriptionResponse) => {
+    const endsAt = accessEndsAt(sub)
+    return sub.status === 'canceled' && !!endsAt && utcDate(endsAt) > new Date()
+  }
+
+  const handleKeep = async (sub: SDK.GraphSubscriptionResponse) => {
+    if (!currentOrg?.id) return
+    try {
+      setKeepingId(sub.id)
+      const response = await SDK.resumeOrgSubscription({
+        path: { org_id: currentOrg.id, subscription_id: sub.id },
+      })
+      if (response.error) {
+        const error: unknown = response.error
+        throw new Error(
+          typeof error === 'object' && error !== null && 'detail' in error
+            ? String((error as { detail: unknown }).detail)
+            : 'Failed to keep the subscription'
+        )
+      }
+      showSuccess('Cancellation taken back. The subscription renews as before.')
+      onRefresh()
+    } catch (error) {
+      showError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to keep the subscription. Please try again.'
+      )
+    } finally {
+      setKeepingId(null)
     }
   }
 
@@ -898,8 +936,9 @@ export function SubscriptionsTab({
                     </div>
                     {PAYMENT_FAILED_STATUSES.has(sub.status) && (
                       <p className="text-sm text-red-600 dark:text-red-400">
-                        The last payment for this graph failed. Update your
-                        payment method on the Billing tab to restore access.
+                        The last payment for this graph failed. It stays
+                        readable; update your payment method on the Billing tab
+                        to restore changes and AI operations.
                       </p>
                     )}
                     {sub.status === 'upgrading' &&
@@ -923,38 +962,57 @@ export function SubscriptionsTab({
                           )}
                         </div>
                       )}
-                    <div className="space-y-2">
-                      <Button
-                        size="sm"
-                        color="gray"
-                        onClick={() => handleUpgradeClick(sub)}
-                        className="w-full"
-                        disabled={
-                          sub.status !== 'active' ||
-                          monitoredResourceId !== null
-                        }
-                      >
-                        <HiArrowUp className="mr-2 h-4 w-4" />
-                        Change Tier
-                      </Button>
-                      <Button
-                        size="sm"
-                        color="gray"
-                        onClick={() => handleCancelClick(sub)}
-                        className="w-full"
-                        disabled={
-                          sub.status === 'canceled' ||
-                          sub.status === 'upgrading'
-                        }
-                      >
-                        <HiXCircle className="mr-2 h-4 w-4" />
-                        {sub.status === 'canceled'
-                          ? 'Cancellation Scheduled'
-                          : sub.status === 'upgrading'
-                            ? 'Upgrade in Progress'
-                            : 'Cancel Subscription'}
-                      </Button>
-                    </div>
+                    {isOwner ? (
+                      <div className="space-y-2">
+                        <Button
+                          size="sm"
+                          color="gray"
+                          onClick={() => handleUpgradeClick(sub)}
+                          className="w-full"
+                          disabled={
+                            sub.status !== 'active' ||
+                            monitoredResourceId !== null
+                          }
+                        >
+                          <HiArrowUp className="mr-2 h-4 w-4" />
+                          Change Tier
+                        </Button>
+                        {isKeepable(sub) ? (
+                          <Button
+                            size="sm"
+                            color="blue"
+                            onClick={() => handleKeep(sub)}
+                            className="w-full"
+                            disabled={keepingId !== null}
+                          >
+                            {keepingId === sub.id
+                              ? 'Keeping…'
+                              : 'Keep Subscription'}
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            color="gray"
+                            onClick={() => handleCancelClick(sub)}
+                            className="w-full"
+                            disabled={
+                              sub.status === 'canceled' ||
+                              sub.status === 'upgrading'
+                            }
+                          >
+                            <HiXCircle className="mr-2 h-4 w-4" />
+                            {sub.status === 'upgrading'
+                              ? 'Upgrade in Progress'
+                              : 'Cancel Subscription'}
+                          </Button>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Only the organization owner can change this graph&apos;s
+                        tier or cancel it.
+                      </p>
+                    )}
                   </div>
                 </Card>
               )
@@ -1044,18 +1102,30 @@ export function SubscriptionsTab({
                         </Button>
                       </div>
                     )}
-                    <Button
-                      size="sm"
-                      color="gray"
-                      onClick={() => handleCancelClick(sub)}
-                      className="w-full"
-                      disabled={sub.status === 'canceled'}
-                    >
-                      <HiXCircle className="mr-2 h-4 w-4" />
-                      {sub.status === 'canceled'
-                        ? 'Cancellation Scheduled'
-                        : 'Cancel Subscription'}
-                    </Button>
+                    {isKeepable(sub) ? (
+                      <Button
+                        size="sm"
+                        color="blue"
+                        onClick={() => handleKeep(sub)}
+                        className="w-full"
+                        disabled={keepingId !== null}
+                      >
+                        {keepingId === sub.id
+                          ? 'Keeping…'
+                          : 'Keep Subscription'}
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        color="gray"
+                        onClick={() => handleCancelClick(sub)}
+                        className="w-full"
+                        disabled={sub.status === 'canceled'}
+                      >
+                        <HiXCircle className="mr-2 h-4 w-4" />
+                        Cancel Subscription
+                      </Button>
+                    )}
                   </div>
                 </div>
               </Card>
@@ -1309,6 +1379,7 @@ export function SubscriptionsTab({
         priceCents={subscriptionToCancel?.base_price_cents}
         billingInterval={subscriptionToCancel?.billing_interval}
         currentPeriodEnd={subscriptionToCancel?.current_period_end ?? null}
+        status={subscriptionToCancel?.status}
       />
     </div>
   )

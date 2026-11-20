@@ -1,5 +1,6 @@
 'use client'
 
+import { utcDate } from '@robosystems/core/lib/utc-date'
 import {
   Alert,
   Button,
@@ -37,6 +38,9 @@ export interface CancelSubscriptionModalProps {
   billingInterval?: string
   /** ISO timestamp shown for the period_end option */
   currentPeriodEnd?: string | null
+  /** The subscription's status. A graph whose payment failed has no paid
+   *  period to run out, so it can only be deleted now, with nothing credited. */
+  status?: string
 }
 
 /**
@@ -64,17 +68,24 @@ export default function CancelSubscriptionModal({
   priceCents,
   billingInterval,
   currentPeriodEnd,
+  status,
 }: CancelSubscriptionModalProps) {
-  const [mode, setMode] = useState<CancelMode>('period_end')
+  const isGraph = resourceType === 'graph'
+  const paymentFailed = status === 'past_due' || status === 'unpaid'
+  // The server defers a graph's teardown only for a subscription in good
+  // standing; one whose payment failed is deleted now or not at all.
+  const periodEndAllowed = !(isGraph && paymentFailed)
+  const defaultMode: CancelMode = periodEndAllowed ? 'period_end' : 'immediate'
+  const [mode, setMode] = useState<CancelMode>(defaultMode)
   const [confirmText, setConfirmText] = useState('')
 
   // Reset state whenever the modal is opened so previous attempts don't bleed in.
   useEffect(() => {
     if (show) {
-      setMode('period_end')
+      setMode(defaultMode)
       setConfirmText('')
     }
-  }, [show])
+  }, [show, defaultMode])
 
   const confirmMatches = confirmText.trim() === resourceId
   const isImmediate = mode === 'immediate'
@@ -91,10 +102,11 @@ export default function CancelSubscriptionModal({
     await onConfirm(mode)
   }
 
-  const isGraph = resourceType === 'graph'
   const destructiveLabel = isGraph ? 'Delete Graph Now' : 'Cancel Now'
   const destructiveExplain = isGraph
-    ? 'Subscription is canceled immediately. The graph database is torn down within ~10 minutes — data cannot be recovered without a backup. The unused part of this billing period is credited, not refunded: to your organization’s account balance on a card-billed plan, or on this period’s invoice on an invoiced plan.'
+    ? paymentFailed
+      ? 'Subscription is canceled immediately. The graph database is torn down within ~10 minutes — data cannot be recovered without a backup. Nothing is credited: the current period was not paid.'
+      : 'Subscription is canceled immediately. The graph database is torn down within ~10 minutes — data cannot be recovered without a backup. The unused part of this billing period is credited, not refunded: to your organization’s account balance on a card-billed plan, or on this period’s invoice on an invoiced plan.'
     : 'Subscription is canceled immediately. Access to the repository ends now; remaining paid time is forfeited.'
 
   return (
@@ -138,37 +150,39 @@ export default function CancelSubscriptionModal({
                 is clickable via standard HTML semantics — no role hack
                 needed, screen readers see a real label associated with the
                 radio. */}
-            <label
-              htmlFor="cancel-mode-period-end"
-              className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-3 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600"
-            >
-              <Radio
-                id="cancel-mode-period-end"
-                name="cancel-mode"
-                value="period_end"
-                checked={mode === 'period_end'}
-                onChange={() => setMode('period_end')}
-                disabled={loading}
-                className="mt-1"
-              />
-              <div className="flex-1">
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  At end of billing period{' '}
-                  <span className="ml-1 rounded bg-gray-100 px-2 py-0.5 text-xs font-normal text-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                    Recommended
+            {periodEndAllowed && (
+              <label
+                htmlFor="cancel-mode-period-end"
+                className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-3 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600"
+              >
+                <Radio
+                  id="cancel-mode-period-end"
+                  name="cancel-mode"
+                  value="period_end"
+                  checked={mode === 'period_end'}
+                  onChange={() => setMode('period_end')}
+                  disabled={loading}
+                  className="mt-1"
+                />
+                <div className="flex-1">
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">
+                    At end of billing period{' '}
+                    <span className="ml-1 rounded bg-gray-100 px-2 py-0.5 text-xs font-normal text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                      Recommended
+                    </span>
                   </span>
-                </span>
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Keep access until
-                  {currentPeriodEnd
-                    ? ` ${new Date(currentPeriodEnd).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}.`
-                    : ' the end of your current period.'}{' '}
-                  {isGraph
-                    ? 'The graph stays usable through the period; teardown runs automatically when it ends.'
-                    : 'Repository access stays active through the period.'}
-                </p>
-              </div>
-            </label>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    Keep access until
+                    {currentPeriodEnd
+                      ? ` ${utcDate(currentPeriodEnd).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}.`
+                      : ' the end of your current period.'}{' '}
+                    {isGraph
+                      ? 'The graph stays usable through the period; teardown runs automatically when it ends. Until then you can take the cancellation back with Keep Subscription.'
+                      : 'Repository access stays active through the period.'}
+                  </p>
+                </div>
+              </label>
+            )}
 
             <label
               htmlFor="cancel-mode-immediate"
