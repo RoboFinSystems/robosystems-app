@@ -67,6 +67,14 @@ describe('DeploymentSection', () => {
       )
     ).toBeInTheDocument()
     expect(
+      screen.getByText(
+        /Your books stay in the ledger you close in today, or you keep them on RoboLedger/
+      )
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText(/month-end close alongside yours/)
+    ).not.toBeInTheDocument()
+    expect(
       screen.getByText(/Integrators and consultancies: deliver the Finance AI/)
     ).toBeInTheDocument()
   })
