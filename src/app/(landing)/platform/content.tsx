@@ -190,10 +190,11 @@ export default function PlatformContent() {
         <section className="bg-zinc-950 py-16">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
             <h2 className="font-heading mb-4 text-3xl font-bold text-white">
-              See it on a demo company in 20 minutes
+              Talk it through in 20 minutes
             </h2>
             <p className="mb-8 text-lg text-gray-400">
-              Or read the code and the technical docs first.
+              Tell us what your finance AI has to tie to, and we&apos;ll say
+              which route fits. Or read the code and the technical docs first.
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
