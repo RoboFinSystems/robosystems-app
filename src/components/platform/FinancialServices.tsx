@@ -11,7 +11,7 @@ export default function FinancialServices() {
       currentFeatures: [
         'PE & VC instruments: SAFEs, KISSes, convertible notes, LLC units, LP interests, warrants, options, RSUs',
         'Portfolios with positions, cost basis, and current valuations, applied as atomic envelopes that roll back on failure',
-        'Receive financial reports shared by your portfolio companies on RoboLedger',
+        'Portfolio company reports, shared from RoboLedger or loaded from the PDF or spreadsheet they send, each total checked before it is saved',
       ],
     },
     {
@@ -34,7 +34,7 @@ export default function FinancialServices() {
         'Connect Claude, ChatGPT or any MCP client to your investment graph: every portfolio operation is exposed as a tool, so agents read and write.',
       currentFeatures: [
         'Remote MCP endpoint: one URL, sign in, no install',
-        'Portfolio, position, and security writes as agent-callable tools',
+        'Portfolio, position, security and report writes as agent-callable tools',
         'GraphQL and REST APIs with Python and TypeScript SDKs',
         'API key management for programmatic access',
       ],
@@ -65,7 +65,7 @@ export default function FinancialServices() {
     {
       title: 'Beside the books',
       description:
-        'When your portfolio companies keep their books on RoboLedger, they share their reports into your investor graph, next to the public companies you compare them with.',
+        "A company on RoboLedger shares its reports into your investor graph. One that isn't sends a workbook or a PDF, and your assistant loads it the same way, next to the public companies you compare them with.",
     },
   ]
 
@@ -174,8 +174,16 @@ export default function FinancialServices() {
               </h4>
               <p className="text-sm text-gray-400">
                 Paste your graph's MCP URL into Claude, ChatGPT or any MCP
-                client, then analyze it and record positions without leaving the
-                chat
+                client, then record positions and{' '}
+                <a
+                  href="https://roboinvestor.ai/docs/reports-from-a-file"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-300 underline hover:text-purple-200"
+                >
+                  load a portfolio company's report from a file
+                </a>{' '}
+                without leaving the chat
               </p>
             </div>
           </div>

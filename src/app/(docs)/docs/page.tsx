@@ -51,7 +51,7 @@ const GUIDE_DOORS: Door[] = [
   {
     title: 'RoboInvestor',
     href: 'https://roboinvestor.ai/docs',
-    body: "Equity research on public companies, your fund's positions with their terms, and the reports your portfolio companies share from RoboLedger. Building next: positions linked to the ledger, brokerage sync and portfolio analytics.",
+    body: "Equity research on public companies, your fund's positions with their terms, and your portfolio companies' reports: shared from RoboLedger, or read from the PDF or spreadsheet they send. Building next: positions linked to the ledger, brokerage sync and portfolio analytics.",
     external: true,
     productSite: 'roboinvestor',
   },
