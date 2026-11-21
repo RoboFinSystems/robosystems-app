@@ -29,6 +29,7 @@ vi.mock('@/lib/graphql', async (importOriginal) => ({
 
 import type { DocsCatalog, DocsLayer, DocsPage } from '@/lib/docs'
 import { buildCatalog } from '@/lib/openapi'
+import { PRODUCT_PAGES } from '@/lib/product-pages'
 import sitemap from '../sitemap'
 
 const docsPage = (
@@ -135,7 +136,12 @@ describe('sitemap', () => {
   it('sends no lastmod for the homepage or the static pages', async () => {
     mockGetAllPosts.mockResolvedValue(posts)
     const entries = await sitemap()
-    const undated = entries.filter((e) => !e.url.includes('/blog'))
+    const pageUrls = new Set(
+      PRODUCT_PAGES.map((p) => `https://robosystems.ai${p.path}`)
+    )
+    const undated = entries.filter(
+      (e) => !e.url.includes('/blog') && !pageUrls.has(e.url)
+    )
 
     expect(undated.map((e) => e.url)).toEqual(
       expect.arrayContaining([
@@ -147,6 +153,17 @@ describe('sitemap', () => {
     )
     for (const entry of undated) {
       expect(entry.lastModified).toBeUndefined()
+    }
+  })
+
+  it("dates each page built to be found by the registry's last edit", async () => {
+    mockGetAllPosts.mockResolvedValue(posts)
+    const byUrl = new Map((await sitemap()).map((e) => [e.url, e.lastModified]))
+
+    for (const page of PRODUCT_PAGES) {
+      expect(byUrl.get(`https://robosystems.ai${page.path}`)).toEqual(
+        new Date(page.updated)
+      )
     }
   })
 
