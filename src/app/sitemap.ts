@@ -13,6 +13,7 @@ import {
   catalogForSurface,
   getApiCatalog,
 } from '@/lib/openapi'
+import { PRODUCT_PAGES, productPageUrl } from '@/lib/product-pages'
 import type { MetadataRoute } from 'next'
 
 /**
@@ -140,6 +141,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     ...staticPages,
+    // Pages built to be found: lastmod is each page's real last edit, from the registry.
+    ...PRODUCT_PAGES.map((page) => ({
+      url: productPageUrl(page),
+      lastModified: new Date(page.updated),
+      changeFrequency: 'monthly' as const,
+      priority: 0.9,
+    })),
     ...docsPages,
     ...apiPages,
     ...extensionsPages,

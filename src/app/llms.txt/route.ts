@@ -1,6 +1,7 @@
 import { getAllPosts } from '@/lib/blog'
 import type { DocsPage } from '@/lib/docs'
 import { DOCS_SITE, getDocsCatalog, getDocsNav } from '@/lib/docs'
+import { PRODUCT_PAGES, productPageUrl } from '@/lib/product-pages'
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/lib/site'
 import { orBuildFallback } from '@robosystems/core/docs/catalog'
 
@@ -46,6 +47,9 @@ export async function GET() {
       'About',
       `${SITE_URL}/about`,
       'who builds it and the company behind it'
+    ),
+    ...PRODUCT_PAGES.map((page) =>
+      link(page.navLabel, productPageUrl(page), page.description)
     ),
     '',
     '## Guides',
