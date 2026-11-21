@@ -166,11 +166,14 @@ function useReconciledTiers(): Tier[] {
 
 interface GraphPricingProps {
   isAuthenticated: boolean
+  /** Where Register goes; a marked pricing page passes its marked register path. */
+  registerHref?: string
   onContactSales: () => void
 }
 
 export default function GraphPricing({
   isAuthenticated,
+  registerHref = '/register',
   onContactSales,
 }: GraphPricingProps) {
   const tiers = useReconciledTiers()
@@ -257,7 +260,7 @@ export default function GraphPricing({
               </ul>
               <div className="mt-auto flex flex-col gap-3">
                 <Link
-                  href={isAuthenticated ? '/graphs/new' : '/register'}
+                  href={isAuthenticated ? '/graphs/new' : registerHref}
                   className="block w-full rounded-lg bg-cyan-500/80 py-3 text-center font-medium text-white transition-all duration-300 hover:bg-cyan-600/80"
                 >
                   {isAuthenticated ? 'Create Graph' : 'Register'}

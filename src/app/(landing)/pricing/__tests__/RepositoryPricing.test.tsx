@@ -31,6 +31,22 @@ describe('RepositoryPricing', () => {
     }
   })
 
+  it('carries a source marker on to the register page', () => {
+    render(
+      <RepositoryPricing
+        isAuthenticated={false}
+        registerHref="/register/from/research-msft"
+        onContactSales={vi.fn()}
+      />
+    )
+
+    for (const link of screen.getAllByRole('link', {
+      name: 'Start free trial',
+    })) {
+      expect(link).toHaveAttribute('href', '/register/from/research-msft')
+    }
+  })
+
   it('sends a signed-in visitor to the subscribe screen', () => {
     render(<RepositoryPricing isAuthenticated onContactSales={vi.fn()} />)
 

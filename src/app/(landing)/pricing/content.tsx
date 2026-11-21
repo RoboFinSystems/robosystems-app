@@ -19,7 +19,13 @@ const primaryButton =
 const secondaryButton =
   'rounded-lg border border-gray-700 px-8 py-3 font-medium text-gray-300 transition-all hover:border-gray-500 hover:text-white'
 
-export default function PricingContent() {
+// `registerHref` is /register, or on a marked page (/pricing/from/<source>) the register
+// path carrying the same marker, so the analytics can follow a source to sign-up.
+export default function PricingContent({
+  registerHref = '/register',
+}: {
+  registerHref?: string
+} = {}) {
   const [showContact, setShowContact] = useState(false)
   const { isAuthenticated } = useUser()
 
@@ -56,11 +62,13 @@ export default function PricingContent() {
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <GraphPricing
               isAuthenticated={isAuthenticated}
+              registerHref={registerHref}
               onContactSales={() => setShowContact(true)}
             />
             <DedicatedDeployment onContactSales={() => setShowContact(true)} />
             <RepositoryPricing
               isAuthenticated={isAuthenticated}
+              registerHref={registerHref}
               onContactSales={() => setShowContact(true)}
             />
 
@@ -191,7 +199,7 @@ export default function PricingContent() {
                 </Link>
               ) : (
                 <>
-                  <Link href="/register" className={primaryButton}>
+                  <Link href={registerHref} className={primaryButton}>
                     Start free trial
                   </Link>
                   <a href={BOOK_PATH} className={secondaryButton}>

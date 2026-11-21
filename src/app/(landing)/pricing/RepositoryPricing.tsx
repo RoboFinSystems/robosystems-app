@@ -21,11 +21,14 @@ const TRIAL_DAYS = 14
 
 interface RepositoryPricingProps {
   isAuthenticated: boolean
+  /** Where Start free trial goes; a marked pricing page passes its marked register path. */
+  registerHref?: string
   onContactSales: () => void
 }
 
 export default function RepositoryPricing({
   isAuthenticated,
+  registerHref = '/register',
   onContactSales,
 }: RepositoryPricingProps) {
   return (
@@ -120,7 +123,7 @@ export default function RepositoryPricing({
             </ul>
             <div className="mt-auto flex flex-col gap-3">
               <Link
-                href={isAuthenticated ? '/repositories/browse' : '/register'}
+                href={isAuthenticated ? '/repositories/browse' : registerHref}
                 className="block w-full rounded-lg bg-green-500/80 py-3 text-center font-medium text-white transition-all duration-300 hover:bg-green-600/80"
               >
                 {isAuthenticated ? 'Browse Repositories' : 'Start free trial'}
@@ -176,7 +179,7 @@ export default function RepositoryPricing({
             </ul>
             <div className="mt-auto flex flex-col gap-3">
               <Link
-                href={isAuthenticated ? '/repositories/browse' : '/register'}
+                href={isAuthenticated ? '/repositories/browse' : registerHref}
                 className="block w-full rounded-lg bg-green-600 py-3 text-center font-medium text-white transition-all duration-300 hover:bg-green-700"
               >
                 {isAuthenticated ? 'Browse Repositories' : 'Start free trial'}
