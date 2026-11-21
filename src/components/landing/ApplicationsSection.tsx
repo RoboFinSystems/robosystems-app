@@ -251,16 +251,17 @@ export default function ApplicationsSection() {
                     RoboInvestor
                   </h3>
                   <p className="text-gray-400">
-                    Equity research and fund positions
+                    Equity research, fund positions and portfolio reports
                   </p>
                 </div>
               </Link>
 
               <p className="mb-4 text-sm text-green-300/80">
                 Equity research on public companies, your fund&apos;s positions
-                with their terms, and the reports portfolio companies share from
-                RoboLedger. Building next: positions linked to the ledger,
-                brokerage sync and portfolio analytics.
+                with their terms, and your portfolio companies&apos; reports:
+                shared from RoboLedger, or read from the PDF or spreadsheet they
+                send. Building next: positions linked to the ledger, brokerage
+                sync and portfolio analytics.
               </p>
 
               <div className="mb-8 space-y-4">
@@ -288,6 +289,49 @@ export default function ApplicationsSection() {
                       <span>
                         Cross-graph linking: a holding connects to its
                         issuer&apos;s own graph
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="mb-3 font-semibold text-green-300">
+                    Portfolio Company Reports
+                  </h4>
+                  <ul className="space-y-2 text-sm text-gray-300">
+                    <li className="flex items-start">
+                      <span className="mr-2 text-green-400">•</span>
+                      <span>
+                        A board package sent as a PDF or a spreadsheet, read
+                        into your graph by your AI assistant
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-2 text-green-400">•</span>
+                      <span>
+                        Every number keeps the cell or page it came from, and
+                        every total is checked before anything is saved
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-2 text-green-400">•</span>
+                      <span>
+                        Companies on RoboLedger share their reports straight
+                        from the ledger
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-2 text-green-400">•</span>
+                      <span>
+                        One open skill does the reading:{' '}
+                        <Link
+                          href="https://roboinvestor.ai/docs/reports-from-a-file"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-green-300 underline hover:text-green-200"
+                        >
+                          load a report from a file
+                        </Link>
                       </span>
                     </li>
                   </ul>
