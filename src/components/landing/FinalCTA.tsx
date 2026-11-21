@@ -13,8 +13,9 @@ export default function FinalCTA() {
           Talk it through in 20 minutes
         </h2>
         <p className="mb-12 text-xl text-gray-300">
-          Tell us which job you have. We&apos;ll show the trace on a demo
-          company and say plainly whether the Finance AI Deployment fits.
+          Tell us which job you have. We&apos;ll say plainly which route fits:
+          the SEC trial, a graph of your own, or the Finance AI Deployment at a
+          fixed fee.
         </p>
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
           <a
