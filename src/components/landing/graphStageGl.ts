@@ -10,6 +10,7 @@ const DUST_COUNT = 900
 const RADIUS = 3.4
 const CAM_Z = 14
 const FOV = 38
+const BESIDE_CENTRE = 460 // CSS px from the top, the middle of the hero's words
 const SETTLED = 8 // seconds in, the picture reduced motion holds
 
 const clamp = (x: number) => Math.max(0, Math.min(1, x))
@@ -74,13 +75,18 @@ export function buildGraph(seed = 11): Graph {
   return { dust, dustSize, scatter, home, size, pairs }
 }
 
-/** Where the sphere sits: right of the words when they are set beside it, above them otherwise. */
-export function placeSphere(aspect: number, beside: boolean) {
+/**
+ * Where the sphere sits: right of the words when they are set beside it, above them
+ * otherwise. Beside them its centre is a fixed distance from the top, level with the words,
+ * so a tall window does not drop it toward the section below.
+ */
+export function placeSphere(aspect: number, beside: boolean, height: number) {
   const halfH = CAM_Z * Math.tan((FOV * Math.PI) / 360)
   const halfW = halfH * aspect
   if (beside) {
     const scale = Math.min(1, (halfW * 0.36) / RADIUS, (halfH * 0.8) / RADIUS)
-    return { x: halfW * 0.48, y: 0.1, scale }
+    const centre = Math.min(BESIDE_CENTRE, height / 2) / height
+    return { x: halfW * 0.48, y: halfH * (1 - 2 * centre), scale }
   }
   const scale = Math.min(1, (halfW * 0.8) / RADIUS, (halfH * 0.33) / RADIUS)
   return { x: 0, y: halfH * 0.44, scale }
@@ -191,7 +197,7 @@ export function mountGraphStage(
   gl.clearColor(0, 0, 0, 0)
 
   const proj = new Float32Array(16)
-  let place = placeSphere(1, false)
+  let place = placeSphere(1, false, 1)
   const resize = () => {
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     const w = Math.max(1, Math.round(canvas.clientWidth * dpr))
@@ -210,7 +216,11 @@ export function mountGraphStage(
     proj[10] = (far + near) / (near - far)
     proj[11] = -1
     proj[14] = (2 * far * near) / (near - far)
-    place = placeSphere(w / h, canvas.clientWidth >= besideFrom)
+    place = placeSphere(
+      w / h,
+      canvas.clientWidth >= besideFrom,
+      canvas.clientHeight
+    )
   }
 
   const draw = (t: number) => {

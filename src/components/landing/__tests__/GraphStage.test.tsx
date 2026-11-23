@@ -28,16 +28,25 @@ describe('graph stage geometry', () => {
   })
 
   it('sets the sphere to the right of the words only when they sit beside it', () => {
-    const beside = placeSphere(1.6, true)
-    const above = placeSphere(1.6, false)
+    const beside = placeSphere(1.6, true, 900)
+    const above = placeSphere(1.6, false, 900)
     expect(beside.x).toBeGreaterThan(0)
     expect(above.x).toBe(0)
     expect(above.y).toBeGreaterThan(beside.y)
   })
 
+  it('holds the sphere level with the words however tall the window is', () => {
+    const halfH = 14 * Math.tan((38 * Math.PI) / 360)
+    const fromTop = (h: number) =>
+      ((1 - placeSphere(1.3, true, h).y / halfH) / 2) * h
+    expect(fromTop(1262)).toBeCloseTo(460, 5)
+    expect(fromTop(1000)).toBeCloseTo(460, 5)
+    expect(fromTop(700)).toBeCloseTo(350, 5)
+  })
+
   it('keeps the sphere inside a narrow stage', () => {
     const halfW = 14 * Math.tan((38 * Math.PI) / 360) * (390 / 844)
-    expect(placeSphere(390 / 844, false).scale * 3.4).toBeLessThan(halfW)
+    expect(placeSphere(390 / 844, false, 844).scale * 3.4).toBeLessThan(halfW)
   })
 })
 
