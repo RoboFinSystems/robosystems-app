@@ -185,8 +185,9 @@ export function mountGraphStage(
   const edgeFrontBuf = buffer(edgeFront, gl.DYNAMIC_DRAW)
 
   gl.enable(gl.BLEND)
-  // Light added to whatever the page puts behind the canvas, which stays transparent.
-  gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE, gl.ZERO, gl.ONE)
+  // Light is added, and alpha is kept in step with it: a GPU compositor drops colour that
+  // has no alpha behind it, though a software one shows it.
+  gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE, gl.ONE, gl.ONE_MINUS_SRC_ALPHA)
   gl.clearColor(0, 0, 0, 0)
 
   const proj = new Float32Array(16)
