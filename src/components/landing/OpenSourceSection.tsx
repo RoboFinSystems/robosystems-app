@@ -8,11 +8,7 @@ import GraphOrb from './GraphOrb'
 export default function OpenSourceSection() {
   return (
     <section id="opensource" className="relative bg-black py-16 sm:py-24">
-      <GraphOrb
-        side="right"
-        tint="cyan"
-        className="top-24 h-[620px] w-[620px]"
-      />
+      <GraphOrb side="right" count={2} />
       <GraphGalaxies count={2} keepClear="right" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">

@@ -11,11 +11,7 @@ export default function ApplicationsSection() {
       id="applications"
       className="relative bg-linear-to-b from-black to-zinc-900 py-16 sm:py-24"
     >
-      <GraphOrb
-        side="left"
-        tint="indigo"
-        className="top-40 h-[560px] w-[560px]"
-      />
+      <GraphOrb side="left" count={3} />
       <GraphGalaxies count={2} keepClear="left" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">

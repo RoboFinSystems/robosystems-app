@@ -13,11 +13,7 @@ export default function SECRepositorySection() {
       id="sec-repository"
       className="relative overflow-hidden bg-black py-16 sm:py-24"
     >
-      <GraphOrb
-        side="right"
-        tint="blue"
-        className="top-16 h-[680px] w-[680px]"
-      />
+      <GraphOrb side="right" count={1} />
       <GraphGalaxies count={2} keepClear="right" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}

@@ -63,11 +63,7 @@ export default function BuildSection() {
       id="build"
       className="relative overflow-hidden bg-black py-16 sm:py-24"
     >
-      <GraphOrb
-        side="left"
-        tint="cyan"
-        className="top-48 h-[600px] w-[600px]"
-      />
+      <GraphOrb side="left" count={2} />
       <GraphGalaxies count={2} keepClear="left" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
