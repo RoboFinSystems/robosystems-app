@@ -2,7 +2,6 @@ import { McpLogo } from '@/components/mcp/McpLogo'
 import { AnimatedLogo } from '@robosystems/core/ui-components/Logo'
 import Image from 'next/image'
 import { HiDocumentText } from 'react-icons/hi'
-import FloatingElementsVariant from '../landing/FloatingElementsVariant'
 
 export default function SchemaArchitecture() {
   const integrations = [
@@ -101,7 +100,6 @@ export default function SchemaArchitecture() {
 
   return (
     <section className="relative bg-black py-16 sm:py-20">
-      <FloatingElementsVariant variant="platform-schema" />
       {/* Architecture Diagram Header */}
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">

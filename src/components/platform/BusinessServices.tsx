@@ -1,5 +1,3 @@
-import FloatingElementsVariant from '../landing/FloatingElementsVariant'
-
 export default function BusinessServices() {
   const primaryServices = [
     {
@@ -108,7 +106,6 @@ export default function BusinessServices() {
 
   return (
     <section className="relative bg-gradient-to-b from-zinc-950 to-black py-16 sm:py-20">
-      <FloatingElementsVariant variant="platform-business" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <h2 className="font-heading mb-4 text-3xl font-bold text-white sm:text-4xl">

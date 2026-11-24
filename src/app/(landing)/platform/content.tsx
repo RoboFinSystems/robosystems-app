@@ -1,7 +1,9 @@
 'use client'
 
-import FloatingElementsVariant from '@/components/landing/FloatingElementsVariant'
+import Dust from '@/components/landing/Dust'
 import Footer from '@/components/landing/Footer'
+import GraphGalaxies from '@/components/landing/GraphGalaxies'
+import GraphOrb from '@/components/landing/GraphOrb'
 import Header from '@/components/landing/Header'
 import BusinessServices from '@/components/platform/BusinessServices'
 import FinancialServices from '@/components/platform/FinancialServices'
@@ -18,10 +20,8 @@ export default function PlatformContent() {
       <main>
         {/* Hero Section */}
         <section className="relative overflow-hidden bg-black pt-32 pb-16 sm:pt-40 sm:pb-24">
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-linear-to-br from-cyan-900/20 via-blue-900/20 to-purple-900/20"></div>
-            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20"></div>
-          </div>
+          <Dust />
+          <GraphOrb side="right" count={1} />
 
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
@@ -44,7 +44,7 @@ export default function PlatformContent() {
 
         {/* Platform Overview with Screenshots */}
         <section className="relative bg-zinc-950 py-16 sm:py-20">
-          <FloatingElementsVariant variant="platform-graph" />
+          <GraphGalaxies count={1} />
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center">
               <h2 className="font-heading mb-4 text-3xl font-bold text-white sm:text-4xl">
@@ -79,7 +79,6 @@ export default function PlatformContent() {
 
         {/* AI-Powered Console */}
         <section className="relative bg-black py-16 sm:py-20">
-          <FloatingElementsVariant variant="platform-console" />
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center">
               <h2 className="font-heading mb-4 text-3xl font-bold text-white sm:text-4xl">

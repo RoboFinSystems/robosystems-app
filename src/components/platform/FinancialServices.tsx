@@ -1,4 +1,4 @@
-import FloatingElementsVariant from '../landing/FloatingElementsVariant'
+import GraphGalaxies from '../landing/GraphGalaxies'
 
 export default function FinancialServices() {
   const currentServices = [
@@ -71,7 +71,7 @@ export default function FinancialServices() {
 
   return (
     <section className="relative overflow-hidden bg-black py-16 sm:py-20">
-      <FloatingElementsVariant variant="platform-investment" />
+      <GraphGalaxies count={1} />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <h2 className="font-heading mb-4 text-3xl font-bold text-white sm:text-4xl">
