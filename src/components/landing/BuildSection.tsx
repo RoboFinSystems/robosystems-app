@@ -5,6 +5,7 @@ import { LiveDemo } from '@robosystems/core/ui-components'
 import Link from 'next/link'
 import { useState } from 'react'
 import ContactModal from './ContactModal'
+import GraphOrb from './GraphOrb'
 
 /**
  * The three write lanes an integration can use, in the order the API docs
@@ -61,6 +62,11 @@ export default function BuildSection() {
       id="build"
       className="relative overflow-hidden bg-black py-16 sm:py-24"
     >
+      <GraphOrb
+        side="left"
+        tint="cyan"
+        className="top-48 h-[600px] w-[600px]"
+      />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">

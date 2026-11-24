@@ -4,6 +4,7 @@ import { mcpEndpointFor } from '@/lib/mcp'
 import { CHATGPT_PLUGIN_URL, CLAUDE_CONNECTOR_URL } from '@/lib/site'
 import { LiveDemo } from '@robosystems/core/ui-components'
 import Link from 'next/link'
+import GraphOrb from './GraphOrb'
 
 export default function SECRepositorySection() {
   return (
@@ -11,6 +12,11 @@ export default function SECRepositorySection() {
       id="sec-repository"
       className="relative overflow-hidden bg-black py-16 sm:py-24"
     >
+      <GraphOrb
+        side="right"
+        tint="blue"
+        className="top-16 h-[680px] w-[680px]"
+      />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 text-center">
