@@ -63,11 +63,15 @@ const ACCESS: {
   name: string
   line: string
   formats?: string[]
-  link?: { label: string; href: string }
+  links?: { label: string; href: string }[]
 }[] = [
   {
     name: 'The apps',
     line: 'RoboLedger for the books, RoboInvestor for the portfolio',
+    links: [
+      { label: 'roboledger.ai', href: 'https://roboledger.ai' },
+      { label: 'roboinvestor.ai', href: 'https://roboinvestor.ai' },
+    ],
   },
   {
     name: 'Your AI',
@@ -81,10 +85,9 @@ const ACCESS: {
     name: 'Report files',
     line: 'Every report and filing is a file you can keep and open without us',
     formats: ['Holon (RDF)', 'XBRL 2.1', 'Tavi JSON'],
-    link: {
-      label: 'Open one in the xbrlkit viewer',
-      href: 'https://xbrlkit.com',
-    },
+    links: [
+      { label: 'Open one in the xbrlkit viewer', href: 'https://xbrlkit.com' },
+    ],
   },
 ]
 
@@ -427,15 +430,20 @@ export default function SchemaArchitecture() {
                         ))}
                       </div>
                     )}
-                    {way.link && (
-                      <a
-                        href={way.link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-2 inline-block text-xs text-blue-300 underline underline-offset-2 hover:text-blue-200"
-                      >
-                        {way.link.label}
-                      </a>
+                    {way.links && (
+                      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+                        {way.links.map((link) => (
+                          <a
+                            key={link.href}
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-blue-300 underline underline-offset-2 hover:text-blue-200"
+                          >
+                            {link.label}
+                          </a>
+                        ))}
+                      </div>
                     )}
                   </div>
                 ))}

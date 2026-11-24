@@ -2,8 +2,6 @@
 
 import Footer from '@/components/landing/Footer'
 import Header from '@/components/landing/Header'
-import BusinessServices from '@/components/platform/BusinessServices'
-import FinancialServices from '@/components/platform/FinancialServices'
 import SchemaArchitecture from '@/components/platform/SchemaArchitecture'
 import { BOOK_PATH } from '@/lib/site'
 import {
@@ -184,10 +182,6 @@ export default function PlatformContent() {
         </section>
 
         <SchemaArchitecture />
-
-        <BusinessServices />
-
-        <FinancialServices />
 
         {/* CTA Section */}
         <section className="bg-zinc-950 py-16">
