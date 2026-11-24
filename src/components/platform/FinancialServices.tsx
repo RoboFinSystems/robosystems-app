@@ -100,7 +100,7 @@ export default function FinancialServices() {
             {visionHighlights.map((item, idx) => (
               <div
                 key={idx}
-                className="rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-purple-950/10 p-6"
+                className="node-card rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-zinc-800/30 p-6"
               >
                 <h4 className="mb-2 font-semibold text-purple-400">
                   {item.title}
@@ -135,7 +135,7 @@ export default function FinancialServices() {
         </div>
 
         {/* How It Works */}
-        <div className="rounded-2xl border border-gray-800 bg-gradient-to-r from-zinc-900 to-zinc-800 p-8">
+        <div className="node-card rounded-2xl border border-gray-800 bg-gradient-to-r from-zinc-900 to-zinc-800 p-8">
           <h3 className="mb-6 text-center text-xl font-bold text-white">
             How It Works
           </h3>

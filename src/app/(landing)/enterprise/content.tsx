@@ -6,6 +6,7 @@ import EmailForATime from '@/components/landing/EmailForATime'
 import Footer from '@/components/landing/Footer'
 import GraphOrb from '@/components/landing/GraphOrb'
 import Header from '@/components/landing/Header'
+import NodeGlow from '@/components/landing/NodeGlow'
 import SalesContactModal from '@/components/landing/SalesContactModal'
 import { BOOK_PATH } from '@/lib/site'
 import Link from 'next/link'
@@ -218,6 +219,7 @@ export default function EnterpriseContent() {
   return (
     <div className="min-h-screen bg-black">
       <Header />
+      <NodeGlow />
 
       <main className="pt-24">
         {/* Hero */}
@@ -402,7 +404,7 @@ export default function EnterpriseContent() {
               {IDENTITY.map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-2xl border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700"
+                  className="node-card rounded-2xl border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700"
                 >
                   <h3 className="font-heading mb-2 text-lg font-semibold text-white">
                     {item.title}
@@ -453,7 +455,7 @@ export default function EnterpriseContent() {
                 {SECURITY.map((line) => (
                   <li
                     key={line}
-                    className="flex items-start rounded-xl border border-gray-800 bg-zinc-900 p-4 text-sm text-gray-300"
+                    className="node-card flex items-start rounded-xl border border-gray-800 bg-zinc-900 p-4 text-sm text-gray-300"
                   >
                     {CHECK}
                     <span>{line}</span>
@@ -493,7 +495,7 @@ export default function EnterpriseContent() {
               {BUYING.map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-2xl border border-gray-800 bg-zinc-900 p-6"
+                  className="node-card rounded-2xl border border-gray-800 bg-zinc-900 p-6"
                 >
                   <h3 className="font-heading mb-2 text-lg font-semibold text-white">
                     {item.title}

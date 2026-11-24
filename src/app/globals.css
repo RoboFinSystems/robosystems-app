@@ -200,6 +200,187 @@
 }
 
 /* Subtle pulsating gradient animation */
+/* A card as a node (NodeGlow.tsx tells it where the pointer is). Every node card wears the
+   mark the hubs wear in the galaxies, a white point in a thin ring, in its top right corner.
+   Under the pointer a soft light spreads inside the card, its edge lights up nearest the
+   pointer and the mark brightens, as a node does when it is picked out of a graph.
+   --lit runs 0 to 1 with the hover; registering it lets it be eased. */
+@property --lit {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+.node-card {
+  --lit: 0;
+  --mark: calc(100% - 18px) 18px;
+  position: relative;
+  isolation: isolate;
+  transition: --lit 0.35s ease;
+}
+
+.node-card:hover {
+  --lit: 1;
+}
+
+.node-card::before,
+.node-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.node-card::before {
+  z-index: -1;
+  background:
+    radial-gradient(
+      circle at var(--mark),
+      rgba(255, 255, 255, calc(0.5 + 0.5 * var(--lit))) 0 2.4px,
+      transparent 3.2px
+    ),
+    radial-gradient(
+      circle at var(--mark),
+      transparent 0 5.6px,
+      rgba(165, 243, 252, calc(0.28 + 0.6 * var(--lit))) 5.6px 6.5px,
+      transparent 7.3px
+    ),
+    radial-gradient(
+      circle at var(--mark),
+      rgba(34, 211, 238, calc(0.4 * var(--lit))),
+      transparent 26px
+    ),
+    radial-gradient(
+      460px circle at var(--mx, 50%) var(--my, 0%),
+      rgba(34, 211, 238, calc(0.15 * var(--lit))),
+      rgba(37, 99, 235, calc(0.06 * var(--lit))) 45%,
+      transparent 68%
+    );
+}
+
+.node-card::after {
+  padding: 1px;
+  background: radial-gradient(
+    320px circle at var(--mx, 50%) var(--my, 0%),
+    rgba(165, 243, 252, calc(0.95 * var(--lit))),
+    rgba(34, 211, 238, calc(0.35 * var(--lit))) 45%,
+    transparent 72%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+}
+
+/* A link between two node cards (a span inside the first): a thin line across the gap to
+   the next card, with a port at each end. It runs sideways where the cards sit in a row
+   (from md) and downward where they stack. When either card it joins is under the pointer,
+   the line lights and a pulse travels along it. */
+.node-link {
+  --on: 0;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 1px;
+  height: var(--gap, 1.5rem);
+  pointer-events: none;
+  background: rgba(103, 232, 249, calc(0.3 + 0.6 * var(--on)));
+  transition: --on 0.35s ease;
+}
+
+.node-link::before,
+.node-link::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: rgba(236, 254, 255, calc(0.55 + 0.45 * var(--on)));
+}
+
+.node-link::before {
+  top: -3px;
+}
+
+.node-link::after {
+  top: calc(100% - 2px);
+}
+
+@property --on {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+.node-card:hover > .node-link,
+.node-card:has(+ .node-card:hover) > .node-link {
+  --on: 1;
+}
+
+.node-link > i {
+  position: absolute;
+  left: -2px;
+  top: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0 0 8px 2px rgba(34, 211, 238, 0.9);
+  opacity: var(--on);
+  animation: node-pulse-down 1.4s linear infinite;
+}
+
+@keyframes node-pulse-down {
+  to {
+    transform: translateY(var(--gap, 1.5rem));
+  }
+}
+
+@keyframes node-pulse-across {
+  to {
+    transform: translateX(var(--gap, 1.5rem));
+  }
+}
+
+@media (min-width: 768px) {
+  .node-link {
+    top: 50%;
+    left: 100%;
+    width: var(--gap, 1.5rem);
+    height: 1px;
+  }
+
+  .node-link::before,
+  .node-link::after {
+    top: -2px;
+  }
+
+  .node-link::before {
+    left: -3px;
+  }
+
+  .node-link::after {
+    left: calc(100% - 2px);
+  }
+
+  .node-link > i {
+    left: 0;
+    top: -2px;
+    animation-name: node-pulse-across;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .node-link > i {
+    animation: none;
+  }
+}
+
 /* The dust backdrop (Dust.tsx): each layer rises by exactly one tile, so the loop has no seam. */
 @keyframes dust-near {
   to {

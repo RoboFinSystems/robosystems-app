@@ -5,6 +5,7 @@ import Footer from '@/components/landing/Footer'
 import GraphGalaxies from '@/components/landing/GraphGalaxies'
 import GraphOrb from '@/components/landing/GraphOrb'
 import Header from '@/components/landing/Header'
+import NodeGlow from '@/components/landing/NodeGlow'
 import BusinessServices from '@/components/platform/BusinessServices'
 import FinancialServices from '@/components/platform/FinancialServices'
 import SchemaArchitecture from '@/components/platform/SchemaArchitecture'
@@ -16,6 +17,7 @@ export default function PlatformContent() {
   return (
     <div className="min-h-screen bg-black">
       <Header />
+      <NodeGlow />
 
       <main>
         {/* Hero Section */}
@@ -95,7 +97,7 @@ export default function PlatformContent() {
             </div>
 
             <div className="grid gap-6 md:grid-cols-3">
-              <div className="group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-cyan-950/20 p-6 transition-all hover:border-cyan-500/50">
+              <div className="node-card group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-zinc-800/30 p-6 transition-all">
                 <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-500/20">
                   <svg
                     className="h-6 w-6 text-cyan-400"
@@ -122,7 +124,7 @@ export default function PlatformContent() {
                 </p>
               </div>
 
-              <div className="group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-green-950/20 p-6 transition-all hover:border-green-500/50">
+              <div className="node-card group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-zinc-800/30 p-6 transition-all">
                 <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-green-500/20">
                   <svg
                     className="h-6 w-6 text-green-400"
@@ -150,7 +152,7 @@ export default function PlatformContent() {
                 </p>
               </div>
 
-              <div className="group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-purple-950/20 p-6 transition-all hover:border-purple-500/50">
+              <div className="node-card group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-zinc-800/30 p-6 transition-all">
                 <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-purple-500/20">
                   <svg
                     className="h-6 w-6 text-purple-400"

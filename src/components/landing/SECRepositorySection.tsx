@@ -42,7 +42,7 @@ export default function SECRepositorySection() {
           ].map((stat) => (
             <div
               key={stat.label}
-              className="rounded-xl border border-gray-800 bg-zinc-900/50 p-4 text-center transition-all duration-300 hover:border-gray-700 sm:p-6"
+              className="node-card rounded-xl border border-gray-800 bg-zinc-900/50 p-4 text-center transition-all duration-300 hover:border-gray-700 sm:p-6"
             >
               <div className="text-secondary-400 text-2xl font-bold sm:text-3xl">
                 {stat.value}
@@ -70,7 +70,7 @@ export default function SECRepositorySection() {
           {/* Access Methods - Right */}
           <div className="flex flex-col gap-4 lg:col-span-2">
             {/* MCP Clients */}
-            <div className="flex-1 rounded-xl border border-gray-800 bg-zinc-900/50 p-5 transition-all duration-300 hover:border-gray-700">
+            <div className="node-card flex-1 rounded-xl border border-gray-800 bg-zinc-900/50 p-5 transition-all duration-300 hover:border-gray-700">
               <div className="mb-2 flex items-center gap-3">
                 <div className="bg-secondary-500/20 flex h-9 w-9 items-center justify-center rounded-lg">
                   <svg
@@ -141,7 +141,7 @@ export default function SECRepositorySection() {
             </div>
 
             {/* MCP Protocol */}
-            <div className="flex-1 rounded-xl border border-gray-800 bg-zinc-900/50 p-5 transition-all duration-300 hover:border-gray-700">
+            <div className="node-card flex-1 rounded-xl border border-gray-800 bg-zinc-900/50 p-5 transition-all duration-300 hover:border-gray-700">
               <div className="mb-2 flex items-center gap-3">
                 <div className="bg-accent-500/20 flex h-9 w-9 items-center justify-center rounded-lg">
                   <svg
@@ -171,7 +171,7 @@ export default function SECRepositorySection() {
             </div>
 
             {/* API & SDKs */}
-            <div className="flex-1 rounded-xl border border-gray-800 bg-zinc-900/50 p-5 transition-all duration-300 hover:border-gray-700">
+            <div className="node-card flex-1 rounded-xl border border-gray-800 bg-zinc-900/50 p-5 transition-all duration-300 hover:border-gray-700">
               <div className="mb-2 flex items-center gap-3">
                 <div className="bg-primary-500/20 flex h-9 w-9 items-center justify-center rounded-lg">
                   <svg

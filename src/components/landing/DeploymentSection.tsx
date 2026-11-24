@@ -45,7 +45,7 @@ export default function DeploymentSection() {
   return (
     <section id="deployment" className="relative bg-black py-16 sm:py-24">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-2xl border border-cyan-500/30 bg-linear-to-br from-zinc-900 to-cyan-950/30 p-6 sm:p-8 md:p-10">
+        <div className="node-card relative overflow-hidden rounded-2xl border border-cyan-500/30 bg-linear-to-br from-zinc-900 to-cyan-950/30 p-6 sm:p-8 md:p-10">
           <div className="pointer-events-none absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
           <div className="relative grid gap-8 lg:grid-cols-5">
             <div className="lg:col-span-2">

@@ -41,7 +41,11 @@ export default function ProductOverview() {
         <div className="mx-auto max-w-5xl">
           <div className="grid gap-6 md:grid-cols-3">
             {/* The numbers don't tie */}
-            <div className="group flex flex-col rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
+            <div className="node-card group flex flex-col rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
+              {/* the link to the next card */}
+              <span aria-hidden="true" className="node-link">
+                <i />
+              </span>
               <div className="bg-accent-500/20 mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
                 <svg
                   className="text-accent-400 h-6 w-6"
@@ -70,7 +74,11 @@ export default function ProductOverview() {
             </div>
 
             {/* The books can't leave */}
-            <div className="group flex flex-col rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
+            <div className="node-card group flex flex-col rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
+              {/* the link to the next card */}
+              <span aria-hidden="true" className="node-link">
+                <i />
+              </span>
               <div className="bg-secondary-500/20 mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
                 <svg
                   className="text-secondary-400 h-6 w-6"
@@ -102,7 +110,7 @@ export default function ProductOverview() {
             </div>
 
             {/* The filings and the books live apart */}
-            <div className="group flex flex-col rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
+            <div className="node-card group flex flex-col rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-orange-500/20">
                 <svg
                   className="h-6 w-6 text-orange-400"

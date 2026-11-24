@@ -8,6 +8,7 @@ import FinalCTA from '@/components/landing/FinalCTA'
 import Footer from '@/components/landing/Footer'
 import Header from '@/components/landing/Header'
 import HeroSection from '@/components/landing/HeroSection'
+import NodeGlow from '@/components/landing/NodeGlow'
 import OpenSourceSection from '@/components/landing/OpenSourceSection'
 import ProductOverview from '@/components/landing/ProductOverview'
 import SECRepositorySection from '@/components/landing/SECRepositorySection'
@@ -16,6 +17,7 @@ export default function LandingPageContent() {
   return (
     <div className="min-h-screen bg-black">
       <Header />
+      <NodeGlow />
 
       <main>
         <HeroSection />

@@ -25,7 +25,7 @@ export default function ApplicationsSection() {
 
         {/* Application Architecture Diagram */}
         <div className="mx-auto mb-16 max-w-4xl">
-          <div className="hover:border-secondary-500/30 rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900/50 to-zinc-800/20 p-4 hover:bg-zinc-900/20 sm:p-6 md:p-8">
+          <div className="node-card rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900/50 to-zinc-800/20 p-4 hover:bg-zinc-900/20 sm:p-6 md:p-8">
             <h3 className="font-heading mb-4 text-center text-lg font-semibold text-white sm:mb-6 sm:text-xl">
               How It Works
             </h3>
