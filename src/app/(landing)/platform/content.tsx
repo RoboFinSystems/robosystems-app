@@ -1,15 +1,17 @@
 'use client'
 
-import Dust from '@/components/landing/Dust'
 import Footer from '@/components/landing/Footer'
-import GraphGalaxies from '@/components/landing/GraphGalaxies'
-import GraphOrb from '@/components/landing/GraphOrb'
 import Header from '@/components/landing/Header'
-import NodeGlow from '@/components/landing/NodeGlow'
 import BusinessServices from '@/components/platform/BusinessServices'
 import FinancialServices from '@/components/platform/FinancialServices'
 import SchemaArchitecture from '@/components/platform/SchemaArchitecture'
 import { BOOK_PATH } from '@/lib/site'
+import {
+  Dust,
+  GraphGalaxies,
+  GraphOrb,
+  NodeGlow,
+} from '@robosystems/core/graph-stage'
 import { LiveDemo } from '@robosystems/core/ui-components'
 import Link from 'next/link'
 

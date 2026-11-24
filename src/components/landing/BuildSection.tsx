@@ -1,12 +1,11 @@
 'use client'
 
 import { MCP_OAUTH_URL } from '@/lib/mcp'
+import { GraphGalaxies, GraphOrb } from '@robosystems/core/graph-stage'
 import { LiveDemo } from '@robosystems/core/ui-components'
 import Link from 'next/link'
 import { useState } from 'react'
 import ContactModal from './ContactModal'
-import GraphGalaxies from './GraphGalaxies'
-import GraphOrb from './GraphOrb'
 
 /**
  * The three write lanes an integration can use, in the order the API docs

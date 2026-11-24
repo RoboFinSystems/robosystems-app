@@ -1,14 +1,12 @@
 'use client'
 
 import DeploymentSection from '@/components/landing/DeploymentSection'
-import Dust from '@/components/landing/Dust'
 import EmailForATime from '@/components/landing/EmailForATime'
 import Footer from '@/components/landing/Footer'
-import GraphOrb from '@/components/landing/GraphOrb'
 import Header from '@/components/landing/Header'
-import NodeGlow from '@/components/landing/NodeGlow'
 import SalesContactModal from '@/components/landing/SalesContactModal'
 import { BOOK_PATH } from '@/lib/site'
+import { Dust, GraphOrb, NodeGlow } from '@robosystems/core/graph-stage'
 import Link from 'next/link'
 import { useState } from 'react'
 

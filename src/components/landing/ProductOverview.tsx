@@ -1,9 +1,8 @@
 'use client'
 
 import { BOOK_PATH } from '@/lib/site'
+import { Dust, GraphGalaxies } from '@robosystems/core/graph-stage'
 import { LiveDemo } from '@robosystems/core/ui-components'
-import Dust from './Dust'
-import GraphGalaxies from './GraphGalaxies'
 
 const BOOK_LINK =
   'text-secondary-400 hover:text-secondary-300 text-sm font-medium transition-colors'
