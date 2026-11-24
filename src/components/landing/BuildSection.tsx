@@ -135,9 +135,6 @@ export default function BuildSection() {
 
             {/* Mercury */}
             <div className="node-card border-secondary-500/40 hover:border-secondary-500/70 shadow-secondary-500/10 relative rounded-xl border bg-zinc-900/50 p-6 shadow-lg transition-all duration-300">
-              <span className="bg-secondary-500/20 text-secondary-300 absolute top-4 right-4 rounded-full px-2 py-1 text-xs font-medium">
-                Coming Soon
-              </span>
               <div className="mb-4 flex items-center gap-4">
                 <div className="node-icon flex h-12 w-12 items-center justify-center">
                   <svg
