@@ -28,7 +28,7 @@ export default function FeaturesGrid() {
           {/* Your ledger */}
           <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/20 sm:mb-6 sm:h-14 sm:w-14">
+              <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
                 <svg
                   className="h-7 w-7 text-orange-400"
                   fill="none"
@@ -74,7 +74,7 @@ export default function FeaturesGrid() {
           {/* The public record */}
           <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/20 sm:mb-6 sm:h-14 sm:w-14">
+              <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
                 <svg
                   className="h-7 w-7 text-emerald-400"
                   fill="none"
@@ -116,7 +116,7 @@ export default function FeaturesGrid() {
           {/* Your own graphs */}
           <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/20 sm:mb-6 sm:h-14 sm:w-14">
+              <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
                 <svg
                   className="h-7 w-7"
                   xmlns="http://www.w3.org/2000/svg"
@@ -199,7 +199,7 @@ export default function FeaturesGrid() {
           {/* Subgraphs and memory */}
           <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/20 sm:mb-6 sm:h-14 sm:w-14">
+              <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
                 <svg
                   className="h-7 w-7 text-indigo-400"
                   fill="none"
@@ -242,7 +242,7 @@ export default function FeaturesGrid() {
           {/* API & SDKs */}
           <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
-              <div className="bg-secondary-500/20 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl sm:mb-6 sm:h-14 sm:w-14">
+              <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
                 <svg
                   className="text-secondary-400 h-7 w-7"
                   fill="none"
@@ -288,7 +288,7 @@ export default function FeaturesGrid() {
           {/* Security & Isolation */}
           <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/20 sm:mb-6 sm:h-14 sm:w-14">
+              <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
                 <svg
                   className="h-7 w-7 text-red-400"
                   fill="none"

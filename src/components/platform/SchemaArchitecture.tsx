@@ -272,7 +272,7 @@ export default function SchemaArchitecture() {
         {/* Schema Capabilities */}
         <div className="grid gap-6 md:grid-cols-3">
           <div className="node-card group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-800/60 to-zinc-900 p-6 transition-all">
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500">
+            <div className="node-icon mb-4 flex h-12 w-12 items-center justify-center">
               <svg
                 className="h-6 w-6 text-white"
                 fill="none"
@@ -296,7 +296,7 @@ export default function SchemaArchitecture() {
             </p>
           </div>
           <div className="node-card group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-800/60 to-zinc-900 p-6 transition-all">
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-500">
+            <div className="node-icon mb-4 flex h-12 w-12 items-center justify-center">
               <svg
                 className="h-6 w-6 text-white"
                 fill="none"
@@ -321,7 +321,7 @@ export default function SchemaArchitecture() {
             </p>
           </div>
           <div className="node-card group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-800/60 to-zinc-900 p-6 transition-all">
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-emerald-500">
+            <div className="node-icon mb-4 flex h-12 w-12 items-center justify-center">
               <svg
                 className="h-6 w-6 text-white"
                 fill="none"

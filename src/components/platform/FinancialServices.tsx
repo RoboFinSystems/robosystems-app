@@ -142,7 +142,7 @@ export default function FinancialServices() {
 
           <div className="grid gap-6 md:grid-cols-3">
             <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-black/50 to-emerald-950/20 p-4 text-center transition-all hover:border-emerald-500/30">
-              <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-400">
+              <div className="node-icon mb-3 inline-flex h-12 w-12 items-center justify-center">
                 <span className="text-xl font-bold">1</span>
               </div>
               <h4 className="mb-2 font-semibold text-white">
@@ -155,7 +155,7 @@ export default function FinancialServices() {
             </div>
 
             <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-black/50 to-cyan-950/20 p-4 text-center transition-all hover:border-cyan-500/30">
-              <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-400">
+              <div className="node-icon mb-3 inline-flex h-12 w-12 items-center justify-center">
                 <span className="text-xl font-bold">2</span>
               </div>
               <h4 className="mb-2 font-semibold text-white">Research via AI</h4>
@@ -166,7 +166,7 @@ export default function FinancialServices() {
             </div>
 
             <div className="group rounded-lg border border-gray-800 bg-gradient-to-br from-black/50 to-purple-950/20 p-4 text-center transition-all hover:border-purple-500/30">
-              <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-purple-500/20 text-purple-400">
+              <div className="node-icon mb-3 inline-flex h-12 w-12 items-center justify-center">
                 <span className="text-xl font-bold">3</span>
               </div>
               <h4 className="mb-2 font-semibold text-white">
@@ -234,7 +234,7 @@ function InvestmentServiceCard({
         {/* Header */}
         <div className="relative mb-4 flex items-start gap-3">
           <div
-            className={`flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br ${gradient}`}
+            className={`node-icon flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br ${gradient}`}
           >
             <svg
               className="h-6 w-6 text-white"

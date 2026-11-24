@@ -98,7 +98,7 @@ export default function PlatformContent() {
 
             <div className="grid gap-6 md:grid-cols-3">
               <div className="node-card group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-zinc-800/30 p-6 transition-all">
-                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-500/20">
+                <div className="node-icon mb-3 flex h-12 w-12 items-center justify-center">
                   <svg
                     className="h-6 w-6 text-cyan-400"
                     fill="none"
@@ -125,7 +125,7 @@ export default function PlatformContent() {
               </div>
 
               <div className="node-card group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-zinc-800/30 p-6 transition-all">
-                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-green-500/20">
+                <div className="node-icon mb-3 flex h-12 w-12 items-center justify-center">
                   <svg
                     className="h-6 w-6 text-green-400"
                     fill="none"
@@ -153,7 +153,7 @@ export default function PlatformContent() {
               </div>
 
               <div className="node-card group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-zinc-800/30 p-6 transition-all">
-                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-purple-500/20">
+                <div className="node-icon mb-3 flex h-12 w-12 items-center justify-center">
                   <svg
                     className="h-6 w-6 text-purple-400"
                     fill="none"

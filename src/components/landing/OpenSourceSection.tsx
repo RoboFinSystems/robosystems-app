@@ -29,7 +29,7 @@ export default function OpenSourceSection() {
         {/* Featured GitHub Repository */}
         <div className="node-card border-secondary-500/50 from-secondary-900/30 to-primary-900/30 hover:border-secondary-500/30 hover:bg-secondary-900/20 mb-8 rounded-2xl border-2 bg-linear-to-br p-4 sm:mb-12 sm:p-6 md:p-8">
           <div className="flex flex-col items-center gap-4 sm:gap-6 md:flex-row md:items-start">
-            <div className="from-secondary-600 to-primary-600 flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br sm:h-20 sm:w-20">
+            <div className="node-icon flex h-16 w-16 shrink-0 items-center justify-center sm:h-20 sm:w-20">
               <svg
                 className="h-10 w-10 text-white sm:h-12 sm:w-12"
                 fill="currentColor"
@@ -208,7 +208,7 @@ export default function OpenSourceSection() {
             {/* Three ways to run it */}
             <div className="node-card group overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-4 transition-all sm:p-6 md:p-8">
               <div className="mb-4 flex items-center gap-3">
-                <div className="bg-accent-500/20 flex h-10 w-10 items-center justify-center rounded-lg">
+                <div className="node-icon flex h-10 w-10 items-center justify-center">
                   <svg
                     className="text-accent-400 h-5 w-5"
                     fill="none"
@@ -310,7 +310,7 @@ export default function OpenSourceSection() {
             {/* Fork & Deploy */}
             <div className="group overflow-hidden rounded-2xl border border-emerald-500/30 bg-linear-to-br from-zinc-900 to-emerald-950/20 p-4 transition-all hover:border-emerald-500/50 sm:p-6 md:p-8">
               <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/20">
+                <div className="node-icon flex h-10 w-10 items-center justify-center">
                   <svg
                     className="h-5 w-5 text-emerald-400"
                     fill="none"

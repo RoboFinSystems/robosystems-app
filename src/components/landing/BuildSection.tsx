@@ -86,7 +86,7 @@ export default function BuildSection() {
             {/* QuickBooks */}
             <div className="node-card rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300">
               <div className="mb-4 flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-600">
+                <div className="node-icon flex h-12 w-12 items-center justify-center">
                   <span className="text-lg font-bold text-white">QB</span>
                 </div>
                 <div>
@@ -111,7 +111,7 @@ export default function BuildSection() {
             {/* SEC XBRL */}
             <div className="node-card rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300">
               <div className="mb-4 flex items-center gap-4">
-                <div className="bg-accent-600 flex h-12 w-12 items-center justify-center rounded-lg">
+                <div className="node-icon flex h-12 w-12 items-center justify-center">
                   <span className="text-lg font-bold text-white">SEC</span>
                 </div>
                 <div>
@@ -139,7 +139,7 @@ export default function BuildSection() {
                 Coming Soon
               </span>
               <div className="mb-4 flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-600">
+                <div className="node-icon flex h-12 w-12 items-center justify-center">
                   <svg
                     className="h-7 w-7 text-white"
                     fill="none"
@@ -169,7 +169,7 @@ export default function BuildSection() {
             {/* Plaid (live since 2026-10-08) */}
             <div className="node-card border-secondary-500/40 hover:border-secondary-500/70 shadow-secondary-500/10 relative rounded-xl border bg-zinc-900/50 p-6 shadow-lg transition-all duration-300">
               <div className="mb-4 flex items-center gap-4">
-                <div className="bg-primary-600 flex h-12 w-12 items-center justify-center rounded-lg">
+                <div className="node-icon flex h-12 w-12 items-center justify-center">
                   <svg
                     className="h-7 w-7 text-white"
                     fill="none"
@@ -307,7 +307,7 @@ export default function BuildSection() {
             {/* MCP Endpoint */}
             <div className="node-card rounded-xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/20 p-4 transition-all duration-300 hover:border-gray-700 sm:p-6">
               <div className="mb-4 flex items-center gap-3">
-                <div className="bg-accent-600 flex h-10 w-10 items-center justify-center rounded-lg">
+                <div className="node-icon flex h-10 w-10 items-center justify-center">
                   <span className="text-xl font-bold text-white">AI</span>
                 </div>
                 <h4 className="font-semibold text-white">MCP Endpoint</h4>
@@ -333,7 +333,7 @@ export default function BuildSection() {
             {/* TypeScript Client */}
             <div className="node-card rounded-xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/20 p-4 transition-all duration-300 hover:border-gray-700 sm:p-6">
               <div className="mb-4 flex items-center gap-3">
-                <div className="bg-primary-600 flex h-10 w-10 items-center justify-center rounded-lg">
+                <div className="node-icon flex h-10 w-10 items-center justify-center">
                   <span className="text-xl font-bold text-white">TS</span>
                 </div>
                 <h4 className="font-semibold text-white">TypeScript Client</h4>
@@ -367,7 +367,7 @@ export default function BuildSection() {
             {/* Python Client */}
             <div className="node-card rounded-xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/20 p-4 transition-all duration-300 hover:border-gray-700 sm:p-6">
               <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-600">
+                <div className="node-icon flex h-10 w-10 items-center justify-center">
                   <span className="text-xl font-bold text-white">PY</span>
                 </div>
                 <h4 className="font-semibold text-white">Python Client</h4>

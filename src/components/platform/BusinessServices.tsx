@@ -165,7 +165,7 @@ export default function BusinessServices() {
                 className={`group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 ${step.bg} p-4 text-center transition-all ${step.border}`}
               >
                 <div
-                  className={`mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg ${step.badge}`}
+                  className={`node-icon mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg ${step.badge}`}
                 >
                   <span className="text-lg font-bold">{idx + 1}</span>
                 </div>
@@ -211,7 +211,7 @@ function PrimaryServiceCard({
     >
       <div className="mb-6 flex items-start gap-4">
         <div
-          className={`flex h-16 w-16 items-center justify-center rounded-xl ${iconColors[color]}`}
+          className={`node-icon flex h-16 w-16 items-center justify-center rounded-xl ${iconColors[color]}`}
         >
           <svg
             className="h-8 w-8"
@@ -289,7 +289,7 @@ function SecondaryServiceCard({
       ></div>
 
       <div
-        className={`mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br ${gradient}`}
+        className={`node-icon mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br ${gradient}`}
       >
         <svg
           className="h-6 w-6 text-white"

@@ -46,7 +46,7 @@ export default function ProductOverview() {
               <span aria-hidden="true" className="node-link">
                 <i />
               </span>
-              <div className="bg-accent-500/20 mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
+              <div className="node-icon mb-4 flex h-12 w-12 items-center justify-center">
                 <svg
                   className="text-accent-400 h-6 w-6"
                   fill="none"
@@ -79,7 +79,7 @@ export default function ProductOverview() {
               <span aria-hidden="true" className="node-link">
                 <i />
               </span>
-              <div className="bg-secondary-500/20 mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
+              <div className="node-icon mb-4 flex h-12 w-12 items-center justify-center">
                 <svg
                   className="text-secondary-400 h-6 w-6"
                   fill="none"
@@ -111,7 +111,7 @@ export default function ProductOverview() {
 
             {/* The filings and the books live apart */}
             <div className="node-card group flex flex-col rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-orange-500/20">
+              <div className="node-icon mb-4 flex h-12 w-12 items-center justify-center">
                 <svg
                   className="h-6 w-6 text-orange-400"
                   fill="none"
