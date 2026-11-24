@@ -7,10 +7,11 @@ import EmailForATime from './EmailForATime'
 export default function FinalCTA() {
   return (
     <section className="relative overflow-hidden bg-black pt-24 pb-48">
-      {/* The brand film's floor: a ledger grid running to the horizon. */}
+      {/* The brand film's floor: a ledger grid running to the horizon. The horizon sits at
+          perspective / tan(tilt) above the section's foot, about 490px here. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -inset-x-1/2 bottom-0 h-[110%] origin-bottom [transform:perspective(600px)_rotateX(62deg)] [background-image:linear-gradient(rgba(34,211,238,0.55)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.55)_1px,transparent_1px)] [mask-image:linear-gradient(to_top,black,transparent_88%)] [background-size:56px_56px]"
+        className="pointer-events-none absolute -inset-x-[150%] bottom-0 h-[600%] origin-bottom [transform:perspective(1500px)_rotateX(72deg)] [background-image:linear-gradient(rgba(34,211,238,0.55)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.55)_1px,transparent_1px)] [mask-image:linear-gradient(to_top,black,transparent_96%)] [background-size:72px_72px]"
       ></div>
       <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
         <h2 className="font-heading mb-6 text-4xl font-bold text-white md:text-5xl">
