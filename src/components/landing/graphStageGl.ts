@@ -142,8 +142,8 @@ export function placeGraph(aspect: number, beside: boolean, height: number) {
     const centre = Math.min(BESIDE_CENTRE, height / 2) / height
     return { x: halfW * 0.48, y: halfH * (1 - 2 * centre), scale }
   }
-  const scale = Math.min(1, (halfW * 0.8) / RADIUS, (halfH * 0.33) / RADIUS)
-  return { x: 0, y: halfH * 0.44, scale }
+  const scale = Math.min(1, (halfW * 0.8) / RADIUS, (halfH * 0.29) / RADIUS)
+  return { x: 0, y: halfH * 0.47, scale }
 }
 
 const POINT_VERT = `
