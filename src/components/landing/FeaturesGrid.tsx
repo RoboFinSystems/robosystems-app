@@ -1,6 +1,5 @@
+import { Dust, GraphGalaxies } from '@robosystems/core/graph-stage'
 import Link from 'next/link'
-import Dust from './Dust'
-import GraphGalaxies from './GraphGalaxies'
 
 export default function FeaturesGrid() {
   return (

@@ -1,19 +1,15 @@
 'use client'
 
 import { BOOK_PATH } from '@/lib/site'
+import { GridFloor } from '@robosystems/core/graph-stage'
 import Link from 'next/link'
 import EmailForATime from './EmailForATime'
 
 export default function FinalCTA() {
   return (
     <section className="relative overflow-hidden bg-black pt-24 pb-48">
-      {/* The brand film's floor: a ledger grid running to the horizon. The horizon sits at
-          perspective / tan(tilt) above the section's foot, about 480px here. The lines that
-          run across are drawn thicker, because the tilt thins them and they would vanish. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -inset-x-[150%] bottom-0 h-[600%] origin-bottom [transform:perspective(900px)_rotateX(62deg)] [background-image:linear-gradient(rgba(34,211,238,0.6)_2.5px,transparent_2.5px),linear-gradient(90deg,rgba(34,211,238,0.55)_1px,transparent_1px)] [mask-image:linear-gradient(to_top,black,transparent_96%)] [background-size:80px_80px]"
-      ></div>
+      {/* The brand film's floor: a ledger grid running to the horizon. */}
+      <GridFloor />
       <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
         <h2 className="font-heading mb-6 text-4xl font-bold text-white md:text-5xl">
           Talk it through in 20 minutes

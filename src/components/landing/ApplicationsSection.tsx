@@ -1,9 +1,8 @@
 'use client'
 
+import { GraphGalaxies, GraphOrb } from '@robosystems/core/graph-stage'
 import { LogoBadge } from '@robosystems/core/ui-components/Logo'
 import Link from 'next/link'
-import GraphGalaxies from './GraphGalaxies'
-import GraphOrb from './GraphOrb'
 
 export default function ApplicationsSection() {
   return (

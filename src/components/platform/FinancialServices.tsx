@@ -1,4 +1,4 @@
-import GraphGalaxies from '../landing/GraphGalaxies'
+import { GraphGalaxies } from '@robosystems/core/graph-stage'
 
 export default function FinancialServices() {
   const currentServices = [

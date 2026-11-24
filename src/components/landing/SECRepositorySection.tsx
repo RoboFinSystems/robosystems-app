@@ -2,10 +2,9 @@
 
 import { mcpEndpointFor } from '@/lib/mcp'
 import { CHATGPT_PLUGIN_URL, CLAUDE_CONNECTOR_URL } from '@/lib/site'
+import { GraphGalaxies, GraphOrb } from '@robosystems/core/graph-stage'
 import { LiveDemo } from '@robosystems/core/ui-components'
 import Link from 'next/link'
-import GraphGalaxies from './GraphGalaxies'
-import GraphOrb from './GraphOrb'
 
 export default function SECRepositorySection() {
   return (

@@ -1,9 +1,8 @@
 'use client'
 
 import { BOOK_PATH } from '@/lib/site'
+import { GraphGalaxies, GraphOrb } from '@robosystems/core/graph-stage'
 import Link from 'next/link'
-import GraphGalaxies from './GraphGalaxies'
-import GraphOrb from './GraphOrb'
 
 export default function OpenSourceSection() {
   return (

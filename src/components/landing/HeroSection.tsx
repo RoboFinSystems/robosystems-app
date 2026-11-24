@@ -2,12 +2,11 @@
 
 import { McpLogo } from '@/components/mcp/McpLogo'
 import { BOOK_PATH } from '@/lib/site'
+import { Dust, GraphStage } from '@robosystems/core/graph-stage'
 import { LiveDemo } from '@robosystems/core/ui-components'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import ContactModal from './ContactModal'
-import Dust from './Dust'
-import GraphStage from './GraphStage'
 
 const TRUST_ROW = [
   'Open source (Apache 2.0 and MIT)',
