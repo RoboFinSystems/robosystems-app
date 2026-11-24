@@ -4,14 +4,14 @@ import { useEffect, useRef } from 'react'
 import { mountGraphStage } from './graphStageGl'
 
 /**
- * The brand film's graph as a live backdrop. Decorative: it fills its positioned parent,
+ * A knowledge graph in the brand film's look, as a live backdrop. Decorative: it fills its positioned parent,
  * takes no pointer events and is hidden from screen readers.
  */
 export default function GraphStage({
   besideFrom = 1280,
   className = '',
 }: {
-  /** The width from which the page sets its words beside the sphere (Tailwind's xl). */
+  /** The width from which the page sets its words beside the graph (Tailwind's xl). */
   besideFrom?: number
   className?: string
 }) {

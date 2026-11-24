@@ -35,9 +35,9 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen overflow-hidden bg-black">
-      {/* The brand film's graph, over the first screen and fading out below it. The words
-          sit under it on a narrow page and beside it from xl, where GraphStage moves the
-          sphere to the right. */}
+      {/* A knowledge graph in the brand film's look, over the first screen and fading out
+          below it. The words sit under it on a narrow page and beside it from xl, where
+          GraphStage moves the graph to the right. */}
       <div className="absolute inset-x-0 top-0 h-screen min-h-[640px] [mask-image:linear-gradient(to_bottom,black_72%,transparent)]">
         <GraphStage />
       </div>

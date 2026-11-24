@@ -1,13 +1,13 @@
 /**
- * The graph from the brand film, drawn live: facts scattered in space that come home to a
- * sphere and turn slowly, over a field of dust. Plain WebGL with no library, so the landing
- * page pays for a few hundred lines rather than a 3D engine. The numbers (lens, sizes,
- * colours, timings) are the film's own, from the content machine's film stage.
+ * A knowledge graph drawn live, in the look of the brand film: nodes scattered in space come
+ * home to clusters around their hubs, drift a little, and turn slowly over a field of dust,
+ * while a pulse of light travels each link between hubs. Decoration: the clusters stand for
+ * nothing in particular. Plain WebGL with no library, so the landing page pays for a few
+ * hundred lines rather than a 3D engine. The lens and the dust are the film stage's own.
  */
 
-export const NODE_COUNT = 150
 const DUST_COUNT = 900
-const RADIUS = 3.4
+export const RADIUS = 3.4 // the graph fits inside a sphere of this size
 const CAM_Z = 14
 const FOV = 38
 const BESIDE_CENTRE = 460 // CSS px from the top, the middle of the hero's words
@@ -27,9 +27,27 @@ export interface Graph {
   scatter: Float32Array
   home: Float32Array
   size: Float32Array
-  /** Index pairs: each node joined to its three nearest neighbours. */
+  /** One colour per node. */
+  color: Float32Array
+  /** How far each node drifts about its place. */
+  drift: Float32Array
+  /** Index pairs: the relationships drawn between nodes. */
   pairs: number[]
+  /** Index pairs, hub to hub, that a pulse of light travels along. */
+  routes: number[]
 }
+
+// Each cluster's size and colour: the three brand colours, cyan, blue and indigo.
+const CLUSTERS: Array<[number, [number, number, number]]> = [
+  [46, [0.4, 0.91, 0.98]],
+  [42, [0.23, 0.48, 0.96]],
+  [38, [0.51, 0.55, 0.97]],
+  [34, [0.13, 0.83, 0.93]],
+  [32, [0.38, 0.65, 0.98]],
+  [28, [0.39, 0.4, 0.95]],
+  [24, [0.4, 0.91, 0.98]],
+  [20, [0.23, 0.48, 0.96]],
+]
 
 /** Seeded, so every visitor and every screenshot gets the same picture. */
 export function buildGraph(seed = 11): Graph {
@@ -43,44 +61,80 @@ export function buildGraph(seed = 11): Graph {
     dustSize[i] = 0.3 + rnd() * 0.8
   }
 
-  const scatter = new Float32Array(NODE_COUNT * 3)
-  const home = new Float32Array(NODE_COUNT * 3)
-  const size = new Float32Array(NODE_COUNT)
-  for (let i = 0; i < NODE_COUNT; i++) {
-    scatter.set(
-      [(rnd() - 0.5) * 44, (rnd() - 0.5) * 24, -rnd() * 46 + 4],
-      i * 3
-    )
-    const y = 1 - (i / (NODE_COUNT - 1)) * 2
-    const r = Math.sqrt(1 - y * y)
-    const a = i * 2.39996
-    home.set(
-      [Math.cos(a) * r * RADIUS, y * RADIUS, Math.sin(a) * r * RADIUS],
-      i * 3
-    )
-    size[i] = rnd() > 0.82 ? 3.4 : 1.9
-  }
-
+  const total = CLUSTERS.reduce((n, [count]) => n + count, 0)
+  const scatter = new Float32Array(total * 3)
+  const home = new Float32Array(total * 3)
+  const size = new Float32Array(total)
+  const color = new Float32Array(total * 3)
+  const drift = new Float32Array(total)
   const pairs: number[] = []
+  const hubs: number[] = []
+  const at = (i: number) => [home[i * 3], home[i * 3 + 1], home[i * 3 + 2]]
   const d2 = (i: number, j: number) =>
-    (home[i * 3] - home[j * 3]) ** 2 +
-    (home[i * 3 + 1] - home[j * 3 + 1]) ** 2 +
-    (home[i * 3 + 2] - home[j * 3 + 2]) ** 2
-  for (let i = 0; i < NODE_COUNT; i++) {
-    Array.from({ length: NODE_COUNT }, (_, j) => j)
+    at(i).reduce((sum, v, k) => sum + (v - at(j)[k]) ** 2, 0)
+  const nearest = (i: number, among: number[], n: number) =>
+    among
+      .filter((j) => j !== i)
       .sort((p, q) => d2(i, p) - d2(i, q))
-      .slice(1, 4)
-      .forEach((j) => i < j && pairs.push(i, j))
-  }
-  return { dust, dustSize, scatter, home, size, pairs }
+      .slice(0, n)
+
+  let i = 0
+  CLUSTERS.forEach(([count, rgb], c) => {
+    // cluster centres spread evenly over an ellipsoid, members in a soft cloud about each
+    const y = 1 - ((c + 0.5) / CLUSTERS.length) * 2
+    const r = Math.sqrt(1 - y * y)
+    const a = c * 2.39996 + 0.6
+    const centre = [Math.cos(a) * r * 3.0, y * 2.6, Math.sin(a) * r * 2.6]
+    const spread = 0.46 + count * 0.011
+    const members: number[] = []
+    for (let m = 0; m < count; m++, i++) {
+      const hub = m === 0
+      scatter.set(
+        [(rnd() - 0.5) * 44, (rnd() - 0.5) * 24, -rnd() * 46 + 4],
+        i * 3
+      )
+      const off = () => (hub ? 0 : (rnd() + rnd() + rnd() - 1.5) * spread)
+      home.set([centre[0] + off(), centre[1] + off(), centre[2] + off()], i * 3)
+      size[i] = hub ? 4.4 : 1.4 + rnd() * 1.3
+      color.set(hub ? [1, 1, 1] : rgb, i * 3)
+      drift[i] = hub ? 0.03 : 0.05 + rnd() * 0.07
+      members.push(i)
+    }
+    hubs.push(members[0])
+    members.slice(1).forEach((n) => {
+      // most members hang off the hub; the rest, and a few besides, off a neighbour
+      if (rnd() < 0.62) pairs.push(members[0], n)
+      else pairs.push(n, nearest(n, members.slice(1), 1)[0])
+      if (rnd() < 0.3) pairs.push(n, nearest(n, members.slice(1), 2)[1])
+    })
+  })
+
+  // pull the whole graph inside its sphere, so no outlying node strays off the stage
+  const reach = Math.max(
+    ...Array.from({ length: total }, (_, n) => Math.hypot(...at(n)))
+  )
+  const fit = Math.min(1, (RADIUS - 0.15) / reach)
+  for (let k = 0; k < home.length; k++) home[k] *= fit
+
+  const routes: number[] = []
+  hubs.forEach((h) =>
+    nearest(h, hubs, 2).forEach((o) => {
+      const seen = routes.some(
+        (_, k) => k % 2 === 0 && routes[k] === o && routes[k + 1] === h
+      )
+      if (!seen) routes.push(h, o)
+    })
+  )
+  pairs.push(...routes)
+  return { dust, dustSize, scatter, home, size, color, drift, pairs, routes }
 }
 
 /**
- * Where the sphere sits: right of the words when they are set beside it, above them
+ * Where the graph sits: right of the words when they are set beside it, above them
  * otherwise. Beside them its centre is a fixed distance from the top, level with the words,
  * so a tall window does not drop it toward the section below.
  */
-export function placeSphere(aspect: number, beside: boolean, height: number) {
+export function placeGraph(aspect: number, beside: boolean, height: number) {
   const halfH = CAM_Z * Math.tan((FOV * Math.PI) / 360)
   const halfW = halfH * aspect
   if (beside) {
@@ -94,10 +148,11 @@ export function placeSphere(aspect: number, beside: boolean, height: number) {
 
 const POINT_VERT = `
 precision mediump float;
-attribute vec3 position; attribute float size; attribute float front;
+attribute vec3 position; attribute vec3 color; attribute float size; attribute float front;
 uniform mat4 uProj; uniform float uRot, uFocus, uAperture, uPx, uHalo;
-varying float vA;
+varying float vA; varying vec3 vC;
 void main() {
+  vC = color;
   float c = cos(uRot), s = sin(uRot);
   vec3 p = vec3(c * position.x + s * position.z, position.y, c * position.z - s * position.x);
   float d = ${CAM_Z.toFixed(1)} - p.z;
@@ -110,19 +165,20 @@ void main() {
 // The film blooms its highlights in a second pass; here each point carries its own soft halo.
 const POINT_FRAG = `
 precision mediump float;
-uniform vec3 uColor; uniform float uAlpha, uHalo, uGlow; varying float vA;
+uniform float uAlpha, uHalo, uGlow; varying float vA; varying vec3 vC;
 void main() {
   float r = length(gl_PointCoord - .5) * uHalo;
   float a = smoothstep(.5, .32, r) + uGlow * exp(-r * r * 5.);
-  gl_FragColor = vec4(uColor, a * vA * uAlpha);
+  gl_FragColor = vec4(vC, a * vA * uAlpha);
 }`
 const LINE_VERT = `
 precision mediump float;
-attribute vec3 position; attribute float front; uniform mat4 uProj; varying float vF;
-void main() { vF = front; gl_Position = uProj * vec4(position.xy, position.z - ${CAM_Z.toFixed(1)}, 1.); }`
+attribute vec3 position; attribute vec3 color; attribute float front; uniform mat4 uProj;
+varying float vF; varying vec3 vC;
+void main() { vF = front; vC = color; gl_Position = uProj * vec4(position.xy, position.z - ${CAM_Z.toFixed(1)}, 1.); }`
 const LINE_FRAG = `
-precision mediump float; uniform float uAlpha; varying float vF;
-void main() { gl_FragColor = vec4(1., 1., 1., uAlpha * vF); }`
+precision mediump float; uniform float uAlpha; varying float vF; varying vec3 vC;
+void main() { gl_FragColor = vec4(vC, uAlpha * vF); }`
 
 function program(gl: WebGLRenderingContext, vert: string, frag: string) {
   const p = gl.createProgram()!
@@ -151,13 +207,14 @@ function program(gl: WebGLRenderingContext, vert: string, frag: string) {
  */
 export function mountGraphStage(
   canvas: HTMLCanvasElement,
-  /** The CSS width from which the page sets its words beside the sphere. */
+  /** The CSS width from which the page sets its words beside the graph. */
   besideFrom: number
 ): () => void {
   const gl = canvas.getContext('webgl', { alpha: true, antialias: true })
   if (!gl) return () => {}
 
   const g = buildGraph()
+  const count = g.size.length
   const points = program(gl, POINT_VERT, POINT_FRAG)
   const lines = program(gl, LINE_VERT, LINE_FRAG)
   const buffer = (data: Float32Array, usage: number = gl.STATIC_DRAW) => {
@@ -181,10 +238,23 @@ export function mountGraphStage(
   const dustPos = buffer(g.dust)
   const dustSize = buffer(g.dustSize)
   const nodeSize = buffer(g.size)
-  const pos = new Float32Array(NODE_COUNT * 3)
-  const front = new Float32Array(NODE_COUNT)
+  const nodeColor = buffer(g.color)
+  const pos = new Float32Array(count * 3)
+  const front = new Float32Array(count)
   const edgePos = new Float32Array(g.pairs.length * 3)
   const edgeFront = new Float32Array(g.pairs.length)
+  const edgeColor = new Float32Array(g.pairs.length * 3)
+  g.pairs.forEach((n, k) =>
+    edgeColor.set(g.color.subarray(n * 3, n * 3 + 3), k * 3)
+  )
+  const edgeColorBuf = buffer(edgeColor)
+  // a pulse of light along each route between hubs
+  const pulses = g.routes.length / 2
+  const pulsePos = new Float32Array(pulses * 3)
+  const pulseFront = new Float32Array(pulses)
+  const pulsePosBuf = buffer(pulsePos, gl.DYNAMIC_DRAW)
+  const pulseFrontBuf = buffer(pulseFront, gl.DYNAMIC_DRAW)
+  const pulseSize = buffer(new Float32Array(pulses).fill(2.4))
   const nodePos = buffer(pos, gl.DYNAMIC_DRAW)
   const nodeFront = buffer(front, gl.DYNAMIC_DRAW)
   const edgePosBuf = buffer(edgePos, gl.DYNAMIC_DRAW)
@@ -197,7 +267,7 @@ export function mountGraphStage(
   gl.clearColor(0, 0, 0, 0)
 
   const proj = new Float32Array(16)
-  let place = placeSphere(1, false, 1)
+  let place = placeGraph(1, false, 1)
   const resize = () => {
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     const w = Math.max(1, Math.round(canvas.clientWidth * dpr))
@@ -216,7 +286,7 @@ export function mountGraphStage(
     proj[10] = (far + near) / (near - far)
     proj[11] = -1
     proj[14] = (2 * far * near) / (near - far)
-    place = placeSphere(
+    place = placeGraph(
       w / h,
       canvas.clientWidth >= besideFrom,
       canvas.clientHeight
@@ -225,24 +295,23 @@ export function mountGraphStage(
 
   const draw = (t: number) => {
     const home = easeInOut(seg(t, 0.3, 3.2))
-    // The sphere's turn: the film's tilt, then a slow spin about its own axis.
-    const [ax, ay, az] = [0.28, t * 0.12, 0.12]
-    const [cx, sx, cy, sy, cz, sz] = [
-      Math.cos(ax),
-      Math.sin(ax),
-      Math.cos(ay),
-      Math.sin(ay),
-      Math.cos(az),
-      Math.sin(az),
+    // The turn: a slow spin about the upright axis, then a slight tilt toward the viewer.
+    const [tilt, spin] = [0.22, t * 0.07]
+    const [cx, sx, cy, sy] = [
+      Math.cos(tilt),
+      Math.sin(tilt),
+      Math.cos(spin),
+      Math.sin(spin),
     ]
-    for (let i = 0; i < NODE_COUNT; i++) {
-      const [hx, hy, hz] = [g.home[i * 3], g.home[i * 3 + 1], g.home[i * 3 + 2]]
-      const x1 = cz * hx - sz * hy
-      const y1 = sz * hx + cz * hy
-      const x2 = cy * x1 + sy * hz
-      const z2 = cy * hz - sy * x1
-      const y3 = cx * y1 - sx * z2
-      const z3 = sx * y1 + cx * z2
+    for (let i = 0; i < count; i++) {
+      const w = g.drift[i]
+      const hx = g.home[i * 3] + w * Math.sin(t * 0.6 + i)
+      const hy = g.home[i * 3 + 1] + w * Math.cos(t * 0.5 + i * 1.3)
+      const hz = g.home[i * 3 + 2] + w * Math.sin(t * 0.4 + i * 0.7)
+      const x2 = cy * hx + sy * hz
+      const z2 = cy * hz - sy * hx
+      const y3 = cx * hy - sx * z2
+      const z3 = sx * hy + cx * z2
       const target = [
         place.x + x2 * place.scale,
         place.y + y3 * place.scale,
@@ -252,8 +321,8 @@ export function mountGraphStage(
         const from = g.scatter[i * 3 + k]
         pos[i * 3 + k] = from + (target[k] - from) * home
       }
-      // The far side of the sphere is dimmed, so it reads as a solid without a depth pass.
-      const facing = 0.16 + 0.84 * easeInOut(seg(z3 / RADIUS, -0.35, 0.5))
+      // nodes on the far side are dimmed, which is what gives the graph its depth
+      const facing = 0.4 + 0.6 * easeInOut(seg(z3 / RADIUS, -1, 0.5))
       front[i] = 1 + (facing - 1) * home
     }
     g.pairs.forEach((n, k) => {
@@ -266,13 +335,14 @@ export function mountGraphStage(
 
     gl.useProgram(lines.p)
     gl.uniformMatrix4fv(lines.u('uProj'), false, proj)
-    gl.uniform1f(lines.u('uAlpha'), 0.5 * easeOut(seg(t, 2.4, 4)))
+    gl.uniform1f(lines.u('uAlpha'), 0.42 * easeOut(seg(t, 2.4, 4)))
     gl.bindBuffer(gl.ARRAY_BUFFER, edgePosBuf)
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, edgePos)
     gl.bindBuffer(gl.ARRAY_BUFFER, edgeFrontBuf)
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, edgeFront)
     bind(lines, 'position', edgePosBuf, 3)
     bind(lines, 'front', edgeFrontBuf, 1)
+    bind(lines, 'color', edgeColorBuf, 3)
     gl.drawArrays(gl.LINES, 0, g.pairs.length)
 
     gl.useProgram(points.p)
@@ -286,21 +356,21 @@ export function mountGraphStage(
     gl.uniform1f(points.u('uHalo'), 1)
     gl.uniform1f(points.u('uGlow'), 0)
     gl.uniform1f(points.u('uAlpha'), 0.5)
-    gl.uniform3f(points.u('uColor'), 0.133, 0.827, 0.933)
     bind(points, 'position', dustPos, 3)
     bind(points, 'size', dustSize, 1)
     gl.disableVertexAttribArray(points.a('front'))
     gl.vertexAttrib1f(points.a('front'), 1)
+    gl.disableVertexAttribArray(points.a('color'))
+    gl.vertexAttrib3f(points.a('color'), 0.133, 0.827, 0.933)
     gl.drawArrays(gl.POINTS, 0, DUST_COUNT)
 
-    // the facts: white, haloed
+    // the nodes: haloed, white hubs and coloured members
     gl.uniform1f(points.u('uRot'), 0)
     gl.uniform1f(points.u('uAperture'), 0.06)
     gl.uniform1f(points.u('uPx'), px * (1 + (place.scale - 1) * home))
     gl.uniform1f(points.u('uHalo'), 3)
     gl.uniform1f(points.u('uGlow'), 0.22)
     gl.uniform1f(points.u('uAlpha'), 1)
-    gl.uniform3f(points.u('uColor'), 1, 1, 1)
     gl.bindBuffer(gl.ARRAY_BUFFER, nodePos)
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, pos)
     gl.bindBuffer(gl.ARRAY_BUFFER, nodeFront)
@@ -308,7 +378,31 @@ export function mountGraphStage(
     bind(points, 'position', nodePos, 3)
     bind(points, 'size', nodeSize, 1)
     bind(points, 'front', nodeFront, 1)
-    gl.drawArrays(gl.POINTS, 0, NODE_COUNT)
+    bind(points, 'color', nodeColor, 3)
+    gl.drawArrays(gl.POINTS, 0, count)
+
+    {
+      const lit = easeOut(seg(t, 3.6, 5))
+      for (let k = 0; k < pulses; k++) {
+        const [a, b] = [g.routes[k * 2], g.routes[k * 2 + 1]]
+        const along = (t * 0.16 + k * 0.37) % 1
+        for (let c = 0; c < 3; c++) {
+          pulsePos[k * 3 + c] =
+            pos[a * 3 + c] + (pos[b * 3 + c] - pos[a * 3 + c]) * along
+        }
+        pulseFront[k] = Math.sin(Math.PI * along) * lit
+      }
+      gl.bindBuffer(gl.ARRAY_BUFFER, pulsePosBuf)
+      gl.bufferSubData(gl.ARRAY_BUFFER, 0, pulsePos)
+      gl.bindBuffer(gl.ARRAY_BUFFER, pulseFrontBuf)
+      gl.bufferSubData(gl.ARRAY_BUFFER, 0, pulseFront)
+      bind(points, 'position', pulsePosBuf, 3)
+      bind(points, 'size', pulseSize, 1)
+      bind(points, 'front', pulseFrontBuf, 1)
+      gl.disableVertexAttribArray(points.a('color'))
+      gl.vertexAttrib3f(points.a('color'), 1, 1, 1)
+      gl.drawArrays(gl.POINTS, 0, pulses)
+    }
   }
 
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
