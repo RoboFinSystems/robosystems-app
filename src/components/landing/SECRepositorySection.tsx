@@ -4,6 +4,7 @@ import { mcpEndpointFor } from '@/lib/mcp'
 import { CHATGPT_PLUGIN_URL, CLAUDE_CONNECTOR_URL } from '@/lib/site'
 import { LiveDemo } from '@robosystems/core/ui-components'
 import Link from 'next/link'
+import GraphGalaxies from './GraphGalaxies'
 import GraphOrb from './GraphOrb'
 
 export default function SECRepositorySection() {
@@ -17,6 +18,7 @@ export default function SECRepositorySection() {
         tint="blue"
         className="top-16 h-[680px] w-[680px]"
       />
+      <GraphGalaxies count={2} keepClear="right" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 text-center">

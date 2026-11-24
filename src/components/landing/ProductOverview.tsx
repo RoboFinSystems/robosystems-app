@@ -3,6 +3,7 @@
 import { BOOK_PATH } from '@/lib/site'
 import { LiveDemo } from '@robosystems/core/ui-components'
 import Dust from './Dust'
+import GraphGalaxies from './GraphGalaxies'
 
 const BOOK_LINK =
   'text-secondary-400 hover:text-secondary-300 text-sm font-medium transition-colors'
@@ -11,6 +12,7 @@ export default function ProductOverview() {
   return (
     <section id="product" className="relative bg-black pb-16 sm:pb-24">
       <Dust />
+      <GraphGalaxies count={2} />
       {/* Main Headline, on the brand film's field: the one band of colour on the page. */}
       <div className="from-secondary-600 via-primary-600 to-accent-500 relative mb-16 bg-linear-to-r px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8">
         <p className="mb-4 text-sm font-semibold tracking-wider text-white/80 uppercase">

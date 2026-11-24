@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Dust from './Dust'
+import GraphGalaxies from './GraphGalaxies'
 
 export default function FeaturesGrid() {
   return (
@@ -8,6 +9,7 @@ export default function FeaturesGrid() {
       className="relative overflow-hidden bg-black py-16 sm:py-24"
     >
       <Dust className="[mask-image:linear-gradient(to_bottom,black_55%,transparent)]" />
+      <GraphGalaxies count={3} />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
