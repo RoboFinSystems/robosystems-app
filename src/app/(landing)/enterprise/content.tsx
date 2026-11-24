@@ -1,10 +1,12 @@
 'use client'
 
 import DeploymentSection from '@/components/landing/DeploymentSection'
+import Dust from '@/components/landing/Dust'
 import EmailForATime from '@/components/landing/EmailForATime'
-import FloatingElementsVariant from '@/components/landing/FloatingElementsVariant'
 import Footer from '@/components/landing/Footer'
+import GraphOrb from '@/components/landing/GraphOrb'
 import Header from '@/components/landing/Header'
+import NodeGlow from '@/components/landing/NodeGlow'
 import SalesContactModal from '@/components/landing/SalesContactModal'
 import { BOOK_PATH } from '@/lib/site'
 import Link from 'next/link'
@@ -217,14 +219,13 @@ export default function EnterpriseContent() {
   return (
     <div className="min-h-screen bg-black">
       <Header />
+      <NodeGlow />
 
       <main className="pt-24">
         {/* Hero */}
         <section className="relative overflow-hidden bg-black py-16 sm:py-24">
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-linear-to-br from-cyan-900/20 via-blue-900/20 to-purple-900/20"></div>
-            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20"></div>
-          </div>
+          <Dust />
+          <GraphOrb side="right" count={1} />
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <div className="mb-6 inline-block rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 text-sm font-medium text-cyan-400">
@@ -256,7 +257,6 @@ export default function EnterpriseContent() {
 
         {/* The three modes */}
         <section className="relative bg-zinc-950 py-16 sm:py-20">
-          <FloatingElementsVariant variant="pricing" />
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center">
               <h2 className={sectionHeading}>Pick where it runs</h2>
@@ -390,7 +390,6 @@ export default function EnterpriseContent() {
 
         {/* Identity & access */}
         <section className="relative bg-zinc-950 py-16 sm:py-20">
-          <FloatingElementsVariant variant="platform" />
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center">
               <h2 className={sectionHeading}>Identity &amp; access</h2>
@@ -405,7 +404,7 @@ export default function EnterpriseContent() {
               {IDENTITY.map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-2xl border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700"
+                  className="node-card rounded-2xl border border-gray-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-gray-700"
                 >
                   <h3 className="font-heading mb-2 text-lg font-semibold text-white">
                     {item.title}
@@ -456,7 +455,7 @@ export default function EnterpriseContent() {
                 {SECURITY.map((line) => (
                   <li
                     key={line}
-                    className="flex items-start rounded-xl border border-gray-800 bg-zinc-900 p-4 text-sm text-gray-300"
+                    className="node-card flex items-start rounded-xl border border-gray-800 bg-zinc-900 p-4 text-sm text-gray-300"
                   >
                     {CHECK}
                     <span>{line}</span>
@@ -496,7 +495,7 @@ export default function EnterpriseContent() {
               {BUYING.map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-2xl border border-gray-800 bg-zinc-900 p-6"
+                  className="node-card rounded-2xl border border-gray-800 bg-zinc-900 p-6"
                 >
                   <h3 className="font-heading mb-2 text-lg font-semibold text-white">
                     {item.title}

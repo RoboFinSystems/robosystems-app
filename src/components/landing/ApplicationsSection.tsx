@@ -2,7 +2,8 @@
 
 import { LogoBadge } from '@robosystems/core/ui-components/Logo'
 import Link from 'next/link'
-import FloatingElementsVariant from './FloatingElementsVariant'
+import GraphGalaxies from './GraphGalaxies'
+import GraphOrb from './GraphOrb'
 
 export default function ApplicationsSection() {
   return (
@@ -10,7 +11,8 @@ export default function ApplicationsSection() {
       id="applications"
       className="relative bg-linear-to-b from-black to-zinc-900 py-16 sm:py-24"
     >
-      <FloatingElementsVariant variant="applications" />
+      <GraphOrb side="left" count={3} />
+      <GraphGalaxies count={2} keepClear="left" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
@@ -23,7 +25,7 @@ export default function ApplicationsSection() {
 
         {/* Application Architecture Diagram */}
         <div className="mx-auto mb-16 max-w-4xl">
-          <div className="hover:border-secondary-500/30 rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900/50 to-zinc-800/20 p-4 hover:bg-zinc-900/20 sm:p-6 md:p-8">
+          <div className="node-card rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900/50 to-zinc-800/20 p-4 hover:bg-zinc-900/20 sm:p-6 md:p-8">
             <h3 className="font-heading mb-4 text-center text-lg font-semibold text-white sm:mb-6 sm:text-xl">
               How It Works
             </h3>

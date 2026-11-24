@@ -2,12 +2,14 @@
 
 import { BOOK_PATH } from '@/lib/site'
 import Link from 'next/link'
-import FloatingElementsVariant from './FloatingElementsVariant'
+import GraphGalaxies from './GraphGalaxies'
+import GraphOrb from './GraphOrb'
 
 export default function OpenSourceSection() {
   return (
     <section id="opensource" className="relative bg-black py-16 sm:py-24">
-      <FloatingElementsVariant variant="opensource" />
+      <GraphOrb side="right" count={2} />
+      <GraphGalaxies count={2} keepClear="right" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
@@ -25,9 +27,9 @@ export default function OpenSourceSection() {
         </div>
 
         {/* Featured GitHub Repository */}
-        <div className="border-secondary-500/50 from-secondary-900/30 to-primary-900/30 hover:border-secondary-500/30 hover:bg-secondary-900/20 mb-8 rounded-2xl border-2 bg-linear-to-br p-4 sm:mb-12 sm:p-6 md:p-8">
+        <div className="node-card border-secondary-500/50 from-secondary-900/30 to-primary-900/30 hover:border-secondary-500/30 hover:bg-secondary-900/20 mb-8 rounded-2xl border-2 bg-linear-to-br p-4 sm:mb-12 sm:p-6 md:p-8">
           <div className="flex flex-col items-center gap-4 sm:gap-6 md:flex-row md:items-start">
-            <div className="from-secondary-600 to-primary-600 flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br sm:h-20 sm:w-20">
+            <div className="node-icon flex h-16 w-16 shrink-0 items-center justify-center sm:h-20 sm:w-20">
               <svg
                 className="h-10 w-10 text-white sm:h-12 sm:w-12"
                 fill="currentColor"
@@ -85,7 +87,7 @@ export default function OpenSourceSection() {
           {/* Left Column */}
           <div className="space-y-6 sm:space-y-8">
             {/* Open Source Philosophy */}
-            <div className="group to-secondary-950/20 hover:border-secondary-500/50 overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 p-4 transition-all sm:p-6 md:p-8">
+            <div className="node-card group overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-4 transition-all sm:p-6 md:p-8">
               <h3 className="font-heading mb-4 text-xl font-semibold text-white sm:mb-6 sm:text-2xl">
                 Why Open Source?
               </h3>
@@ -204,9 +206,9 @@ export default function OpenSourceSection() {
             </div>
 
             {/* Three ways to run it */}
-            <div className="group to-accent-950/20 hover:border-accent-500/50 overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 p-4 transition-all sm:p-6 md:p-8">
+            <div className="node-card group overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-4 transition-all sm:p-6 md:p-8">
               <div className="mb-4 flex items-center gap-3">
-                <div className="bg-accent-500/20 flex h-10 w-10 items-center justify-center rounded-lg">
+                <div className="node-icon flex h-10 w-10 items-center justify-center">
                   <svg
                     className="text-accent-400 h-5 w-5"
                     fill="none"
@@ -308,7 +310,7 @@ export default function OpenSourceSection() {
             {/* Fork & Deploy */}
             <div className="group overflow-hidden rounded-2xl border border-emerald-500/30 bg-linear-to-br from-zinc-900 to-emerald-950/20 p-4 transition-all hover:border-emerald-500/50 sm:p-6 md:p-8">
               <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/20">
+                <div className="node-icon flex h-10 w-10 items-center justify-center">
                   <svg
                     className="h-5 w-5 text-emerald-400"
                     fill="none"
@@ -355,7 +357,7 @@ export default function OpenSourceSection() {
             </div>
 
             {/* Download */}
-            <div className="group border-secondary-500/30 from-secondary-900/30 to-primary-900/20 hover:border-secondary-500/50 overflow-hidden rounded-2xl border bg-linear-to-br p-4 transition-all sm:p-6 md:p-8">
+            <div className="node-card group border-secondary-500/30 from-secondary-900/30 to-primary-900/20 hover:border-secondary-500/50 overflow-hidden rounded-2xl border bg-linear-to-br p-4 transition-all sm:p-6 md:p-8">
               <div className="mb-6 flex items-center justify-between">
                 <h3 className="font-heading text-xl font-semibold text-white sm:text-2xl">
                   Download RoboSystems

@@ -1,9 +1,10 @@
 'use client'
 
 import DeploymentSection from '@/components/landing/DeploymentSection'
+import Dust from '@/components/landing/Dust'
 import EmailForATime from '@/components/landing/EmailForATime'
-import FloatingElementsVariant from '@/components/landing/FloatingElementsVariant'
 import Footer from '@/components/landing/Footer'
+import GraphOrb from '@/components/landing/GraphOrb'
 import Header from '@/components/landing/Header'
 import SalesContactModal from '@/components/landing/SalesContactModal'
 import { BOOK_PATH } from '@/lib/site'
@@ -36,10 +37,8 @@ export default function PricingContent({
       <main className="pt-24">
         {/* Hero Section */}
         <section className="relative overflow-hidden bg-black py-16 sm:py-24">
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-linear-to-br from-cyan-900/20 via-blue-900/20 to-purple-900/20"></div>
-            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20"></div>
-          </div>
+          <Dust />
+          <GraphOrb side="right" count={1} />
 
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
@@ -58,7 +57,6 @@ export default function PricingContent({
 
         {/* Pricing Section */}
         <section className="relative bg-zinc-950 py-16 sm:py-20">
-          <FloatingElementsVariant variant="pricing" intensity={15} />
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <GraphPricing
               isAuthenticated={isAuthenticated}

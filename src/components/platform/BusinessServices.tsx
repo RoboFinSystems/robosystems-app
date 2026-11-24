@@ -1,5 +1,3 @@
-import FloatingElementsVariant from '../landing/FloatingElementsVariant'
-
 export default function BusinessServices() {
   const primaryServices = [
     {
@@ -108,7 +106,6 @@ export default function BusinessServices() {
 
   return (
     <section className="relative bg-gradient-to-b from-zinc-950 to-black py-16 sm:py-20">
-      <FloatingElementsVariant variant="platform-business" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <h2 className="font-heading mb-4 text-3xl font-bold text-white sm:text-4xl">
@@ -145,7 +142,7 @@ export default function BusinessServices() {
             {visionHighlights.map((item, idx) => (
               <div
                 key={idx}
-                className="rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-cyan-950/10 p-6"
+                className="node-card rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-900 to-zinc-800/30 p-6"
               >
                 <h4 className="mb-2 font-semibold text-cyan-400">
                   {item.title}
@@ -157,7 +154,7 @@ export default function BusinessServices() {
         </div>
 
         {/* How It Works */}
-        <div className="rounded-2xl border border-gray-800 bg-zinc-900 p-8">
+        <div className="node-card rounded-2xl border border-gray-800 bg-zinc-900 p-8">
           <h3 className="mb-6 text-center text-xl font-bold text-white">
             How It Works
           </h3>
@@ -168,7 +165,7 @@ export default function BusinessServices() {
                 className={`group rounded-lg border border-gray-800 bg-gradient-to-br from-zinc-900 ${step.bg} p-4 text-center transition-all ${step.border}`}
               >
                 <div
-                  className={`mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg ${step.badge}`}
+                  className={`node-icon mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg ${step.badge}`}
                 >
                   <span className="text-lg font-bold">{idx + 1}</span>
                 </div>
@@ -214,7 +211,7 @@ function PrimaryServiceCard({
     >
       <div className="mb-6 flex items-start gap-4">
         <div
-          className={`flex h-16 w-16 items-center justify-center rounded-xl ${iconColors[color]}`}
+          className={`node-icon flex h-16 w-16 items-center justify-center rounded-xl ${iconColors[color]}`}
         >
           <svg
             className="h-8 w-8"
@@ -292,7 +289,7 @@ function SecondaryServiceCard({
       ></div>
 
       <div
-        className={`mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br ${gradient}`}
+        className={`node-icon mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br ${gradient}`}
       >
         <svg
           className="h-6 w-6 text-white"

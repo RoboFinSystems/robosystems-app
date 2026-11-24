@@ -5,7 +5,8 @@ import { LiveDemo } from '@robosystems/core/ui-components'
 import Link from 'next/link'
 import { useState } from 'react'
 import ContactModal from './ContactModal'
-import FloatingElementsVariant from './FloatingElementsVariant'
+import GraphGalaxies from './GraphGalaxies'
+import GraphOrb from './GraphOrb'
 
 /**
  * The three write lanes an integration can use, in the order the API docs
@@ -62,7 +63,8 @@ export default function BuildSection() {
       id="build"
       className="relative overflow-hidden bg-black py-16 sm:py-24"
     >
-      <FloatingElementsVariant variant="features" intensity={8} />
+      <GraphOrb side="left" count={2} />
+      <GraphGalaxies count={2} keepClear="left" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
@@ -82,9 +84,9 @@ export default function BuildSection() {
           </h3>
           <div className="grid gap-6 md:grid-cols-2">
             {/* QuickBooks */}
-            <div className="rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-green-500/50">
+            <div className="node-card rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300">
               <div className="mb-4 flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-600">
+                <div className="node-icon flex h-12 w-12 items-center justify-center">
                   <span className="text-lg font-bold text-white">QB</span>
                 </div>
                 <div>
@@ -107,9 +109,9 @@ export default function BuildSection() {
             </div>
 
             {/* SEC XBRL */}
-            <div className="hover:border-accent-500/50 rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300">
+            <div className="node-card rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300">
               <div className="mb-4 flex items-center gap-4">
-                <div className="bg-accent-600 flex h-12 w-12 items-center justify-center rounded-lg">
+                <div className="node-icon flex h-12 w-12 items-center justify-center">
                   <span className="text-lg font-bold text-white">SEC</span>
                 </div>
                 <div>
@@ -132,12 +134,9 @@ export default function BuildSection() {
             </div>
 
             {/* Mercury */}
-            <div className="border-secondary-500/40 hover:border-secondary-500/70 shadow-secondary-500/10 relative rounded-xl border bg-zinc-900/50 p-6 shadow-lg transition-all duration-300">
-              <span className="bg-secondary-500/20 text-secondary-300 absolute top-4 right-4 rounded-full px-2 py-1 text-xs font-medium">
-                Coming Soon
-              </span>
+            <div className="node-card border-secondary-500/40 hover:border-secondary-500/70 shadow-secondary-500/10 relative rounded-xl border bg-zinc-900/50 p-6 shadow-lg transition-all duration-300">
               <div className="mb-4 flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-600">
+                <div className="node-icon flex h-12 w-12 items-center justify-center">
                   <svg
                     className="h-7 w-7 text-white"
                     fill="none"
@@ -165,9 +164,9 @@ export default function BuildSection() {
             </div>
 
             {/* Plaid (live since 2026-10-08) */}
-            <div className="border-secondary-500/40 hover:border-secondary-500/70 shadow-secondary-500/10 relative rounded-xl border bg-zinc-900/50 p-6 shadow-lg transition-all duration-300">
+            <div className="node-card border-secondary-500/40 hover:border-secondary-500/70 shadow-secondary-500/10 relative rounded-xl border bg-zinc-900/50 p-6 shadow-lg transition-all duration-300">
               <div className="mb-4 flex items-center gap-4">
-                <div className="bg-primary-600 flex h-12 w-12 items-center justify-center rounded-lg">
+                <div className="node-icon flex h-12 w-12 items-center justify-center">
                   <svg
                     className="h-7 w-7 text-white"
                     fill="none"
@@ -197,7 +196,7 @@ export default function BuildSection() {
         </div>
 
         {/* Extensibility */}
-        <div className="mb-16 rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/50 p-6 sm:p-8">
+        <div className="node-card mb-16 rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/50 p-6 sm:p-8">
           <div className="mx-auto mb-10 max-w-3xl text-center">
             <h3 className="font-heading mb-4 text-xl font-semibold text-white sm:text-2xl">
               Build Your Own Integrations
@@ -303,9 +302,9 @@ export default function BuildSection() {
 
           <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
             {/* MCP Endpoint */}
-            <div className="rounded-xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/20 p-4 transition-all duration-300 hover:border-gray-700 sm:p-6">
+            <div className="node-card rounded-xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/20 p-4 transition-all duration-300 hover:border-gray-700 sm:p-6">
               <div className="mb-4 flex items-center gap-3">
-                <div className="bg-accent-600 flex h-10 w-10 items-center justify-center rounded-lg">
+                <div className="node-icon flex h-10 w-10 items-center justify-center">
                   <span className="text-xl font-bold text-white">AI</span>
                 </div>
                 <h4 className="font-semibold text-white">MCP Endpoint</h4>
@@ -329,9 +328,9 @@ export default function BuildSection() {
             </div>
 
             {/* TypeScript Client */}
-            <div className="rounded-xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/20 p-4 transition-all duration-300 hover:border-gray-700 sm:p-6">
+            <div className="node-card rounded-xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/20 p-4 transition-all duration-300 hover:border-gray-700 sm:p-6">
               <div className="mb-4 flex items-center gap-3">
-                <div className="bg-primary-600 flex h-10 w-10 items-center justify-center rounded-lg">
+                <div className="node-icon flex h-10 w-10 items-center justify-center">
                   <span className="text-xl font-bold text-white">TS</span>
                 </div>
                 <h4 className="font-semibold text-white">TypeScript Client</h4>
@@ -363,9 +362,9 @@ export default function BuildSection() {
             </div>
 
             {/* Python Client */}
-            <div className="rounded-xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/20 p-4 transition-all duration-300 hover:border-gray-700 sm:p-6">
+            <div className="node-card rounded-xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/20 p-4 transition-all duration-300 hover:border-gray-700 sm:p-6">
               <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-600">
+                <div className="node-icon flex h-10 w-10 items-center justify-center">
                   <span className="text-xl font-bold text-white">PY</span>
                 </div>
                 <h4 className="font-semibold text-white">Python Client</h4>

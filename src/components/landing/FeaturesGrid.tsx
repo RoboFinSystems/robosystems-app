@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import FloatingElementsVariant from './FloatingElementsVariant'
+import Dust from './Dust'
+import GraphGalaxies from './GraphGalaxies'
 
 export default function FeaturesGrid() {
   return (
@@ -7,7 +8,8 @@ export default function FeaturesGrid() {
       id="features"
       className="relative overflow-hidden bg-black py-16 sm:py-24"
     >
-      <FloatingElementsVariant variant="features" intensity={10} />
+      <Dust className="[mask-image:linear-gradient(to_bottom,black_55%,transparent)]" />
+      <GraphGalaxies count={3} />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
@@ -24,10 +26,9 @@ export default function FeaturesGrid() {
 
         <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
           {/* Your ledger */}
-          <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-orange-950/20 p-5 transition-all duration-300 hover:border-orange-500/50 sm:p-6 md:p-8">
-            <div className="absolute inset-0 bg-linear-to-br from-orange-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+          <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/20 sm:mb-6 sm:h-14 sm:w-14">
+              <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
                 <svg
                   className="h-7 w-7 text-orange-400"
                   fill="none"
@@ -71,10 +72,9 @@ export default function FeaturesGrid() {
           </div>
 
           {/* The public record */}
-          <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-emerald-950/20 p-5 transition-all duration-300 hover:border-emerald-500/50 sm:p-6 md:p-8">
-            <div className="absolute inset-0 bg-linear-to-br from-emerald-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+          <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/20 sm:mb-6 sm:h-14 sm:w-14">
+              <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
                 <svg
                   className="h-7 w-7 text-emerald-400"
                   fill="none"
@@ -114,10 +114,9 @@ export default function FeaturesGrid() {
           </div>
 
           {/* Your own graphs */}
-          <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-green-950/20 p-5 transition-all duration-300 hover:border-green-500/50 sm:p-6 md:p-8">
-            <div className="absolute inset-0 bg-linear-to-br from-green-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+          <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/20 sm:mb-6 sm:h-14 sm:w-14">
+              <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
                 <svg
                   className="h-7 w-7"
                   xmlns="http://www.w3.org/2000/svg"
@@ -198,10 +197,9 @@ export default function FeaturesGrid() {
           </div>
 
           {/* Subgraphs and memory */}
-          <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-indigo-950/20 p-5 transition-all duration-300 hover:border-indigo-500/50 sm:p-6 md:p-8">
-            <div className="absolute inset-0 bg-linear-to-br from-indigo-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+          <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/20 sm:mb-6 sm:h-14 sm:w-14">
+              <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
                 <svg
                   className="h-7 w-7 text-indigo-400"
                   fill="none"
@@ -242,10 +240,9 @@ export default function FeaturesGrid() {
           </div>
 
           {/* API & SDKs */}
-          <div className="group to-secondary-950/20 hover:border-secondary-500/50 relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 p-5 transition-all duration-300 sm:p-6 md:p-8">
-            <div className="from-secondary-500/5 absolute inset-0 bg-linear-to-br to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+          <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
-              <div className="bg-secondary-500/20 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl sm:mb-6 sm:h-14 sm:w-14">
+              <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
                 <svg
                   className="text-secondary-400 h-7 w-7"
                   fill="none"
@@ -289,10 +286,9 @@ export default function FeaturesGrid() {
           </div>
 
           {/* Security & Isolation */}
-          <div className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-red-950/20 p-5 transition-all duration-300 hover:border-red-500/50 sm:p-6 md:p-8">
-            <div className="absolute inset-0 bg-linear-to-br from-red-500/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+          <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/20 sm:mb-6 sm:h-14 sm:w-14">
+              <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
                 <svg
                   className="h-7 w-7 text-red-400"
                   fill="none"

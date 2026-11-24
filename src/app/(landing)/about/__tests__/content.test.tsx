@@ -8,9 +8,6 @@ vi.mock('@/components/landing/Header', () => ({
 vi.mock('@/components/landing/Footer', () => ({
   default: () => <footer data-testid="footer" />,
 }))
-vi.mock('@/components/landing/FloatingElementsVariant', () => ({
-  default: () => null,
-}))
 vi.mock('@/components/landing/ContactModal', () => ({
   default: ({ isOpen }: { isOpen: boolean }) =>
     isOpen ? <div data-testid="contact-modal" /> : null,

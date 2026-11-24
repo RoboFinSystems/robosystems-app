@@ -2,7 +2,6 @@ import { McpLogo } from '@/components/mcp/McpLogo'
 import { AnimatedLogo } from '@robosystems/core/ui-components/Logo'
 import Image from 'next/image'
 import { HiDocumentText } from 'react-icons/hi'
-import FloatingElementsVariant from '../landing/FloatingElementsVariant'
 
 export default function SchemaArchitecture() {
   const integrations = [
@@ -101,7 +100,6 @@ export default function SchemaArchitecture() {
 
   return (
     <section className="relative bg-black py-16 sm:py-20">
-      <FloatingElementsVariant variant="platform-schema" />
       {/* Architecture Diagram Header */}
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
@@ -117,7 +115,7 @@ export default function SchemaArchitecture() {
 
         {/* Visual Architecture Flow */}
         <div className="mb-16">
-          <div className="rounded-2xl border border-gray-800 bg-gradient-to-b from-zinc-900 to-black p-8">
+          <div className="node-card rounded-2xl border border-gray-800 bg-gradient-to-b from-zinc-900 to-black p-8">
             {/* Data Flow Visualization */}
             <div className="grid gap-8 lg:grid-cols-3">
               {/* Left: Data Sources */}
@@ -273,8 +271,8 @@ export default function SchemaArchitecture() {
 
         {/* Schema Capabilities */}
         <div className="grid gap-6 md:grid-cols-3">
-          <div className="group rounded-xl border border-gray-800 bg-gradient-to-br from-cyan-500/10 to-zinc-900 p-6 transition-all hover:border-cyan-500/50">
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500">
+          <div className="node-card group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-800/60 to-zinc-900 p-6 transition-all">
+            <div className="node-icon mb-4 flex h-12 w-12 items-center justify-center">
               <svg
                 className="h-6 w-6 text-white"
                 fill="none"
@@ -297,8 +295,8 @@ export default function SchemaArchitecture() {
               graph you model yourself takes your own schema instead.
             </p>
           </div>
-          <div className="group rounded-xl border border-gray-800 bg-gradient-to-br from-purple-500/10 to-zinc-900 p-6 transition-all hover:border-purple-500/50">
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-500">
+          <div className="node-card group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-800/60 to-zinc-900 p-6 transition-all">
+            <div className="node-icon mb-4 flex h-12 w-12 items-center justify-center">
               <svg
                 className="h-6 w-6 text-white"
                 fill="none"
@@ -322,8 +320,8 @@ export default function SchemaArchitecture() {
               organization&apos;s
             </p>
           </div>
-          <div className="group rounded-xl border border-gray-800 bg-gradient-to-br from-green-500/10 to-zinc-900 p-6 transition-all hover:border-green-500/50">
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-emerald-500">
+          <div className="node-card group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-800/60 to-zinc-900 p-6 transition-all">
+            <div className="node-icon mb-4 flex h-12 w-12 items-center justify-center">
               <svg
                 className="h-6 w-6 text-white"
                 fill="none"
