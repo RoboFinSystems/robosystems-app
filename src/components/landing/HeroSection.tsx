@@ -6,6 +6,7 @@ import { LiveDemo } from '@robosystems/core/ui-components'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import ContactModal from './ContactModal'
+import Dust from './Dust'
 import GraphStage from './GraphStage'
 
 const TRUST_ROW = [
@@ -41,6 +42,8 @@ export default function HeroSection() {
       <div className="absolute inset-x-0 top-0 h-screen min-h-[640px] [mask-image:linear-gradient(to_bottom,black_72%,transparent)]">
         <GraphStage />
       </div>
+      {/* Below the first screen the dust carries on alone, behind the demo. */}
+      <Dust className="[mask-image:linear-gradient(to_bottom,transparent_60vh,black_105vh)]" />
 
       <div className="relative mx-auto max-w-7xl px-4 pt-[26rem] pb-16 sm:px-6 sm:pb-24 md:pb-32 lg:px-8 xl:pt-32">
         <div className="text-center">

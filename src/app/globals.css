@@ -200,6 +200,34 @@
 }
 
 /* Subtle pulsating gradient animation */
+/* The dust backdrop (Dust.tsx): each layer rises by exactly one tile, so the loop has no seam. */
+@keyframes dust-near {
+  to {
+    transform: translateY(-900px);
+  }
+}
+
+@keyframes dust-far {
+  to {
+    transform: translateY(-620px);
+  }
+}
+
+.animate-dust-near {
+  animation: dust-near 150s linear infinite;
+}
+
+.animate-dust-far {
+  animation: dust-far 260s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-dust-near,
+  .animate-dust-far {
+    animation: none;
+  }
+}
+
 @keyframes pulsate-gradient-subtle {
   0%,
   100% {

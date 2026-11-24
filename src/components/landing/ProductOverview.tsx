@@ -2,29 +2,28 @@
 
 import { BOOK_PATH } from '@/lib/site'
 import { LiveDemo } from '@robosystems/core/ui-components'
-import FloatingElementsVariant from './FloatingElementsVariant'
+import Dust from './Dust'
 
 const BOOK_LINK =
   'text-secondary-400 hover:text-secondary-300 text-sm font-medium transition-colors'
 
 export default function ProductOverview() {
   return (
-    <section id="product" className="relative bg-black py-16 sm:py-24">
-      <FloatingElementsVariant variant="product" />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Main Headline */}
-        <div className="mb-16 text-center">
-          <p className="text-secondary-400 mb-4 text-sm font-semibold tracking-wider uppercase">
-            What it&apos;s for
-          </p>
-          <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-            The numbers tie. The books stay put. The filings sit beside them.
-          </h2>
-          <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            Every number opens to the entries behind it.
-          </p>
-        </div>
-
+    <section id="product" className="relative bg-black pb-16 sm:pb-24">
+      <Dust />
+      {/* Main Headline, on the brand film's field: the one band of colour on the page. */}
+      <div className="from-secondary-600 via-primary-600 to-accent-500 relative mb-16 bg-linear-to-r px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8">
+        <p className="mb-4 text-sm font-semibold tracking-wider text-white/80 uppercase">
+          What it&apos;s for
+        </p>
+        <h2 className="font-heading mx-auto mb-6 max-w-6xl text-3xl font-bold text-white sm:text-4xl md:text-5xl">
+          The numbers tie. The books stay put. The filings sit beside them.
+        </h2>
+        <p className="mx-auto max-w-3xl text-base text-white/90 sm:text-lg md:text-xl">
+          Every number opens to the entries behind it.
+        </p>
+      </div>
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* One fact across the three layers */}
         <div className="mx-auto mb-16 max-w-5xl">
           <LiveDemo

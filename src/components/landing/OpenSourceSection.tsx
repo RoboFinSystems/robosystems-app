@@ -2,12 +2,10 @@
 
 import { BOOK_PATH } from '@/lib/site'
 import Link from 'next/link'
-import FloatingElementsVariant from './FloatingElementsVariant'
 
 export default function OpenSourceSection() {
   return (
     <section id="opensource" className="relative bg-black py-16 sm:py-24">
-      <FloatingElementsVariant variant="opensource" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
