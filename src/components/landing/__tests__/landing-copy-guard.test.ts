@@ -82,7 +82,7 @@ describe('landing copy guard', () => {
       'DeploymentSection.tsx',
       'HeroSection.tsx',
       'GraphPricing.tsx',
-      'FinancialServices.tsx',
+      'SchemaArchitecture.tsx',
       'BlogJsonLd.tsx',
       'opengraph-image.tsx',
       'site.ts',
