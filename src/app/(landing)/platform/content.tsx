@@ -28,14 +28,18 @@ export default function PlatformContent() {
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <h1 className="font-heading mb-6 text-4xl font-bold text-white sm:text-5xl md:text-6xl">
-                Three kinds of graph, one platform
+                Three kinds of knowledge graphs, one platform
               </h1>
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
-                Your ledger and the public filings share the RoboSystems
-                ontology, labelled in XBRL&apos;s standard terms wherever XBRL
-                has one, so your numbers and a public company&apos;s line up.
-                Graphs you model yourself take your own schema instead: define
-                it, load it from Parquet, query it with Cypher. All three run on
+                A graph for your company: its books, or its portfolio and the
+                reports its companies send. Shared repositories of public data
+                to compare it against: today the SEC repository, 8,000+ public
+                companies&apos; filings. And graphs you define yourself from
+                your own schema, loaded from Parquet and queried with Cypher.
+                Your company&apos;s graph and the SEC repository share the
+                RoboSystems ontology, labelled in XBRL&apos;s standard terms
+                wherever XBRL has one, so your numbers and a public
+                company&apos;s compare line for line. All three run on
                 LadybugDB. Beside any graph, a subgraph is a workspace your AI
                 extends over MCP, and semantic memory carries its work across
                 sessions.
@@ -190,37 +194,42 @@ export default function PlatformContent() {
               Talk it through in 20 minutes
             </h2>
             <p className="mb-8 text-lg text-gray-400">
-              Tell us what your finance AI has to tie to, and we&apos;ll say
-              which route fits. Or read the code and the technical docs first.
+              Tell us what you want your AI to read, and we&apos;ll say which
+              route fits.
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
                 href="/register"
-                className="rounded-lg bg-linear-to-r from-cyan-500 to-blue-500 px-8 py-3 font-medium text-white shadow-lg shadow-cyan-500/25 transition-all hover:shadow-cyan-500/40"
+                className="rounded-lg bg-linear-to-r from-cyan-500 to-blue-500 px-8 py-3 font-medium whitespace-nowrap text-white shadow-lg shadow-cyan-500/25 transition-all hover:shadow-cyan-500/40"
               >
                 Start free trial
               </Link>
               <a
                 href={BOOK_PATH}
-                className="rounded-lg border border-gray-700 px-8 py-3 font-medium text-white transition-all hover:border-gray-500"
+                className="rounded-lg border border-gray-700 px-8 py-3 font-medium whitespace-nowrap text-white transition-all hover:border-gray-500"
               >
                 Book 20 minutes
               </a>
+            </div>
+            <p className="mt-6 text-sm text-gray-400">
+              Or read the{' '}
               <Link
                 href="/docs/technical"
-                className="rounded-lg border border-gray-700 bg-zinc-800 px-8 py-3 font-medium text-white transition-all hover:bg-zinc-700"
+                className="text-secondary-400 hover:text-secondary-300"
               >
-                Read the technical docs
-              </Link>
+                technical docs
+              </Link>{' '}
+              and the{' '}
               <a
                 href="https://github.com/RoboFinSystems/robosystems"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-lg border border-gray-700 px-8 py-3 font-medium text-gray-300 transition-all hover:border-gray-500 hover:text-white"
+                className="text-secondary-400 hover:text-secondary-300"
               >
-                Read the code
-              </a>
-            </div>
+                code
+              </a>{' '}
+              first.
+            </p>
           </div>
         </section>
       </main>

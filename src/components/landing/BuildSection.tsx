@@ -45,7 +45,7 @@ const LANES = [
     name: 'Raw graph',
     border: 'border-accent-500/30 hover:border-accent-500/50',
     label: 'text-accent-400',
-    send: 'Parquet or CSV files, staged and materialized into graph nodes and relationships.',
+    send: 'Parquet files, staged and materialized into graph nodes and relationships.',
     enforced: [
       'Per-graph schema',
       'Bulk ingestion pipeline',
@@ -160,6 +160,38 @@ export default function BuildSection() {
                 land in your ledger&apos;s inbox with a suggested category,
                 ready to review and post.
               </p>
+              <div className="mt-3 flex items-center gap-2 text-sm">
+                <a
+                  href="https://mercury.com/partner/robosystems"
+                  target="_blank"
+                  rel="sponsored noopener noreferrer"
+                  className="text-secondary-400 hover:text-secondary-300"
+                >
+                  Need a Mercury account? →
+                </a>
+                {/* Mercury's required not-a-bank disclosure, verbatim from its
+                    partner guidance. Do not paraphrase. Shown on hover, on
+                    keyboard focus and on tap (the button takes focus). */}
+                <span className="group/disclosure relative inline-flex">
+                  <button
+                    type="button"
+                    aria-describedby="mercury-disclosure"
+                    className="flex h-5 w-5 items-center justify-center rounded-full border border-gray-600 text-xs text-gray-400 transition-colors hover:border-gray-400 hover:text-white focus:border-gray-400 focus:text-white focus:outline-none"
+                  >
+                    <span aria-hidden="true">i</span>
+                    <span className="sr-only">Mercury disclosure</span>
+                  </button>
+                  <span
+                    id="mercury-disclosure"
+                    role="tooltip"
+                    className="pointer-events-none invisible absolute bottom-full left-1/2 z-20 mb-2 w-64 -translate-x-1/2 rounded-lg border border-gray-700 bg-zinc-900 p-3 text-xs leading-relaxed text-gray-300 opacity-0 shadow-xl transition-opacity duration-150 group-focus-within/disclosure:visible group-focus-within/disclosure:opacity-100 group-hover/disclosure:visible group-hover/disclosure:opacity-100"
+                  >
+                    Mercury is a fintech company, not an FDIC-insured bank.
+                    Banking services provided through Choice Financial Group and
+                    Column N.A., Members FDIC.
+                  </span>
+                </span>
+              </div>
             </div>
 
             {/* Plaid (live since 2026-10-08) */}

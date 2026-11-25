@@ -12,7 +12,7 @@ const POINTS = [
   'AWS at cost, plus an operations fee and an annual platform fee',
   'Transferable to your own ownership: Account Transfer terms in the MSA from day one',
   'SEC repository access included through a managed-platform account',
-  'Frontier models; open weights are a self-host option',
+  'The platform’s own AI runs Claude through AWS Bedrock; open weights are a self-host option',
 ]
 
 const CHECK = (

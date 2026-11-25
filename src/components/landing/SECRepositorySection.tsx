@@ -18,16 +18,18 @@ export default function SECRepositorySection() {
         {/* Header */}
         <div className="mb-16 text-center">
           <p className="text-secondary-400 mb-4 text-sm font-semibold tracking-wider uppercase">
-            SEC XBRL Repository
+            Shared repository: SEC filings
           </p>
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-            The public record, 14 days to try
+            Your company beside 8,000+ public companies, 14 days to try
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            8,000+ public companies&apos; XBRL filings in a knowledge graph, in
-            the same schema as your ledger, with full-text and semantic search
-            across MD&amp;A, risk factors and notes. Connect from Claude,
-            ChatGPT or any MCP client, with nothing to build.
+            Benchmark your company against its public peers, research a company
+            from its filings, or compare filers with each other. Their XBRL
+            filings sit in a knowledge graph in the same schema as your
+            company&apos;s, with full-text and semantic search across MD&amp;A,
+            risk factors and notes. Connect from Claude, ChatGPT or any MCP
+            client, with nothing to build.
           </p>
         </div>
 

@@ -16,12 +16,13 @@ export default function OpenSourceSection() {
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
             Let us run it, or run it in a segregated AWS account we operate
-            under our SOC 2 program and hand over when you say. Both run
-            frontier models. Or self-host on a box you own, on bare metal, or in
-            your own AWS, where an open-weight model is an option, with help
-            from Harbinger FinLab if you want it. Open source (Apache 2.0 and
-            MIT): you keep the code and the data whatever happens to any vendor,
-            including us. Nothing held hostage.
+            under our SOC 2 program and hand over when you say. On both, the
+            platform&apos;s own AI runs Claude through AWS Bedrock. Or self-host
+            on a box you own, on bare metal, or in your own AWS, where an
+            open-weight model is an option, with help from Harbinger FinLab if
+            you want it. Open source (Apache 2.0 and MIT): you keep the code and
+            the data whatever happens to any vendor, including us. Nothing held
+            hostage.
           </p>
         </div>
 
@@ -46,12 +47,12 @@ export default function OpenSourceSection() {
                 RoboSystems GitHub
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Three kinds of graph on one platform: your ledger, the public
-                filings, and graphs you model yourself from your own schema,
-                loaded from Parquet. All of it is queried with Cypher. The main
-                repository holds all of it: the API server, the infrastructure
-                templates and the deployment workflows, to run locally or in
-                your own cloud.
+                Three kinds of graph on one platform: a graph for your company
+                (its books or its portfolio), shared repositories of public data
+                to compare it against, and graphs you define yourself from your
+                own schema, loaded from Parquet. The main repository holds all
+                of it: the API server, the infrastructure templates and the
+                deployment workflows, to run locally or in your own cloud.
               </p>
               <div className="flex flex-wrap justify-center gap-4 md:justify-start">
                 <a
@@ -196,8 +197,8 @@ export default function OpenSourceSection() {
                       The graph model your ledger and the public filings share,
                       labelled in XBRL&apos;s standard terms wherever XBRL has
                       one. Ledger reports use rs-gaap, the RoboSystems reporting
-                      taxonomy, and leave as XBRL 2.1 or a holon (RDF). A graph
-                      you model yourself takes your own schema.
+                      taxonomy, and leave as a holon (RDF), Tavi JSON or XBRL
+                      2.1. A graph you model yourself takes your own schema.
                     </p>
                   </div>
                 </li>

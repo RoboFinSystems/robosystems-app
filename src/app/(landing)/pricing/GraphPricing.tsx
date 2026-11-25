@@ -187,7 +187,7 @@ export default function GraphPricing({
             Deployment (a segregated AWS account, MSA Schedule B). The per-graph
             isolation claim lives in each tier's description instead. */}
         <div className="mb-4 inline-block rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 text-sm font-medium text-cyan-400">
-          Managed by RFS · frontier models
+          Managed by RFS · Claude via AWS Bedrock
         </div>
         <h2 className="mb-3 text-3xl font-bold text-white">
           Graph Subscriptions
@@ -213,10 +213,10 @@ export default function GraphPricing({
             RoboInvestor
           </a>{' '}
           for its portfolio, or both; a custom graph runs a schema you define.
-          Point its AI at Claude, ChatGPT or any MCP client. Managed graphs run
-          frontier models; an open-weight model is a self-host option. Graphs
-          have no trial: a card starts the subscription. To try first, use the
-          SEC repository&apos;s 14 days.{' '}
+          Point its AI at Claude, ChatGPT or any MCP client. The platform&apos;s
+          own AI runs Claude through AWS Bedrock; an open-weight model is a
+          self-host option. Graphs have no trial: a card starts the
+          subscription. To try first, use the SEC repository&apos;s 14 days.{' '}
           <Link
             href="/docs/guides/graphs-tiers-and-credits"
             className="text-cyan-400 hover:text-cyan-300"

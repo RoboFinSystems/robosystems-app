@@ -12,19 +12,22 @@ export default function FeaturesGrid() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <h2 className="font-heading mb-6 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-            Three kinds of graph, one platform
+            Three kinds of knowledge graphs, one platform
           </h2>
           <p className="mx-auto max-w-3xl text-base text-gray-300 sm:text-lg md:text-xl">
-            Your ledger and the public filings share the RoboSystems ontology,
-            labelled in XBRL&apos;s standard terms wherever XBRL has one. A
-            graph you model yourself takes your own schema. Your AI reaches all
-            of it over MCP, and every answer opens to its entries or its tagged
-            facts.
+            A graph for your company, shared repositories of public data to
+            compare it against, and graphs you define yourself. Your AI reaches
+            all of them over MCP.
+          </p>
+          <p className="mx-auto mt-4 max-w-3xl text-sm text-gray-400 sm:text-base">
+            Your company&apos;s graph and the SEC repository share one ontology,
+            labelled in XBRL&apos;s standard terms wherever XBRL has one, so
+            your numbers and a public company&apos;s compare line for line.
           </p>
         </div>
 
         <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {/* Your ledger */}
+          {/* Your company's graph: the entity graph */}
           <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
               <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
@@ -42,21 +45,22 @@ export default function FeaturesGrid() {
                   />
                 </svg>
               </div>
-              <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
-                Your ledger
+              <h3 className="font-heading mb-1 text-center text-lg font-semibold text-white sm:text-xl">
+                Your company&apos;s graph
               </h3>
+              <p className="mb-3 text-center text-xs font-semibold tracking-wider text-gray-500 uppercase">
+                Entity graph
+              </p>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                RoboLedger&apos;s books mapped onto the ontology, with the
-                fiscal calendar and the close rules.
+                One reporting entity or a whole group. Its books, kept on
+                RoboLedger or read from the ledger you close in today. Or its
+                portfolio on RoboInvestor: positions, and the reports your
+                portfolio companies send.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="mr-2 text-orange-400">•</span>
-                  Chart of accounts mapped to XBRL concepts
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2 text-orange-400">•</span>
-                  Period close, schedules and reconciliations
+                  Reports, the close, plans and metrics
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-orange-400">•</span>
@@ -64,13 +68,13 @@ export default function FeaturesGrid() {
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-orange-400">•</span>
-                  Every number traced to its entry
+                  Every number traced to its source
                 </li>
               </ul>
             </div>
           </div>
 
-          {/* The public record */}
+          {/* Shared repositories */}
           <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
               <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
@@ -88,25 +92,30 @@ export default function FeaturesGrid() {
                   />
                 </svg>
               </div>
-              <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
-                The public record
+              <h3 className="font-heading mb-1 text-center text-lg font-semibold text-white sm:text-xl">
+                Shared repositories
               </h3>
+              <p className="mb-3 text-center text-xs font-semibold tracking-wider text-gray-500 uppercase">
+                Shared repository
+              </p>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                8,000+ SEC filers&apos; XBRL filings in the same schema as your
-                ledger, with search across MD&amp;A, risk factors and notes.
+                Graphs RoboSystems builds from public sources and keeps current,
+                the same for every subscriber. Today: the SEC repository, 8,000+
+                public companies&apos; XBRL filings.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="mr-2 text-emerald-400">•</span>
-                  Full-text and semantic search with hybrid scoring
+                  Benchmark your company against public peers
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-emerald-400">•</span>
-                  Search MD&amp;A, risk factors, and iXBRL disclosures
+                  Research a company from its statements, MD&amp;A, risk factors
+                  and notes
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-emerald-400">•</span>
-                  Statements rendered from the XBRL, not PDF scans
+                  Compare filers with each other
                 </li>
               </ul>
             </div>
@@ -159,11 +168,15 @@ export default function FeaturesGrid() {
                   <circle cx="120" cy="20" r="3" fill="#2C3E50" />
                 </svg>
               </div>
-              <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
+              <h3 className="font-heading mb-1 text-center text-lg font-semibold text-white sm:text-xl">
                 Your own graphs
               </h3>
+              <p className="mb-3 text-center text-xs font-semibold tracking-wider text-gray-500 uppercase">
+                Generic graph
+              </p>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                Bring a schema, load Parquet, query with Cypher.{' '}
+                Your schema, loaded from Parquet, queried with Cypher, for the
+                data that&apos;s specific to your business.{' '}
                 <a
                   href="https://ladybugdb.com/"
                   target="_blank"
@@ -189,7 +202,8 @@ export default function FeaturesGrid() {
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-green-400">•</span>
-                  LanceDB vector indexes for semantic search
+                  Vector search in the graph: find by meaning, then follow the
+                  relationships, in one Cypher query
                 </li>
               </ul>
             </div>
@@ -214,31 +228,32 @@ export default function FeaturesGrid() {
                 </svg>
               </div>
               <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
-                Subgraphs and memory
+                Subgraphs &amp; Memory
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                A subgraph is a workspace beside your graph where your AI adds
-                node and relationship types and writes Cypher over MCP. Semantic
-                memory carries its work between sessions.
+                A subgraph is a workspace beside your graph, where your AI can
+                model something new and query it without touching your books.
+                Memory keeps what it learns about your company between
+                conversations.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="mr-2 text-indigo-400">•</span>
-                  Works with Claude, ChatGPT or any MCP client
+                  Working analysis kept apart from the books
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-indigo-400">•</span>A peer set, a
+                  mapping decision or a note about a close, remembered
                 </li>
                 <li className="flex items-start">
                   <span className="mr-2 text-indigo-400">•</span>
-                  Schema introspection and typed GraphQL reads
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2 text-indigo-400">•</span>
-                  OAuth sign-in or API key authentication
+                  Built by your AI over MCP: Claude, ChatGPT or any MCP client
                 </li>
               </ul>
             </div>
           </div>
 
-          {/* API & SDKs */}
+          {/* Integrations: connections, the public API and the SDKs */}
           <div className="node-card group relative overflow-hidden rounded-2xl border border-gray-800 bg-linear-to-br from-zinc-900 to-zinc-800/30 p-5 transition-all duration-300 sm:p-6 md:p-8">
             <div className="relative">
               <div className="node-icon mx-auto mb-4 flex h-12 w-12 items-center justify-center sm:mb-6 sm:h-14 sm:w-14">
@@ -257,28 +272,30 @@ export default function FeaturesGrid() {
                 </svg>
               </div>
               <h3 className="font-heading mb-3 text-center text-lg font-semibold text-white sm:text-xl">
-                API & SDKs
+                Integrations &amp; API
               </h3>
               <p className="mb-4 text-sm text-gray-300 sm:text-base">
-                The platform REST API: GraphQL for reads, named operations for
-                writes.
+                Bring your other systems into the graph. QuickBooks and bank
+                feeds connect directly; anything else comes in through an
+                integration you write against the public API.
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start">
                   <span className="text-secondary-400 mr-2">•</span>
-                  Extensions GraphQL with per-graph schema introspection
+                  Business events, like invoices and payroll, landed for
+                  approval
                 </li>
                 <li className="flex items-start">
                   <span className="text-secondary-400 mr-2">•</span>
-                  Named operations with idempotency and audit trail
+                  Metrics from any system, captured as facts per period
                 </li>
                 <li className="flex items-start">
                   <span className="text-secondary-400 mr-2">•</span>
-                  TypeScript and Python SDKs with full types
+                  Files from a warehouse, loaded from Parquet
                 </li>
                 <li className="flex items-start">
                   <span className="text-secondary-400 mr-2">•</span>
-                  SSE streaming for real-time operation progress
+                  TypeScript and Python SDKs, and a template to start from
                 </li>
               </ul>
             </div>

@@ -14,7 +14,7 @@ export const SITE_TITLE =
   'RoboSystems: the open-source knowledge graph for finance'
 
 export const SITE_DESCRIPTION =
-  "Finance AI that ties to the books. Your general ledger and public companies' XBRL filings as traceable data for your AI, on your infrastructure. Open source."
+  "The open-source knowledge graph for finance: your company's books or portfolio as facts your AI can trace, beside 8,000+ public companies' SEC filings."
 
 // The public booking page (Thursday and Friday afternoons). Pages link to BOOK_PATH, never
 // to this URL: next.config.js redirects /book here, so the scheduler can change without a

@@ -93,11 +93,12 @@ export default function AboutContent() {
                 The open-source knowledge graph for finance
               </h1>
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
-                RoboSystems gives your AI agents your general ledger and public
-                companies&apos; filings as structured, traceable data, on your
-                infrastructure, with the model you choose. It&apos;s built by an
-                inactive CPA and ex-Workiva knowledge engineer, and our own
-                companies&apos; books are kept on it.
+                RoboSystems gives your AI agents your company&apos;s books or
+                portfolio, and public companies&apos; filings to compare them
+                against, as structured, traceable data, on your infrastructure,
+                with the model you choose. It&apos;s built by an ex-Workiva
+                principal financial knowledge engineer and inactive CPA, and our
+                own companies&apos; books are kept on it.
               </p>
             </div>
           </div>

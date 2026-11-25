@@ -19,7 +19,7 @@ export const BLOG_FEED = [
 ]
 
 export const BLOG_DESCRIPTION =
-  'How we build finance AI that ties to the books: the knowledge graph, the ledger and the public filings.'
+  'How we build the open-source knowledge graph for finance: the graph, the ledger and the public filings.'
 
 /** One JSON-LD block. `</` is escaped so post text can never break out of the script. */
 function JsonLd({ data }: { data: Record<string, unknown> }) {

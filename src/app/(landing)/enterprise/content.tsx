@@ -63,7 +63,7 @@ const MODES: Mode[] = [
   {
     name: 'Dedicated Deployment',
     tagline: 'A segregated AWS account · run by us',
-    body: 'The same platform in a segregated AWS account, run by us under our SOC 2 program and handed over when you say. Frontier models only. Sign in from your identity provider and provision users from it. Read-only visibility into the account, always.',
+    body: 'The same platform in a segregated AWS account, run by us under our SOC 2 program and handed over when you say. The platform’s own AI runs Claude through AWS Bedrock. Sign in from your identity provider and provision users from it. Read-only visibility into the account, always.',
     facts: [
       {
         label: 'Price',
@@ -150,8 +150,8 @@ const COMPARISON: Array<{ row: string; m: string; d: string; s: string }> = [
   },
   {
     row: 'AI models',
-    m: 'Frontier models',
-    d: 'Frontier models',
+    m: 'Claude through AWS Bedrock, plus any MCP client you connect',
+    d: 'Claude through AWS Bedrock in your segregated account, plus any MCP client you connect',
     s: 'Your choice, including an open-weight model on your own hardware',
   },
 ]

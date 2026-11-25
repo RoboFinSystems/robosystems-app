@@ -6,7 +6,7 @@ export const metadata: Metadata = publicPageMetadata({
   path: '/platform',
   title: 'Knowledge graph platform for finance | RoboSystems',
   description:
-    "Three kinds of graph on one platform: your ledger, public companies' XBRL filings, and graphs you model yourself from your own schema.",
+    "Three kinds of knowledge graphs on one platform: your company's books or portfolio, public companies' SEC filings to compare against, and your own schema.",
 })
 
 export default function PlatformPage() {

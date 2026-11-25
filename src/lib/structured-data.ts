@@ -18,7 +18,7 @@ export const organizationJsonLd = {
   url: 'https://robosystems.ai',
   logo: 'https://robosystems.ai/images/logos/robosystems-icon.png',
   description:
-    "The open-source knowledge graph for finance: your general ledger and public companies' XBRL filings as traceable data for AI agents.",
+    "The open-source knowledge graph for finance: a company's books or portfolio and public companies' SEC filings as traceable data for AI agents.",
   sameAs: [
     'https://github.com/RoboFinSystems',
     'https://x.com/robofinsystems',
@@ -55,7 +55,7 @@ export const softwareJsonLd = {
     priceCurrency: 'USD',
   },
   description:
-    "Finance AI that ties to the books: an open-source knowledge graph holding your general ledger and 8,000+ public companies' XBRL filings, served to your AI over MCP.",
+    "An open-source knowledge graph for finance, holding your company's books or portfolio beside 8,000+ public companies' SEC filings, served to your AI over MCP.",
   screenshot: 'https://robosystems.ai/images/og-preview.png',
   featureList: [
     'Knowledge graph database',
