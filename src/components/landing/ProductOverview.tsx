@@ -11,10 +11,10 @@ export default function ProductOverview() {
       {/* Main Headline, on the brand film's field: the one band of colour on the page. */}
       <div className="from-secondary-600 via-primary-600 to-accent-500 relative mb-16 bg-linear-to-r px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8">
         <p className="mb-4 text-sm font-semibold tracking-wider text-white/80 uppercase">
-          What you get
+          Why a knowledge graph
         </p>
         <h2 className="font-heading mx-auto mb-6 max-w-6xl text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-          Finance AI that ties to the books.
+          What your AI gets from the graph.
         </h2>
       </div>
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
