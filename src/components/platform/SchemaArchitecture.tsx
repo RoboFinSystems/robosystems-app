@@ -78,16 +78,25 @@ const ACCESS: {
     line: 'One set of tools from Claude, ChatGPT or any MCP client',
   },
   {
+    name: 'AI Operators',
+    line: 'The platform’s own AI behind the console and the background work, Claude through AWS Bedrock, paid in credits. MCP and the API use none',
+  },
+  {
     name: 'API',
     line: 'GraphQL and REST, with Python and TypeScript clients',
   },
   {
     name: 'Report files',
     line: 'Every report and filing is a file you can keep and open without us',
-    formats: ['Holon (RDF)', 'XBRL 2.1', 'Tavi JSON'],
+    formats: ['Holon (RDF)', 'DataBook', 'Tavi JSON', 'XBRL 2.1'],
     links: [
       { label: 'Open one in the xbrlkit viewer', href: 'https://xbrlkit.com' },
     ],
+  },
+  {
+    name: 'Graph backup',
+    line: 'The whole graph, backed up nightly, downloads as a LadybugDB file to open in G.V() or query from Python',
+    formats: ['LadybugDB (.lbdb)'],
   },
 ]
 
