@@ -78,6 +78,10 @@ const ACCESS: {
     line: 'One set of tools from Claude, ChatGPT or any MCP client',
   },
   {
+    name: 'AI Operators',
+    line: 'The platform’s own AI behind the console and the background work, Claude through AWS Bedrock, paid in credits. MCP and the API use none',
+  },
+  {
     name: 'API',
     line: 'GraphQL and REST, with Python and TypeScript clients',
   },
@@ -93,12 +97,6 @@ const ACCESS: {
     name: 'Graph backup',
     line: 'The whole graph, backed up nightly, downloads as a LadybugDB file to open in G.V() or query from Python',
     formats: ['LadybugDB (.lbdb)'],
-    links: [
-      {
-        label: 'How to download one',
-        href: '/docs/technical/graph-operations#downloading-and-unpacking-a-backup',
-      },
-    ],
   },
 ]
 
