@@ -89,6 +89,17 @@ const ACCESS: {
       { label: 'Open one in the xbrlkit viewer', href: 'https://xbrlkit.com' },
     ],
   },
+  {
+    name: 'Graph backup',
+    line: 'The whole graph, backed up nightly, downloads as a LadybugDB file to open in G.V() or query from Python',
+    formats: ['LadybugDB (.lbdb)'],
+    links: [
+      {
+        label: 'How to download one',
+        href: '/docs/technical/graph-operations#downloading-and-unpacking-a-backup',
+      },
+    ],
+  },
 ]
 
 type Tone = 1 | 2 | 3
