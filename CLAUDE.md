@@ -44,7 +44,7 @@ npm run format:check # Check code formatting
 
 **Route Structure:**
 
-- `(app)` route group: Authenticated pages (home, dashboard, activity, console, memory, graphs, schema, tables, subgraphs, backups, connect, repositories, documents, search, usage, organization, settings, checkout); `/billing` is a redirect kept for Stripe's portal
+- `(app)` route group: Authenticated pages (home, dashboard, activity, memory, graphs, schema, tables, subgraphs, backups, connect, repositories, documents, search, usage, organization, settings, checkout); `/billing` is a redirect kept for Stripe's portal, and `/console` opens the console drawer (core's, on every page) and redirects home
 - `(landing)` route group: Public pages (login, logout, register, auth, pricing, platform, about, enterprise, legal pages)
 - `(blog)` route group: Blog posts. The research pages moved to roboinvestor.ai, and `/research` redirects there
 - `(docs)` route group: Public docs
