@@ -24,6 +24,9 @@ const RETIRED = [
   'give it the filings',
   'traces back to its filing',
   'read the filings',
+  // The headline until 2026-11-18, when the category line took the H1; the
+  // band under the hero carried it as a heading until 2026-11-24.
+  'finance ai that ties to the books',
 ]
 
 const landingDir = path.resolve(__dirname, '..')
