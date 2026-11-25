@@ -84,7 +84,7 @@ const ACCESS: {
   {
     name: 'Report files',
     line: 'Every report and filing is a file you can keep and open without us',
-    formats: ['Holon (RDF)', 'XBRL 2.1', 'Tavi JSON'],
+    formats: ['Holon (RDF)', 'DataBook', 'Tavi JSON', 'XBRL 2.1'],
     links: [
       { label: 'Open one in the xbrlkit viewer', href: 'https://xbrlkit.com' },
     ],

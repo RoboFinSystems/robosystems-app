@@ -187,8 +187,8 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Report Creator: reports leave as a holon (RDF), Tavi
-                        JSON or XBRL 2.1, with publish lists
+                        Report Creator: reports leave as a holon (RDF), a
+                        DataBook, Tavi JSON or XBRL 2.1, with publish lists
                       </span>
                     </li>
                   </ul>
