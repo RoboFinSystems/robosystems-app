@@ -59,7 +59,7 @@ const carried = [
     body: 'A mapping decision, a counterparty you always treat a certain way, a note about a close: kept on the graph across conversations.',
   },
   {
-    title: 'The public record beside it',
+    title: 'Public peers to compare against',
     body: 'The filings of 8,000+ public companies in the same ontology, each number traced to its tagged fact.',
   },
 ]

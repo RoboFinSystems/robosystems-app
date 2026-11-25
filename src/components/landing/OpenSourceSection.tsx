@@ -194,12 +194,12 @@ export default function OpenSourceSection() {
                       The RoboSystems ontology
                     </strong>
                     <p className="mt-1 text-sm break-words">
-                      The graph model your ledger and the public filings share,
-                      labelled in XBRL&apos;s standard terms wherever XBRL has
-                      one. Ledger reports use rs-gaap, the RoboSystems reporting
-                      taxonomy, and leave as a holon (RDF), a DataBook, Tavi
-                      JSON or XBRL 2.1. A graph you model yourself takes your
-                      own schema.
+                      The graph model your company’s graph and the public
+                      filings share, labelled in XBRL&apos;s standard terms
+                      wherever XBRL has one. Ledger reports use rs-gaap, the
+                      RoboSystems reporting taxonomy, and leave as a holon
+                      (RDF), a DataBook, Tavi JSON or XBRL 2.1. A graph you
+                      model yourself takes your own schema.
                     </p>
                   </div>
                 </li>
