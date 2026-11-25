@@ -72,6 +72,9 @@ export default function ApplicationsSection() {
           {/* RoboLedger */}
           <div className="border-secondary-500/30 from-secondary-900/20 to-primary-900/20 hover:bg-secondary-900/20 relative flex flex-col overflow-hidden rounded-2xl border bg-linear-to-br">
             <div className="flex flex-1 flex-col p-5 sm:p-6 md:p-8">
+              <p className="text-secondary-400 mb-3 text-xs font-semibold tracking-wider uppercase">
+                Inside your company
+              </p>
               <Link
                 href="https://roboledger.ai"
                 target="_blank"
@@ -84,9 +87,6 @@ export default function ApplicationsSection() {
                   className="h-14 w-14"
                 />
                 <div>
-                  <p className="text-secondary-400 text-xs font-semibold tracking-wider uppercase">
-                    Inside your company
-                  </p>
                   <h3 className="font-heading text-xl font-bold text-white sm:text-2xl">
                     RoboLedger
                   </h3>
@@ -134,6 +134,21 @@ export default function ApplicationsSection() {
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>Trial balance with full debit/credit detail</span>
                     </li>
+                    <li className="flex items-start">
+                      <span className="text-secondary-400 mr-2">•</span>
+                      <span>
+                        <a
+                          href="https://mercury.com/partner/robosystems"
+                          target="_blank"
+                          rel="sponsored noopener noreferrer"
+                          className="text-secondary-300 hover:text-secondary-200 underline-offset-2 hover:underline"
+                        >
+                          Mercury
+                        </a>{' '}
+                        and Plaid bank feeds: posted transactions land in the
+                        inbox with a suggested account
+                      </span>
+                    </li>
                   </ul>
                 </div>
 
@@ -172,7 +187,8 @@ export default function ApplicationsSection() {
                     <li className="flex items-start">
                       <span className="text-secondary-400 mr-2">•</span>
                       <span>
-                        Report Creator: XBRL 2.1 export with publish lists
+                        Report Creator: reports leave as a holon (RDF), Tavi
+                        JSON or XBRL 2.1, with publish lists
                       </span>
                     </li>
                   </ul>
@@ -233,6 +249,9 @@ export default function ApplicationsSection() {
           {/* RoboInvestor */}
           <div className="to-primary-900/20 relative flex flex-col overflow-hidden rounded-2xl border border-green-500/30 bg-linear-to-br from-green-900/20 hover:bg-green-900/20">
             <div className="flex flex-1 flex-col p-5 sm:p-6 md:p-8">
+              <p className="mb-3 text-xs font-semibold tracking-wider text-green-400 uppercase">
+                Outside your company
+              </p>
               <Link
                 href="https://roboinvestor.ai"
                 target="_blank"
@@ -245,9 +264,6 @@ export default function ApplicationsSection() {
                   className="h-14 w-14"
                 />
                 <div>
-                  <p className="text-xs font-semibold tracking-wider text-green-400 uppercase">
-                    Outside your company
-                  </p>
                   <h3 className="font-heading text-xl font-bold text-white sm:text-2xl">
                     RoboInvestor
                   </h3>
@@ -257,7 +273,7 @@ export default function ApplicationsSection() {
                 </div>
               </Link>
 
-              <p className="mb-4 text-sm text-green-300/80">
+              <p className="mb-6 text-gray-300">
                 Equity research on public companies, your fund&apos;s positions
                 with their terms, and your portfolio companies&apos; reports:
                 shared from RoboLedger, or read from the PDF or spreadsheet they

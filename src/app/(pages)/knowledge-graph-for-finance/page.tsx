@@ -206,28 +206,40 @@ export default function KnowledgeGraphForFinancePage() {
 
           <Section title="Three kinds of graph on one platform">
             <p>
-              Your ledger and the public filings share the RoboSystems ontology,
-              labelled in XBRL&apos;s standard terms wherever XBRL has one, so
-              your numbers and a public company&apos;s line up. Graphs you model
-              yourself take your own schema instead: define it, load it from
-              Parquet, query it with Cypher. All three run on LadybugDB.
+              A graph for your company, shared repositories of public data to
+              compare it against, and graphs you define yourself. Your
+              company&apos;s graph and the SEC repository share the RoboSystems
+              ontology, labelled in XBRL&apos;s standard terms wherever XBRL has
+              one, so your numbers and a public company&apos;s compare line for
+              line. All three run on LadybugDB.
             </p>
             <ul className="list-disc space-y-2 pl-6">
               <li>
-                <strong className="text-white">Ledger graphs:</strong>{' '}
-                RoboLedger, the general ledger built on RoboSystems, with close,
+                <strong className="text-white">
+                  Your company&apos;s graph (an entity graph):
+                </strong>{' '}
+                one reporting entity or a whole group. Its books on RoboLedger,
+                the general ledger built on RoboSystems, with close,
                 consolidation, schedules, bank feeds, reconciliations and
-                forecasting, every number traced to the entry.
+                forecasting, every number traced to the entry. Or its portfolio
+                on RoboInvestor: positions, and the reports your portfolio
+                companies send.
               </li>
               <li>
-                <strong className="text-white">The SEC repository:</strong>{' '}
-                8,000+ public companies&apos; 10-K, 10-Q, 20-F and 40-F filings,
-                updated every weekday.{' '}
+                <strong className="text-white">Shared repositories:</strong>{' '}
+                graphs RoboSystems builds from public sources and keeps current,
+                the same for every subscriber, to benchmark your company against
+                public peers and research a company from its filings. Today: the
+                SEC repository, 8,000+ public companies&apos; 10-K, 10-Q, 20-F
+                and 40-F filings, updated every weekday.{' '}
                 <TextLink href="/sec-edgar-api">The SEC EDGAR API →</TextLink>
               </li>
               <li>
-                <strong className="text-white">Your own graphs:</strong> bring a
-                schema, load Parquet, query with Cypher.
+                <strong className="text-white">
+                  Your own graphs (generic graphs):
+                </strong>{' '}
+                your schema, loaded from Parquet, queried with Cypher, for the
+                data that&apos;s specific to your business.
               </li>
             </ul>
           </Section>
@@ -244,8 +256,8 @@ export default function KnowledgeGraphForFinancePage() {
               your own hardware.
             </p>
             <p>
-              Built by an inactive CPA and ex-Workiva knowledge engineer. Our
-              own companies&apos; books are kept on it.
+              Built by an ex-Workiva principal financial knowledge engineer and
+              inactive CPA. Our own companies&apos; books are kept on it.
             </p>
           </Section>
 

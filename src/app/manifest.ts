@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'RoboSystems: the open-source knowledge graph for finance',
     short_name: 'RoboSystems',
     description:
-      "Finance AI that ties to the books: your general ledger and public companies' XBRL filings as traceable data for your AI, over MCP.",
+      "The open-source knowledge graph for finance: your company's books or portfolio as traceable data for your AI, beside public companies' SEC filings, over MCP.",
     start_url: '/',
     display: 'standalone',
     background_color: '#000000',

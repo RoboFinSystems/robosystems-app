@@ -45,10 +45,11 @@ export default function PricingContent({
                 Run it with us, or run it yourself
               </h1>
               <p className="mx-auto max-w-3xl text-lg text-gray-300 sm:text-xl">
-                Managed hosting and Dedicated are run by RFS LLC on frontier
-                models. Self-hosting is free under Apache 2.0 and MIT. Queries,
-                MCP tools and API calls are included; credits are only for AI
-                agent calls.
+                Managed hosting and Dedicated are run by RFS LLC, and the
+                platform&apos;s own AI runs Claude through AWS Bedrock.
+                Self-hosting is free under Apache 2.0 and MIT. Queries, MCP
+                tools and API calls are included; credits are only for AI agent
+                calls.
               </p>
             </div>
           </div>

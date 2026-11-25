@@ -1,11 +1,7 @@
 'use client'
 
-import { BOOK_PATH } from '@/lib/site'
 import { Dust, GraphGalaxies } from '@robosystems/core/graph-stage'
 import { LiveDemo } from '@robosystems/core/ui-components'
-
-const BOOK_LINK =
-  'text-secondary-400 hover:text-secondary-300 text-sm font-medium transition-colors'
 
 export default function ProductOverview() {
   return (
@@ -15,14 +11,11 @@ export default function ProductOverview() {
       {/* Main Headline, on the brand film's field: the one band of colour on the page. */}
       <div className="from-secondary-600 via-primary-600 to-accent-500 relative mb-16 bg-linear-to-r px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8">
         <p className="mb-4 text-sm font-semibold tracking-wider text-white/80 uppercase">
-          What it&apos;s for
+          What you get
         </p>
         <h2 className="font-heading mx-auto mb-6 max-w-6xl text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-          The numbers tie. The books stay put. The filings sit beside them.
+          Finance AI that ties to the books.
         </h2>
-        <p className="mx-auto max-w-3xl text-base text-white/90 sm:text-lg md:text-xl">
-          Every number opens to the entries behind it.
-        </p>
       </div>
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* One fact across the three layers */}
@@ -36,10 +29,10 @@ export default function ProductOverview() {
           />
         </div>
 
-        {/* The three jobs */}
+        {/* What you get, one card each */}
         <div className="mx-auto max-w-5xl">
           <div className="grid gap-6 md:grid-cols-3">
-            {/* The numbers don't tie */}
+            {/* Every number opens to its source */}
             <div className="node-card group flex flex-col rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
               {/* the link to the next card */}
               <span aria-hidden="true" className="node-link">
@@ -61,18 +54,16 @@ export default function ProductOverview() {
                 </svg>
               </div>
               <h4 className="mb-2 font-semibold text-white">
-                The numbers don&apos;t tie
+                Every number opens to its source
               </h4>
-              <p className="mb-4 flex-1 text-sm text-gray-400">
-                Your finance agent needs the books, not a CSV export: the chart,
-                the calendar, the close rules, every number traced to its entry.
+              <p className="flex-1 text-sm text-gray-400">
+                When your AI says gross margin fell two points, you click the
+                figure and see the entries behind it. Nobody redoes the work to
+                trust the answer.
               </p>
-              <a href={BOOK_PATH} className={BOOK_LINK}>
-                Book 20 minutes &rarr;
-              </a>
             </div>
 
-            {/* The books can't leave */}
+            {/* Your books stay where they are */}
             <div className="node-card group flex flex-col rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
               {/* the link to the next card */}
               <span aria-hidden="true" className="node-link">
@@ -94,21 +85,17 @@ export default function ProductOverview() {
                 </svg>
               </div>
               <h4 className="mb-2 font-semibold text-white">
-                The books can&apos;t leave
+                Your books stay where they are
               </h4>
-              <p className="mb-4 flex-1 text-sm text-gray-400">
-                AI on your clients&apos; books without the books leaving your
-                control. Client confidentiality, data residency, or a legal team
-                that won&apos;t send the ledger to a vendor&apos;s AI. Run it in
-                your cloud or on your own server, with the model you choose.
-                Your data trains no one&apos;s model.
+              <p className="flex-1 text-sm text-gray-400">
+                Your ERP is only read, and nothing changes for the people who
+                close in it. If the data can&apos;t leave your control, run the
+                whole platform in your own cloud. Your data trains no one&apos;s
+                model.
               </p>
-              <a href={BOOK_PATH} className={BOOK_LINK}>
-                Book 20 minutes &rarr;
-              </a>
             </div>
 
-            {/* The filings and the books live apart */}
+            {/* Your company beside its public peers */}
             <div className="node-card group flex flex-col rounded-xl border border-gray-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-gray-700">
               <div className="node-icon mb-4 flex h-12 w-12 items-center justify-center">
                 <svg
@@ -126,16 +113,12 @@ export default function ProductOverview() {
                 </svg>
               </div>
               <h4 className="mb-2 font-semibold text-white">
-                The filings and the books live apart
+                Your company beside its public peers
               </h4>
-              <p className="mb-4 flex-1 text-sm text-gray-400">
-                Your ledger and 8,000+ public companies&apos; XBRL filings, in
-                one ontology, with every number traced back to the entry or the
-                tagged fact.
+              <p className="flex-1 text-sm text-gray-400">
+                Your company, or each company in your portfolio, beside the
+                public companies it competes with, from their SEC filings.
               </p>
-              <a href={BOOK_PATH} className={BOOK_LINK}>
-                Book 20 minutes &rarr;
-              </a>
             </div>
           </div>
         </div>

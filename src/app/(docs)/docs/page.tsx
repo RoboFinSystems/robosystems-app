@@ -51,7 +51,7 @@ const GUIDE_DOORS: Door[] = [
   {
     title: 'RoboInvestor',
     href: 'https://roboinvestor.ai/docs',
-    body: "Equity research on public companies, your fund's positions with their terms, and your portfolio companies' reports: shared from RoboLedger, or read from the PDF or spreadsheet they send. Building next: positions linked to the ledger, brokerage sync and portfolio analytics.",
+    body: 'Your portfolio on one graph: positions with their terms, and the reports your companies send, from RoboLedger or a PDF or spreadsheet, from Claude, ChatGPT or any MCP client.',
     external: true,
     productSite: 'roboinvestor',
   },

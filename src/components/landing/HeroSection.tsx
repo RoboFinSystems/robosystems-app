@@ -47,21 +47,19 @@ export default function HeroSection() {
       <div className="relative mx-auto max-w-7xl px-4 pt-[26rem] pb-16 sm:px-6 sm:pb-24 md:pb-32 lg:px-8 xl:pt-32">
         <div className="text-center">
           <div className="xl:max-w-[40rem] xl:text-left">
-            <p className="font-heading text-secondary-300 mb-4 text-xs font-semibold tracking-[0.3em] uppercase md:mb-6">
-              The open-source knowledge graph for finance
-            </p>
             <h1 className="font-heading mb-6 text-4xl leading-tight font-extrabold sm:text-5xl md:mb-8 md:text-7xl xl:mb-6 xl:text-6xl">
-              <span className="text-white">Finance AI</span>
+              <span className="text-white">
+                The open-source knowledge graph
+              </span>
               <span className="text-secondary-300 mt-2 block pb-2">
-                that ties to the books.
+                for finance.
               </span>
             </h1>
 
             <p className="mx-auto mt-6 max-w-3xl text-base leading-relaxed text-gray-300 sm:text-lg md:mt-8 md:text-2xl xl:mx-0 xl:mt-6 xl:text-xl">
-              RoboSystems is an open-source knowledge graph that gives your AI
-              agents your general ledger and public companies&apos; filings as
-              structured, traceable data, on your infrastructure, with the model
-              you choose.
+              Your company&apos;s books or portfolio as a knowledge graph your
+              AI reads correctly, beside 8,000+ public companies&apos; SEC
+              filings, on code you keep.
             </p>
             <p className="mx-auto mt-4 max-w-3xl text-base leading-relaxed text-white sm:text-lg md:text-xl xl:mx-0 xl:text-lg">
               Keep your ERP and your books where they are today, or keep your
@@ -69,8 +67,8 @@ export default function HeroSection() {
               graph of them.
             </p>
             <p className="mx-auto mt-4 max-w-3xl text-sm text-gray-400 sm:text-base xl:mx-0">
-              Built by an inactive CPA and ex-Workiva knowledge engineer. Our
-              own companies&apos; books are kept on it.
+              Built by an ex-Workiva principal financial knowledge engineer and
+              inactive CPA. Our own companies&apos; books are kept on it.
             </p>
 
             {/* CTA Buttons */}

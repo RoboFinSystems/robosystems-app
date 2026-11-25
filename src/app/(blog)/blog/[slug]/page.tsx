@@ -215,8 +215,8 @@ export default async function BlogPostPage({
             <h3 className="font-bold text-white">{post.author}</h3>
             <p className="mt-1 text-gray-400">
               RoboSystems, the open-source knowledge graph for finance, is built
-              by an inactive CPA and ex-Workiva knowledge engineer. Our own
-              companies&apos; books are kept on it.
+              by an ex-Workiva principal financial knowledge engineer and
+              inactive CPA. Our own companies&apos; books are kept on it.
             </p>
           </div>
         </div>
@@ -226,7 +226,7 @@ export default async function BlogPostPage({
       <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="rounded-xl border border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 via-blue-500/10 to-purple-500/10 p-8 text-center">
           <h3 className="mb-4 text-2xl font-bold text-white">
-            Finance AI that ties to the books
+            The open-source knowledge graph for finance
           </h3>
           <p className="mb-6 text-gray-300">
             Talk it through in 20 minutes, or read the code first.

@@ -30,7 +30,7 @@ const SOURCES = [
   },
 ]
 
-// Tools carry the names they have in the API and in an MCP client.
+// Each chip names what an operation does, short enough to sit on one row.
 const JOBS = [
   {
     job: 'Query',
@@ -45,12 +45,12 @@ const JOBS = [
   {
     job: 'Search and recall',
     does: 'Find the passage in filings and your documents; keep what matters between sessions.',
-    tools: ['Search Graph Documents', 'Search Text', 'Recall Semantic Memory'],
+    tools: ['Search Documents', 'Create Memory', 'Recall Semantic Memory'],
   },
   {
     job: 'Load',
     does: 'Stage your files and write them into the graph.',
-    tools: ['Create Connection', 'Materialize Graph'],
+    tools: ['Upload File', 'Stage File', 'Materialize'],
   },
   {
     job: 'Run',
@@ -470,12 +470,11 @@ export default function SchemaArchitecture() {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 text-lg font-semibold text-white">
-              Domain Extensions
-            </h3>
+            <h3 className="mb-2 text-lg font-semibold text-white">Ontology</h3>
             <p className="text-sm text-gray-400">
-              Ledger and portfolio graphs start from the RoboSystems ontology. A
-              graph you model yourself takes your own schema instead.
+              Use the RoboSystems ontology, with its domain extensions for the
+              books (RoboLedger) and the portfolio (RoboInvestor). Or define
+              your own ontology and materialize your graph from Parquet.
             </p>
           </div>
           <div className="node-card group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-800/60 to-zinc-900 p-6 transition-all">
@@ -500,7 +499,8 @@ export default function SchemaArchitecture() {
             <p className="text-sm text-gray-400">
               Each graph runs on its own graph-database instance, and its ledger
               in its own database schema, so your data never mixes with another
-              organization&apos;s
+              organization&apos;s. Every graph is backed up nightly and
+              downloads whole.
             </p>
           </div>
           <div className="node-card group rounded-xl border border-gray-800 bg-gradient-to-br from-zinc-800/60 to-zinc-900 p-6 transition-all">
@@ -523,8 +523,10 @@ export default function SchemaArchitecture() {
               Semantic Hybrid Search
             </h3>
             <p className="text-sm text-gray-400">
-              Search across filings, disclosures, and documents with hybrid BM25
-              full-text and KNN semantic vector matching powered by OpenSearch
+              Hybrid full-text and semantic search across filings, your
+              documents and your AI&apos;s memory. In the graph, vector search
+              finds nodes by meaning and follows their relationships in one
+              Cypher query.
             </p>
           </div>
         </div>

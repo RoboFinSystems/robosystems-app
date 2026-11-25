@@ -15,7 +15,7 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ replace: mockReplace }),
 }))
 vi.mock('../content', () => ({
-  default: () => <h1>Finance AI that ties to the books.</h1>,
+  default: () => <h1>The open-source knowledge graph for finance.</h1>,
 }))
 vi.mock('../maintenance', () => ({
   default: () => <div>Maintenance</div>,
@@ -41,7 +41,7 @@ describe('LandingGate', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: 'Finance AI that ties to the books.',
+        name: 'The open-source knowledge graph for finance.',
         hidden: true,
       })
     ).toBeInTheDocument()
@@ -52,7 +52,9 @@ describe('LandingGate', () => {
     mockUseAuth.mockReturnValue({ isAuthenticated: false, isLoading: true })
     const html = renderToString(<LandingGate />)
 
-    expect(html).toContain('<h1>Finance AI that ties to the books.</h1>')
+    expect(html).toContain(
+      '<h1>The open-source knowledge graph for finance.</h1>'
+    )
     expect(html).not.toContain('aria-hidden')
     expect(html).not.toContain('inert')
   })
@@ -62,7 +64,7 @@ describe('LandingGate', () => {
     render(<LandingGate />)
 
     const page = screen.getByRole('heading', {
-      name: 'Finance AI that ties to the books.',
+      name: 'The open-source knowledge graph for finance.',
       hidden: true,
     }).parentElement
     expect(page).toHaveAttribute('inert')
@@ -75,13 +77,13 @@ describe('LandingGate', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: 'Finance AI that ties to the books.',
+        name: 'The open-source knowledge graph for finance.',
       })
     ).toBeInTheDocument()
     expect(screen.queryByTestId('landing-gate-cover')).not.toBeInTheDocument()
     expect(
       screen.getByRole('heading', {
-        name: 'Finance AI that ties to the books.',
+        name: 'The open-source knowledge graph for finance.',
       }).parentElement
     ).not.toHaveAttribute('inert')
     expect(mockReplace).not.toHaveBeenCalled()
