@@ -39,8 +39,7 @@ vi.mock('@robosystems/core/ui', () => ({
   Spinner: () => <span />,
 }))
 
-let genericSchemaType: 'empty' | 'custom' = 'empty'
-let genericCustomSchema = ''
+let genericCustomSchema: string | null = null
 
 vi.mock('../steps/GraphTypeStep', () => ({
   GraphTypeStep: ({ onTypeChange }: { onTypeChange: (t: string) => void }) => (
@@ -51,16 +50,17 @@ vi.mock('../steps/GenericGraphStep', () => ({
   GenericGraphStep: (props: {
     onGraphNameChange: (n: string) => void
     onTagsChange: (t: string[]) => void
-    onSchemaTypeChange: (t: 'empty' | 'custom') => void
     onCustomSchemaChange: (s: string) => void
   }) => (
     <div>
       <button onClick={() => props.onGraphNameChange('My Graph')}>name</button>
       <button onClick={() => props.onTagsChange(['prod', 'acme'])}>tags</button>
-      <button onClick={() => props.onSchemaTypeChange(genericSchemaType)}>
-        schema-type
-      </button>
-      <button onClick={() => props.onCustomSchemaChange(genericCustomSchema)}>
+      <button
+        onClick={() =>
+          genericCustomSchema !== null &&
+          props.onCustomSchemaChange(genericCustomSchema)
+        }
+      >
         schema-body
       </button>
     </div>
@@ -91,13 +91,14 @@ vi.mock('../steps/TierSelectionStep', () => ({
 }))
 
 import { GraphCreationWizard } from '../GraphCreationWizard'
+import { STARTER_SCHEMA } from '../schemaTemplate'
 
 /** Walk the generic path to the review step and press Create. */
 function createGeneric() {
   render(<GraphCreationWizard onSuccess={vi.fn()} onCancel={vi.fn()} />)
   fireEvent.click(screen.getByText('pick-generic'))
   fireEvent.click(screen.getByText(/Next/))
-  for (const control of ['name', 'tags', 'schema-type', 'schema-body']) {
+  for (const control of ['name', 'tags', 'schema-body']) {
     fireEvent.click(screen.getByText(control))
   }
   fireEvent.click(screen.getByText(/Next/))
@@ -107,8 +108,7 @@ function createGeneric() {
 describe('GraphCreationWizard (generic)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    genericSchemaType = 'empty'
-    genericCustomSchema = ''
+    genericCustomSchema = null
   })
 
   it('shows the API refusal instead of silently re-enabling Create', async () => {
@@ -121,19 +121,18 @@ describe('GraphCreationWizard (generic)', () => {
     ).toBeInTheDocument()
   })
 
-  it('leaves the empty schema to core and passes the tags for the empty choice', async () => {
+  it('sends the starter schema and the tags when the schema is left as offered', async () => {
     createGenericGraph.mockResolvedValue({ graph_id: 'kg1' })
     createGeneric()
     await waitFor(() => expect(createGenericGraph).toHaveBeenCalled())
     expect(createGenericGraph.mock.calls[0][0]).toMatchObject({
       graph_name: 'My Graph',
       tags: ['prod', 'acme'],
-      custom_schema: undefined,
+      custom_schema: STARTER_SCHEMA,
     })
   })
 
-  it('sends the pasted schema for the custom choice', async () => {
-    genericSchemaType = 'custom'
+  it('sends the schema the user wrote', async () => {
     genericCustomSchema = JSON.stringify({
       name: 'crm',
       nodes: [{ name: 'Customer', properties: [] }],
@@ -149,14 +148,23 @@ describe('GraphCreationWizard (generic)', () => {
     })
   })
 
-  it('refuses a custom schema that is not valid JSON, without calling the API', async () => {
-    genericSchemaType = 'custom'
-    genericCustomSchema = '{ nodes: '
-    createGeneric()
+  it.each([
+    ['not valid JSON', '{ nodes: '],
+    ['without a node', '{"name": "x", "nodes": [], "relationships": []}'],
+    ['blank', '   '],
+  ])('holds the step on a schema that is %s', (_label, schema) => {
+    genericCustomSchema = schema
+    render(<GraphCreationWizard onSuccess={vi.fn()} onCancel={vi.fn()} />)
+    fireEvent.click(screen.getByText('pick-generic'))
+    fireEvent.click(screen.getByText(/Next/))
+    for (const control of ['name', 'schema-body']) {
+      fireEvent.click(screen.getByText(control))
+    }
+    fireEvent.click(screen.getByText(/Next/))
+    expect(screen.queryByText('review')).not.toBeInTheDocument()
     expect(
-      await screen.findByText(/custom schema is not valid JSON/i)
-    ).toBeInTheDocument()
-    expect(createGenericGraph).not.toHaveBeenCalled()
+      screen.queryByRole('button', { name: /Create Graph/ })
+    ).not.toBeInTheDocument()
   })
 })
 
