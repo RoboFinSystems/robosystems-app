@@ -263,7 +263,9 @@ export default function OpenSourceSection() {
                 <li className="flex items-start">
                   <span className="text-accent-400 mr-2">•</span>
                   <span>
-                    <strong className="text-white">Self-host</strong>: free. See{' '}
+                    <strong className="text-white">Self-host</strong>: free, on
+                    your own server or on one AWS instance with a single
+                    command. See{' '}
                     <Link
                       href="/docs/technical/self-hosting-on-a-server"
                       className="text-accent-400 hover:text-accent-300"
