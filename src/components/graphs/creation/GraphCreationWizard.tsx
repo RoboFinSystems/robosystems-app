@@ -4,6 +4,11 @@ import { useGraphCreation, useOrg } from '@robosystems/core'
 import { Alert, Button, Card, Progress, Spinner } from '@robosystems/core/ui'
 import { useState } from 'react'
 import { HiArrowLeft, HiArrowRight, HiCheck } from 'react-icons/hi'
+import {
+  parseGraphSchema,
+  SchemaInputError,
+  STARTER_SCHEMA_JSON,
+} from './schemaTemplate'
 import { EntityInfoStep } from './steps/EntityInfoStep'
 import { GenericGraphStep } from './steps/GenericGraphStep'
 import { GraphTypeStep } from './steps/GraphTypeStep'
@@ -19,37 +24,6 @@ import type {
 
 interface GraphCreationWizardProps extends GraphCreationConfig {
   className?: string
-}
-
-/** A problem with what the user entered, caught before any request is sent. */
-class SchemaInputError extends Error {}
-
-/**
- * The pasted `custom_schema` for a generic graph, or undefined for the "empty" choice
- * (core then sends a schema with no nodes, named after the graph). The API refuses a
- * generic graph that carries neither a schema nor an initial entity.
- */
-function customGenericSchema(
-  formData: GraphFormData
-): Record<string, unknown> | undefined {
-  if (formData.genericSchemaType !== 'custom') return undefined
-
-  const raw = (formData.genericCustomSchema || '').trim()
-  if (!raw) {
-    throw new SchemaInputError(
-      'Paste a custom schema, or choose an empty schema.'
-    )
-  }
-  let parsed: unknown
-  try {
-    parsed = JSON.parse(raw)
-  } catch {
-    throw new SchemaInputError('The custom schema is not valid JSON.')
-  }
-  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-    throw new SchemaInputError('The custom schema must be a JSON object.')
-  }
-  return parsed as Record<string, unknown>
 }
 
 /**
@@ -86,8 +60,7 @@ export function GraphCreationWizard({
     genericGraphName: '',
     genericGraphDescription: '',
     genericGraphTags: [],
-    genericSchemaType: 'empty',
-    genericCustomSchema: '',
+    genericCustomSchema: STARTER_SCHEMA_JSON,
   })
 
   // Define steps based on configuration and graph type
@@ -158,7 +131,13 @@ export function GraphCreationWizard({
         title: 'Graph Configuration',
         description: 'Configure your generic graph database',
         validate: (data) => {
-          return !!data.genericGraphName.trim()
+          if (!data.genericGraphName?.trim()) return false
+          try {
+            parseGraphSchema(data.genericCustomSchema || '')
+            return true
+          } catch {
+            return false
+          }
         },
       })
     }
@@ -225,7 +204,7 @@ export function GraphCreationWizard({
           graph_name: formData.genericGraphName,
           description: formData.genericGraphDescription,
           tags: formData.genericGraphTags,
-          custom_schema: customGenericSchema(formData),
+          custom_schema: parseGraphSchema(formData.genericCustomSchema || ''),
           instance_tier: formData.selectedTier,
           schema_extensions: formData.selectedExtensions,
           org_id: currentOrg?.id,
@@ -313,7 +292,6 @@ export function GraphCreationWizard({
             graphName={formData.genericGraphName}
             description={formData.genericGraphDescription || ''}
             tags={formData.genericGraphTags}
-            schemaType={formData.genericSchemaType}
             customSchema={formData.genericCustomSchema || ''}
             onGraphNameChange={(name) =>
               setFormData({ ...formData, genericGraphName: name })
@@ -323,9 +301,6 @@ export function GraphCreationWizard({
             }
             onTagsChange={(tags) =>
               setFormData({ ...formData, genericGraphTags: tags })
-            }
-            onSchemaTypeChange={(type) =>
-              setFormData({ ...formData, genericSchemaType: type })
             }
             onCustomSchemaChange={(schema) =>
               setFormData({ ...formData, genericCustomSchema: schema })

@@ -43,7 +43,6 @@ export interface GraphFormData {
   genericGraphName?: string
   genericGraphDescription?: string
   genericGraphTags?: string[]
-  genericSchemaType?: 'empty' | 'custom'
   genericCustomSchema?: string
 
   confirmed?: boolean

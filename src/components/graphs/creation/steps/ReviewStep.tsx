@@ -5,7 +5,23 @@ import {
 import { Alert, Badge, Card } from '@robosystems/core/ui'
 import { useEffect, useState } from 'react'
 import { HiCheckCircle, HiExclamationCircle } from 'react-icons/hi'
+import { parseGraphSchema } from '../schemaTemplate'
 import type { GraphFormData } from '../types'
+
+/** "name: 2 nodes, 1 relationship", for the review of a generic graph. */
+function schemaSummary(schemaText: string | undefined): string {
+  try {
+    const schema = parseGraphSchema(schemaText || '')
+    const count = (value: unknown, noun: string) => {
+      const n = Array.isArray(value) ? value.length : 0
+      return `${n} ${noun}${n === 1 ? '' : 's'}`
+    }
+    const name = typeof schema.name === 'string' ? `${schema.name}: ` : ''
+    return `${name}${count(schema.nodes, 'node')}, ${count(schema.relationships, 'relationship')}`
+  } catch {
+    return 'Invalid schema'
+  }
+}
 
 interface ReviewStepProps {
   formData: GraphFormData
@@ -190,12 +206,10 @@ export function ReviewStep({ formData, showTier }: ReviewStepProps) {
 
                   <div>
                     <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      Schema Type
+                      Schema
                     </p>
                     <p className="text-base font-semibold text-gray-900 dark:text-white">
-                      {formData.genericSchemaType === 'empty'
-                        ? 'Empty Graph'
-                        : 'Custom Schema'}
+                      {schemaSummary(formData.genericCustomSchema)}
                     </p>
                   </div>
                 </>
