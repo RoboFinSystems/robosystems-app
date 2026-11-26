@@ -2,7 +2,7 @@
 
 import { CopyableId } from '@/components/CopyableId'
 import { GuideLink } from '@/components/docs/GuideLink'
-import { McpSignInSnippets, McpSnippet } from '@/components/mcp/McpSnippets'
+import { McpClientTabs, McpSnippet } from '@/components/mcp/McpSnippets'
 import {
   connectorNameFor,
   MCP_API_URL,
@@ -23,7 +23,7 @@ import {
   PageLayout,
   useGraphContext,
 } from '@robosystems/core'
-import { Badge, Card, Label, Select } from '@robosystems/core/ui'
+import { Badge, Card, Label, Radio, Select } from '@robosystems/core/ui'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useRef, useState } from 'react'
@@ -45,7 +45,7 @@ interface Workspace {
  * tools come with every graph; each schema extension installed on the graph
  * adds its application's tools to that same connection, so no second URL, key,
  * or sign-in is needed. (`/v1/mcp/roboledger` is a narrower profile for chat
- * clients, not a requirement — see `RoboLedgerSection`.) Names mirror the
+ * clients, not a requirement.) Names mirror the
  * extension catalog the API serves (`getAvailableExtensions`); the MCP server
  * gates the tools on the same `schemaExtensions` shown here.
  */
@@ -101,84 +101,23 @@ function ConnectionScope({
 }
 
 /**
- * The graph-agnostic address. It is the one the MCP registry listing and the
- * bridge README carry (the Claude and ChatGPT directory listings are the SEC
- * repository's own address), so it leads here too.
- * It takes only a sign-in — the consent screen is where the graph is chosen —
- * and a grant names exactly one graph, the same as a workspace URL.
+ * What a sign-in connection reaches. `any` is the graph-agnostic address (the
+ * graph is chosen on the consent screen), `workspace` pins the connection to
+ * one graph or subgraph by putting its id in the URL, and `roboledger` is the
+ * narrower address the RoboLedger directory listings carry.
  */
-function UniversalSection() {
-  return (
-    <Card>
-      <section className="space-y-4" data-testid="universal-section">
-        <div className="space-y-1">
-          <h3 className="font-heading text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-            Sign in and pick a graph
-          </h3>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            One address for every graph you can access. Paste it and the client
-            sends you to RoboSystems to sign in; the consent screen lists your
-            graphs and shared repositories, and you choose one. Access follows
-            the role you already have, and each connection is one grant —
-            nothing to copy, store, or rotate. A graph running RoboLedger or
-            RoboInvestor brings that application&apos;s tools along with it, on
-            the same connection.
-          </p>
-        </div>
+type Reach = 'any' | 'workspace' | 'roboledger'
 
-        <McpSignInSnippets url={MCP_OAUTH_URL} name={MCP_CONNECTOR_NAME} />
-
-        <p className="text-xs text-zinc-500 dark:text-zinc-500">
-          A connection reaches one graph — the one you pick at sign-in. To
-          switch, disconnect in your client and sign in again. This address
-          takes a sign-in only, so an API key is rejected here. To connect a
-          subgraph, to keep several graphs connected in one client, or to use an
-          API key, pin the connection to a workspace below.
-        </p>
-      </section>
-    </Card>
-  )
-}
+/** The package and connector name of the local bridge. */
+const BRIDGE_PACKAGE = '@robosystems/mcp@latest'
+const BRIDGE_NAME = 'robosystems-bridge'
 
 /**
- * The RoboLedger address, added by hand as a custom connector. It is
- * graph-agnostic like the universal one, so it follows whether the user has an
- * eligible graph at all, not the switcher. It serves a narrower tool set than
- * the universal address, so it is offered beside it, never as an upgrade.
+ * The bridge talks to the hosted API unless told otherwise, so on a stack
+ * someone runs themselves the snippets have to carry its address.
  */
-function RoboLedgerSection() {
-  return (
-    <Card>
-      <section className="space-y-4" data-testid="roboledger-section">
-        <div className="space-y-1">
-          <h3 className="font-heading text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-            RoboLedger only
-          </h3>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Add it by hand as a custom connector; it works the same way in
-            Claude and ChatGPT. Sign in the same way, but the consent screen
-            only offers your own graphs running RoboLedger (never a shared
-            repository), and the connection carries the ledger and close tools
-            without subgraph, backup, or other administration tools — the set
-            meant for a chat client.
-          </p>
-        </div>
-
-        <McpSignInSnippets
-          url={MCP_ROBOLEDGER_URL}
-          name={MCP_ROBOLEDGER_CONNECTOR_NAME}
-          claudeNote="Claude detects the sign-in on its own. Leave the OAuth client fields blank."
-          chatgptNote="Serves the RoboLedger tool set for the graph you pick."
-        />
-
-        <p className="text-xs text-zinc-500 dark:text-zinc-500">
-          Sign-in only, like the address above: an API key is rejected, and a
-          subgraph cannot be connected here.
-        </p>
-      </section>
-    </Card>
-  )
-}
+const BRIDGE_API_URL =
+  MCP_API_URL === 'https://api.robosystems.ai' ? null : MCP_API_URL
 
 function ConnectWorkspace() {
   const { state: graphState } = useGraphContext()
@@ -200,6 +139,11 @@ function ConnectWorkspace() {
   // (or a graph switch) can't yank the selector back to the deep-linked id.
   const requestedRef = useRef(searchParams.get('workspace'))
 
+  // A deep link asks for one workspace, so the page opens pinned to it.
+  const [reach, setReach] = useState<Reach>(
+    requestedRef.current ? 'workspace' : 'any'
+  )
+
   useEffect(() => {
     if (!currentGraphId) {
       setWorkspaceId(null)
@@ -207,11 +151,11 @@ function ConnectWorkspace() {
     }
     const requested = requestedRef.current
     requestedRef.current = null
-    setWorkspaceId(
-      requested && parentGraphIdOf(requested) === currentGraphId
-        ? requested
-        : currentGraphId
-    )
+    const inFamily =
+      requested !== null && parentGraphIdOf(requested) === currentGraphId
+    setWorkspaceId(inFamily ? requested : currentGraphId)
+    // A deep link to some other graph's workspace pins nothing.
+    if (requested !== null && !inFamily) setReach('any')
   }, [currentGraphId])
 
   useEffect(() => {
@@ -302,9 +246,49 @@ function ConnectWorkspace() {
     }
   }
 
-  const url = workspace ? mcpEndpointFor(workspace.id) : ''
-  const name = workspace ? connectorNameFor(workspace.id) : ''
+  const workspaceUrl = workspace ? mcpEndpointFor(workspace.id) : ''
+  const workspaceName = workspace ? connectorNameFor(workspace.id) : ''
   const keyValue = activeConnector?.apiKey ?? '<your key>'
+
+  // The RoboLedger address refuses a repository at consent, so it is not
+  // offered beside one; and a workspace can only be pinned once one exists.
+  const offersRoboLedger = hasRoboLedgerGraph && !isRepository
+  const effectiveReach: Reach =
+    (reach === 'workspace' && !workspace) ||
+    (reach === 'roboledger' && !offersRoboLedger)
+      ? 'any'
+      : reach
+
+  const signIn =
+    effectiveReach === 'workspace'
+      ? { url: workspaceUrl, name: workspaceName }
+      : effectiveReach === 'roboledger'
+        ? { url: MCP_ROBOLEDGER_URL, name: MCP_ROBOLEDGER_CONNECTOR_NAME }
+        : { url: MCP_OAUTH_URL, name: MCP_CONNECTOR_NAME }
+
+  // A key made on this page is scoped to one workspace and cannot list the
+  // account, so the bridge has to be told which graph it is for. An account
+  // key from Settings needs no such line and reaches every graph.
+  const bridgeScope = activeConnector ? activeConnector.graphId : null
+  const bridgeCommand = [
+    `claude mcp add ${BRIDGE_NAME}`,
+    `  -e ROBOSYSTEMS_API_KEY=${keyValue}`,
+    ...(bridgeScope ? [`  -e ROBOSYSTEMS_GRAPH_IDS=${bridgeScope}`] : []),
+    ...(BRIDGE_API_URL ? [`  -e ROBOSYSTEMS_API_URL=${BRIDGE_API_URL}`] : []),
+    `  -- npx -y ${BRIDGE_PACKAGE}`,
+  ].join(' \\\n')
+  const bridgeEnv = [
+    `"ROBOSYSTEMS_API_KEY": "${keyValue}"`,
+    ...(bridgeScope ? [`"ROBOSYSTEMS_GRAPH_IDS": "${bridgeScope}"`] : []),
+    ...(BRIDGE_API_URL ? [`"ROBOSYSTEMS_API_URL": "${BRIDGE_API_URL}"`] : []),
+  ]
+  const bridgeConfig = `"${BRIDGE_NAME}": {
+  "command": "npx",
+  "args": ["-y", "${BRIDGE_PACKAGE}"],
+  "env": {
+${bridgeEnv.map((line) => `    ${line}`).join(',\n')}
+  }
+}`
 
   return (
     <PageLayout>
@@ -313,9 +297,8 @@ function ConnectWorkspace() {
         title="MCP"
         subtitle={
           <>
-            Add RoboSystems to Claude, ChatGPT, Claude Code, Cursor, or any MCP
-            client — paste one URL and pick the graph when you sign in, or pin a
-            connection to one graph or subgraph.{' '}
+            Connect Claude, ChatGPT, Claude Code, Cursor or any MCP client to
+            your graphs. Most people need only the first card.{' '}
             <GuideLink href="/docs/guides/connect-an-mcp-client" />
           </>
         }
@@ -335,35 +318,87 @@ function ConnectWorkspace() {
         />
       ) : (
         <>
-          <UniversalSection />
+          <Card>
+            <section className="space-y-5" data-testid="connect-section">
+              <div className="space-y-1">
+                <h3 className="font-heading text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                  Connect your assistant
+                </h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  Paste one address into your AI client and sign in to
+                  RoboSystems. There is nothing to install and no key to store,
+                  and access follows the role you already have. A graph running
+                  RoboLedger or RoboInvestor brings that application&apos;s
+                  tools along on the same connection.
+                </p>
+              </div>
 
-          {/* Hidden while a repository is selected: beside its workspace card
-              it reads as a way to reach the repository, which it is not. */}
-          {hasRoboLedgerGraph && !isRepository && <RoboLedgerSection />}
+              <fieldset className="space-y-3" data-testid="reach-options">
+                <legend className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                  What should it reach?
+                </legend>
 
-          {!currentGraph || !workspace ? (
-            <EmptyState
-              icon={HiLink}
-              title="No graph selected"
-              description="Select a graph from the switcher above to pin a connection to it or to one of its subgraphs."
-            />
-          ) : (
-            <Card>
-              <div className="space-y-6">
-                <div className="space-y-4">
-                  <div className="space-y-1">
-                    <h3 className="font-heading text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                      Pin a connection to one workspace
-                    </h3>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                      The graph or subgraph id is part of the URL, so this
-                      connection can only ever reach the workspace you point it
-                      at. It is how a subgraph is connected, how one client
-                      keeps several graphs connected at once, and the route that
-                      takes an API key.
-                    </p>
+                <div className="flex items-start gap-2">
+                  <Radio
+                    id="mcp-reach-any"
+                    name="mcp-reach"
+                    className="mt-0.5"
+                    checked={effectiveReach === 'any'}
+                    onChange={() => setReach('any')}
+                  />
+                  <Label htmlFor="mcp-reach-any" className="text-sm">
+                    Any graph, chosen when you sign in
+                    <span className="block font-normal text-zinc-500 dark:text-zinc-500">
+                      Recommended. The sign-in screen lists your graphs and
+                      shared repositories, and you pick one.
+                    </span>
+                  </Label>
+                </div>
+
+                {workspace && currentGraph && (
+                  <div className="flex items-start gap-2">
+                    <Radio
+                      id="mcp-reach-workspace"
+                      name="mcp-reach"
+                      className="mt-0.5"
+                      checked={effectiveReach === 'workspace'}
+                      onChange={() => setReach('workspace')}
+                    />
+                    <Label htmlFor="mcp-reach-workspace" className="text-sm">
+                      Only {workspace.label}
+                      <span className="block font-normal text-zinc-500 dark:text-zinc-500">
+                        For a subgraph, or to keep several graphs connected in
+                        one client: each gets its own connection.
+                      </span>
+                    </Label>
                   </div>
+                )}
 
+                {offersRoboLedger && (
+                  <div className="flex items-start gap-2">
+                    <Radio
+                      id="mcp-reach-roboledger"
+                      name="mcp-reach"
+                      className="mt-0.5"
+                      checked={effectiveReach === 'roboledger'}
+                      onChange={() => setReach('roboledger')}
+                    />
+                    <Label htmlFor="mcp-reach-roboledger" className="text-sm">
+                      RoboLedger graphs only
+                      <span className="block font-normal text-zinc-500 dark:text-zinc-500">
+                        The ledger and close tools, without subgraph, backup or
+                        other administration tools.
+                      </span>
+                    </Label>
+                  </div>
+                )}
+              </fieldset>
+
+              {effectiveReach === 'workspace' && workspace && currentGraph && (
+                <div
+                  className="space-y-3 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800"
+                  data-testid="workspace-target"
+                >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="font-medium text-zinc-900 dark:text-zinc-100">
@@ -397,7 +432,7 @@ function ConnectWorkspace() {
                         htmlFor="mcp-workspace"
                         className="text-sm font-medium"
                       >
-                        Workspace
+                        Graph or subgraph
                       </Label>
                       <Select
                         id="mcp-workspace"
@@ -412,48 +447,121 @@ function ConnectWorkspace() {
                           </option>
                         ))}
                       </Select>
-                      <p className="text-xs text-zinc-500 dark:text-zinc-500">
-                        The parent graph and each of its subgraphs is its own
-                        connection. Every snippet below re-addresses itself to
-                        the selection.
-                      </p>
                     </div>
                   )}
                 </div>
+              )}
 
-                <section className="space-y-4" data-testid="oauth-section">
-                  <div className="space-y-1">
-                    <h4 className="font-heading text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                      Sign in to connect
-                    </h4>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                      Same sign-in as above, with this workspace already
-                      selected on the consent screen.
-                    </p>
-                  </div>
+              <McpClientTabs
+                url={signIn.url}
+                name={signIn.name}
+                namesSecListing={effectiveReach === 'any'}
+              />
 
-                  <McpSignInSnippets url={url} name={name} />
-                </section>
+              <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                {effectiveReach === 'any' &&
+                  'One connection reaches one graph: the one you pick at sign-in. To switch, disconnect in your client and sign in again.'}
+                {effectiveReach === 'workspace' &&
+                  'The graph is part of this address, so the connection can only ever reach it. The sign-in screen shows it already selected.'}
+                {effectiveReach === 'roboledger' &&
+                  'The sign-in screen offers only your own graphs running RoboLedger, never a subgraph or a shared repository.'}{' '}
+                These addresses take a sign-in only; an API key is for the
+                developer routes below.
+              </p>
+            </section>
+          </Card>
 
+          <Card>
+            <section className="space-y-6" data-testid="developer-section">
+              <div className="space-y-1">
+                <h3 className="font-heading text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                  For developers
+                </h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  Two routes use an API key instead of a sign-in: a local bridge
+                  that reaches every graph through one connection, and a
+                  graph&apos;s own address for scripts and CI.
+                </p>
+              </div>
+
+              <section className="space-y-4" data-testid="bridge-section">
+                <div className="space-y-1">
+                  <h4 className="font-heading text-base font-semibold text-zinc-900 dark:text-zinc-100">
+                    One connection for every graph
+                  </h4>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    The RoboSystems bridge runs beside a local client such as
+                    Claude Code, Claude Desktop, Cursor or VS Code. Your
+                    assistant lists your graphs, looks up any graph&apos;s tools
+                    and calls them, naming the graph each time, and a subgraph
+                    is usable the moment it is created. It needs Node.js 22 or
+                    later and does not work in claude.ai or ChatGPT.{' '}
+                    <GuideLink
+                      href="/docs/technical/the-mcp-bridge"
+                      label="Bridge reference"
+                    />
+                  </p>
+                </div>
+
+                <McpSnippet
+                  heading="Claude Code"
+                  copyLabel="bridge command"
+                  code={bridgeCommand}
+                />
+
+                <McpSnippet
+                  heading="Claude Desktop, Cursor (mcpServers entry)"
+                  copyLabel="bridge configuration"
+                  code={bridgeConfig}
+                  note={
+                    bridgeScope ? (
+                      <>
+                        The key generated below is scoped to{' '}
+                        <code className="break-all">{bridgeScope}</code>, so the
+                        bridge is told which graph it is for. It reaches that
+                        graph and its subgraphs.
+                      </>
+                    ) : (
+                      <>
+                        Use an account key from{' '}
+                        <Link href="/settings" className="underline">
+                          Settings → API Keys
+                        </Link>{' '}
+                        to reach every graph you can access.
+                      </>
+                    )
+                  }
+                />
+              </section>
+
+              {!currentGraph || !workspace ? (
+                <EmptyState
+                  icon={HiLink}
+                  title="No graph selected"
+                  description="Select a graph from the switcher above to connect it by its own address or to generate a key for it."
+                />
+              ) : (
                 <details
                   className="group rounded-lg border border-zinc-200 dark:border-zinc-800"
                   data-testid="api-key-section"
                 >
                   <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-zinc-900 select-none dark:text-zinc-100">
-                    Use an API key instead — scripts, CI, and clients that
-                    can&apos;t sign in
+                    Scripts and CI — {workspace.label}&apos;s own address with
+                    an API key
                   </summary>
                   <div className="space-y-4 border-t border-zinc-200 px-4 py-4 dark:border-zinc-800">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                        Generate a key scoped to this workspace and every
-                        snippet below is filled in, ready to copy. The key goes
-                        in the <code>X-API-Key</code> header — never in the URL
-                        — works only here, and is revocable anytime in{' '}
+                        Generate a key scoped to{' '}
+                        <span className="font-medium">{workspace.label}</span>{' '}
+                        and every snippet in this card is filled in, ready to
+                        copy. The key goes in the <code>X-API-Key</code> header
+                        — never in the URL — and is revocable anytime in{' '}
                         <Link href="/settings" className="underline">
                           Settings → API Keys
                         </Link>
-                        .
+                        . To change the graph or subgraph, choose it under
+                        &ldquo;Only {workspace.label}&rdquo; above.
                       </p>
                       {!activeConnector && (
                         <button
@@ -489,24 +597,24 @@ function ConnectWorkspace() {
                     <McpSnippet
                       heading="Claude Code"
                       copyLabel="Claude Code command"
-                      code={`claude mcp add --transport http ${name} \\
-  ${url} \\
+                      code={`claude mcp add --transport http ${workspaceName} \\
+  ${workspaceUrl} \\
   --header "X-API-Key: ${keyValue}"`}
                     />
 
                     <McpSnippet
                       heading="Cursor / VS Code (mcp.json)"
                       copyLabel="mcp.json entry"
-                      code={`"${name}": {
-  "url": "${url}",
+                      code={`"${workspaceName}": {
+  "url": "${workspaceUrl}",
   "headers": { "X-API-Key": "${keyValue}" }
 }`}
                     />
                   </div>
                 </details>
-              </div>
-            </Card>
-          )}
+              )}
+            </section>
+          </Card>
         </>
       )}
 
@@ -517,26 +625,13 @@ function ConnectWorkspace() {
           </h3>
           <ul className="space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
             <li>
-              A sign-in grant is bound to the URL it was issued for and to the
-              client that asked. Disconnect in the client to end it; changing
-              your password ends every grant at once.
+              A sign-in grant is bound to the address it was issued for and to
+              the client that asked. Disconnect in the client to end it;
+              changing your password ends every grant at once.
             </li>
             <li>
               A key scoped to a parent graph also covers that graph&apos;s
-              subgraphs, so one token can serve every connection in a graph
-              family. A key scoped to a subgraph reaches only that subgraph.
-            </li>
-            <li>
-              Clients without HTTP transport support can use the{' '}
-              <a
-                href="https://github.com/RoboFinSystems/robosystems-mcp-client"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary-600 dark:text-primary-400 hover:underline"
-              >
-                stdio bridge
-              </a>{' '}
-              in proxy mode.
+              subgraphs. A key scoped to a subgraph reaches only that subgraph.
             </li>
           </ul>
         </div>
