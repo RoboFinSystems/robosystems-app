@@ -39,8 +39,8 @@
   "dependencies": {
     "@aws-sdk/client-sns": "^3.1145.0",
     "@monaco-editor/react": "^4.7.0",
-    "@robosystems/client": "^2.47.0",
-    "@robosystems/core": "^0.22.3",
+    "@robosystems/client": "^2.47.1",
+    "@robosystems/core": "^0.22.4",
     "@simplewebauthn/browser": "14.0.0",
     "date-fns": "^4.1.0",
     "lru-cache": "^11.5.3",
