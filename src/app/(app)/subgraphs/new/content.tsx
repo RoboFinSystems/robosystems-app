@@ -56,7 +56,10 @@ export function NewSubgraphContent() {
               <p className="mt-4 text-gray-600 dark:text-gray-400">
                 Please select a graph first before creating a subgraph.
               </p>
-              <Button className="mt-6" onClick={() => router.push('/home')}>
+              <Button
+                className="mx-auto mt-6"
+                onClick={() => router.push('/home')}
+              >
                 Select Graph
               </Button>
             </div>

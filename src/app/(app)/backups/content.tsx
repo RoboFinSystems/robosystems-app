@@ -428,7 +428,7 @@ export default function BackupManagementContent() {
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               {error}
             </p>
-            <Button onClick={fetchBackupData} className="mt-4">
+            <Button onClick={fetchBackupData} className="mx-auto mt-4">
               <HiRefresh className="mr-2 h-4 w-4" />
               Retry
             </Button>
