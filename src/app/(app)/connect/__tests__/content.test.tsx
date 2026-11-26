@@ -519,6 +519,8 @@ describe('ConnectContent', () => {
       expect(bridge).toContain('"ROBOSYSTEMS_API_KEY": "<your key>"')
       expect(bridge).not.toContain('ROBOSYSTEMS_GRAPH_IDS')
       expect(bridge).toContain('Settings → API Keys')
+      // The command is per project unless told otherwise.
+      expect(bridge).toContain('--scope user')
       expect(
         screen.getByRole('link', { name: /Bridge reference/ })
       ).toHaveAttribute('href', '/docs/technical/the-mcp-bridge')
