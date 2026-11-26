@@ -3,6 +3,7 @@ import * as SDK from '@robosystems/client'
 import { useGraphCreation } from '@robosystems/core'
 import { act, renderHook } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { STARTER_SCHEMA } from '../schemaTemplate'
 
 // Runs the real core useGraphCreation (0.11.3) against the SDK mock: what the wizard
 // hands it must reach the request, and a refusal must come back as its message.
@@ -42,19 +43,21 @@ describe('core useGraphCreation, as the wizard calls it', () => {
     expect((error as Error).message).toBe('Graph limit reached')
   })
 
-  it('sends an empty schema for the empty choice', async () => {
-    vi.mocked(SDK.createGraph).mockResolvedValue(sdkError(500, 'x'))
+  it('refuses a schema with no nodes before any request', async () => {
     const { result } = renderHook(() => useGraphCreation())
+    let error: unknown
     await act(async () => {
       await result.current
-        .createGenericGraph({ graph_name: 'My Graph' })
-        .catch(() => {})
+        .createGenericGraph({
+          graph_name: 'My Graph',
+          custom_schema: { name: 'x', nodes: [] },
+        })
+        .catch((e: unknown) => {
+          error = e
+        })
     })
-    const body = vi.mocked(SDK.createGraph).mock.calls[0][0]!.body as Record<
-      string,
-      unknown
-    >
-    expect(body.custom_schema).toMatchObject({ nodes: [], relationships: [] })
+    expect((error as Error).message).toContain('at least one node')
+    expect(SDK.createGraph).not.toHaveBeenCalled()
   })
 
   it('rejects with the detail of a checkout 422', async () => {
@@ -68,7 +71,11 @@ describe('core useGraphCreation, as the wizard calls it', () => {
     let error: unknown
     await act(async () => {
       await result.current
-        .createGenericGraph({ graph_name: 'My Graph', org_id: 'org_1' })
+        .createGenericGraph({
+          graph_name: 'My Graph',
+          custom_schema: STARTER_SCHEMA,
+          org_id: 'org_1',
+        })
         .catch((e: unknown) => {
           error = e
         })
