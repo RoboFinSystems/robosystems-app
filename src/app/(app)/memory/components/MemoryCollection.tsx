@@ -317,7 +317,7 @@ export function MemoryCollection({
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           {listError}
         </p>
-        <Button onClick={fetchAll} className="mt-4">
+        <Button onClick={fetchAll} className="mx-auto mt-4">
           <HiRefresh className="mr-2 h-4 w-4" />
           Retry
         </Button>
