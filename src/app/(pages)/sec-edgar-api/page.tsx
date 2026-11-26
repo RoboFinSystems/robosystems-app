@@ -199,10 +199,11 @@ export default function SecEdgarApiPage() {
           <Section title="How fresh it is">
             <p>
               New filings arrive on weekdays. A new 10-K or 10-Q can be read
-              whole the day it&apos;s filed, and an 8-K earnings release within
-              about half an hour during the US business day. Its figures reach
-              statements, comparisons and queries the next morning, after the
-              nightly rebuild.
+              whole the day it&apos;s filed. An 8-K earnings release is picked
+              up by a check that runs every 30 minutes from 6am to 8:30pm
+              Eastern on business days, so it is usually readable the same day.
+              A filing&apos;s figures reach statements, comparisons and queries
+              the next morning, after the nightly rebuild.
             </p>
           </Section>
 
