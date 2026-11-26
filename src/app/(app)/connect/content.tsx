@@ -484,6 +484,16 @@ ${bridgeEnv.map((line) => `    ${line}`).join(',\n')}
                 </p>
               </div>
 
+              {activeConnector && (
+                <p
+                  className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200"
+                  data-testid="key-notice"
+                >
+                  The snippets in this card now contain a live API key. Treat
+                  anything you copy from them as a secret.
+                </p>
+              )}
+
               <section className="space-y-4" data-testid="bridge-section">
                 <div className="space-y-1">
                   <h4 className="font-heading text-base font-semibold text-zinc-900 dark:text-zinc-100">
@@ -527,7 +537,10 @@ ${bridgeEnv.map((line) => `    ${line}`).join(',\n')}
                         <Link href="/settings" className="underline">
                           Settings → API Keys
                         </Link>{' '}
-                        to reach every graph you can access.
+                        to reach every graph you can access
+                        {workspace
+                          ? `, or generate a key for ${workspace.label} under Scripts and CI below and these snippets fill in.`
+                          : '.'}
                       </>
                     )
                   }

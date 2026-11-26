@@ -337,6 +337,31 @@ describe('ConnectContent', () => {
       expect(document.getElementById('mcp-workspace')).toBeNull()
     })
 
+    test('stays pinned, to the new graph, when the graph switcher changes', async () => {
+      // Deliberate: the choice is "only the selected graph", so it follows
+      // the switcher, and the label and address say which graph that is.
+      const graphs = [
+        { graphId: 'kg1a2b3c', graphName: 'Acme Ledger' },
+        { graphId: 'kg9z8y7x', graphName: 'Beta Books' },
+      ]
+      setGraphs(graphs, 'kg1a2b3c')
+      const { rerender } = render(<ConnectContent />)
+      pinToWorkspace()
+      expect(connectText()).toContain(ACME)
+
+      setGraphs(graphs, 'kg9z8y7x')
+      rerender(<ConnectContent />)
+
+      await waitFor(() => {
+        expect(connectText()).toContain(
+          'https://api.robosystems.ai/v1/graphs/kg9z8y7x/mcp'
+        )
+      })
+      expect(document.getElementById('mcp-reach-workspace')).toBeChecked()
+      expect(connectText()).toContain('Only Beta Books')
+      expect(connectText()).not.toContain(ACME)
+    })
+
     test('names the applications a graph brings to the connection', () => {
       setGraphs(acme({ schemaExtensions: ['roboledger'] }), 'kg1a2b3c')
 
@@ -497,6 +522,34 @@ describe('ConnectContent', () => {
       expect(
         screen.getByRole('link', { name: /Bridge reference/ })
       ).toHaveAttribute('href', '/docs/technical/the-mcp-bridge')
+    })
+
+    test('says a key made on the page fills the bridge snippets', () => {
+      setGraphs(acme(), 'kg1a2b3c')
+
+      render(<ConnectContent />)
+
+      expect(bridgeText()).toContain(
+        'generate a key for Acme Ledger under Scripts and CI below'
+      )
+    })
+
+    test('warns that the snippets hold a live key once one is generated', async () => {
+      setGraphs(acme(), 'kg1a2b3c')
+      mockCreateMcpConnectorUrl.mockResolvedValue(
+        generatedKey('kg1a2b3c', 'MCP connector - Acme Ledger')
+      )
+
+      render(<ConnectContent />)
+      expect(screen.queryByTestId('key-notice')).toBeNull()
+
+      fireEvent.click(screen.getByText('Generate connector key'))
+
+      await waitFor(() => {
+        expect(screen.getByTestId('key-notice')).toHaveTextContent(
+          'Treat anything you copy from them as a secret'
+        )
+      })
     })
 
     test('keeps the scripts and CI route collapsed', () => {
