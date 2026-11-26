@@ -353,7 +353,7 @@ export default function BuildSection() {
                   rel="noopener noreferrer"
                   className="text-secondary-400 hover:text-secondary-300 text-sm"
                 >
-                  Legacy stdio bridge →
+                  The MCP bridge →
                 </Link>
               </div>
             </div>
