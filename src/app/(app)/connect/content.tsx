@@ -517,6 +517,12 @@ ${bridgeEnv.map((line) => `    ${line}`).join(',\n')}
                   heading="Claude Code"
                   copyLabel="bridge command"
                   code={bridgeCommand}
+                  note={
+                    <>
+                      Adds the bridge to the current project. Add{' '}
+                      <code>--scope user</code> to have it in every project.
+                    </>
+                  }
                 />
 
                 <McpSnippet
