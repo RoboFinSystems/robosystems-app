@@ -81,7 +81,7 @@ const MODES: Mode[] = [
   {
     name: 'Self-Hosted',
     tagline: 'Your account · your operation',
-    body: "Run it on a box you own, on bare metal, or in your own AWS account; the code is Apache 2.0 and MIT. On AWS, RoboSystems Serve puts the whole platform on a single instance with one command, reachable from your own address. A deployment your team or clients reach from anywhere is Managed or Dedicated. Self-hosting is the one route where an open-weight model is an option, on your own hardware, and it doesn't yet match a frontier model. You hold the root, the data and the audit. Harbinger FinLab can help set it up on a screenshare you control, with keys you issue and can revoke.",
+    body: "Run it on a box you own, on bare metal, or in your own AWS account; the code is Apache 2.0 and MIT. On AWS, RoboSystems Serve puts the whole platform on a single instance with one command, reachable only from your own network. A deployment your team or clients reach from anywhere is Managed or Dedicated. Self-hosting is the one route where an open-weight model is an option, on your own hardware, and it doesn't yet match a frontier model. You hold the root, the data and the audit. Harbinger FinLab can help set it up on a screenshare you control, with keys you issue and can revoke.",
     facts: [
       { label: 'Price', value: 'Free to run. Services priced per engagement' },
       {
