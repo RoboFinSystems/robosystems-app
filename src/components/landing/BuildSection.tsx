@@ -348,7 +348,7 @@ export default function BuildSection() {
               </code>
               <div className="mt-4 flex gap-3">
                 <Link
-                  href="https://github.com/RoboFinSystems/robosystems-mcp-client"
+                  href="https://github.com/RoboFinSystems/robosystems-mcp-bridge"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-secondary-400 hover:text-secondary-300 text-sm"

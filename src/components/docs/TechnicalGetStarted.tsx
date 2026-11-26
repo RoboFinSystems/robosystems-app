@@ -192,7 +192,7 @@ Header: X-API-Key: <your API key>`}</code>
         <li>
           <strong>MCP stdio bridge:</strong> <code>@robosystems/mcp</code>, for
           clients that only run local MCP servers (
-          <External href="https://github.com/RoboFinSystems/robosystems-mcp-client">
+          <External href="https://github.com/RoboFinSystems/robosystems-mcp-bridge">
             GitHub
           </External>
           )
