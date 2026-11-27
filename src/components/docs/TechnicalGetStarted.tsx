@@ -248,7 +248,7 @@ just sec-load <TICKER>   # every available year for one company; add a year to l
         roles, the container registry and the repository&apos;s variables.
       </p>
       <pre>
-        <code>{`aws configure sso --profile robosystems-sso
+        <code>{`aws configure sso --profile robosystems-admin
 just bootstrap
 just deploy prod`}</code>
       </pre>
