@@ -20,15 +20,15 @@
       "problemMatcher": []
     },
     {
-      "label": "Test All",
-      "type": "shell",
-      "command": "npm run test:all",
-      "problemMatcher": []
-    },
-    {
       "label": "Test",
       "type": "shell",
       "command": "npm run test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Test All",
+      "type": "shell",
+      "command": "npm run test:all",
       "problemMatcher": []
     },
     {
