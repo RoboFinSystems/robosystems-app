@@ -321,7 +321,9 @@ export function SubgraphsContent() {
                       key={subgraph.graph_id}
                       className="bg-white dark:bg-zinc-800"
                     >
-                      <TableCell className="font-medium text-gray-900 dark:text-white">
+                      {/* w-full + max-w-0: an auto-layout cell grows to fit
+                          nowrap content, so truncate never bites without it. */}
+                      <TableCell className="w-full max-w-0 font-medium text-gray-900 dark:text-white">
                         <div className="flex items-center gap-3">
                           <div className="bg-primary-100 dark:bg-primary-900 shrink-0 rounded-lg p-2">
                             <HiChip className="text-primary-600 dark:text-primary-400 h-4 w-4" />
@@ -329,7 +331,10 @@ export function SubgraphsContent() {
                           <div className="min-w-0">
                             {/* Block, not inline: CopyableId below is
                                 inline-flex and would ride up alongside it. */}
-                            <div className="truncate font-semibold">
+                            <div
+                              className="truncate font-semibold"
+                              title={subgraph.display_name}
+                            >
                               {subgraph.display_name}
                             </div>
                             {/* The full id is the MCP address — visible and
@@ -341,12 +346,12 @@ export function SubgraphsContent() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="text-gray-500 dark:text-gray-400">
+                      <TableCell className="whitespace-nowrap text-gray-500 dark:text-gray-400">
                         <span className="text-xs">
                           {formatSize(subgraph.size_bytes, subgraph.size_mb)}
                         </span>
                       </TableCell>
-                      <TableCell className="text-gray-500 dark:text-gray-400">
+                      <TableCell className="whitespace-nowrap text-gray-500 dark:text-gray-400">
                         {formatDate(subgraph.created_at)}
                       </TableCell>
                       <TableCell>
@@ -403,7 +408,7 @@ export function SubgraphsContent() {
                       <HiChip className="text-primary-600 dark:text-primary-400 h-5 w-5" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold text-gray-900 dark:text-white">
+                      <h3 className="line-clamp-3 font-semibold break-words text-gray-900 dark:text-white">
                         {subgraph.display_name}
                       </h3>
                       <CopyableId
