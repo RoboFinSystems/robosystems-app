@@ -2,7 +2,6 @@
 
 import { CopyButton } from '@/components/CopyableId'
 import { CHATGPT_PLUGIN_URL, CLAUDE_CONNECTOR_URL } from '@/lib/site'
-import { Tabs } from '@robosystems/core/ui'
 import type { ReactNode } from 'react'
 
 /**
@@ -124,116 +123,5 @@ export function McpSignInSnippets({
         note="The editor opens the sign-in the first time it connects."
       />
     </>
-  )
-}
-
-const linkClass = 'text-primary-600 dark:text-primary-400 hover:underline'
-
-/**
- * The same sign-in recipes as `McpSignInSnippets`, one client at a time. The
- * MCP page shows a single address, so a reader picks their client and sees
- * one thing to copy instead of four. `namesSecListing` is off wherever the
- * directory listings would be the wrong thing to point at.
- */
-export function McpClientTabs({
-  url,
-  name,
-  namesSecListing = true,
-}: {
-  url: string
-  name: string
-  namesSecListing?: boolean
-}) {
-  return (
-    <Tabs aria-label="AI client" variant="underline">
-      <Tabs.Item title="Claude">
-        <McpSnippet
-          heading="claude.ai / Desktop — Customize → Connectors → Add custom connector"
-          copyLabel="Connector URL"
-          code={url}
-          note={
-            <>
-              Claude detects the sign-in on its own. Leave the OAuth client
-              fields blank.
-              {namesSecListing && (
-                <>
-                  {' '}
-                  For SEC filings alone, add{' '}
-                  <a
-                    href={CLAUDE_CONNECTOR_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={linkClass}
-                  >
-                    RoboSystems SEC
-                  </a>{' '}
-                  from Claude&apos;s connector directory instead: nothing to
-                  paste.
-                </>
-              )}
-            </>
-          }
-        />
-      </Tabs.Item>
-
-      <Tabs.Item title="ChatGPT">
-        <McpSnippet
-          heading="Plugins → Add → Create custom MCP server"
-          copyLabel="Connector URL"
-          code={url}
-          note={
-            <>
-              Leave Authentication on OAuth. If the menu item is missing, turn
-              on developer mode in ChatGPT&apos;s settings.
-              {namesSecListing && (
-                <>
-                  {' '}
-                  For SEC filings alone, install the{' '}
-                  <a
-                    href={CHATGPT_PLUGIN_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={linkClass}
-                  >
-                    RoboSystems plugin
-                  </a>{' '}
-                  from the ChatGPT plugin directory instead: nothing to paste.
-                </>
-              )}
-            </>
-          }
-        />
-      </Tabs.Item>
-
-      <Tabs.Item title="Claude Code">
-        <McpSnippet
-          heading="Run in a terminal"
-          copyLabel="Claude Code command"
-          code={`claude mcp add --transport http ${name} ${url}`}
-          note={
-            <>
-              Then run <code>/mcp</code>, pick{' '}
-              <code className="break-all">{name}</code>, and sign in.
-            </>
-          }
-        />
-      </Tabs.Item>
-
-      <Tabs.Item title="Cursor / VS Code">
-        <div className="space-y-4">
-          <McpSnippet
-            heading="Cursor — under mcpServers"
-            copyLabel="Cursor entry"
-            code={`"${name}": { "url": "${url}" }`}
-          />
-          <McpSnippet
-            heading="VS Code — mcp.json, under servers"
-            copyLabel="VS Code entry"
-            code={`"${name}": { "type": "http", "url": "${url}" }`}
-            note="The editor opens the sign-in the first time it connects."
-          />
-        </div>
-      </Tabs.Item>
-    </Tabs>
   )
 }

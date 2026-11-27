@@ -1,8 +1,13 @@
-import { listSubgraphs } from '@robosystems/client'
+import { createUserApiKey, listSubgraphs } from '@robosystems/client'
 import { createMcpConnectorUrl, useGraphContext } from '@robosystems/core'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { ConnectContent } from '../content'
+
+vi.mock('@robosystems/client', () => ({
+  createUserApiKey: vi.fn(),
+  listSubgraphs: vi.fn(),
+}))
 
 vi.mock('@robosystems/core', () => ({
   useGraphContext: vi.fn(),
@@ -14,40 +19,38 @@ vi.mock('@robosystems/core', () => ({
       <div>{subtitle}</div>
     </>
   ),
-  EmptyState: ({ title }: any) => <div data-testid="empty-state">{title}</div>,
 }))
 
 vi.mock('next/link', () => ({
   default: ({ children, href }: any) => <a href={href}>{children}</a>,
 }))
 
-const mockSearchParams = new URLSearchParams()
+let searchParams = new URLSearchParams()
 vi.mock('next/navigation', () => ({
-  useSearchParams: () => mockSearchParams,
+  useSearchParams: () => searchParams,
 }))
 
 vi.mock('react-icons/hi', () => ({
-  HiCheck: () => <span>Icon</span>,
-  HiClipboardCopy: () => <span>Icon</span>,
-  HiLink: () => <span>Icon</span>,
-  HiPuzzle: () => <span>Icon</span>,
-  HiSparkles: () => <span>Icon</span>,
+  HiCheck: () => <span />,
+  HiClipboardCopy: () => <span />,
+  HiExternalLink: () => <span />,
+  HiPuzzle: () => <span />,
+  HiSparkles: () => <span />,
 }))
 
 vi.mock('@robosystems/core/ui', () => ({
-  Radio: ({ id, checked, onChange }: any) => (
-    <input type="radio" id={id} checked={checked} onChange={onChange} />
-  ),
   Tabs: Object.assign(({ children }: any) => <div>{children}</div>, {
     Item: ({ title, children }: any) => (
-      <div>
+      <div data-testid={`tab-${title}`}>
         <span>{title}</span>
         {children}
       </div>
     ),
   }),
-  Badge: ({ children }: any) => <span>{children}</span>,
   Card: ({ children }: any) => <div>{children}</div>,
+  Checkbox: ({ id, checked, onChange }: any) => (
+    <input type="checkbox" id={id} checked={checked} onChange={onChange} />
+  ),
   Label: ({ children, htmlFor }: any) => (
     <label htmlFor={htmlFor}>{children}</label>
   ),
@@ -59,644 +62,247 @@ vi.mock('@robosystems/core/ui', () => ({
 }))
 
 const mockUseGraphContext = vi.mocked(useGraphContext)
-const mockCreateMcpConnectorUrl = vi.mocked(createMcpConnectorUrl)
+const mockCreateConnector = vi.mocked(createMcpConnectorUrl)
+const mockCreateKey = vi.mocked(createUserApiKey)
 const mockListSubgraphs = vi.mocked(listSubgraphs)
 
-const setGraphs = (graphs: any[], currentGraphId: string | null = null) => {
+const API = 'https://api.robosystems.ai'
+const ACME = { graphId: 'kg1a2b3c', graphName: 'Acme Ledger' }
+const SEC = { graphId: 'sec', graphName: 'SEC', isRepository: true }
+
+const show = (graphs: any[], currentGraphId: string | null = null) => {
   mockUseGraphContext.mockReturnValue({
     state: { graphs, currentGraphId, isLoading: false, error: null },
   } as any)
+  return render(<ConnectContent />)
 }
 
-const setSubgraphs = (subgraphs: any[]) => {
-  mockListSubgraphs.mockResolvedValue({ data: { subgraphs } } as any)
-}
-
-const UNIVERSAL = 'https://api.robosystems.ai/v1/mcp'
-const ROBOLEDGER = 'https://api.robosystems.ai/v1/mcp/roboledger'
-const ACME = 'https://api.robosystems.ai/v1/graphs/kg1a2b3c/mcp'
-
-const acme = (extra: Record<string, unknown> = {}) => [
-  { graphId: 'kg1a2b3c', graphName: 'Acme Ledger', ...extra },
-]
-
-const connectText = () =>
-  screen.getByTestId('connect-section').textContent ?? ''
-const developerText = () =>
-  screen.getByTestId('developer-section').textContent ?? ''
-const bridgeText = () => screen.getByTestId('bridge-section').textContent ?? ''
-
-const pinToWorkspace = () =>
-  fireEvent.click(document.getElementById('mcp-reach-workspace')!)
-
-const generatedKey = (graphId: string, keyName: string) => ({
-  url: `https://api.robosystems.ai/v1/graphs/${graphId}/mcp?token=rfsc_test`,
-  endpoint: `https://api.robosystems.ai/v1/graphs/${graphId}/mcp`,
-  apiKey: 'rfsc_test',
-  keyName,
-  graphId,
-})
+const cards = () =>
+  screen.getAllByRole('radio').map((card) => card.getAttribute('data-testid'))
+const selected = () =>
+  screen
+    .getAllByRole('radio')
+    .find((card) => card.getAttribute('aria-checked') === 'true')
+    ?.getAttribute('data-testid')
+const choose = (way: string) =>
+  fireEvent.click(screen.getByTestId(`way-${way}`))
+const panel = (way: string) => screen.getByTestId(`${way}-panel`)
+const tab = (way: string, title: string) =>
+  panel(way).querySelector(`[data-testid="tab-${title}"] pre`)?.textContent ??
+  ''
+const reach = (id: string, value: string) =>
+  fireEvent.change(document.getElementById(id)!, { target: { value } })
 
 describe('ConnectContent', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockSearchParams.delete('workspace')
-    setSubgraphs([])
+    searchParams = new URLSearchParams()
+    mockListSubgraphs.mockResolvedValue({ data: { subgraphs: [] } } as any)
   })
 
-  it('sends someone who needs the detail to the connect guide', () => {
-    setGraphs(acme(), 'kg1a2b3c')
+  describe('the ways in', () => {
+    test('a graph with no listing offers sign-in and a key, opening on sign-in', () => {
+      show([ACME], ACME.graphId)
+      expect(cards()).toEqual(['way-signin', 'way-key'])
+      expect(selected()).toBe('way-signin')
+    })
 
-    render(<ConnectContent />)
-
-    expect(
-      screen.getByRole('link', { name: /Read the guide/ })
-    ).toHaveAttribute('href', '/docs/guides/connect-an-mcp-client')
-  })
-
-  describe('Connect', () => {
-    test('leads with the one address, chosen at sign-in', () => {
-      setGraphs(acme(), 'kg1a2b3c')
-
-      render(<ConnectContent />)
-
-      expect(document.getElementById('mcp-reach-any')).toBeChecked()
-      const connect = connectText()
-      expect(connect).toContain(
-        `claude mcp add --transport http robosystems ${UNIVERSAL}`
+    test('the SEC repository adds the directory and opens on it', () => {
+      show([ACME, SEC], 'sec')
+      expect(cards()).toEqual(['way-directory', 'way-signin', 'way-key'])
+      expect(selected()).toBe('way-directory')
+      const links = Array.from(panel('directory').querySelectorAll('a')).map(
+        (a) => a.textContent
       )
-      expect(connect).toContain(`"robosystems": { "url": "${UNIVERSAL}" }`)
-      // The graph's own address is a choice, not something shown beside it.
-      expect(connect).not.toContain(ACME)
+      expect(links).toEqual(['Open in Claude', 'Open in ChatGPT'])
     })
 
-    test('shows one address at a time, whichever is chosen', () => {
-      setGraphs(acme({ schemaExtensions: ['roboledger'] }), 'kg1a2b3c')
-
-      render(<ConnectContent />)
-
-      pinToWorkspace()
-      expect(connectText()).toContain(
-        `claude mcp add --transport http robosystems-kg1a2b3c ${ACME}`
-      )
-      expect(connectText()).not.toContain(`robosystems ${UNIVERSAL}`)
-
-      fireEvent.click(document.getElementById('mcp-reach-roboledger')!)
-      expect(connectText()).toContain(
-        `claude mcp add --transport http roboledger ${ROBOLEDGER}`
-      )
-      expect(connectText()).not.toContain(ACME)
+    test('a directory choice does not outlive the graph that had the listing', () => {
+      const view = show([ACME, SEC], 'sec')
+      choose('directory')
+      mockUseGraphContext.mockReturnValue({
+        state: {
+          graphs: [ACME, SEC],
+          currentGraphId: ACME.graphId,
+          isLoading: false,
+          error: null,
+        },
+      } as any)
+      view.rerender(<ConnectContent />)
+      expect(cards()).toEqual(['way-signin', 'way-key'])
+      expect(selected()).toBe('way-signin')
     })
 
-    test('puts the Connect card ahead of the developer card', () => {
-      setGraphs(acme(), 'kg1a2b3c')
-
-      render(<ConnectContent />)
-
-      const connect = screen.getByTestId('connect-section')
-      const developer = screen.getByTestId('developer-section')
-      expect(
-        connect.compareDocumentPosition(developer) &
-          Node.DOCUMENT_POSITION_FOLLOWING
-      ).toBeTruthy()
-    })
-
-    test('never pairs a sign-in address with an API key', async () => {
-      setGraphs(acme({ schemaExtensions: ['roboledger'] }), 'kg1a2b3c')
-      mockCreateMcpConnectorUrl.mockResolvedValue(
-        generatedKey('kg1a2b3c', 'MCP connector - Acme Ledger')
-      )
-
-      render(<ConnectContent />)
-      fireEvent.click(screen.getByText('Generate connector key'))
-      await waitFor(() => expect(developerText()).toContain('rfsc_test'))
-
-      for (const reach of ['any', 'workspace', 'roboledger']) {
-        fireEvent.click(document.getElementById(`mcp-reach-${reach}`)!)
-        expect(connectText()).not.toContain('rfsc_test')
-        expect(connectText()).not.toContain('X-API-Key')
-      }
-    })
-
-    test('names the SEC listings on the general address only', () => {
-      setGraphs(acme({ schemaExtensions: ['roboledger'] }), 'kg1a2b3c')
-
-      render(<ConnectContent />)
-
-      expect(connectText()).toContain('RoboSystems SEC')
-      expect(connectText()).toContain('RoboSystems plugin')
-
-      pinToWorkspace()
-      expect(connectText()).not.toContain('RoboSystems SEC')
-
-      fireEvent.click(document.getElementById('mcp-reach-roboledger')!)
-      expect(connectText()).not.toContain('RoboSystems SEC')
-      expect(connectText()).not.toContain('RoboSystems plugin')
-    })
-
-    test('renders only the selected graph, not the whole list', () => {
-      setGraphs(
-        [
-          { graphId: 'sec', graphName: 'SEC Repository', isRepository: true },
-          { graphId: 'kg1a2b3c', graphName: 'Acme Ledger' },
-        ],
-        'kg1a2b3c'
-      )
-
-      render(<ConnectContent />)
-
-      const body = document.body.textContent ?? ''
-      expect(body).toContain('Only Acme Ledger')
-      expect(body).not.toContain('SEC Repository')
-      expect(body).toContain(ACME)
-      expect(body).not.toContain('https://api.robosystems.ai/v1/graphs/sec/mcp')
-      expect(body).toContain('robosystems-kg1a2b3c')
-    })
-
-    test('prompts for a selection when graphs exist but none is selected', () => {
-      setGraphs(acme(), null)
-
-      render(<ConnectContent />)
-
-      expect(screen.getByTestId('empty-state')).toHaveTextContent(
-        'No graph selected'
-      )
-      // The general address needs no selection, and neither does the bridge.
-      expect(connectText()).toContain(UNIVERSAL)
-      expect(document.getElementById('mcp-reach-workspace')).toBeNull()
-      expect(bridgeText()).toContain('@robosystems/mcp@latest')
-    })
-
-    test('shows the empty state when the user has no graphs', () => {
-      setGraphs([])
-
-      render(<ConnectContent />)
-
-      expect(screen.getByTestId('empty-state')).toHaveTextContent(
-        'No graphs yet'
-      )
-    })
-
-    test('no longer tells the user to hand-edit the id into the URL', () => {
-      setGraphs(acme(), 'kg1a2b3c')
-
-      render(<ConnectContent />)
-
-      expect(document.body.textContent).not.toContain('swap the id in the URL')
+    test('with no graphs it says what to do first', () => {
+      show([])
+      expect(screen.getByTestId('no-graphs')).toBeInTheDocument()
     })
   })
 
-  describe('a graph of its own', () => {
-    test('offers the graph and its subgraphs as targets', async () => {
-      setGraphs(acme(), 'kg1a2b3c')
-      setSubgraphs([
-        { graph_id: 'kg1a2b3c_entities', display_name: 'entities' },
-        { graph_id: 'kg1a2b3c_dev', display_name: 'dev' },
-      ])
-
-      render(<ConnectContent />)
-      pinToWorkspace()
-
-      await waitFor(() => {
-        expect(screen.getByText('entities — subgraph')).toBeInTheDocument()
-      })
-      expect(screen.getByText('dev — subgraph')).toBeInTheDocument()
-      expect(screen.getByText('Acme Ledger — parent graph')).toBeInTheDocument()
-    })
-
-    test('re-addresses every snippet to the selected subgraph', async () => {
-      setGraphs(acme(), 'kg1a2b3c')
-      setSubgraphs([
-        { graph_id: 'kg1a2b3c_entities', display_name: 'entities' },
-      ])
-
-      render(<ConnectContent />)
-      pinToWorkspace()
-      await waitFor(() => {
-        expect(screen.getByText('entities — subgraph')).toBeInTheDocument()
-      })
-
-      fireEvent.change(document.getElementById('mcp-workspace')!, {
-        target: { value: 'kg1a2b3c_entities' },
-      })
-
-      const subgraphUrl =
-        'https://api.robosystems.ai/v1/graphs/kg1a2b3c_entities/mcp'
-      expect(connectText()).toContain(subgraphUrl)
-      expect(connectText()).toContain('robosystems-kg1a2b3c_entities')
-      expect(connectText()).not.toContain(`${ACME}`)
-      const scripts = screen.getByTestId('api-key-section').textContent ?? ''
-      expect(scripts).toContain(subgraphUrl)
-      expect(scripts).not.toContain(`${ACME}`)
-    })
-
-    test('honors a ?workspace= deep link before the subgraph list resolves', () => {
-      mockSearchParams.set('workspace', 'kg1a2b3c_entities')
-      mockListSubgraphs.mockReturnValue(new Promise(() => {}) as any)
-      setGraphs(acme(), 'kg1a2b3c')
-
-      render(<ConnectContent />)
-
-      expect(document.getElementById('mcp-reach-workspace')).toBeChecked()
-      expect(connectText()).toContain(
-        'https://api.robosystems.ai/v1/graphs/kg1a2b3c_entities/mcp'
+  describe('sign in', () => {
+    test('defaults to the address where the graph is picked at sign-in', () => {
+      show([ACME], ACME.graphId)
+      expect(tab('signin', 'Claude')).toBe(`${API}/v1/mcp`)
+      expect(tab('signin', 'Claude Code')).toBe(
+        `claude mcp add --transport http robosystems ${API}/v1/mcp`
       )
-      expect(connectText()).toContain('Only entities')
     })
 
-    test('ignores a ?workspace= deep link outside the selected graph family', () => {
-      mockSearchParams.set('workspace', 'kgotherxyz_entities')
-      setGraphs(acme(), 'kg1a2b3c')
-
-      render(<ConnectContent />)
-
-      expect(document.getElementById('mcp-reach-any')).toBeChecked()
-      expect(document.body.textContent).not.toContain('kgotherxyz')
-    })
-
-    test('does not look for subgraphs on a shared repository', () => {
-      setGraphs(
-        [{ graphId: 'sec', graphName: 'SEC Repository', isRepository: true }],
-        'sec'
+    test('pinning to the graph puts its id in the address and the name', () => {
+      show([ACME], ACME.graphId)
+      reach('signin-reach', ACME.graphId)
+      expect(tab('signin', 'ChatGPT')).toBe(`${API}/v1/graphs/kg1a2b3c/mcp`)
+      expect(tab('signin', 'Cursor')).toBe(
+        `"robosystems-kg1a2b3c": { "url": "${API}/v1/graphs/kg1a2b3c/mcp" }`
       )
-
-      render(<ConnectContent />)
-
-      expect(mockListSubgraphs).not.toHaveBeenCalled()
     })
 
-    test('keeps the page usable when the subgraph list fails', async () => {
-      setGraphs(acme(), 'kg1a2b3c')
-      mockListSubgraphs.mockRejectedValue(new Error('subgraphs unavailable'))
-
-      render(<ConnectContent />)
-      pinToWorkspace()
-
-      await waitFor(() => expect(mockListSubgraphs).toHaveBeenCalled())
-      expect(connectText()).toContain(ACME)
-      expect(document.getElementById('mcp-workspace')).toBeNull()
-    })
-
-    test('stays pinned, to the new graph, when the graph switcher changes', async () => {
-      // Deliberate: the choice is "only the selected graph", so it follows
-      // the switcher, and the label and address say which graph that is.
-      const graphs = [
-        { graphId: 'kg1a2b3c', graphName: 'Acme Ledger' },
-        { graphId: 'kg9z8y7x', graphName: 'Beta Books' },
-      ]
-      setGraphs(graphs, 'kg1a2b3c')
-      const { rerender } = render(<ConnectContent />)
-      pinToWorkspace()
-      expect(connectText()).toContain(ACME)
-
-      setGraphs(graphs, 'kg9z8y7x')
-      rerender(<ConnectContent />)
-
-      await waitFor(() => {
-        expect(connectText()).toContain(
-          'https://api.robosystems.ai/v1/graphs/kg9z8y7x/mcp'
-        )
-      })
-      expect(document.getElementById('mcp-reach-workspace')).toBeChecked()
-      expect(connectText()).toContain('Only Beta Books')
-      expect(connectText()).not.toContain(ACME)
-    })
-
-    test('names the applications a graph brings to the connection', () => {
-      setGraphs(acme({ schemaExtensions: ['roboledger'] }), 'kg1a2b3c')
-
-      render(<ConnectContent />)
-
-      // The Connect card says it for a reader who never pins a graph.
-      expect(connectText()).toContain('RoboLedger or RoboInvestor')
-
-      pinToWorkspace()
-      const target = screen.getByTestId('workspace-target').textContent ?? ''
-      expect(target).toContain('RoboLedger')
-      expect(target).toContain('period close')
-    })
-
-    test('lists both applications when a graph runs both', () => {
-      setGraphs(
-        [
-          {
-            graphId: 'kg1a2b3c',
-            graphName: 'Acme Holdings',
-            schemaExtensions: ['roboledger', 'roboinvestor'],
-          },
-        ],
-        'kg1a2b3c'
+    test('a subgraph is its own target', async () => {
+      mockListSubgraphs.mockResolvedValue({
+        data: {
+          subgraphs: [{ graph_id: 'kg1a2b3c_dev', display_name: 'dev' }],
+        },
+      } as any)
+      show([ACME], ACME.graphId)
+      await waitFor(() =>
+        expect(screen.getAllByText('Only Acme Ledger / dev').length).toBe(1)
       )
-
-      render(<ConnectContent />)
-      pinToWorkspace()
-
-      const target = screen.getByTestId('workspace-target').textContent ?? ''
-      expect(target).toContain('RoboLedger and RoboInvestor')
-      expect(target).toContain('securities registry')
+      reach('signin-reach', 'kg1a2b3c_dev')
+      expect(tab('signin', 'VS Code')).toContain('/v1/graphs/kg1a2b3c_dev/mcp')
     })
 
-    test('claims no write tools on a shared repository', () => {
-      setGraphs(
-        [
-          {
-            graphId: 'sec',
-            graphName: 'SEC Repository',
-            isRepository: true,
-            schemaExtensions: ['roboledger'],
-          },
-        ],
-        'sec'
-      )
+    test('the RoboLedger address is offered only with a RoboLedger graph', () => {
+      const view = show([ACME], ACME.graphId)
+      expect(panel('signin').textContent).not.toContain('RoboLedger')
+      view.unmount()
 
-      render(<ConnectContent />)
-      pinToWorkspace()
-
-      const target = screen.getByTestId('workspace-target').textContent ?? ''
-      expect(target).toContain('read-only')
-      expect(target).not.toContain('journal entries')
+      show([{ ...ACME, schemaExtensions: ['roboledger'] }], ACME.graphId)
+      reach('signin-reach', 'roboledger')
+      expect(tab('signin', 'Claude')).toBe(`${API}/v1/mcp/roboledger`)
     })
 
-    test('stays silent on a graph with no application schema', () => {
-      setGraphs(acme({ schemaExtensions: [] }), 'kg1a2b3c')
+    test('a deep link from the Subgraphs page opens pinned to that subgraph', () => {
+      searchParams = new URLSearchParams('workspace=kg1a2b3c_dev')
+      show([ACME, SEC], ACME.graphId)
+      expect(selected()).toBe('way-signin')
+      expect(tab('signin', 'Claude')).toBe(`${API}/v1/graphs/kg1a2b3c_dev/mcp`)
+    })
 
-      render(<ConnectContent />)
-      pinToWorkspace()
+    test('a deep link into another graph pins nothing', () => {
+      searchParams = new URLSearchParams('workspace=kg9z9z9z_dev')
+      show([ACME], ACME.graphId)
+      expect(tab('signin', 'Claude')).toBe(`${API}/v1/mcp`)
+    })
 
-      const target = screen.getByTestId('workspace-target').textContent ?? ''
-      expect(target).not.toContain('Runs')
-      expect(target).not.toContain('read-only')
+    test('no sign-in snippet carries a key', () => {
+      show([ACME], ACME.graphId)
+      expect(panel('signin').textContent).not.toContain('X-API-Key')
     })
   })
 
-  describe('the RoboLedger address', () => {
-    test('is offered when a graph runs RoboLedger', () => {
-      setGraphs(
-        [
-          { graphId: 'kgplain', graphName: 'Plain Graph' },
-          {
-            graphId: 'kg1a2b3c',
-            graphName: 'Acme Ledger',
-            schemaExtensions: ['roboledger'],
-          },
-        ],
-        'kgplain'
+  describe('an API key', () => {
+    test('defaults to every graph, with a placeholder until a key is made', () => {
+      show([ACME], ACME.graphId)
+      choose('key')
+      expect(tab('key', 'Claude Code')).toBe(
+        `claude mcp add --transport http robosystems-graphs \\\n  ${API}/v1/mcp/graphs \\\n  --header "X-API-Key: <your key>"`
       )
-
-      render(<ConnectContent />)
-
-      // It follows whether the user has an eligible graph at all, not the
-      // graph the switcher is on.
-      expect(document.getElementById('mcp-reach-roboledger')).not.toBeNull()
+      expect(screen.queryByTestId('key-notice')).not.toBeInTheDocument()
     })
 
-    test('is not offered without a RoboLedger graph', () => {
-      setGraphs(acme(), 'kg1a2b3c')
-
-      render(<ConnectContent />)
-
-      expect(document.getElementById('mcp-reach-roboledger')).toBeNull()
-      expect(document.body.textContent).not.toContain(ROBOLEDGER)
-    })
-
-    test('is kept away from a subgraph and a shared repository', () => {
-      // The address refuses both at consent, so neither makes a user eligible.
-      setGraphs(
-        [
-          {
-            graphId: 'sec',
-            graphName: 'SEC Repository',
-            isRepository: true,
-            schemaExtensions: ['roboledger'],
-          },
-          {
-            graphId: 'kg1a2b3c_dev',
-            graphName: 'dev',
-            isSubgraph: true,
-            schemaExtensions: ['roboledger'],
-          },
-        ],
-        'sec'
-      )
-
-      render(<ConnectContent />)
-
-      expect(document.getElementById('mcp-reach-roboledger')).toBeNull()
-    })
-
-    test('is hidden while a shared repository is selected', () => {
-      // Beside the SEC repository it reads as a way to reach it, which it is not.
-      setGraphs(
-        [
-          {
-            graphId: 'sec',
-            graphName: 'SEC Repository',
-            isRepository: true,
-          },
-          {
-            graphId: 'kg1a2b3c',
-            graphName: 'Acme Ledger',
-            schemaExtensions: ['roboledger'],
-          },
-        ],
-        'sec'
-      )
-
-      render(<ConnectContent />)
-
-      expect(document.getElementById('mcp-reach-roboledger')).toBeNull()
-    })
-  })
-
-  describe('For developers', () => {
-    test('offers the bridge with an account key and no graph list', () => {
-      setGraphs(acme(), 'kg1a2b3c')
-
-      render(<ConnectContent />)
-
-      const bridge = bridgeText()
-      expect(bridge).toContain('npx -y @robosystems/mcp@latest')
-      expect(bridge).toContain('"ROBOSYSTEMS_API_KEY": "<your key>"')
-      expect(bridge).not.toContain('ROBOSYSTEMS_GRAPH_IDS')
-      expect(bridge).toContain('Settings → API Keys')
-      // The command is per project unless told otherwise.
-      expect(bridge).toContain('--scope user')
-      expect(
-        screen.getByRole('link', { name: /Bridge reference/ })
-      ).toHaveAttribute('href', '/docs/technical/the-mcp-bridge')
-    })
-
-    test('says a key made on the page fills the bridge snippets', () => {
-      setGraphs(acme(), 'kg1a2b3c')
-
-      render(<ConnectContent />)
-
-      expect(bridgeText()).toContain(
-        'generate a key for Acme Ledger under Scripts and CI below'
+    test('read-only is a setting on the every-graph address', () => {
+      show([ACME], ACME.graphId)
+      choose('key')
+      fireEvent.click(document.getElementById('key-read-only')!)
+      expect(tab('key', 'Other')).toBe(`${API}/v1/mcp/graphs?read_only=true`)
+      expect(tab('key', 'Claude Desktop')).toContain(
+        '"ROBOSYSTEMS_READ_ONLY": "true"'
       )
     })
 
-    test('warns that the snippets hold a live key once one is generated', async () => {
-      setGraphs(acme(), 'kg1a2b3c')
-      mockCreateMcpConnectorUrl.mockResolvedValue(
-        generatedKey('kg1a2b3c', 'MCP connector - Acme Ledger')
+    test('every graph takes an account-wide key', async () => {
+      mockCreateKey.mockResolvedValue({ data: { key: 'rfs_all' } } as any)
+      show([ACME], ACME.graphId)
+      choose('key')
+      fireEvent.click(screen.getByText('Generate key'))
+      await waitFor(() =>
+        expect(screen.getByTestId('key-notice')).toBeInTheDocument()
       )
-
-      render(<ConnectContent />)
-      expect(screen.queryByTestId('key-notice')).toBeNull()
-
-      fireEvent.click(screen.getByText('Generate connector key'))
-
-      await waitFor(() => {
-        expect(screen.getByTestId('key-notice')).toHaveTextContent(
-          'Treat anything you copy from them as a secret'
-        )
+      expect(mockCreateKey).toHaveBeenCalledWith({
+        body: { name: 'MCP - all graphs' },
       })
+      expect(mockCreateConnector).not.toHaveBeenCalled()
+      expect(tab('key', 'Cursor')).toContain('"X-API-Key": "rfs_all"')
     })
 
-    test('keeps the scripts and CI route collapsed', () => {
-      setGraphs(acme(), 'kg1a2b3c')
-
-      render(<ConnectContent />)
-
-      const scripts = screen.getByTestId(
-        'api-key-section'
-      ) as HTMLDetailsElement
-      expect(scripts.open).toBe(false)
-      expect(scripts.textContent).toContain('Generate connector key')
-    })
-
-    test('fills every key snippet with the generated key', async () => {
-      setGraphs(acme(), 'kg1a2b3c')
-      mockCreateMcpConnectorUrl.mockResolvedValue(
-        generatedKey('kg1a2b3c', 'MCP connector - Acme Ledger')
+    test('one graph takes its own address and a key scoped to it', async () => {
+      mockCreateConnector.mockResolvedValue({
+        apiKey: 'rfsc_acme',
+        graphId: ACME.graphId,
+      } as any)
+      show([ACME], ACME.graphId)
+      choose('key')
+      reach('key-reach', ACME.graphId)
+      expect(document.getElementById('key-read-only')).toBeNull()
+      fireEvent.click(screen.getByText('Generate key'))
+      await waitFor(() =>
+        expect(screen.getByTestId('key-notice')).toBeInTheDocument()
       )
-
-      render(<ConnectContent />)
-
-      // Placeholders before generation — no real credential anywhere.
-      expect(developerText()).toContain('<your key>')
-      expect(document.body.textContent).not.toContain('rfsc_test')
-
-      fireEvent.click(screen.getByText('Generate connector key'))
-
-      await waitFor(() => {
-        expect(developerText()).toContain('X-API-Key: rfsc_test')
-      })
-
-      // The key lands in every snippet that takes one, so every copy button
-      // yields a working artifact — and never in a URL: the ?token= carriage
-      // was retired once OAuth covered header-less clients.
-      const developer = developerText()
-      expect(developer).toContain('"X-API-Key": "rfsc_test"')
-      expect(developer).toContain('"ROBOSYSTEMS_API_KEY": "rfsc_test"')
-      expect(developer).toContain('-e ROBOSYSTEMS_API_KEY=rfsc_test')
-      expect(developer).not.toContain('<your key>')
-      expect(document.body.textContent).not.toContain('?token=')
-
-      expect(mockCreateMcpConnectorUrl).toHaveBeenCalledWith(
-        'kg1a2b3c',
-        expect.objectContaining({ name: 'MCP connector - Acme Ledger' })
+      expect(mockCreateConnector).toHaveBeenCalledWith(
+        ACME.graphId,
+        expect.objectContaining({ name: 'MCP - Acme Ledger' })
+      )
+      expect(mockCreateKey).not.toHaveBeenCalled()
+      expect(tab('key', 'Claude Code')).toBe(
+        `claude mcp add --transport http robosystems-kg1a2b3c \\\n  ${API}/v1/graphs/kg1a2b3c/mcp \\\n  --header "X-API-Key: rfsc_acme"`
+      )
+      expect(tab('key', 'Claude Desktop')).toContain(
+        '"ROBOSYSTEMS_GRAPH_ID": "kg1a2b3c"'
       )
     })
 
-    test('tells the bridge which graph a scoped key is for', async () => {
-      // A key made here cannot list the account, so the bridge needs the graph.
-      setGraphs(acme(), 'kg1a2b3c')
-      mockCreateMcpConnectorUrl.mockResolvedValue(
-        generatedKey('kg1a2b3c', 'MCP connector - Acme Ledger')
+    test('a key made for one reach is never shown for another', async () => {
+      mockCreateKey.mockResolvedValue({ data: { key: 'rfs_all' } } as any)
+      show([ACME], ACME.graphId)
+      choose('key')
+      fireEvent.click(screen.getByText('Generate key'))
+      await waitFor(() =>
+        expect(screen.getByTestId('key-notice')).toBeInTheDocument()
       )
-
-      render(<ConnectContent />)
-      fireEvent.click(screen.getByText('Generate connector key'))
-
-      await waitFor(() => {
-        expect(bridgeText()).toContain('-e ROBOSYSTEMS_GRAPH_IDS=kg1a2b3c')
-      })
-      expect(bridgeText()).toContain('"ROBOSYSTEMS_GRAPH_IDS": "kg1a2b3c"')
-      expect(bridgeText()).toContain('and its subgraphs')
+      reach('key-reach', ACME.graphId)
+      expect(panel('key').textContent).not.toContain('rfs_all')
+      expect(screen.getByText('Generate key')).toBeInTheDocument()
     })
 
-    test('scopes the generated key to the selected subgraph', async () => {
-      setGraphs(acme(), 'kg1a2b3c')
-      setSubgraphs([
-        { graph_id: 'kg1a2b3c_entities', display_name: 'entities' },
-      ])
-      mockCreateMcpConnectorUrl.mockResolvedValue(
-        generatedKey(
-          'kg1a2b3c_entities',
-          'MCP connector - Acme Ledger / entities'
-        )
+    test('a failed key says so and leaves the placeholder', async () => {
+      mockCreateKey.mockResolvedValue({ error: {} } as any)
+      show([ACME], ACME.graphId)
+      choose('key')
+      fireEvent.click(screen.getByText('Generate key'))
+      await waitFor(() =>
+        expect(panel('key').textContent).toContain('Could not create a key')
       )
-
-      render(<ConnectContent />)
-      pinToWorkspace()
-      await waitFor(() => {
-        expect(screen.getByText('entities — subgraph')).toBeInTheDocument()
-      })
-      fireEvent.change(document.getElementById('mcp-workspace')!, {
-        target: { value: 'kg1a2b3c_entities' },
-      })
-
-      // A parent's key already covers the subgraph, and the page says so.
-      expect(screen.getByTestId('api-key-section').textContent).toContain(
-        'It covers this subgraph too'
-      )
-
-      fireEvent.click(screen.getByText('Generate connector key'))
-
-      await waitFor(() => {
-        expect(mockCreateMcpConnectorUrl).toHaveBeenCalledWith(
-          'kg1a2b3c_entities',
-          expect.objectContaining({
-            name: 'MCP connector - Acme Ledger / entities',
-          })
-        )
-      })
-      await waitFor(() => {
-        expect(bridgeText()).toContain(
-          '"ROBOSYSTEMS_GRAPH_IDS": "kg1a2b3c_entities"'
-        )
-      })
+      expect(tab('key', 'Other')).toBe(`${API}/v1/mcp/graphs`)
     })
 
-    test('drops a generated key when the workspace changes', async () => {
-      setGraphs(acme(), 'kg1a2b3c')
-      setSubgraphs([
-        { graph_id: 'kg1a2b3c_entities', display_name: 'entities' },
-      ])
-      mockCreateMcpConnectorUrl.mockResolvedValue(
-        generatedKey('kg1a2b3c', 'MCP connector - Acme Ledger')
-      )
-
-      render(<ConnectContent />)
-      pinToWorkspace()
-      await waitFor(() => {
-        expect(screen.getByText('entities — subgraph')).toBeInTheDocument()
-      })
-      fireEvent.click(screen.getByText('Generate connector key'))
-      await waitFor(() => expect(developerText()).toContain('rfsc_test'))
-
-      fireEvent.change(document.getElementById('mcp-workspace')!, {
-        target: { value: 'kg1a2b3c_entities' },
-      })
-
-      expect(document.body.textContent).not.toContain('rfsc_test')
-      expect(developerText()).toContain('<your key>')
+    test('Claude Desktop runs the bridge, since it cannot send a header', () => {
+      show([ACME], ACME.graphId)
+      choose('key')
+      const entry = tab('key', 'Claude Desktop')
+      expect(entry).toContain('"command": "npx"')
+      expect(entry).toContain('@robosystems/mcp@latest')
+      expect(entry).not.toContain('ROBOSYSTEMS_GRAPH_ID')
     })
 
-    test('surfaces an error when key generation fails', async () => {
-      setGraphs(acme(), 'kg1a2b3c')
-      mockCreateMcpConnectorUrl.mockRejectedValue(
-        new Error('key limit reached')
+    test('no key ever goes in an address', async () => {
+      mockCreateKey.mockResolvedValue({ data: { key: 'rfs_all' } } as any)
+      show([ACME], ACME.graphId)
+      choose('key')
+      fireEvent.click(screen.getByText('Generate key'))
+      await waitFor(() =>
+        expect(screen.getByTestId('key-notice')).toBeInTheDocument()
       )
-
-      render(<ConnectContent />)
-      fireEvent.click(screen.getByText('Generate connector key'))
-
-      await waitFor(() => {
-        expect(screen.getByText('key limit reached')).toBeInTheDocument()
-      })
+      expect(tab('key', 'Other')).not.toContain('rfs_all')
     })
   })
 })

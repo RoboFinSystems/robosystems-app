@@ -37,6 +37,15 @@ export const MCP_ROBOLEDGER_URL = `${MCP_OAUTH_URL}/roboledger`
 export const MCP_ROBOLEDGER_CONNECTOR_NAME = 'roboledger'
 
 /**
+ * Every graph an account-wide API key reaches, in one connection: four fixed
+ * tools take the graph as an argument. It takes a key in `X-API-Key`, never a
+ * sign-in and never a key scoped to one graph.
+ */
+export const MCP_GRAPHS_URL = `${MCP_OAUTH_URL}/graphs`
+
+export const MCP_GRAPHS_CONNECTOR_NAME = 'robosystems-graphs'
+
+/**
  * Mirrors the API's consent check for `/v1/mcp/roboledger`
  * (`graph_serves_product`): a top-level tenant graph with the RoboLedger
  * schema installed. Subgraphs and shared repositories are refused even when
